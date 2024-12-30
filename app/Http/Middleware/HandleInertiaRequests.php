@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
@@ -31,6 +33,8 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
+            'alert' => fn () => $request->session()->get('alert'),
+            'notifications' => fn () => $request->session()->get('notifications'),
             'auth' => [
                 'user' => $request->user(),
             ],
