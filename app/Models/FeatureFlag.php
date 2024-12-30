@@ -6,7 +6,6 @@ namespace App\Models;
 
 use App\Models\Traits\BelongsToTenant;
 use App\Models\Traits\HasSlug;
-use App\Models\Traits\Lazily;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -19,7 +18,6 @@ class FeatureFlag extends Model
     use HasSlug;
     use HasFactory;
     use BelongsToTenant;
-    use Lazily;
 
     protected $fillable = [
         'name',
