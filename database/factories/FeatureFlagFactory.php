@@ -6,6 +6,7 @@ namespace Database\Factories;
 
 use App\Models\FeatureFlag;
 use App\Models\FeatureType;
+use App\Models\Tenant;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -20,10 +21,10 @@ class FeatureFlagFactory extends Factory
             'name' => Str::slug($this->faker->words(3, true)),
             'description' => $this->faker->text(),
             'last_seen_at' => Carbon::now()->subDays($this->faker->numberBetween(1, 7)),
+            'feature_type_id' => FeatureType::factory(),
+            'tenant_id' => Tenant::factory(),
             'created_at' => Carbon::now()->subDays($this->faker->numberBetween(1, 365)),
             'updated_at' => Carbon::now()->subDays($this->faker->numberBetween(1, 7)),
-
-            'feature_type_id' => FeatureType::factory(),
         ];
     }
 }

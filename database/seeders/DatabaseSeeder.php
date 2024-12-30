@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App;
 use App\Models\Application;
 use App\Models\Environment;
 use App\Models\FeatureFlag;
 use App\Models\FeatureType;
 use App\Models\Tag;
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
@@ -22,28 +24,42 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Application::factory(18)->create();
+        $tenant = Tenant::factory(['name' => 'Davey\'s Team'])->create();
+        App::context(tenant: $tenant);
 
-        FeatureType::factory(4)->sequence(
-            ['name' => 'Release', 'icon' => 'Rocket', 'color' => 'green', 'description' => 'Manage the rollout of new changes to your application.'],
-            ['name' => 'Operational', 'icon' => 'Wrench', 'color' => 'sky', 'description' => 'Gate functionality based on operational concerns.'],
-            ['name' => 'Kill Switch', 'icon' => 'Unplug', 'color' => 'red', 'description' => 'Disabling functionality in an emergency.'],
-            ['name' => 'Experiment', 'icon' => 'FlaskConical', 'color' => 'indigo', 'description' => 'Test new features with a subset of users.'],
-        )->create();
+        Application::factory(18)
+            ->for($tenant)
+            ->create();
+
+        FeatureType::factory(4)
+            ->for($tenant)
+            ->sequence(
+                ['name' => 'Release', 'icon' => 'Rocket', 'color' => 'green', 'description' => 'Manage the rollout of new changes to your application.'],
+                ['name' => 'Operational', 'icon' => 'Wrench', 'color' => 'sky', 'description' => 'Gate functionality based on operational concerns.'],
+                ['name' => 'Kill Switch', 'icon' => 'Unplug', 'color' => 'red', 'description' => 'Disabling functionality in an emergency.'],
+                ['name' => 'Experiment', 'icon' => 'FlaskConical', 'color' => 'indigo', 'description' => 'Test new features with a subset of users.'],
+            )
+            ->create();
 
         FeatureFlag::factory(100)
+            ->for($tenant)
             ->state(new Sequence(
                 fn () => ['feature_type_id' => FeatureType::inRandomOrder()->first()->id]
             ))
             ->create();
 
-        Environment::factory(3)->sequence(
-            ['name' => 'local'],
-            ['name' => 'staging'],
-            ['name' => 'production'],
-        )->create();
+        Environment::factory(3)
+            ->for($tenant)
+            ->sequence(
+                ['name' => 'local'],
+                ['name' => 'staging'],
+                ['name' => 'production'],
+            )
+            ->create();
 
-        Tag::factory(15)->create();
+        Tag::factory(15)
+            ->for($tenant)
+            ->create();
 
         FeatureFlag::all()->each(function (FeatureFlag $flag) {
             Lottery::odds(8, 10)->winner(fn () => $flag->environments()->attach(Environment::inRandomOrder()->first()))->choose();

@@ -179,7 +179,12 @@ export default function Authenticated({
                                 </SidebarMenuItem>
                                 <SidebarMenuItem>
                                     <SidebarMenuButton asChild>
-                                        <Link href={route('applications.index')}>
+                                        <Link
+                                            href={route('settings.index')}
+                                            className={cn({
+                                                'font-bold': route().current('settings.*'),
+                                            })}
+                                        >
                                             <Settings className="h-6 w-6" />
                                             Settings
                                         </Link>
