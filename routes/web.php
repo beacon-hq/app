@@ -6,6 +6,7 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\EnvironmentController;
 use App\Http\Controllers\FeatureTypeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TagController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -33,6 +34,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('applications', ApplicationController::class)->except(['delete', 'create']);
     Route::resource('environments', EnvironmentController::class)->except(['delete', 'create']);
     Route::resource('feature-types', FeatureTypeController::class)->except(['delete', 'create']);
+    Route::resource('tags', TagController::class)->except(['delete', 'create']);
 });
 
 require __DIR__.'/auth.php';
