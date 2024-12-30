@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\EnvironmentController;
+use App\Http\Controllers\FeatureTypeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('applications', ApplicationController::class)->except(['delete', 'create']);
     Route::resource('environments', EnvironmentController::class)->except(['delete', 'create']);
+    Route::resource('feature-types', FeatureTypeController::class)->except(['delete', 'create']);
 });
 
 require __DIR__.'/auth.php';
