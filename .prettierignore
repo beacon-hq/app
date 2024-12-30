@@ -1,0 +1,14 @@
+# Ignore artifacts:
+app
+bootstrap
+config
+database
+node_modules
+public/build
+routes
+storage
+tests
+vendor
+composer.json
+composer.lock
+README.md

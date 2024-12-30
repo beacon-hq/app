@@ -1,19 +1,26 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "dshafik/pennant-server",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "description": "A centralized management system for Laravel Pennant feature flags.",
+    "keywords": ["laravel", "pennant", "feature flags"],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
+        "barryvdh/laravel-debugbar": "^3.14",
+        "captainhook/captainhook-phar": "^5.24",
+        "captainhook/hook-installer": "^1.0",
+        "creativeorange/gravatar": "^1.0",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^11.31",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "mll-lab/laravel-utils": "^9.0",
+        "ramsey/conventional-commits": "^1.5",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {
+        "aaronfrancis/solo": "^0.2.2",
         "fakerphp/faker": "^1.23",
         "laravel/breeze": "^2.3",
         "laravel/pail": "^1.1",
@@ -67,6 +74,8 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
+            "captainhook/captainhook-phar": true,
+            "captainhook/hook-installer": true,
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
         }
