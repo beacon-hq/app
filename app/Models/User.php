@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Traits\BelongsToTenant;
 use Creativeorange\Gravatar\Facades\Gravatar;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -16,6 +18,7 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
     use Notifiable;
+    use BelongsToTenant;
 
     /**
      * The attributes that are mass assignable.
@@ -62,5 +65,10 @@ class User extends Authenticatable
         return Attribute::make(function () {
             return Gravatar::get($this->email);
         });
+    }
+
+    public function tenants(): BelongsToMany
+    {
+        return $this->belongsToMany(Tenant::class)->withTimestamps();
     }
 }
