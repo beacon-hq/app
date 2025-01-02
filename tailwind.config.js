@@ -11,6 +11,8 @@ export default {
         './resources/views/**/*.blade.php',
         './resources/js/**/*.tsx',
         './node_modules/react-tailwindcss-datepicker/dist/index.esm.{js,ts}',
+        './docs/**/*.{md,vue,jsx,tsx}',
+        './docs/.vitepress/theme/*.{md,vue,jsx,tsx}',
     ],
     safelist: [
         'bg-red-400',
