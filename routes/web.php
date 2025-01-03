@@ -6,6 +6,7 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\EnvironmentController;
 use App\Http\Controllers\FeatureFlagController;
 use App\Http\Controllers\FeatureTypeController;
+use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TagController;
@@ -39,6 +40,7 @@ Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
     Route::resource('feature-types', FeatureTypeController::class)->except(['delete', 'create']);
     Route::resource('tags', TagController::class)->except(['delete', 'create']);
     Route::resource('settings', SettingsController::class)->only(['index']);
+    Route::resource('policies', PolicyController::class)->except(['delete', 'create']);
 });
 
 require __DIR__.'/auth.php';

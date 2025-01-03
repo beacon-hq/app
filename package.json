@@ -9,9 +9,6 @@
         "docs:preview": "vitepress preview docs"
     },
     "devDependencies": {
-        "mermaid": "^10.9.3",
-        "vitepress": "^1.1.3",
-        "vitepress-plugin-mermaid": "^2.0.16",
         "@headlessui/react": "^2.0.0",
         "@inertiajs/react": "^2.0.0-beta.2",
         "@tailwindcss/forms": "^0.5.3",
@@ -25,15 +22,19 @@
         "axios": "^1.7.4",
         "concurrently": "^9.0.1",
         "laravel-vite-plugin": "^1.0",
+        "mermaid": "^10.9.3",
         "postcss": "^8.4.31",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "tailwindcss": "^3.2.1",
         "typescript": "^5.0.2",
         "vite": "^5.0",
-        "vite-plugin-compression": "^0.5.1"
+        "vite-plugin-compression": "^0.5.1",
+        "vitepress": "^1.1.3",
+        "vitepress-plugin-mermaid": "^2.0.16"
     },
     "dependencies": {
+        "@dnd-kit/sortable": "^10.0.0",
         "@fortawesome/fontawesome-svg-core": "^6.6.0",
         "@fortawesome/free-brands-svg-icons": "^6.6.0",
         "@fortawesome/free-regular-svg-icons": "^6.6.0",
@@ -98,6 +99,7 @@
         "react-colorful": "^5.6.1",
         "react-day-picker": "^8.10.1",
         "react-dropzone": "^14.3.5",
+        "react-easy-sort": "^1.6.0",
         "react-hook-form": "^7.53.2",
         "react-resizable-panels": "^2.1.6",
         "react-tailwindcss-datepicker": "github:dshafik/react-tailwindcss-datepicker#support-input-tabindex-dist",
