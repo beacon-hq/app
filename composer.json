@@ -7,6 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "archtechx/enums": "^1.1",
         "barryvdh/laravel-debugbar": "^3.14",
         "captainhook/captainhook-phar": "^5.24",
         "captainhook/hook-installer": "^1.0",
@@ -19,6 +20,8 @@
         "mll-lab/laravel-utils": "^9.0",
         "ramsey/conventional-commits": "^1.5",
         "spatie/laravel-ignition": "^2.9",
+        "spatie/laravel-typescript-transformer": "^2.5",
+        "spatie/typescript-transformer": "^2.4",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {

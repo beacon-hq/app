@@ -21,7 +21,10 @@ class TagController extends Controller
 
     public function store(TagRequest $request)
     {
-        Tag::create($request->validated());
+        Tag::create([
+            ... $request->safe()->except('color'),
+            'color' => $request->validated('color', ''),
+        ]);
 
         return redirect()->route('tags.index')->with(
             'alert',
@@ -41,7 +44,10 @@ class TagController extends Controller
 
     public function update(TagRequest $request, Tag $tag)
     {
-        $tag->update($request->all());
+        $tag->update([
+            ... $request->safe()->except('color'),
+            'color' => $request->validated('color', ''),
+        ]);
 
         return redirect()->route('tags.index')->with(
             'alert',

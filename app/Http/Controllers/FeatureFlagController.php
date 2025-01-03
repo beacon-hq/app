@@ -33,7 +33,8 @@ class FeatureFlagController extends Controller
 
     public function store(FeatureFlagRequest $request)
     {
-        FeatureFlag::create($request->validated());
+        $featureFlag = FeatureFlag::create($request->validated());
+        $featureFlag->tags()->sync($request->tags);
 
         return redirect()->route('feature-flags.index')->with(
             'alert',
@@ -54,7 +55,9 @@ class FeatureFlagController extends Controller
 
     public function update(FeatureFlagRequest $request, FeatureFlag $featureFlag)
     {
-        $featureFlag->update($request->only('name', 'description', 'feature_type_id'));
+        $featureFlag->update($request->safe()->except('tags'));
+
+        $featureFlag->tags()->sync($request->validated('tags'));
 
         return redirect()->route('feature-flags.index')
             ->with(

@@ -42,7 +42,7 @@ class PolicyController extends Controller
 
     public function update(PolicyRequest $request, Policy $policy)
     {
-        $policy->update($request->all());
+        $policy->update($request->validated());
 
         return redirect()->back()->with(
             'alert',

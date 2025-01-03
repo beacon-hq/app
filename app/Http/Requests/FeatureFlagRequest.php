@@ -13,7 +13,8 @@ class FeatureFlagRequest extends FormRequest
         return [
             'name' => ['required'],
             'description' => ['nullable'],
-            'feature_type_id' => ['required', 'exists:feature_types'],
+            'feature_type_id' => ['required', 'exists:feature_types,id'],
+            'tags' => ['array', 'exists:tags,id'],
         ];
     }
 

@@ -1,3 +1,4 @@
+import { FeatureFlag, FeatureType, FeatureTypeCollection, Tag, TagCollection } from '@/Application';
 import Icon from '@/Components/Icon';
 import { IconColor } from '@/Components/IconColor';
 import InputError from '@/Components/InputError';
@@ -10,8 +11,9 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/Components/ui/popover
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select';
 import { Textarea } from '@/Components/ui/textarea';
 import { cn } from '@/lib/utils';
+import { FormErrors } from '@/types/global';
 import { ChevronsUpDown, X } from 'lucide-react';
-import React from 'react';
+import React, { FormEvent, useState } from 'react';
 
 export function Form({
     submit,
@@ -23,17 +25,17 @@ export function Form({
     onCancel,
     featureTypes,
 }: {
-    submit: (e: React.FormEvent) => void;
-    data: any;
-    tags: any[];
-    setData: (key: string, value: any) => void;
-    errors: any;
+    submit: (e: FormEvent) => void;
+    data: FeatureFlag;
+    tags: TagCollection;
+    setData: (key: keyof FeatureFlag, value: any) => void;
+    errors: FormErrors;
     processing: any;
     onCancel: any;
-    featureTypes: { id: string; name: string; icon: string | null; color: string }[];
+    featureTypes: FeatureTypeCollection;
 }) {
-    const [tagsOpen, setTagsOpen] = React.useState(false);
-    const [tagFilter, setTagFilter] = React.useState('');
+    const [tagsOpen, setTagsOpen] = useState(false);
+    const [tagFilter, setTagFilter] = useState('');
 
     return (
         <form onSubmit={submit} className="flex flex-col space-y-4">
@@ -44,13 +46,18 @@ export function Form({
                     type="text"
                     value={data.name}
                     autoComplete="off"
-                    disabled={data.slug !== undefined}
+                    disabled={data.slug != null && data.slug !== ''}
                     onChange={(e) => setData('name', e.target.value)}
                 />
                 {errors.name && <InputError message={errors.name} />}
             </div>
             <div>
-                <Select value={data.feature_type} onValueChange={(value) => setData('feature_type', value)}>
+                <Select
+                    value={data.feature_type?.id ?? ''}
+                    onValueChange={(value) =>
+                        setData('feature_type', featureTypes.filter((type: FeatureType) => type.id == value)[0])
+                    }
+                >
                     <SelectTrigger className="">
                         <SelectValue placeholder="Select a flag type" />
                     </SelectTrigger>
@@ -58,7 +65,7 @@ export function Form({
                         <SelectGroup>
                             {featureTypes.map(function (type) {
                                 return (
-                                    <SelectItem key={type.id} value={type.id}>
+                                    <SelectItem key={type.id} value={type.id as string}>
                                         <div className="flex items-center">
                                             {type.icon != null && (
                                                 <Icon
@@ -70,10 +77,10 @@ export function Form({
                                                 <div
                                                     className={cn(
                                                         'h-5 w-5 rounded-full inline-block mr-2',
-                                                        type.color.charAt(0) !== '#' ? `bg-${type.color}-400` : '',
+                                                        type.color?.charAt(0) !== '#' ? `bg-${type.color}-400` : '',
                                                     )}
                                                     style={
-                                                        type.color.charAt(0) === '#'
+                                                        type.color?.charAt(0) === '#'
                                                             ? { backgroundColor: type.color }
                                                             : {}
                                                     }
@@ -98,12 +105,12 @@ export function Form({
                             aria-expanded={tagsOpen}
                             className="w-full justify-between h-fit"
                         >
-                            {data.tags.length === 0 && <span>Select tags…</span>}
-                            {data.tags.length > 0 && (
+                            {(data.tags?.length ?? 0) === 0 && <span>Select tags…</span>}
+                            {(data.tags?.length ?? 0) > 0 && (
                                 <span className="flex flex-wrap gap-1">
-                                    {data.tags.map((tag: any) => (
+                                    {data.tags?.map((tag: Tag) => (
                                         <Badge
-                                            key={tag.id}
+                                            key={tag.slug}
                                             className={cn(
                                                 'bg-background border-2 hover:bg-background flex items-center',
                                                 tag.color?.charAt(0) != '#' ? `border-${tag.color}-400` : '',
@@ -112,7 +119,9 @@ export function Form({
                                                 e.preventDefault();
                                                 setData(
                                                     'tags',
-                                                    data.tags.filter((existingTag: any) => existingTag.id !== tag.id),
+                                                    data.tags?.filter(
+                                                        (existingTag: Tag) => existingTag.slug !== tag.slug,
+                                                    ),
                                                 );
                                                 const oldFilter = tagFilter;
                                                 setTagFilter('');
@@ -143,30 +152,30 @@ export function Form({
                                     {tags.map(function (tag) {
                                         if (
                                             tagFilter == '' &&
-                                            data.tags.filter((existingTag: any) => existingTag.name === tag.name)
-                                                .length > 0
+                                            (data.tags?.filter((existingTag: Tag) => existingTag.name === tag.name)
+                                                ?.length ?? 0) > 0
                                         ) {
                                             return;
                                         }
                                         return (
                                             <CommandItem
-                                                key={tag.id}
-                                                value={tag}
+                                                key={tag.slug}
+                                                value={tag.name as string}
                                                 onSelect={() => {
                                                     if (
-                                                        data.tags.filter(
-                                                            (existingTag: any) => existingTag.name === tag.name,
-                                                        ).length > 0
+                                                        (data.tags?.filter(
+                                                            (existingTag: Tag) => existingTag.name === tag.name,
+                                                        ).length ?? 0) > 0
                                                     ) {
                                                         setData(
                                                             'tags',
-                                                            data.tags.filter(
-                                                                (existingTag: any) => existingTag.name !== tag.name,
+                                                            data.tags?.filter(
+                                                                (existingTag: Tag) => existingTag.name !== tag.name,
                                                             ),
                                                         );
                                                         return;
                                                     } else {
-                                                        setData('tags', [...data.tags, tag]);
+                                                        setData('tags', [...(data.tags ?? []), tag]);
                                                     }
                                                 }}
                                             >
@@ -185,7 +194,7 @@ export function Form({
                 <Label htmlFor="description">Description</Label>
                 <Textarea
                     id="description"
-                    value={data.description}
+                    value={data.description ?? ''}
                     rows={8}
                     onChange={(e) => setData('description', e.target.value)}
                 />

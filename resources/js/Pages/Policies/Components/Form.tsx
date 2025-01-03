@@ -1,3 +1,4 @@
+import { Policy, PolicyCollection, PolicyDefinition, PolicyDefinitionCollection } from '@/Application';
 import InputError from '@/Components/InputError';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
@@ -7,9 +8,10 @@ import { Separator } from '@/Components/ui/separator';
 import { Textarea } from '@/Components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/Components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import { FormErrors } from '@/types/global';
 import { arrayMove } from '@dnd-kit/sortable';
 import { GripVertical, PlusCircle, Trash, TriangleAlert } from 'lucide-react';
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { FormEvent, forwardRef, useEffect, useState } from 'react';
 import SortableList, { SortableItem, SortableKnob } from 'react-easy-sort';
 
 export function Form({
@@ -22,29 +24,32 @@ export function Form({
     policies,
     subjects,
 }: {
-    submit: (e: React.FormEvent) => void;
-    data: any;
-    setData: (key: string, value: any) => void;
-    errors: any;
+    submit: (e: FormEvent) => void;
+    data: Policy;
+    setData: (key: keyof Policy, value: any) => void;
+    errors: FormErrors;
     processing: any;
     onCancel: any;
-    policies: any[];
-    subjects: any[];
+    policies?: PolicyCollection;
+    subjects?: string[];
 }) {
-    const [definitions, setDefinitions] = useState([
+    const [definitions, setDefinitions] = useState<PolicyDefinitionCollection>([
         ...(data.definition ?? [{ type: 'expression', subject: '', operator: '' }]),
-    ]);
+    ] as PolicyDefinitionCollection);
 
     useEffect(() => {
         setData('definition', definitions);
     }, [definitions]);
 
     const onSortEnd = (oldIndex: number, newIndex: number) => {
-        setDefinitions(arrayMove(data.definition, oldIndex, newIndex));
+        setDefinitions(arrayMove(data?.definition ?? [], oldIndex, newIndex));
     };
 
     const handleAddNew = () => {
-        return setDefinitions([...definitions, { type: 'expression', subject: '', operator: '' }]);
+        return setDefinitions([
+            ...definitions,
+            { type: 'expression', subject: '', operator: '' },
+        ] as PolicyDefinitionCollection);
     };
     return (
         <form onSubmit={submit} className="flex flex-col space-y-4">
@@ -56,7 +61,7 @@ export function Form({
                     <Input
                         id="name"
                         type="text"
-                        value={data.name}
+                        value={data.name as string}
                         autoComplete="off"
                         onChange={(e) => setData('name', e.target.value)}
                     />
@@ -69,14 +74,14 @@ export function Form({
                 </Label>
                 <Textarea
                     id="description"
-                    value={data.description}
+                    value={data.description ?? ''}
                     rows={8}
                     onChange={(e) => setData('description', e.target.value)}
                 />
             </div>
             <div className="border p-2 flex flex-col gap-4">
                 <SortableList onSortEnd={onSortEnd} className="list" draggedItemClassName="dragged" lockAxis="y">
-                    {definitions.map((definition: any, id: number) => (
+                    {definitions.map((definition: PolicyDefinition, id: number) => (
                         <SortableItem key={id}>
                             <div
                                 className={cn('bg-background w-full mb-2 pt-2', {
@@ -105,15 +110,16 @@ export function Form({
                                         <Select
                                             value={definition.type}
                                             onValueChange={(value) => {
-                                                let definitions = data.definition.map((item: any, index: number) => {
-                                                    if (index === id) {
-                                                        return { ...item, subject: '', type: value };
-                                                    }
+                                                let definitions =
+                                                    data.definition?.map((item: PolicyDefinition, index: number) => {
+                                                        if (index === id) {
+                                                            return { ...item, subject: '', type: value };
+                                                        }
 
-                                                    return item;
-                                                });
+                                                        return item;
+                                                    }) ?? [];
 
-                                                return setDefinitions(definitions);
+                                                return setDefinitions(definitions as PolicyDefinitionCollection);
                                             }}
                                         >
                                             <SelectTrigger>
@@ -146,17 +152,18 @@ export function Form({
                                                 value={definition.subject}
                                                 autoComplete="off"
                                                 onChange={function (e) {
-                                                    let definitions = data.definition.map(
-                                                        (item: any, index: number) => {
-                                                            if (index === id) {
-                                                                return { ...item, subject: e.target.value };
-                                                            }
+                                                    let definitions =
+                                                        data.definition?.map(
+                                                            (item: PolicyDefinition, index: number) => {
+                                                                if (index === id) {
+                                                                    return { ...item, subject: e.target.value };
+                                                                }
 
-                                                            return item;
-                                                        },
-                                                    );
+                                                                return item;
+                                                            },
+                                                        ) ?? [];
 
-                                                    return setDefinitions(definitions);
+                                                    return setDefinitions(definitions as PolicyDefinitionCollection);
                                                 }}
                                             />
                                         )}
@@ -164,15 +171,16 @@ export function Form({
                                             <Select
                                                 value={definition.subject}
                                                 onValueChange={(value) => {
-                                                    let definitions = data.definition.map(
-                                                        (item: any, index: number) => {
-                                                            if (index === id) {
-                                                                return { ...item, subject: value };
-                                                            }
+                                                    let definitions =
+                                                        data.definition?.map(
+                                                            (item: PolicyDefinition, index: number) => {
+                                                                if (index === id) {
+                                                                    return { ...item, subject: value };
+                                                                }
 
-                                                            return item;
-                                                        },
-                                                    );
+                                                                return item;
+                                                            },
+                                                        ) ?? [];
 
                                                     return setDefinitions(definitions);
                                                 }}
@@ -182,12 +190,12 @@ export function Form({
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectGroup>
-                                                        {policies.map((policy) => (
-                                                            <SelectItem key={policy.id} value={policy.id}>
+                                                        {policies?.map((policy: Policy) => (
+                                                            <SelectItem key={policy.id} value={policy.id as string}>
                                                                 {policy.name}
                                                             </SelectItem>
                                                         ))}
-                                                        {policies.length === 0 && (
+                                                        {policies?.length === 0 && (
                                                             <SelectItem value="none" disabled>
                                                                 No policies found.
                                                             </SelectItem>
@@ -200,17 +208,18 @@ export function Form({
                                             <Select
                                                 value={definition.subject}
                                                 onValueChange={(value) => {
-                                                    let definitions = data.definition.map(
-                                                        (item: any, index: number) => {
-                                                            if (index === id) {
-                                                                return { ...item, subject: value };
-                                                            }
+                                                    let definitions =
+                                                        data.definition?.map(
+                                                            (item: PolicyDefinition, index: number) => {
+                                                                if (index === id) {
+                                                                    return { ...item, subject: value };
+                                                                }
 
-                                                            return item;
-                                                        },
-                                                    );
+                                                                return item;
+                                                            },
+                                                        ) ?? [];
 
-                                                    return setDefinitions(definitions);
+                                                    return setDefinitions(definitions as PolicyDefinitionCollection);
                                                 }}
                                             >
                                                 <SelectTrigger>
@@ -235,8 +244,8 @@ export function Form({
                                             <Select
                                                 value={definition.operator}
                                                 onValueChange={(value) => {
-                                                    let definitions = data.definition.map(
-                                                        (item: any, index: number) => {
+                                                    let definitions = data.definition?.map(
+                                                        (item: PolicyDefinition, index: number) => {
                                                             if (index === id) {
                                                                 return { ...item, operator: value };
                                                             }
@@ -245,7 +254,7 @@ export function Form({
                                                         },
                                                     );
 
-                                                    return setDefinitions(definitions);
+                                                    return setDefinitions(definitions as PolicyDefinitionCollection);
                                                 }}
                                             >
                                                 <SelectTrigger>
@@ -274,30 +283,33 @@ export function Form({
                                         <SortableKnob>
                                             <SortableThumb
                                                 className={cn({
-                                                    'text-primary/20 cursor-not-allowed': data.definition.length === 1,
-                                                    'cursor-move': data.definition.length > 1,
+                                                    'text-primary/20 cursor-not-allowed': data.definition?.length === 1,
+                                                    'cursor-move': (data.definition?.length as number) > 1,
                                                 })}
                                             />
                                         </SortableKnob>
                                         <Trash
                                             className={cn({
-                                                'text-primary/20 cursor-not-allowed': data.definition.length === 1,
-                                                'cursor-pointer': data.definition.length > 1,
+                                                'text-primary/20 cursor-not-allowed': data.definition?.length === 1,
+                                                'cursor-pointer': (data.definition?.length as number) > 1,
                                             })}
                                             onClick={() => {
-                                                if (data.definition.length === 1) {
+                                                if (data.definition?.length === 1) {
                                                     return;
                                                 }
 
-                                                let definitions = data.definition
-                                                    .filter((item: any, index: number) => index !== id)
-                                                    .slice();
-                                                return setDefinitions(definitions);
+                                                let definitions =
+                                                    data.definition
+                                                        ?.filter(
+                                                            (item: PolicyDefinition, index: number) => index !== id,
+                                                        )
+                                                        .slice() ?? [];
+                                                return setDefinitions(definitions as PolicyDefinitionCollection);
                                             }}
                                         />
                                     </div>
                                 </div>
-                                {id < data.definition.length - 1 && (
+                                {id < (data.definition?.length ?? 1 - 1) && (
                                     <>
                                         <Separator className="mt-2" />
                                     </>

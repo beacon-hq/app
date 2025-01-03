@@ -1,22 +1,26 @@
+import { FeatureType } from '@/Application';
 import { Card, CardContent, CardTitle } from '@/Components/ui/card';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Form } from '@/Pages/FeatureTypes/Components/Form';
 import { Head, router, useForm } from '@inertiajs/react';
-import React from 'react';
+import React, { FormEvent } from 'react';
 
-export default function Edit({ featureType }: { featureType: any }) {
-    const { data, setData, put, errors, processing } = useForm({
+export default function Edit({ featureType }: { featureType: FeatureType }) {
+    const { data, setData, put, errors, processing } = useForm<FeatureType>({
+        id: featureType.id,
         slug: featureType.slug,
         name: featureType.name,
         description: featureType.description,
         temporary: featureType.temporary,
         color: featureType.color,
         icon: featureType.icon,
+        created_at: featureType.created_at,
+        updated_at: featureType.updated_at,
     });
 
-    const submit = (e: any) => {
+    const submit = (e: FormEvent) => {
         e.preventDefault();
-        put(route('feature-types.update', featureType.slug));
+        put(route('feature-types.update', { feature_type: featureType.slug }));
     };
 
     const handleCancel = () => {

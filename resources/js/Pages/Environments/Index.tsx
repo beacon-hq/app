@@ -1,3 +1,4 @@
+import { Environment, EnvironmentCollection } from '@/Application';
 import { IconColor } from '@/Components/IconColor';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent } from '@/Components/ui/card';
@@ -8,17 +9,18 @@ import { Form } from '@/Pages/Environments/Components/Form';
 import { PageProps } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Pencil, PlusCircle } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 
-export default function Index({ environments }: PageProps & { environments: any }) {
+export default function Index({ environments }: PageProps & { environments: EnvironmentCollection }) {
     const [showSheet, setShowSheet] = useState(false);
-    const { data, setData, post, errors, reset, processing } = useForm({
+    const { data, setData, post, errors, reset, processing } = useForm<Environment>({
         name: '',
         color: '',
+        slug: null,
         description: '',
     });
 
-    const submit = (e: any) => {
+    const submit = (e: FormEvent) => {
         e.preventDefault();
         post(route('environments.store'), {
             onSuccess: function () {
@@ -48,8 +50,8 @@ export default function Index({ environments }: PageProps & { environments: any 
                         <Card className="mt-8">
                             <CardContent className="px-12 py-4">
                                 <ul>
-                                    {environments.map((environment: any) => (
-                                        <li key={environment.id} className="w-full">
+                                    {environments.map((environment: Environment) => (
+                                        <li key={environment.slug} className="w-full">
                                             <div className="flex h-24 items-center justify-between">
                                                 <div className="flex flex-row items-center space-x-2">
                                                     <IconColor color={environment.color} />
@@ -58,12 +60,16 @@ export default function Index({ environments }: PageProps & { environments: any 
                                                     </div>
                                                 </div>
                                                 <div className="flex gap-4">
-                                                    <Link href={route('environments.edit', environment.slug)}>
+                                                    <Link
+                                                        href={route('environments.edit', {
+                                                            environment: environment.slug,
+                                                        })}
+                                                    >
                                                         <Pencil className="h-4 w-4" />
                                                     </Link>
                                                 </div>
                                             </div>
-                                            {environments[environments.length - 1].id !== environment.id && (
+                                            {environments[environments.length - 1].slug !== environment.slug && (
                                                 <Separator />
                                             )}
                                         </li>

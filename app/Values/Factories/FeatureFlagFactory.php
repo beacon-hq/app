@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Values\Factories;
 
 use App\Values\FeatureType;
+use App\Values\Tag;
 use Bag\Factory;
+use Illuminate\Support\Carbon;
 
 class FeatureFlagFactory extends Factory
 {
@@ -13,10 +15,13 @@ class FeatureFlagFactory extends Factory
     {
         return [
             'name' => $this->faker->word(),
-            'id' => $this->faker->uuid(),
+            'slug' => $this->faker->word(),
             'description' => $this->faker->word(),
             'lastSeenAt' => $this->faker->word(),
             'featureType' => FeatureType::factory()->make(),
+            'tags' => Tag::collect([Tag::factory()->make()]),
+            'createdAt' => new Carbon(),
+            'updatedAt' => new Carbon(),
         ];
     }
 }

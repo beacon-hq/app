@@ -1,3 +1,4 @@
+import { Colors } from '@/Application';
 import { Button } from '@/Components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/Components/ui/popover';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/Components/ui/tooltip';
@@ -22,20 +23,7 @@ export function ColorPicker(props: { onColorChange: (color: string | null) => vo
             >
                 <Slash className="h-6 w-6 -ml-1 relative -top-0.5 left-0.5" />
             </div>
-            {[
-                'red',
-                'orange',
-                'yellow',
-                'lime',
-                'green',
-                'emerald',
-                'cyan',
-                'sky',
-                'blue',
-                'indigo',
-                'purple',
-                'fuchsia',
-            ].map((color: string) => {
+            {Object.entries(Colors).map(([, color]) => {
                 return (
                     <Tooltip key={color}>
                         <TooltipTrigger asChild>

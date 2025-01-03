@@ -12,7 +12,7 @@ class TagRequest extends FormRequest
     {
         return [
             'name' => ['required'],
-            'color' => ['nullable'],
+            'color' => ['present'],
             'description' => ['nullable'],
         ];
     }

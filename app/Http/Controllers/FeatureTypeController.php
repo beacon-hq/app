@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\FeatureFlagRequest;
 use App\Http\Requests\FeatureTypeRequest;
 use App\Models\FeatureType;
 use Inertia\Inertia;
@@ -20,9 +19,12 @@ class FeatureTypeController extends Controller
         ]);
     }
 
-    public function store(FeatureFlagRequest $request)
+    public function store(FeatureTypeRequest $request)
     {
-        FeatureType::create($request->validated());
+        FeatureType::create([
+            ... $request->safe()->except('color'),
+            'color' => $request->validated('color', ''),
+        ]);
 
         return redirect()->route('feature-types.index')->with(
             'alert',
@@ -42,7 +44,10 @@ class FeatureTypeController extends Controller
 
     public function update(FeatureTypeRequest $request, FeatureType $featureType)
     {
-        $featureType->update($request->all());
+        $featureType->update([
+            ... $request->safe()->except('color'),
+            'color' => $request->validated('color', ''),
+        ]);
 
         return redirect()->route('feature-types.index')->with(
             'alert',

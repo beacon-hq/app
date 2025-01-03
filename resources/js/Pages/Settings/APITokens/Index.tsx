@@ -1,3 +1,4 @@
+import { AccessTokenCollection } from '@/Application';
 import InputError from '@/Components/InputError';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent } from '@/Components/ui/card';
@@ -14,9 +15,7 @@ import { PlusCircle } from 'lucide-react';
 import React, { FormEvent, useState } from 'react';
 import { toast } from 'sonner';
 
-export default function Index({
-    settings,
-}: PageProps & { settings: { tokens: { id: string; name: string; token: string; last_used_at: string }[] } }) {
+export default function Index({ settings }: PageProps & { settings: { tokens: AccessTokenCollection } }) {
     const [showTokenDialog, setShowTokenDialog] = useState(false);
     const [processing, setProcessing] = useState(false);
     const [tokenName, setTokenName] = useState('');
@@ -49,13 +48,17 @@ export default function Index({
             });
     };
 
-    const handleCancel = (e) => {
-        setShowTokenDialog(false);
+    const handleCancel = (e: boolean) => {
+        setShowTokenDialog(e);
         reset();
     };
 
-    const handleDelete = (id: string) => {
-        window.axios.delete(route('tokens.destroy', { id })).then((response) => {
+    const handleDelete = (id: number | null) => {
+        if (id === null) {
+            return;
+        }
+
+        window.axios.delete(route('tokens.destroy', { token: id })).then((response) => {
             setTokens(tokens.filter((token) => token.id !== id));
             toast.success('API Token deleted successfully.');
         });

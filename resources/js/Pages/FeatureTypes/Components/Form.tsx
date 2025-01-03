@@ -1,3 +1,4 @@
+import { FeatureType } from '@/Application';
 import { ColorPicker } from '@/Components/ColorPicker';
 import Icon from '@/Components/Icon';
 import InputError from '@/Components/InputError';
@@ -10,10 +11,11 @@ import { Switch } from '@/Components/ui/switch';
 import { Textarea } from '@/Components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/Components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import { FormErrors } from '@/types/global';
 import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { PopoverClose } from '@radix-ui/react-popover';
 import { ChevronLeft, ChevronRight, icons, Info } from 'lucide-react';
-import React, { useMemo, useState } from 'react';
+import React, { FormEvent, useMemo, useState } from 'react';
 
 export function Form({
     submit,
@@ -23,10 +25,10 @@ export function Form({
     processing,
     onCancel,
 }: {
-    submit: (e: React.FormEvent) => void;
-    data: any;
-    setData: (key: string, value: any) => void;
-    errors: any;
+    submit: (e: FormEvent) => void;
+    data: FeatureType;
+    setData: (key: keyof FeatureType, value: any) => void;
+    errors: FormErrors;
     processing: any;
     onCancel: any;
 }) {
@@ -169,7 +171,7 @@ export function Form({
                 </Label>
                 <Textarea
                     id="description"
-                    value={data.description}
+                    value={data.description ?? ''}
                     rows={8}
                     onChange={(e) => setData('description', e.target.value)}
                 />
@@ -177,7 +179,7 @@ export function Form({
             <div className="flex items-center">
                 <Switch
                     id="temporary"
-                    checked={data.temporary}
+                    checked={data.temporary ?? false}
                     onCheckedChange={(checked) => setData('temporary', checked)}
                 />
                 <Label htmlFor="temporary" className="ml-4 flex items-center">

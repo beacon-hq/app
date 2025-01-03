@@ -39,7 +39,10 @@ class ApplicationController extends Controller
      */
     public function store(ApplicationRequest $request)
     {
-        Application::create($request->all());
+        Application::create([
+            ... $request->safe()->except('color'),
+            'color' => $request->validated('color', ''),
+        ]);
 
         return redirect()
             ->route('applications.index')
@@ -64,7 +67,10 @@ class ApplicationController extends Controller
      */
     public function update(ApplicationRequest $request, Application $application)
     {
-        $application->update($request->all());
+        $application->update([
+            ... $request->safe()->except('color'),
+            'color' => $request->validated('color', ''),
+        ]);
 
         return redirect()
             ->route('applications.index')

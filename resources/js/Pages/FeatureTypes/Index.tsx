@@ -1,3 +1,4 @@
+import { FeatureType, FeatureTypeCollection } from '@/Application';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent } from '@/Components/ui/card';
 import { Sheet, SheetContent, SheetTitle } from '@/Components/ui/sheet';
@@ -9,14 +10,18 @@ import { Head, useForm } from '@inertiajs/react';
 import { PlusCircle } from 'lucide-react';
 import React, { FormEvent, useState } from 'react';
 
-export default function Index({ featureTypes }: PageProps & { featureTypes: any }) {
+export default function Index({ featureTypes }: PageProps & { featureTypes: FeatureTypeCollection }) {
     const [showSheet, setShowSheet] = useState(false);
-    const { data, setData, post, errors, reset, processing } = useForm({
+    const { data, setData, post, errors, reset, processing } = useForm<FeatureType>({
+        id: null,
+        slug: null,
         name: '',
         description: '',
         temporary: true,
         color: '#e6e6e6',
         icon: '',
+        created_at: null,
+        updated_at: null,
     });
 
     const submit = (e: FormEvent<Element>) => {
@@ -48,7 +53,7 @@ export default function Index({ featureTypes }: PageProps & { featureTypes: any 
                         </div>
                         <Card className="mt-8">
                             <CardContent className="px-12 py-4">
-                                <Table featureFlags={featureTypes} />
+                                <Table featureTypes={featureTypes} />
                             </CardContent>
                         </Card>
                     </div>

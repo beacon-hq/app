@@ -1,3 +1,4 @@
+import { FeatureFlag, FeatureFlagCollection, FeatureTypeCollection, Tag, TagCollection } from '@/Application';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent } from '@/Components/ui/card';
 import { Sheet, SheetContent, SheetTitle } from '@/Components/ui/sheet';
@@ -13,17 +14,29 @@ export default function Index({
     featureFlags,
     featureTypes,
     tags,
-}: PageProps & { featureFlags: any; featureTypes: any; tags: any[] }) {
+}: PageProps & { featureFlags: FeatureFlagCollection; featureTypes: FeatureTypeCollection; tags: TagCollection }) {
     const [showSheet, setShowSheet] = useState(false);
-    const { data, setData, post, errors, reset, processing } = useForm({
-        name: '',
+    const { data, setData, post, errors, reset, processing, transform } = useForm<FeatureFlag>({
         description: '',
-        feature_type: '',
+        feature_type: null,
+        last_seen_at: '',
+        name: '',
+        slug: null,
         tags: [],
+        created_at: '',
+        updated_at: '',
     });
 
     const submit = (e: FormEvent<Element>) => {
         e.preventDefault();
+        transform((data) => {
+            return {
+                name: data.name,
+                description: data.description,
+                feature_type_id: data.feature_type?.id,
+                tags: data.tags?.map((tag: Tag) => tag.id),
+            };
+        });
         post(route('feature-flags.store'), {
             onSuccess: function () {
                 setShowSheet(false);

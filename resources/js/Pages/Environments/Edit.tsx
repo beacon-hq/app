@@ -1,20 +1,21 @@
+import { Environment } from '@/Application';
 import { Card, CardContent, CardTitle } from '@/Components/ui/card';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Form } from '@/Pages/Environments/Components/Form';
 import { Head, router, useForm } from '@inertiajs/react';
-import React from 'react';
+import React, { FormEvent } from 'react';
 
-export default function Edit({ environment }: { environment: any }) {
-    const { data, setData, put, errors, processing } = useForm({
+export default function Edit({ environment }: { environment: Environment }) {
+    const { data, setData, put, errors, processing } = useForm<Environment>({
         slug: environment.slug,
         name: environment.name,
         color: environment.color,
         description: environment.description,
     });
 
-    const submit = (e: any) => {
+    const submit = (e: FormEvent) => {
         e.preventDefault();
-        put(route('environments.update', environment.slug));
+        put(route('environments.update', { environment: environment.slug }));
     };
 
     const handleCancel = () => {

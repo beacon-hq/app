@@ -1,3 +1,4 @@
+import { Application, ApplicationCollection, Environment } from '@/Application';
 import { IconColor } from '@/Components/IconColor';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent } from '@/Components/ui/card';
@@ -8,17 +9,21 @@ import { Form } from '@/Pages/Applications/Components/Form';
 import { PageProps } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ChevronRight, Pencil, PlusCircle } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 
-export default function Index({ applications }: PageProps & { applications: any }) {
+export default function Index({ applications }: PageProps & { applications: ApplicationCollection }) {
     const [showSheet, setShowSheet] = useState(false);
-    const { data, setData, post, errors, reset, processing } = useForm({
-        name: '',
-        display_name: '',
+    const { data, setData, post, errors, reset, processing, transform } = useForm<Application>({
+        color: '#e6e6e6',
         description: '',
+        display_name: '',
+        environments: [],
+        last_seen_at: '',
+        name: '',
+        slug: null,
     });
 
-    const submit = (e: any) => {
+    const submit = (e: FormEvent) => {
         e.preventDefault();
         post(route('applications.store'), {
             onSuccess: function () {
@@ -48,18 +53,18 @@ export default function Index({ applications }: PageProps & { applications: any 
                         <Card className="mt-8">
                             <CardContent className="px-12 py-4">
                                 <ul>
-                                    {applications.map((application: any) => (
-                                        <li key={application.id} className="w-full">
+                                    {applications.map((application: Application) => (
+                                        <li key={application.slug} className="w-full">
                                             <div className="flex h-24 items-center justify-between">
                                                 <div className="flex flex-col space-y-2">
                                                     <div className="text-lg font-semibold leading-none">
                                                         {application.display_name}
                                                     </div>
                                                     <div className="flex">
-                                                        {application.environments.map(
-                                                            (environment: any, key: number) => (
+                                                        {application.environments?.map(
+                                                            (environment: Environment, key: number) => (
                                                                 <div
-                                                                    key={environment.id}
+                                                                    key={environment.slug}
                                                                     className="flex flex-row gap-1 items-center p-1 group first:-ml-0 -ml-4"
                                                                 >
                                                                     <IconColor color={environment.color} />
@@ -72,13 +77,17 @@ export default function Index({ applications }: PageProps & { applications: any 
                                                     </div>
                                                 </div>
                                                 <div className="flex gap-4">
-                                                    <Link href={route('applications.edit', application.slug)}>
+                                                    <Link
+                                                        href={route('applications.edit', {
+                                                            application: application.slug,
+                                                        })}
+                                                    >
                                                         <Pencil className="h-4 w-4" />
                                                     </Link>
                                                     <ChevronRight className="h-4 w-4" />
                                                 </div>
                                             </div>
-                                            {applications[applications.length - 1].id !== application.id && (
+                                            {applications[applications.length - 1].slug !== application.slug && (
                                                 <Separator />
                                             )}
                                         </li>
@@ -99,6 +108,7 @@ export default function Index({ applications }: PageProps & { applications: any 
                         errors={errors}
                         processing={processing}
                         onCancel={handleCancel}
+                        transform={transform}
                     />
                 </SheetContent>
             </Sheet>
