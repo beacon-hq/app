@@ -15,3 +15,5 @@ declare global {
 declare module '@inertiajs/core' {
     interface PageProps extends InertiaPageProps, AppPageProps {}
 }
+
+type FormErrors = Partial<Record<keyof TForm, string>>;

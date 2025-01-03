@@ -1,20 +1,24 @@
+import { Tag } from '@/Application';
 import { Card, CardContent, CardTitle } from '@/Components/ui/card';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Form } from '@/Pages/Tags/Components/Form';
 import { Head, router, useForm } from '@inertiajs/react';
-import React from 'react';
+import React, { FormEvent } from 'react';
 
-export default function Edit({ tag }: { tag: any }) {
-    const { data, setData, put, errors, processing } = useForm({
+export default function Edit({ tag }: { tag: Tag }) {
+    const { data, setData, put, errors, processing } = useForm<Tag>({
         slug: tag.slug,
         name: tag.name,
         description: tag.description,
         color: tag.color,
+        id: tag.id,
+        created_at: tag.created_at,
+        updated_at: tag.updated_at,
     });
 
-    const submit = (e: any) => {
+    const submit = (e: FormEvent) => {
         e.preventDefault();
-        put(route('tags.update', tag.slug));
+        put(route('tags.update', { tag: tag.slug }));
     };
 
     const handleCancel = () => {

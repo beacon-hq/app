@@ -14,6 +14,8 @@ class FeatureTypeRequest extends FormRequest
             'name' => ['required'],
             'description' => ['nullable'],
             'temporary' => ['boolean'],
+            'color' => ['present'],
+            'icon' => ['required'],
         ];
     }
 

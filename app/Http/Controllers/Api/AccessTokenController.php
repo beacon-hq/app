@@ -6,12 +6,12 @@ namespace App\Http\Controllers\Api;
 
 use App;
 use App\Http\Controllers\Controller;
+use App\Models\PersonalAccessToken;
 use App\Models\Tenant;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
-use Laravel\Sanctum\PersonalAccessToken;
 
 class AccessTokenController extends Controller
 {
@@ -45,7 +45,7 @@ class AccessTokenController extends Controller
         return response()->json($this->tenant->tokens->map(fn (PersonalAccessToken $token) => [
             'id' => $token->id,
             'name' => $token->name,
-            'token' => Str::of($token->token)->substr(-5)->prepend('*********************'),
+            'token' => Str::of($token->plain_text_suffix)->prepend('*********************'),
             'last_used_at' => $token->last_used_at,
             'created_at' => $token->created_at,
         ]));

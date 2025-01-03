@@ -13,6 +13,7 @@ class PolicyRequest extends FormRequest
         return [
             'name' => ['required'],
             'description' => ['nullable'],
+            'definition' => ['nullable', 'array'],
         ];
     }
 

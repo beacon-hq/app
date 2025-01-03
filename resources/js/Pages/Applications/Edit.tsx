@@ -1,20 +1,25 @@
+import { Application } from '@/Application';
 import { Card, CardContent, CardTitle } from '@/Components/ui/card';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Form } from '@/Pages/Applications/Components/Form';
 import { Head, router, useForm } from '@inertiajs/react';
-import React from 'react';
+import React, { FormEvent } from 'react';
 
-export default function Edit({ application }: { application: any }) {
-    const { data, setData, put, errors, processing } = useForm({
+export default function Edit({ application }: { application: Application }) {
+    const { data, setData, put, errors, processing, transform } = useForm<Application>({
         slug: application.slug,
         name: application.name,
         display_name: application.display_name,
         description: application.description,
+        color: application.color,
+        environments: application.environments,
+        last_seen_at: null,
     });
 
-    const submit = (e: any) => {
+    const submit = (e: FormEvent) => {
         e.preventDefault();
-        put(route('applications.update', application.slug));
+
+        put(route('applications.update', { application: application.slug }));
     };
 
     const handleCancel = () => {
@@ -37,6 +42,7 @@ export default function Edit({ application }: { application: any }) {
                                     errors={errors}
                                     processing={processing}
                                     onCancel={handleCancel}
+                                    transform={transform}
                                 />
                             </CardContent>
                         </Card>

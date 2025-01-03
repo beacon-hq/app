@@ -1,3 +1,4 @@
+import { Environment } from '@/Application';
 import { ColorPicker } from '@/Components/ColorPicker';
 import InputError from '@/Components/InputError';
 import { Button } from '@/Components/ui/button';
@@ -5,8 +6,9 @@ import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { Textarea } from '@/Components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/Components/ui/tooltip';
+import { FormErrors } from '@/types/global';
 import { InfoCircledIcon } from '@radix-ui/react-icons';
-import React from 'react';
+import React, { FormEvent } from 'react';
 
 export function Form({
     submit,
@@ -16,10 +18,10 @@ export function Form({
     processing,
     onCancel,
 }: {
-    submit: (e: React.FormEvent) => void;
-    data: any;
-    setData: (key: string, value: any) => void;
-    errors: any;
+    submit: (e: FormEvent) => void;
+    data: Environment;
+    setData: (key: keyof Environment, value: any) => void;
+    errors: FormErrors;
     processing: any;
     onCancel: any;
 }) {
@@ -43,9 +45,9 @@ export function Form({
                 <Input
                     id="name"
                     type="text"
-                    value={data.name}
+                    value={data.name ?? ''}
                     autoComplete="off"
-                    disabled={data.slug !== undefined}
+                    disabled={data.slug !== null && data.slug !== ''}
                     onChange={(e) => setData('name', e.target.value)}
                 />
                 {errors.name && <InputError message={errors.name} />}
@@ -58,7 +60,7 @@ export function Form({
                 <Label htmlFor="description">Description</Label>
                 <Textarea
                     id="description"
-                    value={data.description}
+                    value={data.description ?? ''}
                     rows={8}
                     onChange={(e) => setData('description', e.target.value)}
                 />

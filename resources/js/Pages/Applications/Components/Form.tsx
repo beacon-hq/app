@@ -1,11 +1,14 @@
+import { Application } from '@/Application';
+import { ColorPicker } from '@/Components/ColorPicker';
 import InputError from '@/Components/InputError';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { Textarea } from '@/Components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/Components/ui/tooltip';
+import { FormErrors } from '@/types/global';
 import { InfoCircledIcon } from '@radix-ui/react-icons';
-import React from 'react';
+import React, { FormEvent } from 'react';
 
 export function Form({
     submit,
@@ -13,20 +16,37 @@ export function Form({
     setData,
     errors,
     processing,
+    transform,
     onCancel,
 }: {
-    submit: (e: React.FormEvent) => void;
-    data: any;
-    setData: (key: string, value: any) => void;
-    errors: any;
+    submit: (e: FormEvent) => void;
+    data: Application;
+    setData: (key: keyof Application, value: any) => void;
+    errors: FormErrors;
     processing: any;
+    transform: any;
     onCancel: any;
 }) {
+    const onSubmit = (e: FormEvent) => {
+        e.preventDefault();
+
+        transform(function (data: Application) {
+            return {
+                ...data,
+                display_name: data.display_name != '' ? (data.display_name ?? data.name) : data.name,
+            };
+        });
+
+        submit(e);
+    };
+
     return (
-        <form onSubmit={submit} className="flex flex-col space-y-4">
+        <form onSubmit={onSubmit} className="flex flex-col space-y-4">
             <div>
-                <Label htmlFor="name">
-                    Application Name
+                <div>
+                    <Label htmlFor="name" aria-required>
+                        Application Name
+                    </Label>
                     <TooltipProvider delayDuration={0}>
                         <Tooltip>
                             <TooltipTrigger>
@@ -38,13 +58,13 @@ export function Form({
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
-                </Label>
+                </div>
                 <Input
                     id="name"
                     type="text"
-                    value={data.name}
+                    value={data.name ?? ''}
                     autoComplete="off"
-                    disabled={data.slug !== undefined}
+                    disabled={data.slug !== null && data.slug !== ''}
                     onChange={(e) => setData('name', e.target.value)}
                 />
                 {errors.name && <InputError message={errors.name} />}
@@ -55,16 +75,20 @@ export function Form({
                     id="display_name"
                     autoComplete="off"
                     type="text"
-                    value={data.display_name}
+                    value={data.display_name ?? ''}
                     onChange={(e) => setData('display_name', e.target.value)}
                 />
                 {errors.display_name && <InputError message={errors.display_name} />}
             </div>
             <div>
+                <Label>Color</Label>
+                <ColorPicker onColorChange={(color) => setData('color', color)} color={data.color} />
+            </div>
+            <div>
                 <Label htmlFor="description">Description</Label>
                 <Textarea
                     id="description"
-                    value={data.description}
+                    value={data.description ?? ''}
                     rows={8}
                     onChange={(e) => setData('description', e.target.value)}
                 />

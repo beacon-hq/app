@@ -1,3 +1,4 @@
+import { Policy, PolicyCollection } from '@/Application';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent } from '@/Components/ui/card';
 import { Sheet, SheetContent, SheetTitle } from '@/Components/ui/sheet';
@@ -9,12 +10,16 @@ import { Head, useForm } from '@inertiajs/react';
 import { PlusCircle } from 'lucide-react';
 import React, { FormEvent, useState } from 'react';
 
-export default function Index({ policies }: PageProps & { policies: any }) {
+export default function Index({ policies }: PageProps & { policies: PolicyCollection }) {
     const [showSheet, setShowSheet] = useState(false);
-    const { data, setData, post, errors, reset, processing } = useForm({
+    const { data, setData, post, errors, reset, processing } = useForm<Policy>({
+        id: null,
+        slug: null,
         name: '',
         description: '',
-        definition: { active: true },
+        definition: null,
+        created_at: null,
+        updated_at: null,
     });
 
     const submit = (e: FormEvent<Element>) => {

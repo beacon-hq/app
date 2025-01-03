@@ -1,3 +1,4 @@
+import { AccessToken, AccessTokenCollection } from '@/Application';
 import CopyToClipboard from '@/Components/CopyToClipboard';
 import { Alert, AlertDescription } from '@/Components/ui/alert';
 import {
@@ -18,16 +19,22 @@ import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { AlertCircle, Trash } from 'lucide-react';
 import React from 'react';
 
-export default function Table({ tokens, onDelete }: { tokens: any; onDelete: (id: string) => void }) {
-    const columnHelper = createColumnHelper();
+export default function Table({
+    tokens,
+    onDelete,
+}: {
+    tokens: AccessTokenCollection;
+    onDelete: (id: number | null) => void;
+}) {
+    const columnHelper = createColumnHelper<AccessToken>();
 
-    const columns: ColumnDef<any, any>[] = [
+    const columns: ColumnDef<AccessToken, unknown>[] = [
         columnHelper.accessor('name', {
             id: 'name',
             header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
             enableSorting: true,
             enableHiding: false,
-        }) as ColumnDef<any, any>,
+        }) as ColumnDef<AccessToken>,
         columnHelper.accessor('token', {
             id: 'token',
             header: ({ column }) => <DataTableColumnHeader column={column} title="Token" />,
@@ -52,21 +59,21 @@ export default function Table({ tokens, onDelete }: { tokens: any; onDelete: (id
                     </div>
                 );
             },
-        }) as ColumnDef<any, any>,
+        }) as ColumnDef<AccessToken>,
         columnHelper.accessor('last_used_at', {
             id: 'last_used_at',
             header: ({ column }) => <DataTableColumnHeader column={column} title="Last Used" />,
             enableSorting: true,
             enableHiding: false,
             cell: ({ cell }) => (cell.getValue() !== null ? localDateTime(cell.getValue()) : 'never'),
-        }) as ColumnDef<any, any>,
+        }) as ColumnDef<AccessToken>,
         columnHelper.accessor('created_at', {
             id: 'created',
             header: ({ column }) => <DataTableColumnHeader column={column} title="Created" />,
             enableSorting: true,
             enableHiding: false,
             cell: ({ cell }) => localDateTime(cell.getValue()),
-        }) as ColumnDef<any, any>,
+        }) as ColumnDef<AccessToken>,
         columnHelper.display({
             id: 'tools',
             cell: function ({ row }) {
@@ -95,7 +102,7 @@ export default function Table({ tokens, onDelete }: { tokens: any; onDelete: (id
                     </div>
                 );
             },
-        }) as ColumnDef<any, any>,
+        }) as ColumnDef<AccessToken>,
     ];
 
     return (

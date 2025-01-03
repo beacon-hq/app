@@ -14,6 +14,7 @@ class ApplicationRequest extends FormRequest
             'name' => ['required'],
             'display_name' => ['required'],
             'description' => ['nullable'],
+            'color' => ['present'],
         ];
     }
 
