@@ -158,7 +158,12 @@ export default function Authenticated({
                                 </SidebarMenuItem>
                                 <SidebarMenuItem>
                                     <SidebarMenuButton asChild>
-                                        <Link href={route('applications.index')}>
+                                        <Link
+                                            href={route('policies.index')}
+                                            className={cn({
+                                                'font-bold': route().current('policies.*'),
+                                            })}
+                                        >
                                             <SlidersHorizontal className="h-6 w-6" />
                                             Policies
                                         </Link>
