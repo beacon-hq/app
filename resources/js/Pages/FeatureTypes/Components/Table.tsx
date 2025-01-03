@@ -1,11 +1,10 @@
-import Icon from '@/Components/Icon';
 import { IconColor } from '@/Components/IconColor';
 import { DataTable } from '@/Components/ui/data-table';
 import { DataTableColumnHeader } from '@/Components/ui/data-table-column-header';
-import { cn, localDateTime } from '@/lib/utils';
+import { localDateTime } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
-import { Eye, Pencil } from 'lucide-react';
+import { Pencil } from 'lucide-react';
 
 export default function Table({ featureFlags }: { featureFlags: any }) {
     const columnHelper = createColumnHelper();

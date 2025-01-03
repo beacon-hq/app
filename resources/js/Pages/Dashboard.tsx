@@ -1,15 +1,20 @@
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/Components/ui/card';
+import {
+    ChartConfig,
+    ChartContainer,
+    ChartLegend,
+    ChartLegendContent,
+    ChartTooltip,
+    ChartTooltipContent,
+} from '@/Components/ui/chart';
+import { DataTable } from '@/Components/ui/data-table';
+import { DataTableColumnHeader } from '@/Components/ui/data-table-column-header';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
+import { DotFilledIcon } from '@radix-ui/react-icons';
+import { ColumnDef, ColumnSort, createColumnHelper } from '@tanstack/react-table';
 import { ArrowDownLeft, ArrowRight, ArrowUpRight, TrendingDown, TrendingUp } from 'lucide-react';
 import { Area, AreaChart, CartesianGrid, Label, Line, LineChart, Pie, PieChart, XAxis, YAxis } from 'recharts';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/Components/ui/card';
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/Components/ui/chart';
-import { ChartLegend, ChartLegendContent } from '@/Components/ui/chart';
-
-import { DotFilledIcon } from '@radix-ui/react-icons';
-import { DataTable } from '@/Components/ui/data-table';
-import { ColumnDef, ColumnSort, createColumnHelper, SortingState } from '@tanstack/react-table';
-import { DataTableColumnHeader } from '@/Components/ui/data-table-column-header';
 
 const flagStatusData = [
     { state: 'active', flags: 275, fill: 'var(--color-active)' },

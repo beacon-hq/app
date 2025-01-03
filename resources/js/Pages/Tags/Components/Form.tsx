@@ -1,19 +1,10 @@
 import { ColorPicker } from '@/Components/ColorPicker';
-import Icon from '@/Components/Icon';
 import InputError from '@/Components/InputError';
-import { Alert, AlertDescription, AlertTitle } from '@/Components/ui/alert';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
-import { Popover, PopoverContent, PopoverTrigger } from '@/Components/ui/popover';
-import { Switch } from '@/Components/ui/switch';
 import { Textarea } from '@/Components/ui/textarea';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/Components/ui/tooltip';
-import { cn } from '@/lib/utils';
-import { InfoCircledIcon } from '@radix-ui/react-icons';
-import { PopoverClose } from '@radix-ui/react-popover';
-import { ChevronLeft, ChevronRight, icons, Info } from 'lucide-react';
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 
 export function Form({
     submit,

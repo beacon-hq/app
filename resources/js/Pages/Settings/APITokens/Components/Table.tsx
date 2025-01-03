@@ -14,7 +14,6 @@ import {
 import { DataTable } from '@/Components/ui/data-table';
 import { DataTableColumnHeader } from '@/Components/ui/data-table-column-header';
 import { localDateTime } from '@/lib/utils';
-import { router } from '@inertiajs/react';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { AlertCircle, Trash } from 'lucide-react';
 import React from 'react';

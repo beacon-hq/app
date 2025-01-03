@@ -1,5 +1,4 @@
 import { IconColor } from '@/Components/IconColor';
-import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent } from '@/Components/ui/card';
 import { Separator } from '@/Components/ui/separator';

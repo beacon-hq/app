@@ -9,7 +9,6 @@ import {
     BreadcrumbSeparator,
 } from '@/Components/ui/breadcrumb';
 import { Button } from '@/Components/ui/button';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/Components/ui/collapsible';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/Components/ui/dialog';
 import {
     DropdownMenu,
@@ -30,7 +29,6 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarMenuSub,
     SidebarProvider,
 } from '@/Components/ui/sidebar';
 import { Toaster } from '@/Components/ui/sonner';
@@ -54,7 +52,7 @@ import {
     Tag,
     Users,
 } from 'lucide-react';
-import { Fragment, PropsWithChildren, ReactNode, useEffect, useState } from 'react';
+import { Fragment, PropsWithChildren, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 export default function Authenticated({

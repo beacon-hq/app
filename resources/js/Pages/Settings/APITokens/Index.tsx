@@ -8,7 +8,7 @@ import { Toaster } from '@/Components/ui/sonner';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import Table from '@/Pages/Settings/APITokens/Components/Table';
 import { PageProps } from '@/types';
-import { Head, router } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { AxiosError, AxiosResponse } from 'axios';
 import { PlusCircle } from 'lucide-react';
 import React, { FormEvent, useState } from 'react';
