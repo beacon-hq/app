@@ -1,11 +1,10 @@
 'use client';
 
+import { Button } from '@/Components/ui/button';
+import { DataTableViewOptions } from '@/Components/ui/data-table-view-options';
+import { Input } from '@/Components/ui/input';
 import { Table } from '@tanstack/react-table';
 import { X } from 'lucide-react';
-
-import { Button } from '@/Components/ui/button';
-import { Input } from '@/Components/ui/input';
-import { DataTableViewOptions } from '@/Components/ui/data-table-view-options';
 
 // import { DataTableFacetedFilter } from '@/Components/ui/data-table-faceted-filter';
 

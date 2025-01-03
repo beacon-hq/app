@@ -1,5 +1,4 @@
 import { IconColor } from '@/Components/IconColor';
-import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent } from '@/Components/ui/card';
 import { Separator } from '@/Components/ui/separator';
@@ -8,7 +7,7 @@ import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Form } from '@/Pages/Environments/Components/Form';
 import { PageProps } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ChevronRight, Pencil, PlusCircle } from 'lucide-react';
+import { Pencil, PlusCircle } from 'lucide-react';
 import React, { useState } from 'react';
 
 export default function Index({ environments }: PageProps & { environments: any }) {
