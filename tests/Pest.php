@@ -2,7 +2,11 @@
 
 declare(strict_types=1);
 
+use Carbon\CarbonInterval;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Sleep;
+use function Pest\Laravel\freezeTime;
 use Tests\TestCase;
 
 /*
@@ -18,7 +22,16 @@ use Tests\TestCase;
 
 pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)
-    ->in('Feature');
+    ->beforeEach(function () {
+        freezeTime();
+        Sleep::fake();
+        Sleep::whenFakingSleep(function (CarbonInterval $duration) {
+            // Progress time when faking sleep...
+            $this->travel($duration->totalMilliseconds)->milliseconds();
+        });
+        Http::preventStrayRequests();
+    })
+    ->in('Feature', 'Unit');
 
 /*
 |--------------------------------------------------------------------------
@@ -30,9 +43,12 @@ pest()->extend(TestCase::class)
 | to assert different things. Of course, you may extend the Expectation API at any time.
 |
 */
+expect()->extend('toBeAnonymousClass', function () {
+    if (! is_object($this->value)) {
+        return expect(false)->toBeTrue();
+    }
 
-expect()->extend('toBeOne', function () {
-    return $this->toBe(1);
+    return expect((new \ReflectionClass($this->value))->isAnonymous())->toBeTrue();
 });
 
 /*
@@ -46,7 +62,11 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function property(object $object, string $property)
 {
-    // ..
+    $closure = function () use ($property) {
+        return $this->{$property};
+    };
+
+    return $closure->bindTo($object, $object)();
 }
