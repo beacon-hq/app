@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Values;
 
+use App\Models\Tag as TagModel;
 use App\Values\Collections\TagCollection;
 use App\Values\Factories\TagFactory;
 use Bag\Attributes\Collection;
 use Bag\Attributes\Factory;
 use Bag\Attributes\MapName;
+use Bag\Attributes\Transforms;
 use Bag\Bag;
 use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
@@ -35,5 +37,19 @@ readonly class Tag extends Bag
         public ?Carbon $createdAt = null,
         public ?Carbon $updatedAt = null,
     ) {
+    }
+
+    #[Transforms(TagModel::class)]
+    public static function fromModel(TagModel $tag): array
+    {
+        return [
+            'id' => $tag->id,
+            'slug' => $tag->slug,
+            'name' => $tag->name,
+            'description' => $tag->description,
+            'color' => $tag->color,
+            'created_at' => $tag->created_at,
+            'updated_at' => $tag->updated_at,
+        ];
     }
 }

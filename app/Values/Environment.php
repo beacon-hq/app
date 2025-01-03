@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace App\Values;
 
+use App\Models\Environment as EnvironmentModel;
 use App\Values\Collections\EnvironmentCollection;
 use App\Values\Factories\EnvironmentFactory;
 use Bag\Attributes\Collection;
 use Bag\Attributes\Factory;
+use Bag\Attributes\MapName;
+use Bag\Attributes\Transforms;
 use Bag\Bag;
+use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
@@ -17,6 +21,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
  */
 #[Collection(EnvironmentCollection::class)]
 #[Factory(EnvironmentFactory::class)]
+#[MapName(SnakeCase::class, SnakeCase::class)]
 #[TypeScript]
 readonly class Environment extends Bag
 {
@@ -28,5 +33,16 @@ readonly class Environment extends Bag
         public ?string $slug = null,
         public ?string $color = null,
     ) {
+    }
+
+    #[Transforms(EnvironmentModel::class)]
+    public static function fromModel(EnvironmentModel $environment): array
+    {
+        return [
+            'name' => $environment->name,
+            'description' => $environment->description,
+            'slug' => $environment->slug,
+            'color' => $environment->color,
+        ];
     }
 }

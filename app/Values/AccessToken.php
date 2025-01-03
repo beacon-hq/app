@@ -9,8 +9,10 @@ use App\Values\Collections\AccessTokenCollection;
 use App\Values\Factories\AccessTokenFactory;
 use Bag\Attributes\Collection;
 use Bag\Attributes\Factory;
+use Bag\Attributes\MapName;
 use Bag\Attributes\Transforms;
 use Bag\Bag;
+use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
@@ -19,6 +21,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
  */
 #[Collection(AccessTokenCollection::class)]
 #[Factory(AccessTokenFactory::class)]
+#[MapName(SnakeCase::class, SnakeCase::class)]
 #[TypeScript]
 readonly class AccessToken extends Bag
 {
@@ -28,8 +31,8 @@ readonly class AccessToken extends Bag
         public ?int $id = null,
         public ?string $name = null,
         public ?string $token = null,
-        public ?string $last_used_at = null,
-        public ?string $created_at = null,
+        public ?string $lastUsedAt = null,
+        public ?string $createdAt = null,
     ) {
     }
 
