@@ -1,6 +1,6 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "beacon/app",
+    "name": "beacon-hq/app",
     "type": "project",
     "description": "A centralized management system for Laravel Pennant feature flags.",
     "keywords": ["laravel", "pennant", "feature flags"],
