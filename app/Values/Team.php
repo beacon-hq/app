@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Values;
 
-use App\Models\Tenant as TenantModel;
-use App\Values\Factories\TenantFactory;
+use App\Models\Team as TeamModel;
+use App\Values\Factories\TeamFactory;
 use Bag\Attributes\Factory;
 use Bag\Attributes\MapName;
 use Bag\Attributes\Transforms;
@@ -16,9 +16,9 @@ use Bag\Traits\HasFactory;
 /**
  * @method static static from(string $name, ?string $id = null)
  */
-#[Factory(TenantFactory::class)]
+#[Factory(TeamFactory::class)]
 #[MapName(SnakeCase::class, SnakeCase::class)]
-readonly class Tenant extends Bag
+readonly class Team extends Bag
 {
     use HasFactory;
 
@@ -28,12 +28,12 @@ readonly class Tenant extends Bag
     ) {
     }
 
-    #[Transforms(TenantModel::class)]
-    public static function fromModel(TenantModel $tenant): array
+    #[Transforms(TeamModel::class)]
+    public static function fromModel(TeamModel $team): array
     {
         return [
-            'id' => $tenant->id,
-            'name' => $tenant->name,
+            'id' => $team->id,
+            'name' => $team->name,
         ];
     }
 }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\FeatureType;
-use App\Models\Tenant;
+use App\Models\Team;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
@@ -20,7 +20,7 @@ class FeatureTypeFactory extends Factory
             'description' => $this->faker->text(),
             'temporary' => $this->faker->boolean(),
             'color' => $this->faker->hexColor(),
-            'tenant_id' => Tenant::factory(),
+            'team_id' => Team::factory(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];

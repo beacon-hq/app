@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App;
-use App\Models\Tenant;
+use App\Models\Team;
 use Auth;
 use Closure;
 use Illuminate\Http\Request;
 use Session;
 use Symfony\Component\HttpFoundation\Response;
 
-class EnsureTenantMiddleware
+class EnsureTeamMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
@@ -20,18 +20,18 @@ class EnsureTenantMiddleware
             return $next($request);
         }
 
-        if (!Session::has('tenant')) {
-            if (Auth::user() instanceof Tenant) {
-                Session::put('tenant', Auth::user());
+        if (!Session::has('team')) {
+            if (Auth::user() instanceof Team) {
+                Session::put('team', Auth::user());
             } else {
-                $tenant = Auth::user()->tenants()->orderBy('created_at')->first();
-                Session::put('tenant', $tenant);
+                $team = Auth::user()->teams()->orderBy('created_at')->first();
+                Session::put('team', $team);
             }
         }
 
-        $tenant = Session::get('tenant');
+        $team = Session::get('team');
 
-        App::context(tenant: $tenant);
+        App::context(team: $team);
 
         return $next($request);
     }

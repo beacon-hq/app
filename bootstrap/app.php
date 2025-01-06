@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Http\Middleware\EnsureTenantMiddleware;
+use App\Http\Middleware\EnsureTeamMiddleware;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -19,7 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [
-            EnsureTenantMiddleware::class,
+            EnsureTeamMiddleware::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);
@@ -28,10 +28,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->api(append: [
             'auth:sanctum',
-            EnsureTenantMiddleware::class,
+            EnsureTeamMiddleware::class,
         ]);
 
-        $middleware->prependToPriorityList(SubstituteBindings::class, EnsureTenantMiddleware::class);
+        $middleware->prependToPriorityList(SubstituteBindings::class, EnsureTeamMiddleware::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
