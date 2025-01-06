@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Tenant;
+use App\Models\Team;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
-class TenantFactory extends Factory
+class TeamFactory extends Factory
 {
-    protected $model = Tenant::class;
+    protected $model = Team::class;
 
     public function definition(): array
     {

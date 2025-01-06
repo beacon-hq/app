@@ -10,8 +10,7 @@ use App\Models\Environment;
 use App\Models\FeatureFlag;
 use App\Models\FeatureType;
 use App\Models\Tag;
-use App\Models\Tenant;
-use App\Models\User;
+use App\Models\Team;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\UniqueConstraintViolationException;
@@ -24,15 +23,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $tenant = Tenant::factory(['name' => 'Davey\'s Team'])->create();
-        App::context(tenant: $tenant);
+        $team = Team::factory(['name' => 'Davey\'s Team'])->create();
+        App::context(team: $team);
 
         Application::factory(18)
-            ->for($tenant)
+            ->for($team)
             ->create();
 
         FeatureType::factory(4)
-            ->for($tenant)
+            ->for($team)
             ->sequence(
                 ['name' => 'Release', 'icon' => 'Rocket', 'color' => 'green', 'description' => 'Manage the rollout of new changes to your application.'],
                 ['name' => 'Operational', 'icon' => 'Wrench', 'color' => 'sky', 'description' => 'Gate functionality based on operational concerns.'],
@@ -42,14 +41,14 @@ class DatabaseSeeder extends Seeder
             ->create();
 
         FeatureFlag::factory(100)
-            ->for($tenant)
+            ->for($team)
             ->state(new Sequence(
                 fn () => ['feature_type_id' => FeatureType::inRandomOrder()->first()->id]
             ))
             ->create();
 
         Environment::factory(3)
-            ->for($tenant)
+            ->for($team)
             ->sequence(
                 ['name' => 'local'],
                 ['name' => 'staging'],
@@ -58,7 +57,7 @@ class DatabaseSeeder extends Seeder
             ->create();
 
         Tag::factory(15)
-            ->for($tenant)
+            ->for($team)
             ->create();
 
         FeatureFlag::all()->each(function (FeatureFlag $flag) {

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Models\PersonalAccessToken;
-use App\Models\Tenant;
+use App\Models\Team;
 use App\Values\AppContext;
-use App\Values\Tenant as TenantValue;
+use App\Values\Team as TeamValue;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
@@ -22,15 +22,15 @@ class AppServiceProvider extends ServiceProvider
     {
         app()->singleton(AppContext::class, fn () => AppContext::from(AppContext::empty()));
 
-        App::macro('context', function (Tenant|TenantValue|null $tenant = null): AppContext {
+        App::macro('context', function (Team|TeamValue|null $team = null): AppContext {
             $context = resolve(AppContext::class);
 
-            if ($tenant !== null) {
-                if ($tenant instanceof Tenant) {
-                    $tenant = TenantValue::from(id: $tenant->id, name: $tenant->name);
+            if ($team !== null) {
+                if ($team instanceof Team) {
+                    $team = TeamValue::from(id: $team->id, name: $team->name);
                 }
 
-                $context = $context->with(tenant: $tenant);
+                $context = $context->with(team: $team);
             }
 
             app()->singleton(AppContext::class, fn () => $context);

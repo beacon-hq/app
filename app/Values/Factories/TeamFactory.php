@@ -6,7 +6,7 @@ namespace App\Values\Factories;
 
 use Bag\Factory;
 
-class TenantFactory extends Factory
+class TeamFactory extends Factory
 {
     public function definition(): array
     {

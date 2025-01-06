@@ -12,14 +12,14 @@ use Bag\Mappers\SnakeCase;
 readonly class AppContext extends Bag
 {
     public function __construct(
-        public ?Tenant $tenant = null,
+        public ?Team $team = null,
     ) {
     }
 
     public static function empty(): array
     {
         return [
-            'tenant' => null,
+            'team' => null,
         ];
     }
 }
