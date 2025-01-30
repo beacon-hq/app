@@ -87,7 +87,7 @@ it('updates a tag', function () {
     ]);
 });
 
-it('it fails validation with passing in name on update', function () {
+it('it fails validation', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
     $tag = Tag::factory()->for($team)->create();

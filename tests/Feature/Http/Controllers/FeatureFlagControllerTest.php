@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use App\Enums\Color;
 use App\Models\FeatureFlag;
 use App\Models\FeatureType;
 use App\Models\Tag;
 use App\Models\Team;
 use App\Models\User;
+use App\Values\Collections\TagCollection;
 use Inertia\Testing\AssertableInertia as Assert;
 
 it('it lists feature flags', function () {
@@ -27,7 +27,7 @@ it('it lists feature flags', function () {
         );
 });
 
-it('it creates a tag', function () {
+it('it creates a feature flag', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
     $featureType = FeatureType::factory()->for($team)->create();
@@ -63,51 +63,67 @@ it('it fails validation with missing required fields on create', function () {
     $this->actingAs($user)->post('/feature-flags', [])->assertInvalid(['name', 'featureType']);
 });
 
-it('shows the edit form', function () {
+it('shows the edit pages', function (string $route) {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
-    $tag = Tag::factory()->for($team)->create();
+    $featureType = FeatureType::factory()->for($team)->create();
+    $tags = Tag::factory(3)->for($team)->create();
+    $featureFlag = FeatureFlag::factory()->for($team)->for($featureType)->hasAttached($tags)->create();
 
-    $this->actingAs($user)->get("/tags/{$tag->slug}/edit")
+    $this->actingAs($user)->get(route($route, ['slug' => $featureFlag->slug]))
         ->assertInertia(
             fn (Assert $page) => $page
-                ->component('Tags/Edit')
-                ->has('tag')
-                ->where('tag', [
-                    'name' => $tag->name,
-                    'description' => $tag->description,
-                    'color' => $tag->color,
-                    'slug' => $tag->slug,
-                    'created_at' => $tag->created_at->toISOString(),
-                    'updated_at' => $tag->updated_at->toISOString(),
-                ])
+                ->component('FeatureFlags/Edit')
+                ->has('featureFlag')
+                ->has('featureTypes', 1)
+                ->has('tags', 3)
         );
-});
+})->with(['feature-flags.edit', 'feature-flags.edit.policy', 'feature-flags.edit.overview']);
 
-it('updates a tag', function () {
+it('updates a feature flag', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
-    $tag = Tag::factory()->for($team)->create();
+    $featureTypes = FeatureType::factory(3)->for($team)->create();
+    $tags = Tag::factory(2)->for($team)->create();
+    $featureFlag = FeatureFlag::factory()->for($team)->for($featureTypes->first())->hasAttached($tags->first())->create();
 
-    $this->actingAs($user)->put("/tags/{$tag->slug}", [
-        'name' => 'Updated Tag',
-        'color' => Color::RED->value,
-        'description' => 'updated description',
-    ])->assertRedirect('/tags');
+    $this
+        ->actingAs($user)
+        ->from(route('feature-flags.index'))
+        ->put(route('feature-flags.update', ['slug' => $featureFlag->slug]), [
+            'name' => 'ignored name',
+            'description' => 'updated description',
+            'feature_type' => \App\Values\FeatureType::from($featureTypes->last())->toArray(),
+            'tags' => TagCollection::make($tags->toArray())->toArray(),
+        ])->assertRedirect(route('feature-flags.edit.overview', ['slug' => $featureFlag->slug]));
 
-    $this->assertDatabaseHas('tags', [
-        'name' => 'Updated Tag',
-        'color' => Color::RED->value,
-        'slug' => 'updated-tag',
+    $this->assertDatabaseHas('feature_flags', [
+        'name' => $featureFlag->name,
+        'slug' => $featureFlag->slug,
         'description' => 'updated description',
+        'feature_type_id' => $featureTypes->last()->id,
+    ]);
+
+    $this->assertDatabaseHas('feature_flag_tag', [
+        'feature_flag_id' => $featureFlag->id,
+        'tag_id' => $tags->first()->id,
+    ]);
+    $this->assertDatabaseHas('feature_flag_tag', [
+        'feature_flag_id' => $featureFlag->id,
+        'tag_id' => $tags->last()->id,
     ]);
 });
 
-it('it fails validation with passing in name on update', function () {
+it('it fails validation', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
-    $tag = Tag::factory()->for($team)->create();
+    $featureTypes = FeatureType::factory(3)->for($team)->create();
+    $tags = Tag::factory(2)->for($team)->create();
+    $featureFlag = FeatureFlag::factory()->for($team)->for($featureTypes->first())->hasAttached($tags->first())->create();
 
-    $this->actingAs($user)->put("/tags/{$tag->slug}", [])
-        ->assertInvalid(['name', 'color']);
+    $this
+        ->actingAs($user)
+        ->from(route('feature-flags.index'))
+        ->put(route('feature-flags.update', ['slug' => $featureFlag->slug]), [])
+        ->assertInvalid(['featureType']);
 });
