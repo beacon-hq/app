@@ -4,78 +4,56 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ApplicationRequest;
-use App\Models\Application;
+use App\Services\ApplicationService;
+use App\Values\Application;
+use Bag\Attributes\WithoutValidation;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class ApplicationController extends Controller
 {
-    /**
-     * Display a listing of the applications.
-     */
-    public function index(): Response
+    public function index(ApplicationService $applicationService): Response
     {
-        $applications = Application::query()
-            ->orderBy('display_name')
-            ->orderBy('name')
-            ->get()->append('environments');
-
         return Inertia::render('Applications/Index', [
-            'applications' => $applications,
+            'applications' => $applicationService->all(),
         ]);
     }
 
-    /**
-     * Show the form for creating a new application.
-     */
     public function create(): Response
     {
         return Inertia::render('Applications/Create');
     }
 
-    /**
-     * Store a newly created application in storage.
-     */
-    public function store(ApplicationRequest $request)
+    public function store(Application $application, ApplicationService $applicationService)
     {
-        Application::create([
-            ... $request->safe()->except('color'),
-            'color' => $request->validated('color', ''),
-        ]);
+        $applicationService->create($application->with(display_name: $application->display_name ?? $application->name));
 
         return redirect()
             ->route('applications.index')
             ->with('alert', [
-                'message' => 'Application created.',
+                'message' => 'Application created successfully.',
                 'status' => 'success',
             ]);
     }
 
-    /**
-     * Show the form for editing the specified application.
-     */
-    public function edit(Application $application): Response
-    {
+    public function edit(
+        #[WithoutValidation]
+        Application $application,
+        ApplicationService $applicationService
+    ): Response {
         return Inertia::render('Applications/Edit', [
-            'application' => $application,
+            'application' => $applicationService->findBySlug($application->slug),
         ]);
     }
 
-    /**
-     * Update the specified application in storage.
-     */
-    public function update(ApplicationRequest $request, Application $application)
+    public function update(Application $application, ApplicationService $applicationService)
     {
-        $application->update([
-            ... $request->safe()->except('color'),
-            'color' => $request->validated('color', ''),
-        ]);
+        $applicationService->update($application);
 
         return redirect()
             ->route('applications.index')
             ->with('alert', [
-                'message' => 'Application updated.',
+                'message' => 'Application updated successfully.',
                 'status' => 'success',
             ]);
     }

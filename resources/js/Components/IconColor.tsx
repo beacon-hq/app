@@ -18,7 +18,7 @@ export function IconColor({
 
     return (
         <>
-            {icon != null && <Icon name={icon} className={`h-6 w-6 stroke-${color}-400`} />}
+            {icon != null && <Icon name={icon} className={cn(`h-6 w-6 stroke-${color}-400`, className)} />}
             {icon == null && (
                 <div
                     className={cn(

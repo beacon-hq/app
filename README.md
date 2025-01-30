@@ -5,7 +5,6 @@
 
 Beacon is an open-source feature management platform built specifically for Laravel applications using Pennant. Designed with simplicity and scalability in mind, Beacon centralizes control over feature flags, making it easier than ever to manage rollouts across environments. Beacon empowers teams to ship confidently while staying flexible.
 
-
 ### Features
 
 - Gradual Rollout
@@ -18,6 +17,7 @@ Beacon is an open-source feature management platform built specifically for Lara
 ## To-Do
 
 - [ ] Policies
+    - [x] CRUD
     - [ ] Active/Inactive per Application per Enviroment
     - [ ] Limited Availability 
       - [ ] Date Range
@@ -26,6 +26,7 @@ Beacon is an open-source feature management platform built specifically for Lara
       - [ ] Percentage
       - [ ] Context & Scope
 - [ ] API
+  - [x] Prototype
 - [ ] Feature Flags
   - [ ] Lifetime Configuration
   - [ ] Editing UI

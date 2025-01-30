@@ -12,11 +12,11 @@ export type Application = {
     display_name: string | null;
     description: string | null;
     last_seen_at: string | null;
-    color: string | null;
+    color: Color | string;
     environments: EnvironmentCollection | null;
 };
 export type ApplicationCollection = Application[];
-export enum Colors {
+export enum Color {
     'RED' = 'red',
     'ORANGE' = 'orange',
     'YELLOW' = 'yellow',
@@ -31,19 +31,20 @@ export enum Colors {
     'FUCHSIA' = 'fuchsia',
 }
 export type Environment = {
+    slug: string | null;
     name: string | null;
     description: string | null;
-    slug: string | null;
-    color: string | null;
+    color: Color | string;
 };
 export type EnvironmentCollection = Environment[];
 export type FeatureFlag = {
-    name: string;
+    name: string | null;
     slug: string | null;
     description: string | null;
     last_seen_at: string | null;
     feature_type: FeatureType | null;
     tags: TagCollection | null;
+    statuses: FeatureFlagStatusCollection | null;
     created_at: string | null;
     updated_at: string | null;
 };
@@ -60,23 +61,31 @@ export type FeatureFlagContext = {
     url: string | null;
     method: string | null;
 };
-export type FeatureType = {
-    name: string;
+export type FeatureFlagStatus = {
+    application: Application | null;
+    environment: Environment | null;
+    feature_flag: FeatureFlag | null;
+    policies: PolicyCollection | null;
+    status: boolean;
     id: string | null;
+};
+export type FeatureFlagStatusCollection = FeatureFlagStatus[];
+export type FeatureType = {
     slug: string | null;
+    name: string | null;
     description: string | null;
-    temporary: boolean | null;
-    color: string | null;
+    temporary: boolean;
+    color: Color | string;
     icon: string | null;
     created_at: string | null;
     updated_at: string | null;
+    id: string | null;
 };
 export type FeatureTypeCollection = FeatureType[];
 export type Policy = {
     slug: string | null;
     name: string | null;
     description: string | null;
-    id: string | null;
     definition: PolicyDefinitionCollection | null;
     created_at: string | null;
     updated_at: string | null;
@@ -85,21 +94,41 @@ export type PolicyCollection = Policy[];
 export type PolicyDefinition = {
     type: PolicyDefinitionType;
     subject: string;
-    operator?: string;
+    operator?: PolicyDefinitionMatchOperator;
 };
+export enum PolicyDefinitionBoolean {
+    'AND' = 'AND',
+    'OR' = 'OR',
+    'NOT' = 'AND NOT',
+    'XOR' = 'XOR',
+}
 export type PolicyDefinitionCollection = PolicyDefinition[];
+export enum PolicyDefinitionMatchOperator {
+    'EQUALS' = '=',
+    'NOT_EQUAL' = '!=',
+    'CONTAINS' = 'contains',
+    'NOT_CONTAINS' = 'does not contains',
+    'MATCHES' = 'matches',
+    'NOT_MATCHES' = 'does not match',
+    'ONE_OF' = 'is one of',
+    'NOT_ONE_OF' = 'is not one of',
+    'LESS_THAN' = '<',
+    'LESS_THAN_EQUALS' = '<=',
+    'GREATED_THAN' = '>',
+    'GREATER_THAN_EQUALS' = '>=',
+}
 export enum PolicyDefinitionType {
     'EXPRESSION' = 'expression',
     'OPERATOR' = 'operator',
     'POLICY' = 'policy',
 }
 export type Tag = {
-    id: string | null;
     slug: string | null;
     name: string | null;
     description: string | null;
-    color: string | null;
+    color: Color | string;
     created_at: string | null;
     updated_at: string | null;
+    id: string | null;
 };
 export type TagCollection = Tag[];

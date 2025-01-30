@@ -18,7 +18,7 @@ export default function Edit({ tag }: { tag: Tag }) {
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
-        put(route('tags.update', { tag: tag.slug }));
+        put(route('tags.update', { slug: tag.slug }));
     };
 
     const handleCancel = () => {

@@ -83,6 +83,7 @@ export function Form({
             <div>
                 <Label>Color</Label>
                 <ColorPicker onColorChange={(color) => setData('color', color)} color={data.color} />
+                {errors.color && <InputError message={errors.color} />}
             </div>
             <div>
                 <Label htmlFor="description">Description</Label>

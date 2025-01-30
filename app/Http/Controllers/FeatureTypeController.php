@@ -4,27 +4,23 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\FeatureTypeRequest;
-use App\Models\FeatureType;
+use App\Services\FeatureTypeService;
+use App\Values\FeatureType;
+use Bag\Attributes\WithoutValidation;
 use Inertia\Inertia;
 
 class FeatureTypeController extends Controller
 {
-    public function index()
+    public function index(FeatureTypeService $featureTypeService)
     {
-        $featureTypes = FeatureType::orderBy('name')->get();
-
         return Inertia::render('FeatureTypes/Index', [
-            'featureTypes' => $featureTypes,
+            'featureTypes' => $featureTypeService->all(),
         ]);
     }
 
-    public function store(FeatureTypeRequest $request)
+    public function store(FeatureType $featureType, FeatureTypeService $featureTypeService)
     {
-        FeatureType::create([
-            ... $request->safe()->except('color'),
-            'color' => $request->validated('color', ''),
-        ]);
+        $featureTypeService->create($featureType);
 
         return redirect()->route('feature-types.index')->with(
             'alert',
@@ -35,19 +31,19 @@ class FeatureTypeController extends Controller
         );
     }
 
-    public function edit(FeatureType $featureType)
-    {
+    public function edit(
+        #[WithoutValidation]
+        FeatureType $featureType,
+        FeatureTypeService $featureTypeService
+    ) {
         return Inertia::render('FeatureTypes/Edit', [
-            'featureType' => $featureType,
+            'featureType' => $featureTypeService->findBySlug($featureType->slug),
         ]);
     }
 
-    public function update(FeatureTypeRequest $request, FeatureType $featureType)
+    public function update(FeatureType $featureType, FeatureTypeService $featureTypeService)
     {
-        $featureType->update([
-            ... $request->safe()->except('color'),
-            'color' => $request->validated('color', ''),
-        ]);
+        $featureTypeService->update($featureType);
 
         return redirect()->route('feature-types.index')->with(
             'alert',

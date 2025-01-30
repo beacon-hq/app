@@ -16,7 +16,7 @@ class TagFactory extends Factory
             'slug' => $this->faker->word(),
             'name' => $this->faker->word(),
             'description' => $this->faker->word(),
-            'color' => $this->faker->word(),
+            'color' => $this->faker->hexColor(),
             'createdAt' => new Carbon(),
             'updatedAt' => new Carbon(),
         ];

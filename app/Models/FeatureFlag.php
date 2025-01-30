@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Pivot\FeatureFlagFeatureStatus;
+use App\Models\Pivot\FeatureFlagStatusPolicy;
 use App\Models\Traits\BelongsToTeam;
 use App\Models\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Collection;
@@ -12,6 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Carbon;
 
 /**
@@ -31,7 +34,7 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, Environment> $environments
  * @property-read int|null $environments_count
  * @property-read FeatureType $featureType
- * @property-read FeatureFlagPolicy|null $pivot
+ * @property-read FeatureFlagStatusPolicy|null $pivot
  * @property-read Collection<int, Policy> $policies
  * @property-read int|null $policies_count
  * @property-read Collection<int, Tag> $tags
@@ -72,27 +75,40 @@ class FeatureFlag extends Model
         return $this->belongsTo(FeatureType::class);
     }
 
-    public function policies(): BelongsToMany
+    public function environments(): HasManyThrough
     {
-        return $this->belongsToMany(Policy::class)
-            ->using(FeatureFlagPolicy::class)
-            ->withPivot('order', 'values')
-            ->orderByPivot('order', 'asc');
+        return $this->hasManyThrough(
+            Environment::class,
+            FeatureFlagStatus::class,
+            'feature_flag_id',
+            'id',
+            'id',
+            'environment_id'
+        );
     }
 
-    public function environments(): BelongsToMany
+    public function applications(): HasManyThrough
     {
-        return $this->belongsToMany(Environment::class);
-    }
-
-    public function applications(): BelongsToMany
-    {
-        return $this->belongsToMany(Application::class);
+        return $this->hasManyThrough(
+            Application::class,
+            FeatureFlagStatus::class,
+            'feature_flag_id',
+            'id',
+            'id',
+            'application_id'
+        );
     }
 
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class)->withTimestamps();
+    }
+
+    public function statuses(): BelongsToMany
+    {
+        return $this->belongsToMany(FeatureFlagStatus::class)
+            ->using(FeatureFlagFeatureStatus::class)
+            ->withTimestamps();
     }
 
     protected function casts(): array

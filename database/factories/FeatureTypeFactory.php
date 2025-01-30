@@ -20,6 +20,7 @@ class FeatureTypeFactory extends Factory
             'description' => $this->faker->text(),
             'temporary' => $this->faker->boolean(),
             'color' => $this->faker->hexColor(),
+            'icon' => $this->faker->word(),
             'team_id' => Team::factory(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),

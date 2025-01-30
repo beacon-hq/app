@@ -13,7 +13,7 @@ import * as React from 'react';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar:state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
-const SIDEBAR_WIDTH = '16rem';
+const SIDEBAR_WIDTH = '11rem';
 const SIDEBAR_WIDTH_MOBILE = '18rem';
 const SIDEBAR_WIDTH_ICON = '3rem';
 const SIDEBAR_KEYBOARD_SHORTCUT = 'b';
@@ -106,29 +106,32 @@ const SidebarProvider = React.forwardRef<
 
     return (
         <SidebarContext.Provider value={contextValue}>
-            <TooltipProvider delayDuration={0}>
-                <div
-                    style={
-                        {
-                            '--sidebar-width': SIDEBAR_WIDTH,
-                            '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
-                            ...style,
-                        } as React.CSSProperties
-                    }
-                    className={cn(
-                        'group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar',
-                        className,
-                    )}
-                    ref={ref}
-                    {...props}
-                >
-                    {children}
-                </div>
-            </TooltipProvider>
+            <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
         </SidebarContext.Provider>
     );
 });
 SidebarProvider.displayName = 'SidebarProvider';
+
+const SidebarWrapper = React.forwardRef<HTMLDivElement, React.ComponentProps<'div'>>(
+    ({ className, style, children, ...props }, ref) => {
+        return (
+            <div
+                style={
+                    {
+                        '--sidebar-width': SIDEBAR_WIDTH,
+                        '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
+                        ...style,
+                    } as React.CSSProperties
+                }
+                className={cn('group/sidebar-wrapper flex min-h-svh has-[[data-variant=inset]]:bg-sidebar', className)}
+                ref={ref}
+                {...props}
+            >
+                {children}
+            </div>
+        );
+    },
+);
 
 const Sidebar = React.forwardRef<
     HTMLDivElement,
@@ -612,6 +615,7 @@ const SidebarMenuSubButton = React.forwardRef<
 SidebarMenuSubButton.displayName = 'SidebarMenuSubButton';
 
 export {
+    SidebarWrapper,
     Sidebar,
     SidebarContent,
     SidebarFooter,

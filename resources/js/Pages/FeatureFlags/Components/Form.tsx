@@ -1,8 +1,8 @@
-import { FeatureFlag, FeatureType, FeatureTypeCollection, Tag, TagCollection } from '@/Application';
+import { FeatureFlag, FeatureType, FeatureTypeCollection, Tag as TagValue, TagCollection } from '@/Application';
 import Icon from '@/Components/Icon';
 import { IconColor } from '@/Components/IconColor';
 import InputError from '@/Components/InputError';
-import { Badge } from '@/Components/ui/badge';
+import Tag from '@/Components/Tag';
 import { Button } from '@/Components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/Components/ui/command';
 import { Input } from '@/Components/ui/input';
@@ -10,9 +10,11 @@ import { Label } from '@/Components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/Components/ui/popover';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select';
 import { Textarea } from '@/Components/ui/textarea';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/Components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { FormErrors } from '@/types/global';
-import { ChevronsUpDown, X } from 'lucide-react';
+import { InfoCircledIcon } from '@radix-ui/react-icons';
+import { ChevronsUpDown } from 'lucide-react';
 import React, { FormEvent, useState } from 'react';
 
 export function Form({
@@ -40,11 +42,23 @@ export function Form({
     return (
         <form onSubmit={submit} className="flex flex-col space-y-4">
             <div>
-                <Label htmlFor="name">Feature Name</Label>
+                <Label htmlFor="name" aria-required>
+                    Feature Name
+                    <TooltipProvider delayDuration={0}>
+                        <Tooltip>
+                            <TooltipTrigger>
+                                <InfoCircledIcon className="ml-2 h-4 w-4" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                The name of the feature flag. This <em>cannot be changed</em>.
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                </Label>
                 <Input
                     id="name"
                     type="text"
-                    value={data.name}
+                    value={data.name as string}
                     autoComplete="off"
                     disabled={data.slug != null && data.slug !== ''}
                     onChange={(e) => setData('name', e.target.value)}
@@ -52,20 +66,23 @@ export function Form({
                 {errors.name && <InputError message={errors.name} />}
             </div>
             <div>
+                <Label htmlFor="feature_type" aria-required>
+                    Feature Type
+                </Label>
                 <Select
-                    value={data.feature_type?.id ?? ''}
+                    value={data.feature_type?.slug ?? ''}
                     onValueChange={(value) =>
-                        setData('feature_type', featureTypes.filter((type: FeatureType) => type.id == value)[0])
+                        setData('feature_type', featureTypes.filter((type: FeatureType) => type.slug == value)[0])
                     }
                 >
-                    <SelectTrigger className="">
+                    <SelectTrigger id="feature_type">
                         <SelectValue placeholder="Select a flag type" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
                             {featureTypes.map(function (type) {
                                 return (
-                                    <SelectItem key={type.id} value={type.id as string}>
+                                    <SelectItem key={type.slug} value={type.slug as string}>
                                         <div className="flex items-center">
                                             {type.icon != null && (
                                                 <Icon
@@ -97,9 +114,11 @@ export function Form({
                 {errors.feature_type && <InputError message={errors.feature_type} />}
             </div>
             <div>
+                <Label htmlFor="tags">Tags</Label>
                 <Popover open={tagsOpen} onOpenChange={setTagsOpen}>
                     <PopoverTrigger asChild>
                         <Button
+                            id="tags"
                             variant="outline"
                             role="combobox"
                             aria-expanded={tagsOpen}
@@ -108,30 +127,24 @@ export function Form({
                             {(data.tags?.length ?? 0) === 0 && <span>Select tags…</span>}
                             {(data.tags?.length ?? 0) > 0 && (
                                 <span className="flex flex-wrap gap-1">
-                                    {data.tags?.map((tag: Tag) => (
-                                        <Badge
+                                    {data.tags?.map((tag: TagValue) => (
+                                        <Tag
                                             key={tag.slug}
-                                            className={cn(
-                                                'bg-background border-2 hover:bg-background flex items-center',
-                                                tag.color?.charAt(0) != '#' ? `border-${tag.color}-400` : '',
-                                            )}
+                                            tag={tag}
+                                            showClose={true}
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 setData(
                                                     'tags',
                                                     data.tags?.filter(
-                                                        (existingTag: Tag) => existingTag.slug !== tag.slug,
+                                                        (existingTag: TagValue) => existingTag.slug !== tag.slug,
                                                     ),
                                                 );
                                                 const oldFilter = tagFilter;
                                                 setTagFilter('');
                                                 setTagFilter(oldFilter);
                                             }}
-                                            style={tag.color?.charAt(0) === '#' ? { borderColor: tag.color } : {}}
-                                        >
-                                            <span className="text-primary">{tag.name}</span>
-                                            <X className="h-4 w-4 ml-1 text-primary/40 relative -right-2" />
-                                        </Badge>
+                                        />
                                     ))}
                                 </span>
                             )}
@@ -152,7 +165,7 @@ export function Form({
                                     {tags.map(function (tag) {
                                         if (
                                             tagFilter == '' &&
-                                            (data.tags?.filter((existingTag: Tag) => existingTag.name === tag.name)
+                                            (data.tags?.filter((existingTag: TagValue) => existingTag.slug === tag.slug)
                                                 ?.length ?? 0) > 0
                                         ) {
                                             return;
@@ -160,17 +173,18 @@ export function Form({
                                         return (
                                             <CommandItem
                                                 key={tag.slug}
-                                                value={tag.name as string}
+                                                value={tag.slug as string}
                                                 onSelect={() => {
                                                     if (
                                                         (data.tags?.filter(
-                                                            (existingTag: Tag) => existingTag.name === tag.name,
+                                                            (existingTag: TagValue) => existingTag.slug === tag.slug,
                                                         ).length ?? 0) > 0
                                                     ) {
                                                         setData(
                                                             'tags',
                                                             data.tags?.filter(
-                                                                (existingTag: Tag) => existingTag.name !== tag.name,
+                                                                (existingTag: TagValue) =>
+                                                                    existingTag.slug !== tag.slug,
                                                             ),
                                                         );
                                                         return;

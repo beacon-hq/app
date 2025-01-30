@@ -4,24 +4,25 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PolicyRequest;
-use App\Models\Policy;
+use App\Services\PolicyService;
+use App\Values\Policy;
+use Bag\Attributes\WithoutValidation;
 use Inertia\Inertia;
 
 class PolicyController extends Controller
 {
-    public function index()
+    public function index(PolicyService $policyService)
     {
-        $policies = Policy::orderBy('name')->get();
+        $policies = $policyService->all();
 
         return Inertia::render('Policies/Index', [
             'policies' => $policies,
         ]);
     }
 
-    public function store(PolicyRequest $request)
+    public function store(Policy $policy, PolicyService $policyService)
     {
-        Policy::create([...$request->validated(), 'definition' => []]);
+        $policyService->create($policy);
 
         return redirect()->route('policies.index')->with(
             'alert',
@@ -32,19 +33,22 @@ class PolicyController extends Controller
         );
     }
 
-    public function edit(Policy $policy)
-    {
+    public function edit(
+        #[WithoutValidation]
+        Policy $policy,
+        PolicyService $policyService
+    ) {
         return Inertia::render('Policies/Edit', [
-            'policy' => $policy,
-            'policies' => Policy::orderBy('name')->where('id', '!=', $policy->id)->get(),
+            'policy' => $policyService->findBySlug($policy->slug),
+            'policies' => $policyService->all(),
         ]);
     }
 
-    public function update(PolicyRequest $request, Policy $policy)
+    public function update(Policy $policy, PolicyService $policyService)
     {
-        $policy->update($request->validated());
+        $policyService->update($policy);
 
-        return redirect()->back()->with(
+        return redirect()->route('policies.edit', ['slug' => $policy->slug])->with(
             'alert',
             [
                 'message' => 'Policy updated successfully.',

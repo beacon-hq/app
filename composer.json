@@ -12,7 +12,7 @@
         "captainhook/captainhook-phar": "^5.24",
         "captainhook/hook-installer": "^1.0",
         "creativeorange/gravatar": "^1.0",
-        "dshafik/bag": "^1.3",
+        "dshafik/bag": "^2.1",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^11.31",
         "laravel/sanctum": "^4.0",
@@ -26,7 +26,9 @@
     },
     "require-dev": {
         "aaronfrancis/solo": "^0.2.2",
+        "barryvdh/laravel-ide-helper": "^3.4",
         "fakerphp/faker": "^1.23",
+        "larastan/larastan": "^3.0",
         "laravel/breeze": "^2.3",
         "laravel/pail": "^1.1",
         "laravel/pint": "^1.13",

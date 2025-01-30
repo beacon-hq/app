@@ -4,69 +4,51 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\EnvironmentRequest;
-use App\Models\Environment;
+use App\Services\EnvironmentService;
+use App\Values\Environment;
+use Bag\Attributes\WithoutValidation;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class EnvironmentController extends Controller
 {
-    /**
-     * Display a listing of the applications.
-     */
-    public function index(): Response
+    public function index(EnvironmentService $environmentService): Response
     {
-        $applications = Environment::query()
-            ->orderBy('name')
-            ->get();
-
         return Inertia::render('Environments/Index', [
-            'environments' => $applications,
+            'environments' => $environmentService->all(),
         ]);
     }
 
-    /**
-     * Store a newly created application in storage.
-     */
-    public function store(EnvironmentRequest $request)
+    public function store(Environment $environment, EnvironmentService $environmentService)
     {
-        Environment::create([
-            ... $request->safe()->except('color'),
-            'color' => $request->validated('color', ''),
-        ]);
+        $environmentService->create($environment);
 
         return redirect()
             ->route('environments.index')
             ->with('alert', [
-                'message' => 'Environment created.',
+                'message' => 'Environment created successfully.',
                 'status' => 'success',
             ]);
     }
 
-    /**
-     * Show the form for editing the specified application.
-     */
-    public function edit(Environment $environment): Response
-    {
+    public function edit(
+        #[WithoutValidation]
+        Environment $environment,
+        EnvironmentService $environmentService
+    ): Response {
         return Inertia::render('Environments/Edit', [
-            'environment' => $environment,
+            'environment' => $environmentService->findBySlug($environment->slug),
         ]);
     }
 
-    /**
-     * Update the specified application in storage.
-     */
-    public function update(EnvironmentRequest $request, Environment $environment)
+    public function update(Environment $environment, EnvironmentService $environmentService)
     {
-        $environment->update([
-            ... $request->safe()->except('color'),
-            'color' => $request->validated('color', ''),
-        ]);
+        $environmentService->update($environment);
 
         return redirect()
             ->route('environments.index')
             ->with('alert', [
-                'message' => 'Environment updated.',
+                'message' => 'Environment updated successfully.',
                 'status' => 'success',
             ]);
     }

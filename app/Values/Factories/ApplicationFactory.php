@@ -17,8 +17,8 @@ class ApplicationFactory extends Factory
             'display_name' => $this->faker->word(),
             'description' => $this->faker->word(),
             'last_seen_at' => $this->faker->word(),
-            'color' => $this->faker->word(),
-            'environments' => Environment::collect([Environment::empty()]),
+            'color' => $this->faker->hexColor(),
+            'environments' => Environment::collect([Environment::factory()]),
         ];
     }
 }

@@ -45,7 +45,7 @@ export default function Table({ tags }: { tags: TagCollection }) {
             cell: function ({ row }) {
                 return (
                     <div className="flex">
-                        <Link href={route('tags.edit', { tag: row.original.slug })}>
+                        <Link href={route('tags.edit', { slug: row.original.slug })}>
                             <Pencil className="h-6 w-6" />
                         </Link>
                     </div>

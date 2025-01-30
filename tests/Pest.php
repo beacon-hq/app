@@ -2,11 +2,14 @@
 
 declare(strict_types=1);
 
+use Bag\Internal\Cache;
 use Carbon\CarbonInterval;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Sleep;
+use Pest\Arch\Support\Composer;
 use function Pest\Laravel\freezeTime;
+use Pest\TestSuite;
 use Tests\TestCase;
 
 /*
@@ -21,15 +24,19 @@ use Tests\TestCase;
 */
 
 pest()->extend(TestCase::class)
-    ->use(RefreshDatabase::class)
+    ->use(LazilyRefreshDatabase::class)
     ->beforeEach(function () {
         freezeTime();
+
         Sleep::fake();
         Sleep::whenFakingSleep(function (CarbonInterval $duration) {
             // Progress time when faking sleep...
             $this->travel($duration->totalMilliseconds)->milliseconds();
         });
+
         Http::preventStrayRequests();
+
+        Cache::reset();
     })
     ->in('Feature', 'Unit');
 
@@ -69,4 +76,30 @@ function property(object $object, string $property)
     };
 
     return $closure->bindTo($object, $object)();
+}
+
+function vendorPackages(): array
+{
+    $namespaces = [];
+    $rootPath = TestSuite::getInstance()->rootPath.DIRECTORY_SEPARATOR;
+
+    foreach (Composer::loader()->getPrefixesPsr4() as $namespace => $directories) {
+        foreach ($directories as $directory) {
+            $directory = realpath($directory);
+
+            if ($directory === false) {
+                continue;
+            }
+
+            if (substr_count($namespace, '\\') > 1) {
+                continue;
+            }
+
+            if (str_starts_with($directory, $rootPath.'vendor')) {
+                $namespaces[] = rtrim($namespace, '\\');
+            }
+        }
+    }
+
+    return $namespaces;
 }

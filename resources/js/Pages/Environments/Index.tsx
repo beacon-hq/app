@@ -62,7 +62,7 @@ export default function Index({ environments }: PageProps & { environments: Envi
                                                 <div className="flex gap-4">
                                                     <Link
                                                         href={route('environments.edit', {
-                                                            environment: environment.slug,
+                                                            slug: environment.slug,
                                                         })}
                                                     >
                                                         <Pencil className="h-4 w-4" />

@@ -15,7 +15,7 @@ export default function Edit({ environment }: { environment: Environment }) {
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
-        put(route('environments.update', { environment: environment.slug }));
+        put(route('environments.update', { slug: environment.slug }));
     };
 
     const handleCancel = () => {

@@ -4,37 +4,37 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\FeatureFlagRequest;
-use App\Models\FeatureFlag;
-use App\Models\FeatureType;
-use App\Models\Tag;
+use App\Services\ApplicationService;
+use App\Services\EnvironmentService;
+use App\Services\FeatureFlagService;
+use App\Services\FeatureTypeService;
+use App\Services\TagService;
+use App\Values\FeatureFlag;
+use Bag\Attributes\WithoutValidation;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class FeatureFlagController extends Controller
 {
-    public function index()
+    public function index(FeatureFlagService $featureFlagService, FeatureTypeService $featureTypeService, TagService $tagService, Request $request)
     {
-        $featureFlags = FeatureFlag::with('featureType')->orderBy('name')->get();
-        $featureTypes = fn () => FeatureType::orderBy('name')->get();
-
-        $tags = fn () => Tag::orderBy('name')->get();
-
         return Inertia::render('FeatureFlags/Index', [
-            'featureFlags' => $featureFlags,
-            'featureTypes' => $featureTypes,
-            'tags' => $tags,
+            'featureFlags' => $featureFlagService->all(filters: $request->get('filters', []))->toBase(),
+            'featureTypes' => $featureTypeService->all(),
+            'tags' => $tagService->all(),
         ]);
     }
 
-    public function create()
+    public function create(FeatureFlag $featureFlag, FeatureFlagService $featureFlagService)
     {
+        $featureFlagService->create($featureFlag);
+
         return Inertia::render('FeatureFlags/Create');
     }
 
-    public function store(FeatureFlagRequest $request)
+    public function store(FeatureFlag $featureFlag, FeatureFlagService $featureFlagService)
     {
-        $featureFlag = FeatureFlag::create($request->validated());
-        $featureFlag->tags()->sync($request->tags);
+        $featureFlagService->create($featureFlag);
 
         return redirect()->route('feature-flags.index')->with(
             'alert',
@@ -45,21 +45,31 @@ class FeatureFlagController extends Controller
         );
     }
 
-    public function edit(FeatureFlag $featureFlag)
-    {
+    public function edit(
+        #[WithoutValidation]
+        FeatureFlag $featureFlag,
+        FeatureFlagService $featureFlagService,
+        FeatureTypeService $featureTypeService,
+        TagService $tagService,
+        ApplicationService $applicationService,
+        EnvironmentService $environmentService
+    ) {
         return Inertia::render('FeatureFlags/Edit', [
-            'featureFlag' => $featureFlag,
-            'tags' => Tag::orderBy('name')->get(),
+            'featureFlag' => $featureFlagService->findBySlug($featureFlag->slug),
+            'featureTypes' => $featureTypeService->all(),
+            'tags' => $tagService->all(),
+            'applications' => $applicationService->all(),
+            'environments' => $environmentService->all(),
         ]);
     }
 
-    public function update(FeatureFlagRequest $request, FeatureFlag $featureFlag)
-    {
-        $featureFlag->update($request->safe()->except('tags'));
+    public function update(
+        FeatureFlag $featureFlag,
+        FeatureFlagService $featureFlagService
+    ) {
+        $featureFlagService->update($featureFlag);
 
-        $featureFlag->tags()->sync($request->validated('tags'));
-
-        return redirect()->route('feature-flags.index')
+        return redirect()->route('feature-flags.edit.overview', ['slug' => $featureFlag->slug])
             ->with(
                 'alert',
                 [
