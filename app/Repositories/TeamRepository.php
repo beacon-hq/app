@@ -11,6 +11,6 @@ class TeamRepository
 {
     public function getById(string $id): TeamValue
     {
-        return TeamValue::fromModel(Team::findOrFail($id));
+        return TeamValue::from(Team::findOrFail($id));
     }
 }

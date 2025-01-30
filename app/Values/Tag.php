@@ -15,6 +15,7 @@ use Bag\Attributes\Factory;
 use Bag\Attributes\Hidden;
 use Bag\Attributes\Laravel\FromRouteParameter;
 use Bag\Attributes\MapName;
+use Bag\Attributes\StripExtraParameters;
 use Bag\Attributes\Transforms;
 use Bag\Bag;
 use Bag\Mappers\SnakeCase;
@@ -29,6 +30,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 #[Collection(TagCollection::class)]
 #[Factory(TagFactory::class)]
 #[MapName(SnakeCase::class, SnakeCase::class)]
+#[StripExtraParameters]
 #[TypeScript]
 readonly class Tag extends Bag
 {

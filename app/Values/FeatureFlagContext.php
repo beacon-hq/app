@@ -36,16 +36,16 @@ readonly class FeatureFlagContext extends Bag
     public static function rules(): array
     {
         return [
-            'scopeType' => 'required|string',
-            'scope' => 'required|array',
-            'appName' => 'required|string',
-            'environment' => 'required|string',
-            'sessionId' => 'nullable|string',
-            'ip' => 'nullable|string',
-            'userAgent' => 'nullable|string',
-            'referrer' => 'nullable|string',
-            'url' => 'nullable|string',
-            'method' => 'nullable|string',
+            'scopeType' => ['required', 'string'],
+            'scope' => ['required', 'array'],
+            'appName' => ['required', 'string'],
+            'environment' => ['required', 'string'],
+            'sessionId' => ['nullable', 'array'],
+            'ip' => ['nullable', 'array'],
+            'userAgent' => ['nullable', 'array'],
+            'referrer' => ['nullable', 'array'],
+            'url' => ['nullable', 'array'],
+            'method' => ['nullable', 'array'],
         ];
     }
 }

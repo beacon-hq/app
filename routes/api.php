@@ -6,9 +6,9 @@ use App\Http\Controllers\Api\AccessTokenController;
 use App\Http\Controllers\Api\FeatureFlagController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('/features')->group(function () {
+Route::prefix('/features')->name('feature-flags.')->group(function () {
     Route::post('/', [FeatureFlagController::class, 'index'])->name('index');
-    Route::post('/{featureFlag}', [FeatureFlagController::class, 'show'])->name('show');
-})->name('feature-flags');
+    Route::post('/{slug}', [FeatureFlagController::class, 'show'])->name('show');
+});
 
 Route::resource('/settings/tokens', AccessTokenController::class)->only(['store', 'show', 'destroy']);
