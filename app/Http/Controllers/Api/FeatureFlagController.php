@@ -8,9 +8,10 @@ use App\Http\Controllers\Controller;
 use App\Services\FeatureFlagService;
 use App\Values\Collections\FeatureFlagCollection;
 use App\Values\FeatureFlag;
+use App\Values\FeatureFlagContext;
 use Bag\Attributes\WithoutValidation;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Lottery;
 
 class FeatureFlagController extends Controller
 {
@@ -37,11 +38,31 @@ class FeatureFlagController extends Controller
     public function show(
         #[WithoutValidation]
         FeatureFlag $featureFlag,
-        FeatureFlagService $featureFlagService
+        FeatureFlagService $featureFlagService,
+        Request $request
     ) {
-        // TODO: Use the policies to check if the flag is active
-        // $featureFlag = FeatureFlag::where('slug', $featureFlag)->firstOrFail();
-        return ['active' => Lottery::odds(1, 2)->choose(), 'value' => $featureFlagService->findBySlug($featureFlag->slug)->name];
+        $context = FeatureFlagContext::from(... $request->all());
+
+        try {
+            $featureFlag = $featureFlagService->findBySlug($featureFlag->slug);
+
+            return [
+                'feature_flag' => $featureFlag->slug,
+                'value' => null,
+                'active' => $featureFlag
+                        ->statuses
+                        ->where('application.name', $context->appName)
+                        ->where('environment.name', $context->environment)
+                        ->first()
+                        ?->status ?? false,
+            ];
+        } catch (ModelNotFoundException) {
+            return [
+                'feature_flag' => $featureFlag->slug,
+                'value' => null,
+                'active' => false,
+            ];
+        }
     }
 
     /**

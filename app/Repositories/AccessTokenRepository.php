@@ -19,6 +19,7 @@ class AccessTokenRepository
 
     public function all(TeamValue $team): AccessTokenCollection
     {
+        /** @phpstan-ignore return.type */
         return AccessTokenValue::collect(Team::findOrFail($team->id)->tokens);
     }
 

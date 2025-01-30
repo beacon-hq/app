@@ -97,10 +97,10 @@ class FeatureFlagRepository
         $tags = $this->tagService->findBySlug(... $featureFlag->tags->pluck('slug')->toArray());
         $flag->tags()->sync($tags instanceof Tag ? [$tags->id] : $tags->pluck('id'));
 
-        if ($featureFlag->statuses->count() > 0) {
+        if ($featureFlag->statuses?->count() > 0) {
             $featureFlagId = resolve(FeatureFlagService::class)->findBySlug($featureFlag->slug)->id;
 
-            $statuses = $featureFlag->statuses->map(function (FeatureFlagStatusValue $status) use ($featureFlagId, $featureFlag) {
+            $statuses = $featureFlag->statuses->map(function (FeatureFlagStatusValue $status) use ($featureFlagId) {
                 return FeatureFlagStatus::updateOrCreate([
                     'id' => $status->id,
                 ], [

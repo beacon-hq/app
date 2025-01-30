@@ -82,7 +82,7 @@ readonly class FeatureFlag extends Bag
     public static function rules(): array
     {
         return [
-            'name' => ['required'],
+            'name' => ['required_without:slug', 'exclude_with:slug'],
             'description' => ['nullable'],
             'feature_type' => ['required'],
         ];
