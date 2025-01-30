@@ -40,17 +40,17 @@
         --chart-4-color: hsl(43 74% 66%);
         --chart-5: 27 87% 67%;
         --chart-5-color: hsl(27 87% 67%);
-        --sidebar-background: 0 0% 98%;
-        --sidebar-background-color: hsl(0 0% 98%);
+        --sidebar-background: 0 0% 100%;
+        --sidebar-background-color: hsl(0 0% 100%);
         --sidebar-foreground: 240 5.3% 26.1%;
         --sidebar-foreground-color: hsl(240 5.3% 26.1%);
         --sidebar-primary: 240 5.9% 10%;
         --sidebar-primary-color: hsl(240 5.9% 10%);
         --sidebar-primary-foreground: 172.5 20% 82%;
         --sidebar-primary-foreground-color: hsl(172.5 20% 82%);
-        --sidebar-accent: 240 4.8% 95.9%;
-        --sidebar-accent-color: hsl(240 4.8% 95.9%);
-        --sidebar-accent-foreground: 240 5.9% 10%;
+        --sidebar-accent: 0 0% 100%;
+        --sidebar-accent-color: hsl(0 0% 100%);
+        --sidebar-accent-foreground: var(--sidebar-active);
         --sidebar-accent-foreground-color: hsl(240 5.9% 10%);
         --sidebar-border: 220 13% 91%;
         --sidebar-border-color: hsl(220 13% 91%);
@@ -58,7 +58,8 @@
         --sidebar-ring-color: hsl(217.2 91.2% 59.8%);
         --sidebar-tooltip-bg: 328.6 85.5% 70.2%;
         --sidebar-tooltip-bg-color: hsl(328.6 85.5% 70.2%);
-        --sidebar-tooltip-color: var(--sidebar-accent)
+        --sidebar-tooltip-color: 240 4.8% 95.9%;
+        --sidebar-active: 217.2 91.2% 59.8%;
     }
 
     .dark {
@@ -107,9 +108,18 @@
         --sidebar-border-color: hsl(240 3.7% 15.9%);
         --sidebar-ring: 217.2 91.2% 59.8%;
         --sidebar-ring-color: hsl(217.2 91.2% 59.8%);
+        --sidebar-tooltip-bg: 328.6 85.5% 70.2%;
+        --sidebar-tooltip-bg-color: hsl(328.6 85.5% 70.2%);
+        --sidebar-tooltip-color: var(--sidebar-accent);
+        --sidebar-active: 217.2 91.2% 59.8%;
     }
 }
 
 div.react-colorful {
    width: 100%;
+}
+
+#nprogress .bar {
+    height: 4px !important;
+    background: linear-gradient(90deg, #00e281 14%, #00e7a4 28%, #00ecc7 42%, #00f1ed 60%, #00d8f5 78%, #00b9fa 90%, #009aff 100%) !important;
 }

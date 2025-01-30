@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\PolicyDefinitionMatchOperator;
+use App\Enums\PolicyDefinitionType;
 use App\Models\Policy;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
@@ -17,7 +19,11 @@ class PolicyFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'description' => $this->faker->text(),
-            'definition' => $this->faker->words(),
+            'definition' => [[
+                'type' => $this->faker->randomElement(PolicyDefinitionType::values()),
+                'subject' => $this->faker->word(),
+                'operator' => $this->faker->randomElement(PolicyDefinitionMatchOperator::values()),
+            ]],
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];

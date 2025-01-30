@@ -19,7 +19,7 @@ export default function Edit({ application }: { application: Application }) {
     const submit = (e: FormEvent) => {
         e.preventDefault();
 
-        put(route('applications.update', { application: application.slug }));
+        put(route('applications.update', { slug: application.slug }));
     };
 
     const handleCancel = () => {

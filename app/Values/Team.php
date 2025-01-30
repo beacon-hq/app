@@ -14,7 +14,7 @@ use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
 
 /**
- * @method static static from(string $name, ?string $id = null)
+ * @method static static from(?string $id = null, ?string $name = null)
  */
 #[Factory(TeamFactory::class)]
 #[MapName(SnakeCase::class, SnakeCase::class)]
@@ -23,8 +23,8 @@ readonly class Team extends Bag
     use HasFactory;
 
     public function __construct(
-        public string $name,
         public ?string $id = null,
+        public ?string $name = null,
     ) {
     }
 

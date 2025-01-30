@@ -14,7 +14,7 @@ class EnvironmentFactory extends Factory
             'name' => $this->faker->word(),
             'description' => $this->faker->word(),
             'slug' => $this->faker->word(),
-            'color' => $this->faker->word(),
+            'color' => $this->faker->hexColor(),
         ];
     }
 }

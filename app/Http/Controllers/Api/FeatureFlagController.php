@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\FeatureFlag;
+use App\Services\FeatureFlagService;
 use App\Values\Collections\FeatureFlagCollection;
-use App\Values\FeatureFlag as FeatureFlagValue;
+use App\Values\FeatureFlag;
+use Bag\Attributes\WithoutValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Lottery;
 
@@ -16,10 +17,10 @@ class FeatureFlagController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): FeatureFlagCollection
+    public function index(Request $request, FeatureFlagService $featureFlagService): FeatureFlagCollection
     {
         // TODO: implement per-scope filtering
-        return FeatureFlagCollection::wrap(FeatureFlag::all()->map(callback: fn (FeatureFlag $featureFlag) => FeatureFlagValue::from($featureFlag)));
+        return $featureFlagService->all();
     }
 
     /**
@@ -33,11 +34,14 @@ class FeatureFlagController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(FeatureFlag $featureFlag)
-    {
+    public function show(
+        #[WithoutValidation]
+        FeatureFlag $featureFlag,
+        FeatureFlagService $featureFlagService
+    ) {
         // TODO: Use the policies to check if the flag is active
         // $featureFlag = FeatureFlag::where('slug', $featureFlag)->firstOrFail();
-        return ['active' => Lottery::odds(1, 2)->choose(), 'value' => $featureFlag->name];
+        return ['active' => Lottery::odds(1, 2)->choose(), 'value' => $featureFlagService->findBySlug($featureFlag->slug)->name];
     }
 
     /**

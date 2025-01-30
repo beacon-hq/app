@@ -8,7 +8,6 @@ import React, { FormEvent } from 'react';
 export default function Edit({ policy, policies }: { policy: Policy; policies: PolicyCollection }) {
     const subjects: string[] = [];
     const { data, setData, put, errors, processing } = useForm<Policy>({
-        id: policy.id,
         slug: policy.slug,
         name: policy.name,
         description: policy.description,
@@ -19,7 +18,7 @@ export default function Edit({ policy, policies }: { policy: Policy; policies: P
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
-        put(route('policies.update', { policy: policy.slug }), { preserveScroll: true });
+        put(route('policies.update', { slug: policy.slug }), { preserveScroll: true });
     };
 
     const handleCancel = () => {
@@ -27,8 +26,8 @@ export default function Edit({ policy, policies }: { policy: Policy; policies: P
     };
 
     return (
-        <Authenticated breadcrumbs={[{ name: 'Feature Types', href: route('feature-types.index') }, { name: 'Edit' }]}>
-            <Head title="Feature Types | Edit" />
+        <Authenticated breadcrumbs={[{ name: 'Policies', href: route('policies.index') }, { name: 'Edit' }]}>
+            <Head title="Policies | Edit" />
             <div className="mx-auto py-12 md:w-7/12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden p-4">

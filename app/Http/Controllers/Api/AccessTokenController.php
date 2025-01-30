@@ -4,57 +4,34 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App;
 use App\Http\Controllers\Controller;
-use App\Models\PersonalAccessToken;
-use App\Models\Tenant;
+use App\Services\AccessTokenService;
+use App\Values\AccessToken;
+use Bag\Attributes\WithoutValidation;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Str;
 
 class AccessTokenController extends Controller
 {
-    protected $tenant;
-
-    public function __construct()
+    public function store(AccessToken $accessToken, AccessTokenService $accessTokenService): JsonResponse
     {
-        $this->tenant = Tenant::findOrFail(App::context()->tenant->id);
+        return response()->json($accessTokenService->create($accessToken));
     }
 
-    public function store(Request $request): JsonResponse
+    public function show(AccessTokenService $accessTokenService): JsonResponse
     {
-        $request->validate([
-            'name' => 'required|string',
-        ]);
-
-        $name = $request->post('name');
-        $token = $this->tenant->createToken($name);
-
-        return response()->json([
-            'id' => Str::before($token->plainTextToken, '|'),
-            'name' => $name,
-            'token' => Str::after($token->plainTextToken, '|'),
-            'last_used_at' => null,
-            'created_at' => $token->accessToken->created_at,
-        ]);
+        return response()->json($accessTokenService->all());
     }
 
-    public function show(): JsonResponse
-    {
-        return response()->json($this->tenant->tokens->map(fn (PersonalAccessToken $token) => [
-            'id' => $token->id,
-            'name' => $token->name,
-            'token' => Str::of($token->plain_text_suffix)->prepend('*********************'),
-            'last_used_at' => $token->last_used_at,
-            'created_at' => $token->created_at,
-        ]));
-    }
+    public function destroy(
+        #[WithoutValidation]
+        AccessToken $accessToken,
+        AccessTokenService $accessTokenService
+    ): Response {
+        if ($accessTokenService->delete($accessToken)) {
+            return response(null, 204);
+        }
 
-    public function destroy(string $id): Response
-    {
-        $this->tenant->tokens()->where('id', $id)->delete();
-
-        return response(null, 204);
+        abort(500, 'Failed to delete access token.');
     }
 }

@@ -4,50 +4,46 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\TagRequest;
-use App\Models\Tag;
+use App\Services\TagService;
+use App\Values\Tag;
+use Bag\Attributes\WithoutValidation;
 use Inertia\Inertia;
 
 class TagController extends Controller
 {
-    public function index()
+    public function index(TagService $tagService)
     {
-        $tags = Tag::orderBy('name')->get();
-
         return Inertia::render('Tags/Index', [
-            'tags' => $tags,
+            'tags' => $tagService->all(),
         ]);
     }
 
-    public function store(TagRequest $request)
+    public function store(Tag $tag, TagService $tagService)
     {
-        Tag::create([
-            ... $request->safe()->except('color'),
-            'color' => $request->validated('color', ''),
-        ]);
+        $tagService->create($tag);
 
         return redirect()->route('tags.index')->with(
             'alert',
             [
-                'message' => 'Feature type created successfully.',
+                'message' => 'Tag created successfully.',
                 'status' => 'success',
             ]
         );
     }
 
-    public function edit(Tag $tag)
-    {
+    public function edit(
+        #[WithoutValidation]
+        Tag $tag,
+        TagService $tagService
+    ) {
         return Inertia::render('Tags/Edit', [
-            'tag' => $tag,
+            'tag' => $tagService->findBySlug($tag->slug),
         ]);
     }
 
-    public function update(TagRequest $request, Tag $tag)
+    public function update(Tag $tag, TagService $tagService)
     {
-        $tag->update([
-            ... $request->safe()->except('color'),
-            'color' => $request->validated('color', ''),
-        ]);
+        $tagService->update($tag);
 
         return redirect()->route('tags.index')->with(
             'alert',

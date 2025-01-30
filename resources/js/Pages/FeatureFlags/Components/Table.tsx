@@ -5,7 +5,7 @@ import { DataTableColumnHeader } from '@/Components/ui/data-table-column-header'
 import { localDateTime } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
-import { Eye } from 'lucide-react';
+import { Pencil } from 'lucide-react';
 
 export default function Table({ featureFlags }: { featureFlags: FeatureFlagCollection }) {
     const columnHelper = createColumnHelper<FeatureFlag>();
@@ -35,7 +35,7 @@ export default function Table({ featureFlags }: { featureFlags: FeatureFlagColle
             id: 'Last Seen',
             header: ({ column }) => <DataTableColumnHeader column={column} title="Last Seen" />,
             enableSorting: true,
-            cell: ({ cell }) => localDateTime(cell.getValue()),
+            cell: ({ cell }) => (cell.getValue() === null ? 'never' : localDateTime(cell.getValue())),
         }) as ColumnDef<FeatureFlag>,
         columnHelper.accessor('created_at', {
             id: 'Created',
@@ -54,8 +54,8 @@ export default function Table({ featureFlags }: { featureFlags: FeatureFlagColle
             cell: function ({ row }) {
                 return (
                     <div className="flex">
-                        <Link href={route('feature-flags.edit', { feature_flag: row.original.slug })}>
-                            <Eye className="h-6 w-6" />
+                        <Link href={route('feature-flags.edit.overview', { slug: row.original.slug })}>
+                            <Pencil className="h-6 w-6" />
                         </Link>
                     </div>
                 );

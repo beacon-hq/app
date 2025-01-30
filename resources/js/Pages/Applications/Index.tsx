@@ -8,7 +8,7 @@ import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Form } from '@/Pages/Applications/Components/Form';
 import { PageProps } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ChevronRight, Pencil, PlusCircle } from 'lucide-react';
+import { Pencil, PlusCircle } from 'lucide-react';
 import React, { FormEvent, useState } from 'react';
 
 export default function Index({ applications }: PageProps & { applications: ApplicationCollection }) {
@@ -79,12 +79,11 @@ export default function Index({ applications }: PageProps & { applications: Appl
                                                 <div className="flex gap-4">
                                                     <Link
                                                         href={route('applications.edit', {
-                                                            application: application.slug,
+                                                            slug: application.slug,
                                                         })}
                                                     >
                                                         <Pencil className="h-4 w-4" />
                                                     </Link>
-                                                    <ChevronRight className="h-4 w-4" />
                                                 </div>
                                             </div>
                                             {applications[applications.length - 1].slug !== application.slug && (

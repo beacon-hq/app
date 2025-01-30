@@ -61,8 +61,18 @@ class DatabaseSeeder extends Seeder
             ->create();
 
         FeatureFlag::all()->each(function (FeatureFlag $flag) {
-            Lottery::odds(8, 10)->winner(fn () => $flag->environments()->attach(Environment::inRandomOrder()->first()))->choose();
-            Lottery::odds(8, 10)->winner(fn () => $flag->applications()->attach(Application::inRandomOrder()->first()))->choose();
+            Lottery::odds(8, 10)->winner(function () use ($flag) {
+                try {
+                    $flag->statuses()->attach(App\Models\FeatureFlagStatus::create([
+                        'application_id' => Application::inRandomOrder()->first()->id,
+                        'environment_id' => Environment::inRandomOrder()->first()->id,
+                        'feature_flag_id' => $flag->id,
+                        'status' => Lottery::odds(1, 2)->choose(),
+                    ]));
+                } catch (UniqueConstraintViolationException) {
+                }
+            })->choose(3);
+
             Lottery::odds(1, 4)->winner(function () use ($flag) {
                 try {
                     $flag->tags()->attach(Tag::inRandomOrder()->first());

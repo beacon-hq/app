@@ -17,7 +17,7 @@ class FeatureTypeFactory extends Factory
             'slug' => $this->faker->word(),
             'description' => $this->faker->word(),
             'temporary' => $this->faker->boolean(),
-            'color' => $this->faker->word(),
+            'color' => $this->faker->hexColor(),
             'icon' => $this->faker->word(),
             'createdAt' => new Carbon(),
             'updatedAt' => new Carbon(),

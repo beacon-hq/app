@@ -11,6 +11,7 @@ use App\Values\Factories\PolicyFactory;
 use Bag\Attributes\Cast;
 use Bag\Attributes\Collection;
 use Bag\Attributes\Factory;
+use Bag\Attributes\Laravel\FromRouteParameter;
 use Bag\Attributes\MapName;
 use Bag\Attributes\Transforms;
 use Bag\Bag;
@@ -22,6 +23,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
  * @method static static from(?string $slug = null, ?string $name = null, ?string $description = null, ?string $id = null, ?PolicyDefinitionCollection<PolicyDefinition> $definition = null, ?Carbon $createdAt = null, ?Carbon $updatedAt = null)
+ * @method static PolicyCollection collect(iterable $items)
  */
 #[Collection(PolicyCollection::class)]
 #[Factory(PolicyFactory::class)]
@@ -32,10 +34,10 @@ readonly class Policy extends Bag
     use HasFactory;
 
     public function __construct(
+        #[FromRouteParameter]
         public ?string $slug = null,
         public ?string $name = null,
         public ?string $description = null,
-        public ?string $id = null,
         #[Cast(CollectionOf::class, PolicyDefinition::class)]
         public ?PolicyDefinitionCollection $definition = null,
         public ?Carbon $createdAt = null,
@@ -50,10 +52,18 @@ readonly class Policy extends Bag
             'slug' => $policy->slug,
             'name' => $policy->name,
             'description' => $policy->description,
-            'id' => $policy->id,
-            'definition' => $policy->definition,
+            'definition' => PolicyDefinitionCollection::make($policy->definition),
             'created_at' => $policy->created_at,
             'updated_at' => $policy->updated_at,
+        ];
+    }
+
+    public static function rules(): array
+    {
+        return [
+            'name' => ['required'],
+            'description' => ['required'],
+            'definition' => ['nullable'],
         ];
     }
 }

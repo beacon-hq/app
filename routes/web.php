@@ -34,13 +34,16 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
-    Route::resource('applications', ApplicationController::class)->except(['delete', 'create']);
-    Route::resource('environments', EnvironmentController::class)->except(['delete', 'create']);
-    Route::resource('feature-flags', FeatureFlagController::class)->except(['delete', 'create']);
-    Route::resource('feature-types', FeatureTypeController::class)->except(['delete', 'create']);
-    Route::resource('tags', TagController::class)->except(['delete', 'create']);
-    Route::resource('settings', SettingsController::class)->only(['index']);
-    Route::resource('policies', PolicyController::class)->except(['delete', 'create']);
+    Route::resource('applications', ApplicationController::class, ['parameters' => ['applications' => 'slug']])->except(['delete', 'create']);
+    Route::resource('environments', EnvironmentController::class, ['parameters' => ['environments' => 'slug']])->except(['delete', 'create']);
+    Route::resource('feature-flags', FeatureFlagController::class, ['parameters' => ['feature-flags' => 'slug']])->except(['delete', 'create']);
+    Route::resource('feature-types', FeatureTypeController::class, ['parameters' => ['feature-types' => 'slug']])->except(['delete', 'create']);
+    Route::resource('tags', TagController::class, ['parameters' => ['tags' => 'slug']])->except(['delete', 'create']);
+    Route::resource('settings', SettingsController::class, ['parameters' => ['settings' => 'slug']])->only(['index']);
+    Route::resource('policies', PolicyController::class, ['parameters' => ['policies' => 'slug']])->except(['delete', 'create']);
+
+    Route::get('/feature-flags/{slug}/overview', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.overview');
+    Route::get('/feature-flags/{slug}/policy', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.policy');
 });
 
 require __DIR__.'/auth.php';
