@@ -15,6 +15,7 @@ use App\Values\Collections\FeatureFlagCollection;
 use App\Values\FeatureFlag as FeatureFlagValue;
 use App\Values\FeatureFlagStatus as FeatureFlagStatusValue;
 use App\Values\Tag;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 
 class FeatureFlagRepository
@@ -29,33 +30,16 @@ class FeatureFlagRepository
 
     public function all(array|string $orderBy = ['name'], ?int $page = null, int $perPage = 20, array $filters = []): FeatureFlagCollection
     {
-        $query = FeatureFlag::with(['featureType', 'tags']);
-
-        foreach (Arr::wrap($orderBy) as $column) {
-            $query = $query->orderBy($column);
-        }
-
-        if (!empty($filters)) {
-            $query = $query->where(function ($query) use ($filters) {
-                foreach ($filters as $key => $value) {
-                    if ($key === 'tags') {
-                        $query->whereHas('tags', function ($query) use ($value) {
-                            $query->whereIn('slug', Arr::wrap($value));
-                        });
-                    }
-
-                    if ($key === 'name') {
-                        $query->where('name', 'LIKE', "%$value%");
-                    }
-                }
-            });
-        }
-
-        if ($page !== null) {
-            $query = $query->forPage($page, $perPage);
-        }
+        $query = $this->buildQuery($orderBy, $filters, $page, $perPage);
 
         return FeatureFlagValue::collect($query->get());
+    }
+
+    public function first(array $filters): FeatureFlagValue
+    {
+        $query = $this->buildQuery([], $filters);
+
+        return FeatureFlagValue::from($query->firstOrFail());
     }
 
     public function create(FeatureFlagValue $featureFlag): FeatureFlagValue
@@ -122,5 +106,53 @@ class FeatureFlagRepository
     public function count()
     {
         return FeatureFlag::count();
+    }
+
+    /**
+     * @param Builder<FeatureFlag> $query
+     */
+    protected function filter(Builder $query, array $filters = []): Builder
+    {
+
+        if (isset($filters['name'])) {
+            $query->whereName($filters['name']);
+        }
+
+        if (isset($filters['slug'])) {
+            $query->whereSlug($filters['slug']);
+        }
+
+        if (isset($filters['tags'])) {
+            $query->whereTags($filters['tags']);
+        }
+
+        if (isset($filters['application'])) {
+            $query->whereApplication($filters['application']);
+        }
+
+        if (isset($filters['environment'])) {
+            $query->whereEnvironment($filters['environment']);
+        }
+
+        return $query;
+    }
+
+    protected function buildQuery(array|string $orderBy, array $filters, ?int $page = null, int $perPage = 20): Builder
+    {
+        $query = FeatureFlag::with(['featureType', 'tags']);
+
+        foreach (Arr::wrap($orderBy) as $column) {
+            $query = $query->orderBy($column);
+        }
+
+        if (!empty($filters)) {
+            $query = $this->filter($query, $filters);
+        }
+
+        if ($page !== null) {
+            $query = $query->forPage($page, $perPage);
+        }
+
+        return $query;
     }
 }

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Pivot\FeatureFlagStatusPolicy;
+use App\Values\FeatureFlag as FeatureFlagValue;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -52,5 +54,24 @@ class FeatureFlagStatus extends Model
             'id' => 'string',
             'status' => 'boolean',
         ];
+    }
+
+    public function scopeWhereApplication(Builder $query, string $application): Builder
+    {
+        return $query->whereHas('application', fn ($query) => $query->where('name', $application));
+    }
+
+    public function scopeWhereEnvironment(Builder $query, string $environment): Builder
+    {
+        return $query->whereHas('environment', fn ($query) => $query->where('name', $environment));
+    }
+
+    public function scopeWhereFeatureFlag(Builder $query, FeatureFlagValue $featureFlag): Builder
+    {
+        if ($featureFlag->id !== null) {
+            return $query->where('feature_flag_id', $featureFlag->id);
+        }
+
+        return $query->whereHas('featureFlag', fn ($query) => $query->where('slug', $featureFlag->slug));
     }
 }

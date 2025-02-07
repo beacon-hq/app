@@ -52,7 +52,7 @@ export function Form({
                     <Input
                         id="name"
                         type="text"
-                        value={data.name}
+                        value={data.name as string}
                         autoComplete="off"
                         onChange={(e) => setData('name', e.target.value)}
                     />

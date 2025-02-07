@@ -11,6 +11,7 @@ arch()
         'App\Values',
         'App\Models',
         'App\Services',
+        'App\Enums',
     ])
     ->ignoringGlobalFunctions()
     ->ignoring(vendorPackages());

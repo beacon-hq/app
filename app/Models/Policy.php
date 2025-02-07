@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Models\Traits\BelongsToTeam;
 use App\Models\Traits\HasSlug;
+use App\Values\PolicyDefinition;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -55,7 +56,7 @@ class Policy extends Model
     {
         return [
             'id' => 'string',
-            'definition' => 'array',
+            'definition' => PolicyDefinition::castAsCollection(),
         ];
     }
 }

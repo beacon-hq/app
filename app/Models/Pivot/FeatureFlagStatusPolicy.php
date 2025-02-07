@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models\Pivot;
 
+use App\Values\PolicyValue;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Carbon;
@@ -41,8 +42,11 @@ class FeatureFlagStatusPolicy extends Pivot
         'values',
     ];
 
-    protected $casts = [
-        'order' => 'integer',
-        'values' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'order' => 'integer',
+            'values' => PolicyValue::castAsCollection(),
+        ];
+    }
 }

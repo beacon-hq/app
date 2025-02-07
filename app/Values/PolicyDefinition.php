@@ -19,7 +19,7 @@ use Spatie\TypeScriptTransformer\Attributes\Optional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
- * @method static static from(PolicyDefinitionType $type, string $subject, ?string $operator = null)
+ * @method static static from(PolicyDefinitionType $type, string $subject, ?PolicyDefinitionMatchOperator $operator = null)
  * @method static PolicyDefinitionCollection collect(iterable $items)
  */
 #[Collection(PolicyDefinitionCollection::class)]
@@ -43,7 +43,7 @@ readonly class PolicyDefinition extends Bag
         return [
             'type' => ['required', Rule::enum(PolicyDefinitionType::class)],
             'subject' => ['required', 'string'],
-            'operator' => ['nullable', 'required_if:type,' . PolicyDefinitionType::EXPRESSION->value, 'string']
+            'operator' => ['nullable', 'required_if:type,' . PolicyDefinitionType::EXPRESSION->value],
         ];
     }
 }

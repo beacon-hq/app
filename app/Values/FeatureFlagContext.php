@@ -12,7 +12,7 @@ use Bag\Mappers\SnakeCase;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
- * @method static static from(string $scopeType, mixed $scope, string $appName, string $environment, ?string $sessionId, ?string $ip, ?string $userAgent, ?string $referrer, ?string $url, ?string $method)
+ * @method static static from(string $scopeType, mixed $scope, string $appName, string $environment, ?string $sessionId = null, ?string $ip = null, ?string $userAgent = null, ?string $referrer = null, ?string $url = null, ?string $method = null)
  */
 #[MapName(SnakeCase::class, SnakeCase::class)]
 #[TypeScript]
@@ -24,12 +24,12 @@ readonly class FeatureFlagContext extends Bag
         public array $scope,
         public string $appName,
         public string $environment,
-        public ?string $sessionId,
-        public ?string $ip,
-        public ?string $userAgent,
-        public ?string $referrer,
-        public ?string $url,
-        public ?string $method,
+        public ?string $sessionId = null,
+        public ?string $ip = null,
+        public ?string $userAgent = null,
+        public ?string $referrer = null,
+        public ?string $url = null,
+        public ?string $method = null,
     ) {
     }
 

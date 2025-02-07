@@ -34,7 +34,7 @@ export default function Index({ settings }: PageProps & { settings: { tokens: Ac
         setProcessing(true);
 
         window.axios
-            .post(route('tokens.store'), { name: tokenName })
+            .post(route('api.tokens.store'), { name: tokenName })
             .then((response: AxiosResponse | void) => {
                 setShowTokenDialog(false);
                 reset();

@@ -16,6 +16,12 @@ export type Application = {
     environments: EnvironmentCollection | null;
 };
 export type ApplicationCollection = Application[];
+export enum Boolean {
+    'AND' = 'AND',
+    'OR' = 'OR',
+    'NOT' = 'AND NOT',
+    'XOR' = 'XOR',
+}
 export enum Color {
     'RED' = 'red',
     'ORANGE' = 'orange',
@@ -61,6 +67,11 @@ export type FeatureFlagContext = {
     url: string | null;
     method: string | null;
 };
+export type FeatureFlagResponse = {
+    feature_flag: string;
+    value: any;
+    active: boolean;
+};
 export type FeatureFlagStatus = {
     application: Application | null;
     environment: Environment | null;
@@ -96,26 +107,24 @@ export type PolicyDefinition = {
     subject: string;
     operator?: PolicyDefinitionMatchOperator;
 };
-export enum PolicyDefinitionBoolean {
-    'AND' = 'AND',
-    'OR' = 'OR',
-    'NOT' = 'AND NOT',
-    'XOR' = 'XOR',
-}
 export type PolicyDefinitionCollection = PolicyDefinition[];
 export enum PolicyDefinitionMatchOperator {
-    'EQUALS' = '=',
+    'EQUAL' = '=',
     'NOT_EQUAL' = '!=',
-    'CONTAINS' = 'contains',
-    'NOT_CONTAINS' = 'does not contains',
-    'MATCHES' = 'matches',
-    'NOT_MATCHES' = 'does not match',
+    'CONTAINS_ALL' = 'contains exactly',
+    'NOT_CONTAINS_ALL' = 'does not contains exactly',
+    'CONTAINS_ANY' = 'contains any',
+    'NOT_CONTAINS_ANY' = 'does not contains any',
+    'MATCHES_ANY' = 'regex match any',
+    'NOT_MATCHES_ANY' = 'does not regex match any',
+    'MATCHES_ALL' = 'regex match exactly',
+    'NOT_MATCHES_ALL' = 'does not regex match exactly',
     'ONE_OF' = 'is one of',
     'NOT_ONE_OF' = 'is not one of',
     'LESS_THAN' = '<',
-    'LESS_THAN_EQUALS' = '<=',
-    'GREATED_THAN' = '>',
-    'GREATER_THAN_EQUALS' = '>=',
+    'LESS_THAN_EQUAL' = '<=',
+    'GREATER_THAN' = '>',
+    'GREATER_THAN_EQUAL' = '>=',
 }
 export enum PolicyDefinitionType {
     'EXPRESSION' = 'expression',
