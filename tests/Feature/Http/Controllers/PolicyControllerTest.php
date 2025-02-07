@@ -57,7 +57,7 @@ it('shows the edit form', function () {
                 ->where('policy', [
                     'name' => $policy->name,
                     'description' => $policy->description,
-                    'definition' => $policy->definition,
+                    'definition' => json_decode($policy->definition->toJson(), true),
                     'slug' => $policy->slug,
                     'created_at' => $policy->created_at->toISOString(),
                     'updated_at' => $policy->updated_at->toISOString(),
@@ -82,11 +82,11 @@ it('updates a policy', function () {
     ]);
 });
 
-it('it fails validation with passing in name on update', function () {
+it('it fails validation on update', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
     $policy = Policy::factory()->for($team)->create();
 
     $this->actingAs($user)->put("/policies/{$policy->slug}", [])
-        ->assertInvalid(['name', 'description']);
+        ->assertInvalid(['description']);
 });

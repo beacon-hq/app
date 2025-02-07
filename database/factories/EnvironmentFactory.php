@@ -15,8 +15,10 @@ class EnvironmentFactory extends Factory
 
     public function definition(): array
     {
+        $name = $this->faker->domainWord() . '-' . $this->faker->domainWord();
+
         return [
-            'name' => $this->faker->name(),
+            'name' => $name,
             'description' => $this->faker->text(),
             'color' => $this->faker->hexColor(),
             'team_id' => Team::factory(),

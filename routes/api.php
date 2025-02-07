@@ -11,4 +11,4 @@ Route::prefix('/features')->name('feature-flags.')->group(function () {
     Route::post('/{slug}', [FeatureFlagController::class, 'show'])->name('show');
 });
 
-Route::resource('/settings/tokens', AccessTokenController::class)->only(['store', 'show', 'destroy']);
+Route::resource('/settings/tokens', AccessTokenController::class)->except(['create', 'update', 'index', 'edit']);

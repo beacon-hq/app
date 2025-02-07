@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 use App\Values\AppContext;
 use App\Values\FeatureFlagContext;
+use App\Values\FeatureFlagResponse;
 use App\Values\PolicyDefinition;
+use App\Values\PolicyValue;
 use App\Values\TypescriptTransformer;
 use Bag\Attributes\MapName;
 
@@ -26,5 +28,7 @@ arch()
         AppContext::class,
         FeatureFlagContext::class,
         PolicyDefinition::class,
+        PolicyValue::class,
+        FeatureFlagResponse::class,
         TypescriptTransformer::class,
     ]);

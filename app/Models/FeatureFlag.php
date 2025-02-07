@@ -8,6 +8,8 @@ use App\Models\Pivot\FeatureFlagFeatureStatus;
 use App\Models\Pivot\FeatureFlagStatusPolicy;
 use App\Models\Traits\BelongsToTeam;
 use App\Models\Traits\HasSlug;
+use App\Values\FeatureType as FeatureTypeValue;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -117,5 +119,43 @@ class FeatureFlag extends Model
             'id' => 'string',
             'last_seen_at' => 'datetime',
         ];
+    }
+
+    public function scopeWhereEnvironment($query, string $environment): void
+    {
+        $query->whereHas('environments', function ($query) use ($environment) {
+            $query->where('name', $environment);
+        });
+    }
+
+    public function scopeWhereApplication($query, string $application): void
+    {
+        $query->whereHas('applications', function ($query) use ($application) {
+            $query->where('name', $application);
+        });
+    }
+
+    public function scopeWhereTags($query, iterable $tags): void
+    {
+        $query->whereHas('tags', function (Builder $query) use ($tags) {
+            $query->whereIn('slug', \iterator_to_array($tags));
+        });
+    }
+
+    public function scopeWhereName($query, string $name): void
+    {
+        $query->where('name', 'LIKE', "%$name%");
+    }
+
+    public function scopeWhereSlug($query, string $slug): void
+    {
+        $query->where('slug', $slug);
+    }
+
+    public function scopeWhereFeatureType($query, FeatureTypeValue $featureType): void
+    {
+        $query->whereHas('featureType', function ($query) use ($featureType) {
+            $query->where('id', $featureType->id);
+        });
     }
 }

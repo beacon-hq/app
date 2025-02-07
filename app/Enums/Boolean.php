@@ -8,7 +8,7 @@ use App\Enums\Traits\AsValue;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 #[TypeScript]
-enum PolicyDefinitionBoolean: string
+enum Boolean: string
 {
     use AsValue;
 

@@ -1,8 +1,8 @@
 import {
+    Boolean,
     Policy,
     PolicyCollection,
     PolicyDefinition,
-    PolicyDefinitionBoolean,
     PolicyDefinitionCollection,
     PolicyDefinitionMatchOperator,
 } from '@/Application';
@@ -203,7 +203,7 @@ export function DefinitionForm({
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectGroup>
-                                                    {Object.entries(PolicyDefinitionBoolean).map(([, operator]) => {
+                                                    {Object.entries(Boolean).map(([, operator]) => {
                                                         return (
                                                             <SelectItem key={operator} value={operator}>
                                                                 {operator}

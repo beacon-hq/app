@@ -24,3 +24,4 @@ yarn-error.log
 *.bak
 docs/.vitepress/dist/
 docs/.vitepress/cache/
+/tests/output

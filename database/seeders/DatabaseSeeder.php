@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App;
 use App\Models\Application;
 use App\Models\Environment;
 use App\Models\FeatureFlag;
+use App\Models\FeatureFlagStatus;
 use App\Models\FeatureType;
 use App\Models\Tag;
 use App\Models\Team;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\UniqueConstraintViolationException;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Lottery;
 
 class DatabaseSeeder extends Seeder
@@ -63,7 +65,7 @@ class DatabaseSeeder extends Seeder
         FeatureFlag::all()->each(function (FeatureFlag $flag) {
             Lottery::odds(8, 10)->winner(function () use ($flag) {
                 try {
-                    $flag->statuses()->attach(App\Models\FeatureFlagStatus::create([
+                    $flag->statuses()->attach(FeatureFlagStatus::create([
                         'application_id' => Application::inRandomOrder()->first()->id,
                         'environment_id' => Environment::inRandomOrder()->first()->id,
                         'feature_flag_id' => $flag->id,
@@ -80,5 +82,14 @@ class DatabaseSeeder extends Seeder
                 }
             })->choose(3);
         });
+
+        User::factory()
+            ->hasAttached($team)
+            ->create([
+                'first_name' => 'Davey',
+                'last_name' => 'Shafik',
+                'email' => 'davey@php.net',
+                'password' => 'qtf7vnd!ejn5TEN*dbh',
+            ]);
     }
 }

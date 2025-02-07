@@ -76,12 +76,7 @@ export default function Index({
                         <Card className="mt-8">
                             <CardContent className="px-12 py-4">
                                 <Deferred data="featureFlags" fallback={<div>Loading</div>}>
-                                    <Table
-                                        featureFlags={featureFlags}
-                                        totalRows={featureFlagsCount}
-                                        page={page}
-                                        pageSize={perPage}
-                                    />
+                                    <Table featureFlags={featureFlags} />
                                 </Deferred>
                             </CardContent>
                         </Card>

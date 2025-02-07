@@ -1,6 +1,9 @@
 import { SVGAttributes } from 'react';
 
-export default function ApplicationLogo({ expanded, ...props }: { expanded: boolean } & SVGAttributes<SVGElement>) {
+export default function ApplicationLogo({
+    expanded = false,
+    ...props
+}: { expanded?: boolean } & SVGAttributes<SVGElement>) {
     return (
         <svg
             viewBox={!expanded ? '0 0 500 742' : '0 0 2173 742'}
