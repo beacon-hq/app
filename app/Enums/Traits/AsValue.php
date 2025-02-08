@@ -13,10 +13,10 @@ use ArchTech\Enums\Values;
 
 trait AsValue
 {
+    use Comparable;
+    use From;
     use InvokableCases;
     use Names;
-    use Values;
     use Options;
-    use From;
-    use Comparable;
+    use Values;
 }

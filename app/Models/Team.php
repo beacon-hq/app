@@ -38,9 +38,9 @@ use Laravel\Sanctum\NewAccessToken;
  */
 class Team extends Model
 {
+    use HasApiTokens;
     use HasFactory;
     use HasUlids;
-    use HasApiTokens;
 
     protected $fillable = [
         'name',

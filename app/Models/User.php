@@ -52,10 +52,10 @@ use Illuminate\Support\Carbon;
  */
 class User extends Authenticatable
 {
+    use BelongsToTeam;
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
     use Notifiable;
-    use BelongsToTeam;
 
     /**
      * The attributes that are mass assignable.
@@ -84,6 +84,11 @@ class User extends Authenticatable
         'avatar',
     ];
 
+    public function teams(): BelongsToMany
+    {
+        return $this->belongsToMany(Team::class)->withTimestamps();
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -102,10 +107,5 @@ class User extends Authenticatable
         return Attribute::make(function () {
             return Gravatar::get($this->email);
         });
-    }
-
-    public function teams(): BelongsToMany
-    {
-        return $this->belongsToMany(Team::class)->withTimestamps();
     }
 }

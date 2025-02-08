@@ -25,7 +25,7 @@ use Spatie\TypeScriptTransformer\Attributes\Hidden as HiddenFromTypeScript;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
- * @method static static from(?string $slug = null, ?string $name = null, ?string $display_name = null, ?string $description = null, ?string $last_seen_at = null, string|Color $color = '#e3e3e3', ?EnvironmentCollection<Environment> $environments = null)
+ * @method static static from(?string $slug = null, ?string $name = null, ?string $display_name = null, ?string $description = null, ?string $last_seen_at = null, string|Color $color = '#e3e3e3', ?EnvironmentCollection $environments = null)
  * @method static ApplicationCollection collect(iterable $items)
  */
 #[Collection(ApplicationCollection::class)]
@@ -68,11 +68,6 @@ readonly class Application extends Bag
         ];
     }
 
-    public function toJson($options = 0): string|false
-    {
-        return json_encode($this->toCollection()->except('id')->toArray(), JSON_THROW_ON_ERROR | $options);
-    }
-
     public static function rules(): array
     {
         return [
@@ -80,5 +75,10 @@ readonly class Application extends Bag
             'description' => ['nullable'],
             'color' => ['present'],
         ];
+    }
+
+    public function toJson($options = 0): string|false
+    {
+        return json_encode($this->toCollection()->except('id')->toArray(), JSON_THROW_ON_ERROR | $options);
     }
 }

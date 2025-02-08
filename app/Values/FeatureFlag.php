@@ -25,7 +25,7 @@ use Spatie\TypeScriptTransformer\Attributes\Hidden as HiddenFromTypeScript;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
- * @method static static from(string $name, ?string $slug = null, ?string $description = null, ?string $lastSeenAt = null, ?FeatureType $featureType = null, ?TagCollection<Tag> $tags = null, ?Carbon $createdAt = null, ?Carbon $updatedAt = null)
+ * @method static static from(string $name, ?string $slug = null, ?string $description = null, ?string $lastSeenAt = null, ?FeatureType $featureType = null, ?TagCollection $tags = null, ?Carbon $createdAt = null, ?Carbon $updatedAt = null)
  * @method static FeatureFlagCollection collect(iterable $items)
  */
 #[Collection(FeatureFlagCollection::class)]
@@ -74,11 +74,6 @@ readonly class FeatureFlag extends Bag
         ];
     }
 
-    public function toJson($options = 0): string|false
-    {
-        return json_encode($this->toCollection()->except('id')->toArray(), JSON_THROW_ON_ERROR | $options);
-    }
-
     public static function rules(): array
     {
         return [
@@ -86,5 +81,10 @@ readonly class FeatureFlag extends Bag
             'description' => ['nullable'],
             'feature_type' => ['required'],
         ];
+    }
+
+    public function toJson($options = 0): string|false
+    {
+        return json_encode($this->toCollection()->except('id')->toArray(), JSON_THROW_ON_ERROR | $options);
     }
 }

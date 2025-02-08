@@ -45,10 +45,10 @@ use Illuminate\Support\Carbon;
  */
 class Application extends Model
 {
+    use BelongsToTeam;
     use HasFactory;
     use HasSlug;
     use HasUlids;
-    use BelongsToTeam;
 
     protected $fillable = [
         'name',
@@ -58,14 +58,6 @@ class Application extends Model
         'color',
         'team_id',
     ];
-
-    protected function casts(): array
-    {
-        return [
-            'id' => 'string',
-            'last_seen_at' => 'datetime',
-        ];
-    }
 
     public function environments(): HasManyThrough
     {
@@ -77,5 +69,13 @@ class Application extends Model
             'id',
             'environment_id'
         )->distinct();
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'id' => 'string',
+            'last_seen_at' => 'datetime',
+        ];
     }
 }

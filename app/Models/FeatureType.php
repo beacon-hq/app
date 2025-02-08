@@ -43,10 +43,10 @@ use Illuminate\Support\Carbon;
  */
 class FeatureType extends Model
 {
+    use BelongsToTeam;
     use HasFactory;
     use HasSlug;
     use HasUlids;
-    use BelongsToTeam;
 
     protected $fillable = [
         'name',

@@ -48,14 +48,6 @@ class FeatureFlagStatus extends Model
             ->orderByPivot('order', 'asc');
     }
 
-    protected function casts(): array
-    {
-        return [
-            'id' => 'string',
-            'status' => 'boolean',
-        ];
-    }
-
     public function scopeWhereApplication(Builder $query, string $application): Builder
     {
         return $query->whereHas('application', fn ($query) => $query->where('name', $application));
@@ -73,5 +65,13 @@ class FeatureFlagStatus extends Model
         }
 
         return $query->whereHas('featureFlag', fn ($query) => $query->where('slug', $featureFlag->slug));
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'id' => 'string',
+            'status' => 'boolean',
+        ];
     }
 }

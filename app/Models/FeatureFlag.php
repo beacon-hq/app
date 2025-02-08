@@ -59,10 +59,10 @@ use Illuminate\Support\Carbon;
  */
 class FeatureFlag extends Model
 {
-    use HasUlids;
-    use HasSlug;
-    use HasFactory;
     use BelongsToTeam;
+    use HasFactory;
+    use HasSlug;
+    use HasUlids;
 
     protected $fillable = [
         'name',
@@ -113,14 +113,6 @@ class FeatureFlag extends Model
             ->withTimestamps();
     }
 
-    protected function casts(): array
-    {
-        return [
-            'id' => 'string',
-            'last_seen_at' => 'datetime',
-        ];
-    }
-
     public function scopeWhereEnvironment($query, string $environment): void
     {
         $query->whereHas('environments', function ($query) use ($environment) {
@@ -157,5 +149,13 @@ class FeatureFlag extends Model
         $query->whereHas('featureType', function ($query) use ($featureType) {
             $query->where('id', $featureType->id);
         });
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'id' => 'string',
+            'last_seen_at' => 'datetime',
+        ];
     }
 }
