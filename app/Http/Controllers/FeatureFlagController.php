@@ -8,6 +8,7 @@ use App\Services\ApplicationService;
 use App\Services\EnvironmentService;
 use App\Services\FeatureFlagService;
 use App\Services\FeatureTypeService;
+use App\Services\PolicyService;
 use App\Services\TagService;
 use App\Values\FeatureFlag;
 use Bag\Attributes\WithoutValidation;
@@ -51,13 +52,15 @@ class FeatureFlagController extends Controller
         FeatureFlagService $featureFlagService,
         FeatureTypeService $featureTypeService,
         TagService $tagService,
+        PolicyService $policyService,
         ApplicationService $applicationService,
-        EnvironmentService $environmentService
+        EnvironmentService $environmentService,
     ) {
         return Inertia::render('FeatureFlags/Edit', [
             'featureFlag' => $featureFlagService->findBySlug($featureFlag->slug),
             'featureTypes' => $featureTypeService->all(),
             'tags' => $tagService->all(),
+            'policies' => $policyService->all(),
             'applications' => $applicationService->all(),
             'environments' => $environmentService->all(),
         ]);

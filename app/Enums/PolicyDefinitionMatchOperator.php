@@ -12,8 +12,8 @@ enum PolicyDefinitionMatchOperator: string
 {
     use AsValue;
 
-    case EQUAL = '=';
-    case NOT_EQUAL = '!=';
+    case EQUAL = 'equals';
+    case NOT_EQUAL = 'does not equal';
     case CONTAINS_ALL = 'contains exactly';
     case NOT_CONTAINS_ALL = 'does not contains exactly';
     case CONTAINS_ANY = 'contains any';
@@ -24,8 +24,8 @@ enum PolicyDefinitionMatchOperator: string
     case NOT_MATCHES_ALL = 'does not regex match exactly';
     case ONE_OF = 'is one of';
     case NOT_ONE_OF = 'is not one of';
-    case LESS_THAN = '<';
-    case LESS_THAN_EQUAL = '<=';
-    case GREATER_THAN = '>';
-    case GREATER_THAN_EQUAL = '>=';
+    case LESS_THAN = 'less than';
+    case LESS_THAN_EQUAL = 'less than or equal';
+    case GREATER_THAN = 'greater than';
+    case GREATER_THAN_EQUAL = 'greater than or equal';
 }

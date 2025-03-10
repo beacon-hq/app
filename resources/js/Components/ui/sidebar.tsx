@@ -225,22 +225,40 @@ const SidebarTrigger = React.forwardRef<React.ElementRef<typeof Button>, React.C
     ({ className, onClick, ...props }, ref) => {
         const { toggleSidebar } = useSidebar();
 
+        let modifierKeyPrefix = 'Ctrl'; // control key
+        if (navigator.platform.indexOf('Mac') === 0 || navigator.platform === 'iPhone') {
+            modifierKeyPrefix = '⌘'; // command key
+        }
+
         return (
-            <Button
-                ref={ref}
-                data-sidebar="trigger"
-                variant="ghost"
-                size="icon"
-                className={cn('h-7 w-7', className)}
-                onClick={(event) => {
-                    onClick?.(event);
-                    toggleSidebar();
-                }}
-                {...props}
-            >
-                <PanelLeft />
-                <span className="sr-only">Toggle Sidebar</span>
-            </Button>
+            <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                            ref={ref}
+                            data-sidebar="trigger"
+                            variant="link"
+                            className={cn('h-5 w-5 p-0 mr-2', className)}
+                            onClick={(event) => {
+                                onClick?.(event);
+                                toggleSidebar();
+                            }}
+                            {...props}
+                        >
+                            <PanelLeft className="!w-full !h-full stroke-neutral-400" />
+                            <span className="sr-only">Toggle Sidebar</span>
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="bg-neutral-600 text-md">
+                        Toggle Sidebar
+                        <kbd className="pointer-events-none inline-flex select-none items-center h-full rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 ml-2">
+                            <span className="text-lg">
+                                {modifierKeyPrefix}+{SIDEBAR_KEYBOARD_SHORTCUT.toUpperCase()}
+                            </span>
+                        </kbd>
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
         );
     },
 );

@@ -13,9 +13,9 @@ class PolicyDefinitionFactory extends Factory
     public function definition(): array
     {
         return [
-            'type' => array_rand(PolicyDefinitionType::values()),
+            'type' => $this->faker->randomElement(PolicyDefinitionType::values()),
             'subject' => $this->faker->word(),
-            'operator' => array_rand(PolicyDefinitionMatchOperator::values()),
+            'operator' => $this->faker->randomElement(PolicyDefinitionMatchOperator::values()),
         ];
     }
 }

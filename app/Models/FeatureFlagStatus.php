@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Pivot\FeatureFlagStatusPolicy;
 use App\Values\FeatureFlag as FeatureFlagValue;
+use App\Values\PolicyDefinition;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class FeatureFlagStatus extends Model
 {
@@ -22,6 +21,7 @@ class FeatureFlagStatus extends Model
         'application_id',
         'environment_id',
         'feature_flag_id',
+        'definition',
         'status',
     ];
 
@@ -38,14 +38,6 @@ class FeatureFlagStatus extends Model
     public function featureFlag(): BelongsTo
     {
         return $this->belongsTo(FeatureFlag::class);
-    }
-
-    public function policies(): BelongsToMany
-    {
-        return $this->belongsToMany(Policy::class)
-            ->using(FeatureFlagStatusPolicy::class)
-            ->withPivot('order', 'values')
-            ->orderByPivot('order', 'asc');
     }
 
     public function scopeWhereApplication(Builder $query, string $application): Builder
@@ -72,6 +64,7 @@ class FeatureFlagStatus extends Model
         return [
             'id' => 'string',
             'status' => 'boolean',
+            'definition' => PolicyDefinition::castAsCollection(),
         ];
     }
 }

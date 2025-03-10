@@ -12,10 +12,8 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::table('feature_flag_policy', function (Blueprint $table) {
-            $table->dropForeignIdFor(FeatureFlag::class);
             $table->dropIndex('feature_flag_policy_feature_flag_id_index');
             $table->dropUnique(['feature_flag_id', 'order']);
-            $table->dropColumn('feature_flag_id');
             $table->foreignIdFor(FeatureFlagStatus::class)->constrained()->cascadeOnDelete();
 
             $table->rename('feature_flag_status_policy');

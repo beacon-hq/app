@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils';
 import { FormErrors } from '@/types/global';
 import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { ChevronsUpDown } from 'lucide-react';
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 
 export function Form({
     submit,
@@ -38,6 +38,10 @@ export function Form({
 }) {
     const [tagsOpen, setTagsOpen] = useState(false);
     const [tagFilter, setTagFilter] = useState('');
+
+    useEffect(() => {
+        console.log(tagsOpen);
+    }, [tagsOpen]);
 
     return (
         <form onSubmit={submit} className="flex flex-col space-y-4">

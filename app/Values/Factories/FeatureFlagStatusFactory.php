@@ -7,7 +7,6 @@ namespace App\Values\Factories;
 use App\Values\Application;
 use App\Values\Environment;
 use App\Values\FeatureFlag;
-use App\Values\Policy;
 use Bag\Factory;
 
 class FeatureFlagStatusFactory extends Factory
@@ -18,7 +17,7 @@ class FeatureFlagStatusFactory extends Factory
             'application' => Application::factory()->make(),
             'environment' => Environment::factory()->make(),
             'featureFlag' => FeatureFlag::factory()->make(),
-            'policies' => Policy::collect([Policy::factory()->make()]),
+            'definition' => null,
             'status' => $this->faker->boolean(),
             'id' => $this->faker->uuid(),
         ];

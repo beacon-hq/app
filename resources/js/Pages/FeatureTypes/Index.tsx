@@ -40,17 +40,19 @@ export default function Index({ featureTypes }: PageProps & { featureTypes: Feat
     };
 
     return (
-        <Authenticated breadcrumbs={[{ name: 'Feature Types' }]}>
+        <Authenticated
+            breadcrumbs={[{ name: 'Feature Types', icon: 'Component' }]}
+            headerAction={
+                <Button onClick={() => setShowSheet(true)}>
+                    <PlusCircle className="mr-2 inline-block h-6 w-6" />
+                    New Feature Type
+                </Button>
+            }
+        >
             <Head title="Feature Types" />
-            <div className="mx-auto w-full py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden p-4 shadow-sm sm:rounded-lg">
-                        <div className="flex justify-end">
-                            <Button onClick={() => setShowSheet(true)}>
-                                <PlusCircle className="mr-2 inline-block h-6 w-6" />
-                                New Feature Type
-                            </Button>
-                        </div>
+            <div className="w-full">
+                <div className="">
+                    <div className="overflow-hidden">
                         <Card className="mt-8">
                             <CardContent className="px-12 py-4">
                                 <Table featureTypes={featureTypes} />

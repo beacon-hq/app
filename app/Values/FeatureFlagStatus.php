@@ -7,6 +7,7 @@ namespace App\Values;
 use App\Models\FeatureFlagStatus as FeatureFlagStatusModel;
 use App\Values\Collections\FeatureFlagStatusCollection;
 use App\Values\Collections\PolicyCollection;
+use App\Values\Collections\PolicyDefinitionCollection;
 use App\Values\Factories\FeatureFlagStatusFactory;
 use Bag\Attributes\Cast;
 use Bag\Attributes\Collection;
@@ -36,9 +37,9 @@ readonly class FeatureFlagStatus extends Bag
         public ?Application $application,
         public ?Environment $environment,
         public ?FeatureFlag $featureFlag,
-        #[Cast(CollectionOf::class, Policy::class)]
-        public ?PolicyCollection $policies,
         public bool $status,
+        #[Cast(CollectionOf::class, PolicyDefinition::class)]
+        public ?PolicyDefinitionCollection $definition = null,
         public ?string $id = null,
     ) {
     }
@@ -50,7 +51,7 @@ readonly class FeatureFlagStatus extends Bag
             'id' => $featureFlagStatus->id,
             'application' => $featureFlagStatus->application,
             'environment' => $featureFlagStatus->environment,
-            'policies' => $featureFlagStatus->policies,
+            'definition' => $featureFlagStatus->definition,
             'status' => $featureFlagStatus->status,
         ];
     }

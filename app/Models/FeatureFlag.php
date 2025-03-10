@@ -70,6 +70,7 @@ class FeatureFlag extends Model
         'last_seen_at',
         'feature_type_id',
         'team_id',
+        'status',
     ];
 
     public function featureType(): BelongsTo

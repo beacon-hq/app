@@ -27,6 +27,7 @@ export default function Index({
 }) {
     const [showSheet, setShowSheet] = useState(false);
     const { data, setData, post, errors, reset, processing, transform } = useForm<FeatureFlag>({
+        status: false,
         description: '',
         feature_type: null,
         last_seen_at: '',
@@ -62,17 +63,19 @@ export default function Index({
     };
 
     return (
-        <Authenticated breadcrumbs={[{ name: 'Feature Flags' }]}>
+        <Authenticated
+            breadcrumbs={[{ name: 'Feature Flags', icon: 'Flag' }]}
+            headerAction={
+                <Button onClick={() => setShowSheet(true)}>
+                    <PlusCircle className="mr-2 inline-block h-6 w-6" />
+                    New Feature Flag
+                </Button>
+            }
+        >
             <Head title="Feature Flags" />
-            <div className="mx-auto w-full py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden p-4 shadow-sm sm:rounded-lg">
-                        <div className="flex justify-end">
-                            <Button onClick={() => setShowSheet(true)}>
-                                <PlusCircle className="mr-2 inline-block h-6 w-6" />
-                                New Feature Flag
-                            </Button>
-                        </div>
+            <div className="w-full">
+                <div className="">
+                    <div className="overflow-hidden">
                         <Card className="mt-8">
                             <CardContent className="px-12 py-4">
                                 <Deferred data="featureFlags" fallback={<div>Loading</div>}>

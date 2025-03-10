@@ -38,17 +38,19 @@ export default function Index({ tags }: PageProps & { tags: TagCollection }) {
     };
 
     return (
-        <Authenticated breadcrumbs={[{ name: 'Tags' }]}>
+        <Authenticated
+            breadcrumbs={[{ name: 'Tags', icon: 'Tag' }]}
+            headerAction={
+                <Button onClick={() => setShowSheet(true)}>
+                    <PlusCircle className="mr-2 inline-block h-6 w-6" />
+                    New Tag
+                </Button>
+            }
+        >
             <Head title="Tags" />
-            <div className="mx-auto w-full py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden p-4 shadow-sm sm:rounded-lg">
-                        <div className="flex justify-end">
-                            <Button onClick={() => setShowSheet(true)}>
-                                <PlusCircle className="mr-2 inline-block h-6 w-6" />
-                                New Tag
-                            </Button>
-                        </div>
+            <div className="w-full">
+                <div className="">
+                    <div className="overflow-hidden">
                         <Card className="mt-8">
                             <CardContent className="px-12 py-4">
                                 <Table tags={tags} />

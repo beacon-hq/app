@@ -65,18 +65,20 @@ export default function Index({ settings }: PageProps & { settings: { tokens: Ac
     };
 
     return (
-        <Authenticated breadcrumbs={[{ name: 'Settings' }, { name: 'API Tokens' }]}>
+        <Authenticated
+            breadcrumbs={[{ name: 'Settings', icon: 'Settings' }, { name: 'API Tokens' }]}
+            headerAction={
+                <Button onClick={() => setShowTokenDialog(true)}>
+                    <PlusCircle className="mr-2 inline-block h-6 w-6" />
+                    New API Token
+                </Button>
+            }
+        >
             <Head title="Settings" />
             <div className="mx-auto w-full py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden p-4 shadow-sm sm:rounded-lg">
-                        <div className="flex justify-end">
-                            <Button onClick={() => setShowTokenDialog(true)}>
-                                <PlusCircle className="mr-2 inline-block h-6 w-6" />
-                                New API Token
-                            </Button>
-                        </div>
-                        <Card className="mt-8">
+                <div className="">
+                    <div className="overflow-hidden">
+                        <Card className="">
                             <CardContent className="px-12 py-4">
                                 <Table tokens={tokens} onDelete={handleDelete} />
                             </CardContent>

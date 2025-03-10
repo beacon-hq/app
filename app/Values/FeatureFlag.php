@@ -54,6 +54,7 @@ readonly class FeatureFlag extends Bag
         public ?FeatureFlagStatusCollection $statuses = null,
         public ?Carbon $createdAt = null,
         public ?Carbon $updatedAt = null,
+        public bool $status = false,
     ) {
     }
 
@@ -68,9 +69,10 @@ readonly class FeatureFlag extends Bag
             'last_seen_at' => $featureFlag->last_seen_at,
             'feature_type' => FeatureType::from($featureFlag->featureType),
             'tags' => Tag::collect($featureFlag->tags),
-            'statuses' => FeatureFlagStatus::collect($featureFlag->statuses()->with('application')->get()->sortBy(['application.name', 'environment.name'])->values()),
+            'statuses' => FeatureFlagStatus::collect($featureFlag->statuses()->with(['application'])->get()->sortBy(['application.name', 'environment.name'])->values()),
             'created_at' => $featureFlag->created_at,
             'updated_at' => $featureFlag->updated_at,
+            'status' => $featureFlag->status ?? false,
         ];
     }
 
@@ -80,6 +82,7 @@ readonly class FeatureFlag extends Bag
             'name' => ['required_without:slug', 'exclude_with:slug'],
             'description' => ['nullable'],
             'feature_type' => ['required'],
+            'status' => ['boolean', 'nullable'],
         ];
     }
 

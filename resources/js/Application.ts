@@ -53,6 +53,7 @@ export type FeatureFlag = {
     statuses: FeatureFlagStatusCollection | null;
     created_at: string | null;
     updated_at: string | null;
+    status: boolean;
 };
 export type FeatureFlagCollection = FeatureFlag[];
 export type FeatureFlagContext = {
@@ -76,8 +77,8 @@ export type FeatureFlagStatus = {
     application: Application | null;
     environment: Environment | null;
     feature_flag: FeatureFlag | null;
-    policies: PolicyCollection | null;
     status: boolean;
+    definition: PolicyDefinitionCollection | null;
     id: string | null;
 };
 export type FeatureFlagStatusCollection = FeatureFlagStatus[];
@@ -100,17 +101,19 @@ export type Policy = {
     definition: PolicyDefinitionCollection | null;
     created_at: string | null;
     updated_at: string | null;
+    id: string | null;
 };
 export type PolicyCollection = Policy[];
 export type PolicyDefinition = {
     type: PolicyDefinitionType;
     subject: string;
     operator?: PolicyDefinitionMatchOperator;
+    values: string[];
 };
 export type PolicyDefinitionCollection = PolicyDefinition[];
 export enum PolicyDefinitionMatchOperator {
-    'EQUAL' = '=',
-    'NOT_EQUAL' = '!=',
+    'EQUAL' = 'equals',
+    'NOT_EQUAL' = 'does not equal',
     'CONTAINS_ALL' = 'contains exactly',
     'NOT_CONTAINS_ALL' = 'does not contains exactly',
     'CONTAINS_ANY' = 'contains any',
@@ -121,15 +124,27 @@ export enum PolicyDefinitionMatchOperator {
     'NOT_MATCHES_ALL' = 'does not regex match exactly',
     'ONE_OF' = 'is one of',
     'NOT_ONE_OF' = 'is not one of',
-    'LESS_THAN' = '<',
-    'LESS_THAN_EQUAL' = '<=',
-    'GREATER_THAN' = '>',
-    'GREATER_THAN_EQUAL' = '>=',
+    'LESS_THAN' = 'less than',
+    'LESS_THAN_EQUAL' = 'less than or equal',
+    'GREATER_THAN' = 'greater than',
+    'GREATER_THAN_EQUAL' = 'greater than or equal',
 }
 export enum PolicyDefinitionType {
     'EXPRESSION' = 'expression',
     'OPERATOR' = 'operator',
     'POLICY' = 'policy',
+}
+export type PolicyValue = {
+    policy_definition: PolicyDefinition;
+    values: Array<any>;
+};
+export type PolicyValueCollection = PolicyValue[];
+export enum PolicyValueType {
+    'STRING' = 'string',
+    'FLOAT' = 'float',
+    'INTEGER' = 'integer',
+    'BOOLEAN' = 'boolean',
+    'ARRAY' = 'array',
 }
 export type Tag = {
     slug: string | null;

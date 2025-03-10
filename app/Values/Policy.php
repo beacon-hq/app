@@ -22,7 +22,7 @@ use Illuminate\Support\Carbon;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
- * @method static static from(?string $slug = null, ?string $name = null, ?string $description = null, ?string $id = null, ?PolicyDefinitionCollection<PolicyDefinition> $definition = null, ?Carbon $createdAt = null, ?Carbon $updatedAt = null)
+ * @method static static from(?string $slug = null, ?string $name = null, ?string $description = null, ?string $id = null, ?PolicyDefinitionCollection $definition = null, ?Carbon $createdAt = null, ?Carbon $updatedAt = null)
  * @method static PolicyCollection collect(iterable $items)
  */
 #[Collection(PolicyCollection::class)]
@@ -42,6 +42,7 @@ readonly class Policy extends Bag
         public ?PolicyDefinitionCollection $definition = null,
         public ?Carbon $createdAt = null,
         public ?Carbon $updatedAt = null,
+        public ?string $id = null,
     ) {
     }
 
@@ -52,9 +53,12 @@ readonly class Policy extends Bag
             'slug' => $policy->slug,
             'name' => $policy->name,
             'description' => $policy->description,
-            'definition' => PolicyDefinitionCollection::make($policy->definition),
+            'definition' => !isset($policy->pivot->values) ? PolicyDefinitionCollection::make($policy->definition) : PolicyDefinitionCollection::wrap(collect($policy->pivot->values)->map(function (PolicyValue $policyValue) {
+                return $policyValue->policyDefinition->with(values: $policyValue->values);
+            }))->toArray(),
             'created_at' => $policy->created_at,
             'updated_at' => $policy->updated_at,
+            'id' => $policy->id,
         ];
     }
 

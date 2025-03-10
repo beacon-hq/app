@@ -63,7 +63,7 @@ class FeatureFlagRepository
 
     public function findBySlug(string $slug): FeatureFlagValue
     {
-        return FeatureFlagValue::from(FeatureFlag::with('tags')->where('slug', $slug)->firstOrFail());
+        return FeatureFlagValue::from(FeatureFlag::with(['tags', 'statuses'])->where('slug', $slug)->firstOrFail());
     }
 
     public function update(FeatureFlagValue $featureFlag): FeatureFlagValue
@@ -78,8 +78,11 @@ class FeatureFlagRepository
 
         $flag->update($data);
 
-        $tags = $this->tagService->findBySlug(... $featureFlag->tags->pluck('slug')->toArray());
-        $flag->tags()->sync($tags instanceof Tag ? [$tags->id] : $tags->pluck('id'));
+        $tags = $featureFlag->tags->pluck('slug')->toArray();
+        if (count($tags) > 0) {
+            $tags = $this->tagService->findBySlug(... $tags);
+            $flag->tags()->sync($tags instanceof Tag ? [$tags->id] : $tags->pluck('id'));
+        }
 
         if ($featureFlag->statuses?->count() > 0) {
             $featureFlagId = resolve(FeatureFlagService::class)->findBySlug($featureFlag->slug)->id;
@@ -92,6 +95,7 @@ class FeatureFlagRepository
                     'environment_id' => $this->environmentService->findBySlug($status->environment->slug)->id,
                     'feature_flag_id' => $featureFlagId,
                     'status' => $status->status,
+                    'definition' => $status->definition,
                 ]);
             });
 

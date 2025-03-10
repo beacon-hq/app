@@ -1,4 +1,6 @@
 import ApplicationLogo from '@/Components/ApplicationLogo';
+import Footer from '@/Components/Footer';
+import Icon from '@/Components/Icon';
 import { Avatar, AvatarFallback, AvatarImage } from '@/Components/ui/avatar';
 import {
     Breadcrumb,
@@ -35,6 +37,7 @@ import {
     useSidebar,
 } from '@/Components/ui/sidebar';
 import { Toaster } from '@/Components/ui/sonner';
+import { cn } from '@/lib/utils';
 import { Link, usePage } from '@inertiajs/react';
 import {
     AppWindowMac,
@@ -52,14 +55,21 @@ import {
     Tag,
     Users,
 } from 'lucide-react';
-import { Fragment, PropsWithChildren, useEffect } from 'react';
+import React, { Fragment, PropsWithChildren, useEffect } from 'react';
 import { toast } from 'sonner';
 
 export default function Authenticated({
     breadcrumbs,
     header,
+    icon,
+    headerAction,
     children,
-}: PropsWithChildren<{ breadcrumbs?: { name: string; href?: string }[]; header?: string }>) {
+}: PropsWithChildren<{
+    breadcrumbs?: { name: string; href?: string; icon?: string }[];
+    header?: string;
+    icon?: string;
+    headerAction?: React.ReactNode;
+}>) {
     const user = usePage().props.auth.user;
     const alert = usePage<any>().props.alert;
     usePage<any>().props.alert = null; // clear the alert after it's been handled
@@ -74,6 +84,9 @@ export default function Authenticated({
 
     if (!breadcrumbs && header) {
         breadcrumbs = [{ name: header }];
+        if (icon !== undefined) {
+            breadcrumbs[0].icon = icon;
+        }
     }
 
     return (
@@ -81,7 +94,7 @@ export default function Authenticated({
             <Sidebar collapsible="icon" variant="inset">
                 <SidebarHeader>
                     <SidebarMenu>
-                        <SidebarMenuItem>
+                        <SidebarMenuItem className="data-[state=open]:flex data-[state=open]:flex-row data-[state=open]:justify-between items-center">
                             <Link href={route('dashboard')}>
                                 <ApplicationLogo
                                     className="fill-current h-12 w-auto text-gray-800 dark:text-gray-200"
@@ -278,40 +291,64 @@ export default function Authenticated({
             </Sidebar>
             <div className="flex flex-col w-full">
                 {(header || breadcrumbs) && (
-                    <header className="bg-background w-full sticky top-0 z-50 flex flex-row justify-between items-center">
-                        <div className="pt-7">
+                    <div className="bg-background w-full sticky top-0 z-50 flex flex-row justify-between items-center">
+                        <div className="pt-7 ml-12">
                             <SidebarTrigger />
-                            {breadcrumbs && (
-                                <Breadcrumb className="inline-block">
-                                    <BreadcrumbList>
-                                        {breadcrumbs.map((breadcrumb: any, index: number) => (
-                                            <Fragment key={breadcrumb.name}>
-                                                <BreadcrumbItem className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                                                    {breadcrumb.href && (
-                                                        <BreadcrumbLink asChild>
-                                                            <Link href={breadcrumb.href}>{breadcrumb.name}</Link>
-                                                        </BreadcrumbLink>
-                                                    )}
-                                                    {!breadcrumb.href && (
-                                                        <BreadcrumbPage>{breadcrumb.name}</BreadcrumbPage>
-                                                    )}
-                                                </BreadcrumbItem>
-                                                {breadcrumbs.length - 1 !== index && <BreadcrumbSeparator />}
-                                            </Fragment>
-                                        ))}
-                                    </BreadcrumbList>
-                                </Breadcrumb>
-                            )}
-                            {!breadcrumbs && (
-                                <h1 className="inline-block text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                                    {header}
-                                </h1>
-                            )}
                         </div>
-                    </header>
+                    </div>
                 )}
 
-                <main className="w-full block bg-background">{children}</main>
+                <header className="bg-background w-full px-12 pt-6 flex justify-between">
+                    {breadcrumbs && (
+                        <Breadcrumb className="inline-block">
+                            <BreadcrumbList>
+                                {breadcrumbs.map((breadcrumb: any, index: number) => (
+                                    <Fragment key={breadcrumb.name}>
+                                        <BreadcrumbItem className="text-3xl leading-tight text-gray-800 dark:text-gray-200">
+                                            {breadcrumb.href && (
+                                                <BreadcrumbLink asChild>
+                                                    <>
+                                                        {breadcrumb.icon && (
+                                                            <Icon
+                                                                name={breadcrumb.icon}
+                                                                className={cn('h-8 w-8 inline-block', {})}
+                                                            />
+                                                        )}
+                                                        <Link href={breadcrumb.href}>{breadcrumb.name}</Link>
+                                                    </>
+                                                </BreadcrumbLink>
+                                            )}
+                                            {!breadcrumb.href && (
+                                                <BreadcrumbPage
+                                                    className={cn('flex flex-row items-center gap-2', {
+                                                        'font-semibold': breadcrumbs.length - 1 === index,
+                                                    })}
+                                                >
+                                                    {breadcrumb.icon && (
+                                                        <Icon
+                                                            name={breadcrumb.icon}
+                                                            className={cn('h-8 w-8 inline-block', {})}
+                                                        />
+                                                    )}
+                                                    {breadcrumb.name}
+                                                </BreadcrumbPage>
+                                            )}
+                                        </BreadcrumbItem>
+                                        {breadcrumbs.length - 1 !== index && <BreadcrumbSeparator />}
+                                    </Fragment>
+                                ))}
+                            </BreadcrumbList>
+                        </Breadcrumb>
+                    )}
+                    {!breadcrumbs && (
+                        <h1 className="inline-block text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                            {header}
+                        </h1>
+                    )}
+                    {headerAction}
+                </header>
+                <main className="w-full min-h-screen block bg-background px-12 pb-6">{children}</main>
+                <Footer />
             </div>
 
             {alert && <Toaster richColors closeButton />}

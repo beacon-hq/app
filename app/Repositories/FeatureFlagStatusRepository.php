@@ -37,7 +37,10 @@ class FeatureFlagStatusRepository
                     static $i = 0;
 
                     if ($policyDefinition->type === PolicyDefinitionType::EXPRESSION) {
-                        return $this->evaluateExpression($policy->pivot->values[$i++], $context);
+                        /** @var PolicyValue[] $values */
+                        $values = $policy->pivot->values;
+
+                        return $this->evaluateExpression($values[$i++], $context);
                     }
 
                     return $policyDefinition;
@@ -86,7 +89,7 @@ class FeatureFlagStatusRepository
         }
 
         return $policyValue->with(
-            status: $this->compareExpressionValue(operator: $policyValue->policyDefinition->operator, contextValue: $contextValue, policyValues: $policyValue->value)
+            status: $this->compareExpressionValue(operator: $policyValue->policyDefinition->operator, contextValue: $contextValue, policyValues: $policyValue->values)
         );
     }
 

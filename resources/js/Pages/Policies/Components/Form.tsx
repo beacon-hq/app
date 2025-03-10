@@ -1,10 +1,10 @@
 import { Policy, PolicyCollection } from '@/Application';
 import InputError from '@/Components/InputError';
+import { PolicyDefinitionForm } from '@/Components/PolicyDefinitionForm';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { Textarea } from '@/Components/ui/textarea';
-import { DefinitionForm } from '@/Pages/Policies/Components/DefinitionForm';
 import { cn } from '@/lib/utils';
 import { FormErrors } from '@/types/global';
 import { GripVertical } from 'lucide-react';
@@ -30,7 +30,7 @@ export function Form({
     subjects?: string[];
 }) {
     return (
-        <form onSubmit={submit} className="flex flex-col space-y-4">
+        <form onSubmit={(e) => e.preventDefault()} className="flex flex-col space-y-4">
             <div>
                 <Label htmlFor="name" aria-required>
                     Policy Name
@@ -58,20 +58,19 @@ export function Form({
                 />
             </div>
             {data.slug && (
-                <DefinitionForm
+                <PolicyDefinitionForm
                     data={data}
                     setData={setData}
                     errors={errors}
                     processing={processing}
                     policies={policies}
-                    subjects={subjects}
                 />
             )}
             <div className="flex justify-end">
                 <Button variant="link" className="mr-2" type="button" onClick={onCancel}>
                     Cancel
                 </Button>
-                <Button type="submit" className="w-24" disabled={processing}>
+                <Button type="submit" className="w-24" disabled={processing} onClick={submit}>
                     {data.slug ? 'Update' : 'Create'}
                 </Button>
             </div>

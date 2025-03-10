@@ -13,6 +13,7 @@ import React, { FormEvent, useState } from 'react';
 export default function Index({ policies }: PageProps & { policies: PolicyCollection }) {
     const [showSheet, setShowSheet] = useState(false);
     const { data, setData, post, errors, reset, processing } = useForm<Policy>({
+        id: null,
         slug: null,
         name: '',
         description: '',
@@ -37,17 +38,19 @@ export default function Index({ policies }: PageProps & { policies: PolicyCollec
     };
 
     return (
-        <Authenticated breadcrumbs={[{ name: 'Policies' }]}>
+        <Authenticated
+            breadcrumbs={[{ name: 'Policies', icon: 'SlidersHorizontal' }]}
+            headerAction={
+                <Button onClick={() => setShowSheet(true)}>
+                    <PlusCircle className="mr-2 inline-block h-6 w-6" />
+                    New Policy
+                </Button>
+            }
+        >
             <Head title="Policies" />
-            <div className="mx-auto w-full py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden p-4 shadow-sm sm:rounded-lg">
-                        <div className="flex justify-end">
-                            <Button onClick={() => setShowSheet(true)}>
-                                <PlusCircle className="mr-2 inline-block h-6 w-6" />
-                                New Policy
-                            </Button>
-                        </div>
+            <div className="mx-auto w-full">
+                <div className="">
+                    <div className="overflow-hidden">
                         <Card className="mt-8">
                             <CardContent className="px-12 py-4">
                                 <Table policies={policies} />

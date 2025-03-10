@@ -2,13 +2,17 @@ import { cn } from '@/lib/utils';
 import * as React from 'react';
 
 const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('rounded-lg border bg-card text-card-foreground shadow', className)} {...props} />
+    <div
+        ref={ref}
+        className={cn('rounded-lg border bg-card text-card-foreground shadow-xs flex flex-col', className)}
+        {...props}
+    />
 ));
 Card.displayName = 'Card';
 
 const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
     ({ className, ...props }, ref) => (
-        <div ref={ref} className={cn('flex flex-col space-y-1.5 p-6', className)} {...props} />
+        <div ref={ref} className={cn('flex flex-col space-y-1.5 px-6 py-4', className)} {...props} />
     ),
 );
 CardHeader.displayName = 'CardHeader';
@@ -32,11 +36,23 @@ const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDi
 );
 CardContent.displayName = 'CardContent';
 
-const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-    ({ className, ...props }, ref) => (
-        <div ref={ref} className={cn('flex items-center p-6 pt-0', className)} {...props} />
-    ),
-);
+const CardFooter = React.forwardRef<
+    HTMLDivElement,
+    React.HTMLAttributes<HTMLDivElement> & { variant?: 'default' | 'inset' }
+>(({ className, variant = 'default', ...props }, ref) => (
+    <div
+        ref={ref}
+        className={cn(
+            'flex items-center',
+            {
+                'p-6 pt-0': variant === 'default',
+                'px-6 py-2 rounded-b-lg': variant === 'inset',
+            },
+            className,
+        )}
+        {...props}
+    />
+));
 CardFooter.displayName = 'CardFooter';
 
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent };

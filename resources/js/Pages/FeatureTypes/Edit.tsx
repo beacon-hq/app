@@ -28,11 +28,16 @@ export default function Edit({ featureType }: { featureType: FeatureType }) {
     };
 
     return (
-        <Authenticated breadcrumbs={[{ name: 'Feature Types', href: route('feature-types.index') }, { name: 'Edit' }]}>
+        <Authenticated
+            breadcrumbs={[
+                { name: 'Feature Types', href: route('feature-types.index'), icon: 'Component' },
+                { name: featureType.name as string },
+            ]}
+        >
             <Head title="Feature Types | Edit" />
-            <div className="mx-auto py-12 md:w-7/12">
+            <div className="mx-auto md:w-7/12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden p-4 shadow-sm sm:rounded-lg">
+                    <div className="overflow-hidden p-4">
                         <Card className="p-8">
                             <CardTitle className="text-2xl">Edit Feature Type</CardTitle>
                             <CardContent className="py-4">

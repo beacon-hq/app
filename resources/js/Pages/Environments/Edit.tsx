@@ -23,11 +23,16 @@ export default function Edit({ environment }: { environment: Environment }) {
     };
 
     return (
-        <Authenticated breadcrumbs={[{ name: 'Environments', href: route('environments.index') }, { name: 'Edit' }]}>
+        <Authenticated
+            breadcrumbs={[
+                { name: 'Environments', href: route('environments.index'), icon: 'Globe' },
+                { name: environment.name as string },
+            ]}
+        >
             <Head title="Environments" />
-            <div className="mx-auto py-12 md:w-7/12">
+            <div className="mx-auto md:w-7/12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden p-4 shadow-sm sm:rounded-lg">
+                    <div className="overflow-hidden p-4 sm:rounded-lg">
                         <Card className="p-8">
                             <CardTitle className="text-2xl">Edit Environment</CardTitle>
                             <CardContent className="py-4">

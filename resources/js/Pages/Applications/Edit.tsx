@@ -27,11 +27,16 @@ export default function Edit({ application }: { application: Application }) {
     };
 
     return (
-        <Authenticated breadcrumbs={[{ name: 'Applications', href: route('applications.index') }, { name: 'Edit' }]}>
+        <Authenticated
+            breadcrumbs={[
+                { name: 'Applications', href: route('applications.index'), icon: 'AppWindowMac' },
+                { name: (application.display_name ?? application.name) as string },
+            ]}
+        >
             <Head title="Applications" />
-            <div className="mx-auto py-12 md:w-7/12">
+            <div className="mx-auto md:w-7/12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden p-4 shadow-sm sm:rounded-lg">
+                    <div className="overflow-hidden p-4">
                         <Card className="p-8">
                             <CardTitle className="text-2xl">Edit Application</CardTitle>
                             <CardContent className="py-4">

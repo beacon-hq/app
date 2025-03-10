@@ -8,6 +8,7 @@ import React, { FormEvent } from 'react';
 export default function Edit({ policy, policies }: { policy: Policy; policies: PolicyCollection }) {
     const subjects: string[] = [];
     const { data, setData, put, errors, processing } = useForm<Policy>({
+        id: null,
         slug: policy.slug,
         name: policy.name,
         description: policy.description,
@@ -26,9 +27,14 @@ export default function Edit({ policy, policies }: { policy: Policy; policies: P
     };
 
     return (
-        <Authenticated breadcrumbs={[{ name: 'Policies', href: route('policies.index') }, { name: 'Edit' }]}>
+        <Authenticated
+            breadcrumbs={[
+                { name: 'Policies', href: route('policies.index'), icon: 'SlidersHorizontal' },
+                { name: policy.name as string },
+            ]}
+        >
             <Head title="Policies | Edit" />
-            <div className="mx-auto py-12 md:w-7/12">
+            <div className="mx-auto py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden p-4">
                         <Card className="p-8">

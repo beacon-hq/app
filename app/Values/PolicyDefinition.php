@@ -11,10 +11,13 @@ use App\Values\Factories\PolicyDefinitionFactory;
 use Bag\Attributes\Collection;
 use Bag\Attributes\Factory;
 use Bag\Attributes\MapName;
+use Bag\Attributes\StripExtraParameters;
 use Bag\Bag;
+use Bag\Collection as BagCollection;
 use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
 use Illuminate\Validation\Rule;
+use Spatie\TypeScriptTransformer\Attributes\LiteralTypeScriptType;
 use Spatie\TypeScriptTransformer\Attributes\Optional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
@@ -25,6 +28,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 #[Collection(PolicyDefinitionCollection::class)]
 #[Factory(PolicyDefinitionFactory::class)]
 #[MapName(SnakeCase::class, SnakeCase::class)]
+#[StripExtraParameters]
 #[TypeScript]
 readonly class PolicyDefinition extends Bag
 {
@@ -35,6 +39,8 @@ readonly class PolicyDefinition extends Bag
         public string $subject,
         #[Optional]
         public ?PolicyDefinitionMatchOperator $operator = null,
+        #[LiteralTypeScriptType('string[]')]
+        public ?BagCollection $values = null,
     ) {
     }
 
@@ -44,6 +50,7 @@ readonly class PolicyDefinition extends Bag
             'type' => ['required', Rule::enum(PolicyDefinitionType::class)],
             'subject' => ['required', 'string'],
             'operator' => ['nullable', 'required_if:type,' . PolicyDefinitionType::EXPRESSION->value],
+            'values' => ['nullable', 'required_if:type,' . PolicyDefinitionType::EXPRESSION->value],
         ];
     }
 }

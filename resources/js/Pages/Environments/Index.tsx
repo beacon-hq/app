@@ -36,17 +36,20 @@ export default function Index({ environments }: PageProps & { environments: Envi
     };
 
     return (
-        <Authenticated header="Environments">
+        <Authenticated
+            header="Environments"
+            icon="Globe"
+            headerAction={
+                <Button onClick={() => setShowSheet(true)}>
+                    <PlusCircle className="mr-2 inline-block h-6 w-6" />
+                    New Environment
+                </Button>
+            }
+        >
             <Head title="Environments" />
             <div className="mx-auto py-12 md:w-7/12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden p-4 shadow-sm sm:rounded-lg">
-                        <div className="flex justify-end">
-                            <Button onClick={() => setShowSheet(true)}>
-                                <PlusCircle className="mr-2 inline-block h-6 w-6" />
-                                New Environment
-                            </Button>
-                        </div>
+                    <div className="overflow-hidden p-4">
                         <Card className="mt-8">
                             <CardContent className="px-12 py-4">
                                 <ul>

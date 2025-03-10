@@ -4,6 +4,7 @@ import {
     FeatureFlag,
     FeatureFlagStatus,
     FeatureTypeCollection,
+    PolicyCollection,
     TagCollection,
 } from '@/Application';
 import DefinitionList, { Definition, DefinitionDescription, DefinitionTerm } from '@/Components/DefinitionList';
@@ -13,13 +14,14 @@ import { Alert, AlertDescription, AlertTitle } from '@/Components/ui/alert';
 import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
+import { Switch } from '@/Components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Form } from '@/Pages/FeatureFlags/Components/Form';
 import StatusEditor from '@/Pages/FeatureFlags/Components/StatusEditor';
 import { cn, localDateTime } from '@/lib/utils';
 import { Head, Link, router, useForm } from '@inertiajs/react';
-import { ChevronRight, Info, PlusCircle } from 'lucide-react';
+import { ChevronRight, CircleCheckBig, Info, PlusCircle, TriangleAlert } from 'lucide-react';
 import React, { FormEvent } from 'react';
 import { ulid } from 'ulidx';
 
@@ -29,12 +31,14 @@ export default function Edit({
     tags,
     applications,
     environments,
+    policies,
 }: {
     featureFlag: FeatureFlag;
     featureTypes: FeatureTypeCollection;
     tags: TagCollection;
     applications: ApplicationCollection;
     environments: EnvironmentCollection;
+    policies: PolicyCollection;
 }) {
     function changeTab(routeName: string) {
         return () =>
@@ -53,6 +57,7 @@ export default function Edit({
         last_seen_at: featureFlag.last_seen_at,
         created_at: null,
         updated_at: null,
+        status: featureFlag.status ?? false,
     });
 
     const submitFeatureFlag = (e: FormEvent) => {
@@ -63,6 +68,7 @@ export default function Edit({
 
     const submitPolicy = (e: FormEvent) => {
         e.preventDefault();
+
         put(route('feature-flags.update', { slug: featureFlag.slug }));
         changeTab('feature-flags.edit.overview')();
     };
@@ -75,10 +81,10 @@ export default function Edit({
         setData('statuses', [
             ...(data.statuses ?? []),
             {
+                definition: [],
                 application: null,
                 environment: null,
                 feature_flag: null,
-                policies: null,
                 status: false,
                 id: ulid(),
             },
@@ -122,10 +128,15 @@ export default function Edit({
     };
 
     return (
-        <Authenticated breadcrumbs={[{ name: 'Feature Flags', href: route('feature-flags.index') }, { name: 'Edit' }]}>
+        <Authenticated
+            breadcrumbs={[
+                { name: 'Feature Flags', href: route('feature-flags.index'), icon: 'Flag' },
+                { name: featureFlag.name as string },
+            ]}
+        >
             <Head title="Feature Flag | Edit" />
-            <div className="mx-auto py-8 w-full">
-                <div className="mx-auto sm:px-6 lg:px-8 flex gap-4">
+            <div className="mt-6 w-full">
+                <div className="flex gap-4">
                     <Tabs defaultValue={tab} className="w-full mx-auto rounded-lg">
                         <TabsList className="flex w-full mx-auto">
                             <TabsTrigger
@@ -147,9 +158,30 @@ export default function Edit({
                                 className="rounded-lg grow px-6"
                                 onClick={changeTab('feature-flags.edit.policy')}
                             >
-                                Policy
+                                Status
                             </TabsTrigger>
                         </TabsList>
+                        {featureFlag.status && (
+                            <Alert variant="success" className="mt-4">
+                                <CircleCheckBig />
+                                <AlertTitle className="prose text-green-500">Feature Flag Active</AlertTitle>
+                                <AlertDescription>
+                                    <p>
+                                        This feature flag is currently active and will be enabled if policy conditions
+                                        are met.
+                                    </p>
+                                </AlertDescription>
+                            </Alert>
+                        )}
+                        {!featureFlag.status && (
+                            <Alert variant="error" className="mt-4">
+                                <TriangleAlert />
+                                <AlertTitle className="prose text-red-500">Feature Flag Inactive</AlertTitle>
+                                <AlertDescription>
+                                    <p>This feature flag is currently inactive and will not be displayed to users.</p>
+                                </AlertDescription>
+                            </Alert>
+                        )}
                         <div className="flex flex-row gap-4">
                             <Card className="md:w-1/2 lg:w-1/4 w-full mt-4 h-fit">
                                 <CardHeader>
@@ -256,8 +288,16 @@ export default function Edit({
                                 </TabsContent>
                                 <TabsContent value="edit">
                                     <Card>
-                                        <CardHeader>
+                                        <CardHeader className="flex flex-row justify-between items-center">
                                             <CardTitle>Edit Feature Flag</CardTitle>
+                                            <div className="flex flex-row gap-2 items-center">
+                                                <Switch
+                                                    id="status"
+                                                    checked={data.status ?? false}
+                                                    onCheckedChange={(active) => setData('status', active)}
+                                                />
+                                                Enabled
+                                            </div>
                                         </CardHeader>
                                         <CardContent>
                                             <Form
@@ -278,6 +318,7 @@ export default function Edit({
                                         <StatusEditor
                                             applications={applications}
                                             environments={environments}
+                                            policies={policies}
                                             onStatusChange={onStatusChange}
                                             onDelete={onDelete}
                                         />
@@ -288,6 +329,7 @@ export default function Edit({
                                             status={status}
                                             applications={applications}
                                             environments={environments}
+                                            policies={policies}
                                             onStatusChange={onStatusChange}
                                             onDelete={onDelete}
                                         />
@@ -303,7 +345,7 @@ export default function Edit({
                                             Add Application
                                         </Button>
                                         <Button type="button" onClick={submitPolicy} className="w-fit block">
-                                            Save Policy
+                                            Save
                                         </Button>
                                     </div>
                                 </TabsContent>
