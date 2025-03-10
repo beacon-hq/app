@@ -23,6 +23,7 @@ class PolicyFactory extends Factory
                 'type' => $this->faker->randomElement(PolicyDefinitionType::values()),
                 'subject' => $this->faker->word(),
                 'operator' => $this->faker->randomElement(PolicyDefinitionMatchOperator::values()),
+                'values' => ['test'],
             ]],
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),

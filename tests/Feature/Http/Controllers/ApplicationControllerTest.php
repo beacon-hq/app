@@ -8,7 +8,7 @@ use App\Models\Team;
 use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 
-it('it lists applications', function () {
+it('lists applications', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
     Application::factory(5)->for($team)->create();
@@ -21,7 +21,7 @@ it('it lists applications', function () {
         );
 });
 
-it('it creates an application', function () {
+it('creates an application', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
 
@@ -40,7 +40,7 @@ it('it creates an application', function () {
     ]);
 });
 
-it('it fails validation with missing required fields on create', function () {
+it('fails validation with missing required fields on create', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
 
@@ -91,7 +91,7 @@ it('updates an application', function () {
     ]);
 });
 
-it('it fails validation with missing required fields on update', function () {
+it('fails validation with missing required fields on update', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
     $application = Application::factory()->for($team)->create();

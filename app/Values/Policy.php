@@ -53,9 +53,7 @@ readonly class Policy extends Bag
             'slug' => $policy->slug,
             'name' => $policy->name,
             'description' => $policy->description,
-            'definition' => !isset($policy->pivot->values) ? PolicyDefinitionCollection::make($policy->definition) : PolicyDefinitionCollection::wrap(collect($policy->pivot->values)->map(function (PolicyValue $policyValue) {
-                return $policyValue->policyDefinition->with(values: $policyValue->values);
-            }))->toArray(),
+            'definition' => PolicyDefinitionCollection::make($policy->definition),
             'created_at' => $policy->created_at,
             'updated_at' => $policy->updated_at,
             'id' => $policy->id,

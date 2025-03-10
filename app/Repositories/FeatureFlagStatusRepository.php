@@ -8,17 +8,21 @@ use App\Enums\Boolean;
 use App\Enums\PolicyDefinitionMatchOperator;
 use App\Enums\PolicyDefinitionType;
 use App\Models\FeatureFlagStatus;
-use App\Models\Policy;
+use App\Services\PolicyService;
 use App\Values\FeatureFlag;
 use App\Values\FeatureFlagContext;
 use App\Values\FeatureFlagResponse;
+use App\Values\Policy as PolicyValue;
 use App\Values\PolicyDefinition;
-use App\Values\PolicyValue;
 use Illuminate\Support\Collection as LaravelCollection;
 use Illuminate\Support\Str;
 
 class FeatureFlagStatusRepository
 {
+    public function __construct(protected PolicyService $policyService)
+    {
+    }
+
     public function first(FeatureFlag $featureFlag, FeatureFlagContext $context): FeatureFlagResponse
     {
         $status = FeatureFlagStatus::query()
@@ -27,73 +31,25 @@ class FeatureFlagStatusRepository
             ->whereFeatureFlag($featureFlag)
             ->firstOrFail();
 
-        if ($status->policies()->count() === 0) {
-            return FeatureFlagResponse::from(featureFlag: $featureFlag->slug, value: null, active: true);
+        // No application/environment policy
+        if ($featureFlag->status === false || $status->status === false || ($status->definition?->count() ?? 0) === 0) {
+            return FeatureFlagResponse::from(featureFlag: $featureFlag->slug, value: null, active: $featureFlag->status && $status->status);
         }
 
-        $statuses = $status->policies?->map(function (Policy $policy) use ($context) {
-            $values = collect($policy->definition)
-                ->map(function (PolicyDefinition $policyDefinition) use ($context, $policy) {
-                    static $i = 0;
-
-                    if ($policyDefinition->type === PolicyDefinitionType::EXPRESSION) {
-                        /** @var PolicyValue[] $values */
-                        $values = $policy->pivot->values;
-
-                        return $this->evaluateExpression($values[$i++], $context);
-                    }
-
-                    return $policyDefinition;
-                })
-                ->reduce(function (LaravelCollection $carry, PolicyDefinition|PolicyValue $item) use ($policy) {
-                    if ($item instanceof PolicyValue && $item->status === false) {
-                        $carry = $carry->put($carry->count() - 1, $item->status);
-                    }
-
-                    if ($item instanceof PolicyDefinition && $item->type === PolicyDefinitionType::OPERATOR) {
-                        $carry = $carry->push($item, true);
-                    }
-
-                    return $carry;
-                }, LaravelCollection::make([true]));
-
-            $result = $values->shift();
-
-            while ($values->isNotEmpty()) {
-                /** @var PolicyDefinition $operator */
-                $operator = $values->shift();
-                $nextValue = $values->shift();
-
-                if ($result === true && Boolean::OR->is(Boolean::from($operator->subject))) {
-                    break;
-                }
-
-                if ($result === false && Boolean::AND->is(Boolean::from($operator->subject))) {
-                    break;
-                }
-
-                $result = $this->applyOperator($result, $nextValue, $operator->subject);
-            }
-
-            return $result;
-        });
-
-        return FeatureFlagResponse::from(featureFlag: $featureFlag->slug, value: null, active: $statuses?->first() ?? false);
+        return FeatureFlagResponse::from(featureFlag: $featureFlag->slug, value: null, active: $this->evaluatePolicy($status, $context));
     }
 
-    protected function evaluateExpression(PolicyValue $policyValue, FeatureFlagContext $context): PolicyValue
+    protected function evaluateExpression(PolicyDefinition $policyDefinition, FeatureFlagContext $context): bool
     {
-        $contextValue = \data_get($context, $policyValue->policyDefinition->subject) ?? \data_get($context->scope, $policyValue->policyDefinition->subject);
+        $contextValue = \data_get($context, $policyDefinition->subject) ?? \data_get($context->scope, $policyDefinition->subject);
         if ($contextValue === null) {
-            return $policyValue->with(status: false);
+            return false;
         }
 
-        return $policyValue->with(
-            status: $this->compareExpressionValue(operator: $policyValue->policyDefinition->operator, contextValue: $contextValue, policyValues: $policyValue->values)
-        );
+        return $this->compareExpressionValue(operator: $policyDefinition->operator, contextValue: $contextValue, policyValues: $policyDefinition->values);
     }
 
-    protected function compareExpressionValue(PolicyDefinitionMatchOperator $operator, mixed $contextValue, LaravelCollection $policyValues)
+    protected function compareExpressionValue(PolicyDefinitionMatchOperator $operator, mixed $contextValue, LaravelCollection $policyValues): bool
     {
         try {
             if (\is_scalar($contextValue) && $policyValues->containsOneItem()) {
@@ -156,5 +112,61 @@ class FeatureFlagStatusRepository
             Boolean::NOT => $left && !$right,
             Boolean::XOR => $left xor $right,
         };
+    }
+
+    protected function evaluatePolicy(FeatureFlagStatus|PolicyValue $policyContainer, FeatureFlagContext $context): bool
+    {
+        return $this->evaluateExpressionResults($policyContainer->definition->map(function (PolicyDefinition $policyDefinition) use ($context) {
+            if ($policyDefinition->type === PolicyDefinitionType::EXPRESSION) {
+                return $this->evaluateExpression($policyDefinition, $context);
+            }
+
+            if ($policyDefinition->type === PolicyDefinitionType::POLICY) {
+                return $this->evaluatePolicy($this->policyService->findById($policyDefinition->subject), $context);
+            }
+
+            return $policyDefinition;
+        })->toBase());
+    }
+
+    protected function evaluateExpressionResults($values): bool
+    {
+        $result = $values->shift();
+
+        while ($values->isNotEmpty()) {
+            /** @var PolicyDefinition $operator */
+            $operator = $values->shift();
+            $nextValue = $values->shift();
+
+            // No operator between policy expressions, default to AND
+            if (\is_bool($operator) && \is_bool($nextValue)) {
+                $result = $this->applyOperator(
+                    $this->applyOperator($result, $operator, Boolean::AND->value),
+                    $nextValue,
+                    Boolean::AND->value
+                );
+
+                continue;
+            }
+
+            // No operator and also the end of the policy expressions, default to AND
+            if (\is_bool($operator) && $nextValue === null) {
+                $result = $this->applyOperator($result, $operator, Boolean::AND->value);
+
+                continue;
+            }
+
+            if ($result === true && Boolean::OR->is(Boolean::from($operator->subject))) {
+                break;
+            }
+
+            if ($result === false && Boolean::AND->is(Boolean::from($operator->subject))) {
+                break;
+            }
+
+            $result = $this->applyOperator($result, $nextValue, $operator->subject);
+        }
+
+        return $result;
     }
 }

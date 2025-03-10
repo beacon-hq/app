@@ -22,7 +22,7 @@ use Spatie\TypeScriptTransformer\Attributes\Optional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
- * @method static static from(PolicyDefinitionType $type, string $subject, ?PolicyDefinitionMatchOperator $operator = null)
+ * @method static static from(PolicyDefinitionType $type, string $subject, ?PolicyDefinitionMatchOperator $operator = null, ?BagCollection $values = null)
  * @method static PolicyDefinitionCollection collect(iterable $items)
  */
 #[Collection(PolicyDefinitionCollection::class)]

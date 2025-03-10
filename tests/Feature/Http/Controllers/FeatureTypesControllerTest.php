@@ -8,7 +8,7 @@ use App\Models\Team;
 use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 
-it('it lists feature types', function () {
+it('lists feature types', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
     FeatureType::factory(5)->for($team)->create();
@@ -21,7 +21,7 @@ it('it lists feature types', function () {
         );
 });
 
-it('it creates a feature type', function () {
+it('creates a feature type', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
 
@@ -40,7 +40,7 @@ it('it creates a feature type', function () {
     ]);
 });
 
-it('it fails validation with missing required fields on create', function () {
+it('fails validation with missing required fields on create', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
 
@@ -90,7 +90,7 @@ it('updates an feature flag', function () {
     ]);
 });
 
-it('it fails validation with passing in name on update', function () {
+it('fails validation with passing in name on update', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
     $featureType = FeatureType::factory()->for($team)->create();

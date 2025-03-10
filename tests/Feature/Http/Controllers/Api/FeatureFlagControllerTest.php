@@ -10,12 +10,10 @@ use App\Models\Environment;
 use App\Models\FeatureFlag;
 use App\Models\FeatureFlagStatus;
 use App\Models\FeatureType;
-use App\Models\Policy;
 use App\Models\Tag;
 use App\Models\Team;
 use App\Models\User;
 use App\Values\PolicyDefinition;
-use App\Values\PolicyValue;
 use Bag\Collection;
 use function Pest\Laravel\actingAs;
 
@@ -122,7 +120,7 @@ it('fetches an active feature flag with no policy', function () {
     $tags = Tag::factory(3)->for($team)->create();
     $application = Application::factory()->for($team)->create();
     $environment = Environment::factory()->for($team)->create();
-    $featureFlag = FeatureFlag::factory()->for($team)->for($featureType)->hasAttached($tags)->create();
+    $featureFlag = FeatureFlag::factory()->active()->for($team)->for($featureType)->hasAttached($tags)->create();
     $featureFlagStatus = FeatureFlagStatus::factory()->for($featureFlag)->for($application)->for($environment)->create([
         'status' => true
     ]);
@@ -152,29 +150,14 @@ it('fetches an active feature flag', function () {
     $tags = Tag::factory(3)->for($team)->create();
     $application = Application::factory()->for($team)->create();
     $environment = Environment::factory()->for($team)->create();
-    $featureFlag = FeatureFlag::factory()->for($team)->for($featureType)->hasAttached($tags)->create();
-    $policyDefinition = PolicyDefinition::from(PolicyDefinitionType::EXPRESSION, 'testing', PolicyDefinitionMatchOperator::EQUAL);
-    $policy = Policy::factory()->for($team)->create([
+    $featureFlag = FeatureFlag::factory()->active()->for($team)->for($featureType)->hasAttached($tags)->create();
+    $policyDefinition = PolicyDefinition::from(PolicyDefinitionType::EXPRESSION, 'testing', PolicyDefinitionMatchOperator::EQUAL, Collection::make(['test']));
+    $featureFlagStatus = FeatureFlagStatus::factory()->for($featureFlag)->for($application)->for($environment)->create([
+        'status' => true,
         'definition' => PolicyDefinition::collect([
             $policyDefinition,
-        ])
+        ]),
     ]);
-    $featureFlagStatus = FeatureFlagStatus::factory()->for($featureFlag)->for($application)->for($environment)->create([
-        'status' => true
-    ]);
-    $featureFlagStatus->policies()->syncWithPivotValues(
-        [$policy],
-        [
-            'order' => 1,
-            'values' => PolicyValue::collect([
-                PolicyValue::from(
-                    $policyDefinition,
-                    Collection::make(['test']),
-                    true
-                )
-            ])
-        ]
-    );
     $featureFlag->statuses()->sync([$featureFlagStatus]);
 
     actingAs($user)
@@ -201,33 +184,15 @@ it('fetches an active complex feature flag', function () {
     $tags = Tag::factory(3)->for($team)->create();
     $application = Application::factory()->for($team)->create();
     $environment = Environment::factory()->for($team)->create();
-    $featureFlag = FeatureFlag::factory()->for($team)->for($featureType)->hasAttached($tags)->create();
+    $featureFlag = FeatureFlag::factory()->active()->for($team)->for($featureType)->hasAttached($tags)->create();
     $policyDefinitions = [];
-    $policyDefinitions[] = PolicyDefinition::from(PolicyDefinitionType::EXPRESSION, 'testing', PolicyDefinitionMatchOperator::EQUAL);
+    $policyDefinitions[] = PolicyDefinition::from(PolicyDefinitionType::EXPRESSION, 'testing', PolicyDefinitionMatchOperator::EQUAL, Collection::make(['test']));
     $policyDefinitions[] = PolicyDefinition::from(PolicyDefinitionType::OPERATOR, Boolean::OR->value);
-    $policyDefinitions[] = PolicyDefinition::from(PolicyDefinitionType::EXPRESSION, 'test2', PolicyDefinitionMatchOperator::EQUAL);
-    $policy = Policy::factory()->for($team)->create([
+    $policyDefinitions[] = PolicyDefinition::from(PolicyDefinitionType::EXPRESSION, 'test2', PolicyDefinitionMatchOperator::EQUAL, Collection::make(['test2']));
+    $featureFlagStatus = FeatureFlagStatus::factory()->for($featureFlag)->for($application)->for($environment)->create([
+        'status' => true,
         'definition' => PolicyDefinition::collect($policyDefinitions)
     ]);
-    $featureFlagStatus = FeatureFlagStatus::factory()->for($featureFlag)->for($application)->for($environment)->create([
-        'status' => true
-    ]);
-    $featureFlagStatus->policies()->syncWithPivotValues(
-        [$policy],
-        [
-            'order' => 1,
-            'values' => PolicyValue::collect([
-                PolicyValue::from(
-                    $policyDefinitions[0],
-                    Collection::make(['test']),
-                ),
-                PolicyValue::from(
-                    $policyDefinitions[2],
-                    Collection::make(['test2']),
-                )
-            ])
-        ]
-    );
     $featureFlag->statuses()->sync([$featureFlagStatus]);
 
     actingAs($user)
@@ -254,33 +219,15 @@ it('fetches a complex feature flag as inactive with missing context value in OR'
     $tags = Tag::factory(3)->for($team)->create();
     $application = Application::factory()->for($team)->create();
     $environment = Environment::factory()->for($team)->create();
-    $featureFlag = FeatureFlag::factory()->for($team)->for($featureType)->hasAttached($tags)->create();
+    $featureFlag = FeatureFlag::factory()->active()->for($team)->for($featureType)->hasAttached($tags)->create();
     $policyDefinitions = [];
-    $policyDefinitions[] = PolicyDefinition::from(PolicyDefinitionType::EXPRESSION, 'testing', PolicyDefinitionMatchOperator::EQUAL);
+    $policyDefinitions[] = PolicyDefinition::from(PolicyDefinitionType::EXPRESSION, 'testing', PolicyDefinitionMatchOperator::EQUAL, Collection::make(['test']));
     $policyDefinitions[] = PolicyDefinition::from(PolicyDefinitionType::OPERATOR, Boolean::OR->value);
-    $policyDefinitions[] = PolicyDefinition::from(PolicyDefinitionType::EXPRESSION, 'test2', PolicyDefinitionMatchOperator::EQUAL);
-    $policy = Policy::factory()->for($team)->create([
-        'definition' => PolicyDefinition::collect($policyDefinitions)
-    ]);
+    $policyDefinitions[] = PolicyDefinition::from(PolicyDefinitionType::EXPRESSION, 'test2', PolicyDefinitionMatchOperator::EQUAL, Collection::make(['test2']));
     $featureFlagStatus = FeatureFlagStatus::factory()->for($featureFlag)->for($application)->for($environment)->create([
-        'status' => true
+        'status' => true,
+        'definition' => PolicyDefinition::collect($policyDefinitions),
     ]);
-    $featureFlagStatus->policies()->syncWithPivotValues(
-        [$policy],
-        [
-            'order' => 1,
-            'values' => PolicyValue::collect([
-                PolicyValue::from(
-                    $policyDefinitions[0],
-                    Collection::make(['test']),
-                ),
-                PolicyValue::from(
-                    $policyDefinitions[2],
-                    Collection::make(['test2']),
-                )
-            ])
-        ]
-    );
     $featureFlag->statuses()->sync([$featureFlagStatus]);
 
     actingAs($user)
@@ -309,31 +256,13 @@ it('fetches a complex feature flag as inactive with missing context value in AND
     $environment = Environment::factory()->for($team)->create();
     $featureFlag = FeatureFlag::factory()->for($team)->for($featureType)->hasAttached($tags)->create();
     $policyDefinitions = [];
-    $policyDefinitions[] = PolicyDefinition::from(PolicyDefinitionType::EXPRESSION, 'testing', PolicyDefinitionMatchOperator::EQUAL);
+    $policyDefinitions[] = PolicyDefinition::from(PolicyDefinitionType::EXPRESSION, 'testing', PolicyDefinitionMatchOperator::EQUAL, Collection::make(['test']));
     $policyDefinitions[] = PolicyDefinition::from(PolicyDefinitionType::OPERATOR, Boolean::AND->value);
-    $policyDefinitions[] = PolicyDefinition::from(PolicyDefinitionType::EXPRESSION, 'test2', PolicyDefinitionMatchOperator::EQUAL);
-    $policy = Policy::factory()->for($team)->create([
+    $policyDefinitions[] = PolicyDefinition::from(PolicyDefinitionType::EXPRESSION, 'test2', PolicyDefinitionMatchOperator::EQUAL, Collection::make(['test2']));
+    $featureFlagStatus = FeatureFlagStatus::factory()->for($featureFlag)->for($application)->for($environment)->create([
+        'status' => true,
         'definition' => PolicyDefinition::collect($policyDefinitions)
     ]);
-    $featureFlagStatus = FeatureFlagStatus::factory()->for($featureFlag)->for($application)->for($environment)->create([
-        'status' => true
-    ]);
-    $featureFlagStatus->policies()->syncWithPivotValues(
-        [$policy],
-        [
-            'order' => 1,
-            'values' => PolicyValue::collect([
-                PolicyValue::from(
-                    $policyDefinitions[0],
-                    Collection::make(['test']),
-                ),
-                PolicyValue::from(
-                    $policyDefinitions[2],
-                    Collection::make(['test2']),
-                )
-            ])
-        ]
-    );
     $featureFlag->statuses()->sync([$featureFlagStatus]);
 
     actingAs($user)

@@ -34,4 +34,9 @@ class PolicyService
     {
         return $this->policyRepository->findBySlug($slug);
     }
+
+    public function findById(string $id): Policy
+    {
+        return $this->policyRepository->findById($id);
+    }
 }

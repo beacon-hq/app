@@ -10,7 +10,7 @@ use App\Models\User;
 use App\Values\Collections\TagCollection;
 use Inertia\Testing\AssertableInertia as Assert;
 
-it('it lists feature flags', function () {
+it('lists feature flags', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
     $featureType = FeatureType::factory()->for($team)->create();
@@ -27,7 +27,7 @@ it('it lists feature flags', function () {
         );
 });
 
-it('it creates a feature flag', function () {
+it('creates a feature flag', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
     $featureType = FeatureType::factory()->for($team)->create();
@@ -56,7 +56,7 @@ it('it creates a feature flag', function () {
     });
 });
 
-it('it fails validation with missing required fields on create', function () {
+it('fails validation with missing required fields on create', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
 
@@ -114,7 +114,7 @@ it('updates a feature flag', function () {
     ]);
 });
 
-it('it fails validation', function () {
+it('fails validation', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
     $featureTypes = FeatureType::factory(3)->for($team)->create();

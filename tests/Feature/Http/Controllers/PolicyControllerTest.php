@@ -7,7 +7,7 @@ use App\Models\Team;
 use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 
-it('it lists policies', function () {
+it('lists policies', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
     Policy::factory(5)->for($team)->create();
@@ -20,7 +20,7 @@ it('it lists policies', function () {
         );
 });
 
-it('it creates a policy', function () {
+it('creates a policy', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
 
@@ -37,7 +37,7 @@ it('it creates a policy', function () {
     ]);
 });
 
-it('it fails validation with missing required fields on create', function () {
+it('fails validation with missing required fields on create', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
 
@@ -58,6 +58,7 @@ it('shows the edit form', function () {
                     'name' => $policy->name,
                     'description' => $policy->description,
                     'definition' => json_decode($policy->definition->toJson(), true),
+                    'id' => $policy->id,
                     'slug' => $policy->slug,
                     'created_at' => $policy->created_at->toISOString(),
                     'updated_at' => $policy->updated_at->toISOString(),
@@ -82,7 +83,7 @@ it('updates a policy', function () {
     ]);
 });
 
-it('it fails validation on update', function () {
+it('fails validation on update', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
     $policy = Policy::factory()->for($team)->create();

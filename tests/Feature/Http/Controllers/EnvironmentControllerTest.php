@@ -8,7 +8,7 @@ use App\Models\Team;
 use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 
-it('it lists environments', function () {
+it('lists environments', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
     Environment::factory(5)->for($team)->create();
@@ -21,7 +21,7 @@ it('it lists environments', function () {
         );
 });
 
-it('it creates an environment', function () {
+it('creates an environment', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
 
@@ -38,7 +38,7 @@ it('it creates an environment', function () {
     ]);
 });
 
-it('it fails validation with missing required fields on create', function () {
+it('fails validation with missing required fields on create', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
 
@@ -83,7 +83,7 @@ it('updates an environment', function () {
     ]);
 });
 
-it('it fails validation with passing in name on update', function () {
+it('fails validation with passing in name on update', function () {
     $team = Team::factory()->create();
     $user = User::factory()->hasAttached($team)->create();
     $environment = Environment::factory()->for($team)->create();
