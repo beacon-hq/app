@@ -12,7 +12,7 @@ const toggleAppearance = inject('toggle-appearance', () => {
 </script>
 <template>
     <header
-        class="h-screen flex items-center bg-gradient-to-br from-green-400 via-blue-500 to-blue-600 dark:from-green-800 dark:via-blue-800 dark:to-blue-900 shadow"
+        class="h-screen flex items-center bg-linear-to-br from-green-400 via-blue-500 to-blue-600 dark:from-green-800 dark:via-blue-800 dark:to-blue-900 shadow-sm"
     >
         <div class="mx-auto px-4 py-8 text-center w-11/12 md:w-3/4">
             <svg
@@ -148,7 +148,7 @@ const toggleAppearance = inject('toggle-appearance', () => {
     <section class="dark:bg-neutral-900 w-full" ref="content">
         <div class="mx-auto px-4 py-12 prose dark:prose-invert text-center">
             <h2
-                class="text-4xl font-bold mb-4 bg-gradient-to-br text-transparent bg-clip-text inline-block from-green-400 via-blue-500 to-blue-600 dark:from-green-800 dark:via-blue-800 dark:to-blue-900"
+                class="text-4xl font-bold mb-4 bg-linear-to-br text-transparent bg-clip-text inline-block from-green-400 via-blue-500 to-blue-600 dark:from-green-800 dark:via-blue-800 dark:to-blue-900"
             >
                 What is Beacon?
             </h2>

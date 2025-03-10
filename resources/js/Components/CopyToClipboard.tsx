@@ -14,7 +14,7 @@ export default function CopyToClipboard({
         <button
             {...props}
             className={
-                `inline-flex items-center p-1 text-xs font-semibold text-gray-400 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 active:bg-gray-300 dark:bg-gray-200 dark:text-gray-800 dark:hover:bg-white dark:focus:bg-white dark:focus:ring-offset-gray-800 dark:active:bg-gray-300 ${
+                `inline-flex items-center p-1 text-xs font-semibold text-gray-400 transition duration-150 ease-in-out focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 active:bg-gray-300 dark:bg-gray-200 dark:text-gray-800 dark:hover:bg-white dark:focus:bg-white dark:focus:ring-offset-gray-800 dark:active:bg-gray-300 ${
                     disabled && 'opacity-25'
                 } ` + className
             }

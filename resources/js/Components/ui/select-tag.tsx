@@ -50,7 +50,7 @@ const SelectTagInput = React.forwardRef<HTMLInputElement, SelectTagInputProps>(
             <div className={cn('relative', className)}>
                 <div
                     className={cn(
-                        'has-[:focus-visible]:outline-none has-[:focus-visible]:ring-1 has-[:focus-visible]:ring-neutral-950 has-[:focus-visible]:ring-offset-0 dark:has-[:focus-visible]:ring-neutral-300 min-h-10 flex w-full flex-wrap gap-2 rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm ring-offset-white  disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-800 dark:bg-neutral-950 dark:ring-offset-neutral-950',
+                        'has-focus-visible:outline-hidden has-focus-visible:ring-1 has-focus-visible:ring-neutral-950 has-focus-visible:ring-offset-0 dark:has-focus-visible:ring-neutral-300 min-h-10 flex w-full flex-wrap gap-2 rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm ring-offset-white  disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-800 dark:bg-neutral-950 dark:ring-offset-neutral-950',
                     )}
                 >
                     {value.map((val) => (
@@ -68,7 +68,7 @@ const SelectTagInput = React.forwardRef<HTMLInputElement, SelectTagInputProps>(
                     ))}
                     <input
                         className={cn(
-                            'flex-1 outline-none placeholder:text-neutral-500 dark:placeholder:text-neutral-400',
+                            'flex-1 outline-hidden placeholder:text-neutral-500 dark:placeholder:text-neutral-400',
                         )}
                         value={pendingDataPoint}
                         onChange={(e) => {
@@ -91,7 +91,7 @@ const SelectTagInput = React.forwardRef<HTMLInputElement, SelectTagInputProps>(
                 </div>
                 {isDropdownOpen && pendingDataPoint && (
                     <ul
-                        className="absolute left-0 mt-1 max-h-60 w-full overflow-auto rounded-md border border-neutral-200 bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm dark:border-neutral-800 dark:bg-neutral-950"
+                        className="absolute left-0 mt-1 max-h-60 w-full overflow-auto rounded-md border border-neutral-200 bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden sm:text-sm dark:border-neutral-800 dark:bg-neutral-950"
                         role="listbox"
                     >
                         {options.filter(

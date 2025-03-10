@@ -27,15 +27,15 @@ const flagStatusChartConfig = {
     },
     active: {
         label: 'Active',
-        color: 'hsl(var(--chart-1))',
+        color: 'var(--chart-1)',
     },
     stale: {
         label: 'Stale',
-        color: 'hsl(var(--chart-2))',
+        color: 'var(--chart-2)',
     },
     inactive: {
         label: 'Inactive',
-        color: 'hsl(var(--chart-3))',
+        color: 'var(--chart-3)',
     },
 } satisfies ChartConfig;
 
@@ -47,15 +47,15 @@ const flagTypeData = [
 const flagTypeChartConfig = {
     release: {
         label: 'Release',
-        color: 'hsl(var(--chart-1))',
+        color: 'var(--chart-1)',
     },
     kill: {
         label: 'Kill Switch',
-        color: 'hsl(var(--chart-2))',
+        color: 'var(--chart-2)',
     },
     experiment: {
         label: 'Experiment',
-        color: 'hsl(var(--chart-3))',
+        color: 'var(--chart-3)',
     },
 } satisfies ChartConfig;
 
@@ -70,7 +70,7 @@ const ageData = [
 const ageChartConfig = {
     age: {
         label: 'Days Old',
-        color: 'hsl(var(--chart-1))',
+        color: 'var(--chart-1)',
     },
 } satisfies ChartConfig;
 
@@ -85,11 +85,11 @@ const usageOverTimeData = [
 const usageOverTimeChartConfig = {
     active: {
         label: 'Active',
-        color: 'hsl(var(--chart-1))',
+        color: 'var(--chart-1)',
     },
     inactive: {
         label: 'Inactive',
-        color: 'hsl(var(--chart-2))',
+        color: 'var(--chart-2)',
     },
 } satisfies ChartConfig;
 
