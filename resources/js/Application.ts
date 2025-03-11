@@ -58,7 +58,7 @@ export type FeatureFlag = {
 export type FeatureFlagCollection = FeatureFlag[];
 export type FeatureFlagContext = {
     scope_type: string | null;
-    scope: Array<any>;
+    scope: Array<any> | null;
     app_name: string;
     environment: string;
     session_id: string | null;
@@ -133,18 +133,6 @@ export enum PolicyDefinitionType {
     'EXPRESSION' = 'expression',
     'OPERATOR' = 'operator',
     'POLICY' = 'policy',
-}
-export type PolicyValue = {
-    policy_definition: PolicyDefinition;
-    values: Array<any>;
-};
-export type PolicyValueCollection = PolicyValue[];
-export enum PolicyValueType {
-    'STRING' = 'string',
-    'FLOAT' = 'float',
-    'INTEGER' = 'integer',
-    'BOOLEAN' = 'boolean',
-    'ARRAY' = 'array',
 }
 export type Tag = {
     slug: string | null;
