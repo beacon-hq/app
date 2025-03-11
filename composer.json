@@ -4,7 +4,7 @@
     "type": "project",
     "description": "A centralized management system for Laravel Pennant feature flags.",
     "keywords": ["laravel", "pennant", "feature flags"],
-    "license": "MIT",
+    "license": "FCL-1.0-MIT",
     "require": {
         "php": "^8.3",
         "archtechx/enums": "^1.1",
@@ -15,7 +15,7 @@
         "dshafik/bag": "^2.4",
         "eliseekn/laravel-metrics": "^3.1",
         "inertiajs/inertia-laravel": "^2.0",
-        "laravel/framework": "^11|^12",
+        "laravel/framework": "^11|^12.1.1",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "ramsey/conventional-commits": "^1.5",
