@@ -17,20 +17,22 @@ use Inertia\Inertia;
 
 class FeatureFlagController extends Controller
 {
-    public function index(FeatureFlagService $featureFlagService, FeatureTypeService $featureTypeService, TagService $tagService, Request $request)
+    public function index(FeatureFlagService $featureFlagService, FeatureTypeService $featureTypeService, TagService $tagService, ApplicationService $applicationService, EnvironmentService $environmentService, Request $request)
     {
+        debug($request->get('filters', false));
+        debug($featureFlagService->count(filters: $request->get('filters', [])));
+
         return Inertia::render('FeatureFlags/Index', [
-            'featureFlags' => $featureFlagService->all(filters: $request->get('filters', []))->toBase(),
+            'featureFlags' => $featureFlagService->all(filters: $request->get('filters', []), page: (int) $request->get('page', 1), perPage: (int) $request->get('perPage', 10))->toBase(),
+            'featureFlagsCount' => $featureFlagService->count(filters: $request->get('filters', [])),
+            'page' => (int) $request->get('page', 1),
+            'perPage' => (int) $request->get('perPage', 10),
+            'filters' => $request->get('filters', []),
             'featureTypes' => $featureTypeService->all(),
             'tags' => $tagService->all(),
+            'applications' => $applicationService->all(),
+            'environments' => $environmentService->all(),
         ]);
-    }
-
-    public function create(FeatureFlag $featureFlag, FeatureFlagService $featureFlagService)
-    {
-        $featureFlagService->create($featureFlag);
-
-        return Inertia::render('FeatureFlags/Create');
     }
 
     public function store(FeatureFlag $featureFlag, FeatureFlagService $featureFlagService)

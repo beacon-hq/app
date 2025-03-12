@@ -1,5 +1,5 @@
-import { Application, ApplicationCollection, Environment } from '@/Application';
-import { IconColor } from '@/Components/IconColor';
+import { Application, ApplicationCollection } from '@/Application';
+import ItemList from '@/Components/ItemList';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Sheet, SheetContent, SheetTitle } from '@/Components/ui/sheet';
@@ -61,19 +61,9 @@ export default function Index({ applications }: PageProps & { applications: Appl
                         <Card className="w-full min-h-56" key={application.slug}>
                             <CardHeader className="flex flex-row justify-between items-center">
                                 <CardTitle className="text-xl truncate">{application.name}</CardTitle>
-                                <div className="flex">
-                                    {application.environments?.map((environment: Environment, key: number) => (
-                                        <div
-                                            key={environment.slug}
-                                            className="flex flex-row gap-1 items-center p-1 group first:-ml-0 -ml-4"
-                                        >
-                                            <IconColor color={environment.color} />
-                                            <span className="hidden group-hover:inline-block pr-3">
-                                                {environment.name}
-                                            </span>
-                                        </div>
-                                    ))}
-                                </div>
+                                {(application?.environments?.length ?? 0) > 0 && (
+                                    <ItemList items={application.environments as any} />
+                                )}
                             </CardHeader>
                             <CardContent className="grow">
                                 <p className="text-sm overflow-hidden truncate -mt-2 text-neutral-500">

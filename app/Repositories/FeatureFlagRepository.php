@@ -107,9 +107,9 @@ class FeatureFlagRepository
         return $featureFlag;
     }
 
-    public function count()
+    public function count(array $filters = [])
     {
-        return FeatureFlag::count();
+        return $this->buildQuery(filters: $filters)->count();
     }
 
     /**
@@ -117,17 +117,16 @@ class FeatureFlagRepository
      */
     protected function filter(Builder $query, array $filters = []): Builder
     {
-
-        if (isset($filters['name'])) {
-            $query->whereName($filters['name']);
+        if (isset($filters['name'][0])) {
+            $query->whereName($filters['name'][0]);
         }
 
         if (isset($filters['slug'])) {
             $query->whereSlug($filters['slug']);
         }
 
-        if (isset($filters['tags'])) {
-            $query->whereTags($filters['tags']);
+        if (isset($filters['tag'])) {
+            $query->whereTags($filters['tag']);
         }
 
         if (isset($filters['application'])) {
@@ -138,12 +137,17 @@ class FeatureFlagRepository
             $query->whereEnvironment($filters['environment']);
         }
 
+        if (isset($filters['featureType'])) {
+            $query->whereFeatureType($filters['featureType']);
+        }
+
         return $query;
     }
 
-    protected function buildQuery(array|string $orderBy, array $filters, ?int $page = null, int $perPage = 20): Builder
+    protected function buildQuery(array|string|null $orderBy = null, array $filters = [], ?int $page = null, int $perPage = 20): Builder
     {
-        $query = FeatureFlag::with(['featureType', 'tags']);
+        $query = FeatureFlag::select('feature_flags.*')
+            ->with(['featureType', 'tags', 'statuses', 'statuses.application', 'statuses.environment']);
 
         foreach (Arr::wrap($orderBy) as $column) {
             $query = $query->orderBy($column);

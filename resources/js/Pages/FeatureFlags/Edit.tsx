@@ -178,7 +178,7 @@ export default function Edit({
                                 <TriangleAlert />
                                 <AlertTitle className="prose text-red-500">Feature Flag Inactive</AlertTitle>
                                 <AlertDescription>
-                                    <p>This feature flag is currently inactive and will not be displayed to users.</p>
+                                    <p>This feature flag is currently inactive and will not be enabled for users.</p>
                                 </AlertDescription>
                             </Alert>
                         )}

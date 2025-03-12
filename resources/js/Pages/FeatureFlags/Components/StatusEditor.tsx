@@ -48,24 +48,11 @@ const StatusEditor = function ({
     const [environmentsOpen, setEnvironmentsOpen] = useState(false);
     const [application, setApplication] = useState<Application | null>(status?.application ?? null);
     const [environment, setEnvironment] = useState<Environment | null>(status?.environment ?? null);
-    const [active, setActive] = useState<boolean>(status?.status ?? false);
     const [showPolicy, setShowPolicy] = useState<boolean>(false);
-
-    // useEffect(() => {
-    //     if (onStatusChange) {
-    //         onStatusChange({
-    //             id: status?.id ?? null,
-    //             application: application,
-    //             environment: environment,
-    //             status: active,
-    //             feature_flag: status?.feature_flag ?? null,
-    //         });
-    //     }
-    // }, [application, environment, active, policies]);
 
     const { data, setData, errors, processing } = useForm<FeatureFlagStatus>({
         feature_flag: status?.feature_flag ?? null,
-        status: false,
+        status: status?.status ?? false,
         id: status?.id ?? null,
         application,
         environment,
@@ -191,7 +178,11 @@ const StatusEditor = function ({
                             </div>
                         </div>
                         <div className="flex flex-row items-center gap-2">
-                            <Switch id="enabled" checked={active} onCheckedChange={(active) => setActive(active)} />
+                            <Switch
+                                id="enabled"
+                                checked={data.status}
+                                onCheckedChange={(active) => setData('status', active)}
+                            />
                             <Label htmlFor="enabled">Enabled</Label>
                         </div>
                     </CardTitle>
