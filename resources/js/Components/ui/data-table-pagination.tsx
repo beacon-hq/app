@@ -33,7 +33,7 @@ export function DataTablePagination<TData>({ table, originalPageSize = 10 }: Dat
                                 <SelectValue placeholder={table.getState().pagination.pageSize} />
                             </SelectTrigger>
                             <SelectContent side="top">
-                                {[...new Set([originalPageSize, 10, 20, 30, 40, 50])].map(function (pageSize) {
+                                {[...new Set([10, 20, 30, 40, 50]).add(originalPageSize)].map(function (pageSize) {
                                     if (pageSize >= table.getRowCount() + 10) {
                                         return null;
                                     }

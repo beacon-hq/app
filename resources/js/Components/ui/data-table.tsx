@@ -1,8 +1,9 @@
 'use client';
 
 import { DataTablePagination } from './data-table-pagination';
-import { DataTableToolbar, FilterProps } from './data-table-toolbar';
+import { DataTableFacets, DataTableToolbar, FilterProps } from './data-table-toolbar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
+import { TableFilters } from '@/Pages/FeatureFlags/Components/Table';
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -22,28 +23,31 @@ import {
     VisibilityState,
 } from '@tanstack/react-table';
 import * as React from 'react';
-import { TableHTMLAttributes } from 'react';
+import { TableHTMLAttributes, useEffect } from 'react';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
     filter?: FilterProps;
+    facets?: DataTableFacets;
     enableRowSelection?: boolean | ((row: Row<TData>) => boolean);
     onRowSelectionChange?: OnChangeFn<RowSelectionState>;
     page?: number;
     pageSize?: number;
     totalRows?: number;
     onPageChange?: (paginationState: PaginationState) => void;
-    onFilterChange?: (filterState: ColumnFiltersState) => void;
+    onFilterChange?: (filterState: TableFilters) => void;
     onSortingChange?: (sortingState: SortingState) => void;
     sortBy?: SortingState;
     columnVisibility?: VisibilityState;
+    currentFilters?: TableFilters;
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
     filter,
+    facets,
     enableRowSelection = false,
     onRowSelectionChange,
     page = 1,
@@ -54,6 +58,7 @@ export function DataTable<TData, TValue>({
     sortBy,
     columnVisibility,
     totalRows,
+    currentFilters,
     ...tableProps
 }: TableHTMLAttributes<HTMLTableElement> & DataTableProps<TData, TValue>) {
     const [rowSelection, setRowSelection] = React.useState({});
@@ -62,28 +67,10 @@ export function DataTable<TData, TValue>({
     const [sorting, setSorting] = React.useState<SortingState>(sortBy ?? []);
     const [pagination, setPagination] = React.useState<PaginationState>({ pageIndex: page - 1, pageSize });
 
-    const handlePageChange = (updater: any) => {
-        const newPaginationValue: PaginationState = updater instanceof Function ? updater(pagination) : updater;
-
-        if (onPageChange) {
-            onPageChange(newPaginationValue);
-        }
-
-        setPagination(updater);
-    };
-
-    const handleFilterChange = (updater: any) => {
-        const newFilterValue: ColumnFiltersState = updater instanceof Function ? updater(columnFilters) : updater;
-
-        if (onFilterChange) {
-            onFilterChange(newFilterValue);
-        }
-
-        setColumnFilters(updater);
-    };
-
     const handleSortingChange = (updater: any) => {
+        console.log(updater);
         const newSortingValue: SortingState = updater instanceof Function ? updater(sorting) : updater;
+        console.log(newSortingValue);
 
         if (onSortingChange) {
             onSortingChange(newSortingValue);
@@ -111,9 +98,9 @@ export function DataTable<TData, TValue>({
         enableRowSelection,
         onRowSelectionChange: onRowSelectionChange ?? setRowSelection,
         onSortingChange: handleSortingChange,
-        onColumnFiltersChange: handleFilterChange,
+        onColumnFiltersChange: setColumnFilters,
         onColumnVisibilityChange: setColumnVisibilityState,
-        onPaginationChange: handlePageChange,
+        onPaginationChange: setPagination,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
@@ -121,12 +108,26 @@ export function DataTable<TData, TValue>({
         getFacetedRowModel: getFacetedRowModel(),
         getFacetedUniqueValues: getFacetedUniqueValues(),
         rowCount: totalRows ?? data.length,
+        manualFiltering: totalRows !== undefined,
+        manualSorting: totalRows !== undefined,
         manualPagination: totalRows !== undefined,
     });
 
+    useEffect(() => {
+        if (onPageChange) {
+            onPageChange(pagination);
+        }
+    }, [pagination]);
+
     return (
         <div className="space-y-4">
-            <DataTableToolbar table={table} filter={filter} />
+            <DataTableToolbar
+                table={table}
+                filter={filter}
+                facets={facets}
+                onFilterChange={onFilterChange}
+                currentFilters={currentFilters}
+            />
             <div className="rounded-md border">
                 <Table {...tableProps}>
                     <TableHeader className="bg-neutral-200 dark:bg-neutral-700">

@@ -8,7 +8,7 @@ use App\Models\Pivot\FeatureFlagFeatureStatus;
 use App\Models\Pivot\FeatureFlagStatusPolicy;
 use App\Models\Traits\BelongsToTeam;
 use App\Models\Traits\HasSlug;
-use App\Values\FeatureType as FeatureTypeValue;
+use Arr;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -114,25 +114,31 @@ class FeatureFlag extends Model
             ->withTimestamps();
     }
 
-    public function scopeWhereEnvironment($query, string $environment): void
+    public function scopeWhereEnvironment($query, string|array $environment): void
     {
-        $query->whereHas('environments', function ($query) use ($environment) {
-            $query->where('name', $environment);
-        });
+        $query->whereHas(
+            'environments',
+            fn ($query) =>
+            $query->where('name', Arr::wrap($environment))
+        );
     }
 
-    public function scopeWhereApplication($query, string $application): void
+    public function scopeWhereApplication($query, string|array $application): void
     {
-        $query->whereHas('applications', function ($query) use ($application) {
-            $query->where('name', $application);
-        });
+        $query->whereHas(
+            'applications',
+            fn ($query) =>
+            $query->whereIn('name', Arr::wrap($application))
+        );
     }
 
     public function scopeWhereTags($query, iterable $tags): void
     {
-        $query->whereHas('tags', function (Builder $query) use ($tags) {
-            $query->whereIn('slug', \iterator_to_array($tags));
-        });
+        $query->whereHas(
+            'tags',
+            fn (Builder $query) =>
+            $query->whereIn('slug', \iterator_to_array($tags))
+        );
     }
 
     public function scopeWhereName($query, string $name): void
@@ -145,11 +151,13 @@ class FeatureFlag extends Model
         $query->where('slug', $slug);
     }
 
-    public function scopeWhereFeatureType($query, FeatureTypeValue $featureType): void
+    public function scopeWhereFeatureType($query, string|iterable $slug): void
     {
-        $query->whereHas('featureType', function ($query) use ($featureType) {
-            $query->where('id', $featureType->id);
-        });
+        $query->whereHas(
+            'featureType',
+            fn ($query) =>
+            $query->whereIn('slug', Arr::wrap($slug))
+        );
     }
 
     protected function casts(): array

@@ -19,6 +19,7 @@ use Bag\Bag;
 use Bag\Casts\CollectionOf;
 use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
+use Cache;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
@@ -49,8 +50,8 @@ readonly class FeatureFlagStatus extends Bag
     {
         return [
             'id' => $featureFlagStatus->id,
-            'application' => $featureFlagStatus->application,
-            'environment' => $featureFlagStatus->environment,
+            'application' => Cache::driver('array')->rememberForever('application:' . $featureFlagStatus->application_id, fn () => $featureFlagStatus->application),
+            'environment' => Cache::driver('array')->rememberForever('environment:' . $featureFlagStatus->environment_id, fn () => $featureFlagStatus->environment),
             'definition' => $featureFlagStatus->definition,
             'status' => $featureFlagStatus->status,
         ];

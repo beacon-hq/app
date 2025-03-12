@@ -1,10 +1,17 @@
-import { FeatureFlag, FeatureFlagCollection, FeatureTypeCollection, TagCollection } from '@/Application';
+import {
+    ApplicationCollection,
+    EnvironmentCollection,
+    FeatureFlag,
+    FeatureFlagCollection,
+    FeatureTypeCollection,
+    TagCollection,
+} from '@/Application';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent } from '@/Components/ui/card';
 import { Sheet, SheetContent, SheetTitle } from '@/Components/ui/sheet';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Form } from '@/Pages/FeatureFlags/Components/Form';
-import Table from '@/Pages/FeatureFlags/Components/Table';
+import Table, { TableOptions } from '@/Pages/FeatureFlags/Components/Table';
 import { PageProps } from '@/types';
 import { Deferred, Head, useForm } from '@inertiajs/react';
 import { PlusCircle } from 'lucide-react';
@@ -15,15 +22,21 @@ export default function Index({
     featureFlagsCount,
     page,
     perPage,
+    filters,
     featureTypes,
     tags,
+    applications,
+    environments,
 }: PageProps & {
     featureFlags: FeatureFlagCollection;
     featureFlagsCount: number;
     page: number;
     perPage: number;
+    filters: { [key: string]: string[] };
     featureTypes: FeatureTypeCollection;
     tags: TagCollection;
+    applications: ApplicationCollection;
+    environments: EnvironmentCollection;
 }) {
     const [showSheet, setShowSheet] = useState(false);
     const { data, setData, post, errors, reset, processing, transform } = useForm<FeatureFlag>({
@@ -38,17 +51,14 @@ export default function Index({
         created_at: '',
         updated_at: '',
     });
+    const [tableOptions, setTableOptions] = useState<TableOptions>({
+        page,
+        perPage,
+        filters: Object.fromEntries(Object.entries(filters).map(([key, value]) => [key, new Set(value)])),
+    });
 
     const submit = (e: FormEvent<Element>) => {
         e.preventDefault();
-        // transform((data) => {
-        //     return {
-        //         name: data.name,
-        //         description: data.description,
-        //         feature_type: data.feature_type,
-        //         tags: data.tags,
-        //     };
-        // });
         post(route('feature-flags.store'), {
             onSuccess: function () {
                 setShowSheet(false);
@@ -79,7 +89,15 @@ export default function Index({
                         <Card className="mt-8">
                             <CardContent className="px-12 py-4">
                                 <Deferred data="featureFlags" fallback={<div>Loading</div>}>
-                                    <Table featureFlags={featureFlags} />
+                                    <Table
+                                        featureFlags={featureFlags}
+                                        featureFlagCount={featureFlagsCount}
+                                        featureTypes={featureTypes}
+                                        tags={tags}
+                                        applications={applications}
+                                        environments={environments}
+                                        tableOptions={tableOptions}
+                                    />
                                 </Deferred>
                             </CardContent>
                         </Card>

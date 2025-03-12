@@ -11,29 +11,37 @@ import {
 } from '@/Components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/Components/ui/popover';
 import { Separator } from '@/Components/ui/separator';
+import { TableFilters } from '@/Pages/FeatureFlags/Components/Table';
 import { cn } from '@/lib/utils';
 import { Column } from '@tanstack/react-table';
 import { Check, PlusCircle } from 'lucide-react';
-import * as React from 'react';
+import React, { ReactNode } from 'react';
 
 interface DataTableFacetedFilterProps<TData, TValue> {
-    column?: Column<TData, TValue>;
+    column: Column<TData, TValue>;
     title?: string;
     options: {
         label: string;
         value: string;
         icon?: React.ComponentType<{ className?: string }>;
     }[];
+    currentFilters?: TableFilters;
+    onFilterChange?: (filterState: TableFilters) => void;
 }
 
 export function DataTableFacetedFilter<TData, TValue>({
     column,
     title,
     options,
+    onFilterChange,
+    currentFilters,
 }: DataTableFacetedFilterProps<TData, TValue>) {
-    const facets = column?.getFacetedUniqueValues();
-    const selectedValues = new Set(column?.getFilterValue() as string[]);
-
+    const facets = column.getFacetedUniqueValues();
+    const [selectedValues, setSelectedValues] = React.useState<Set<string>>(
+        currentFilters && currentFilters[column.id] && currentFilters[column.id].size > 0
+            ? currentFilters[column.id]
+            : new Set(column?.getFilterValue() as string[]),
+    );
     return (
         <Popover>
             <PopoverTrigger asChild>
@@ -81,26 +89,35 @@ export function DataTableFacetedFilter<TData, TValue>({
                                     <CommandItem
                                         key={option.value}
                                         onSelect={() => {
+                                            let newValues = new Set(selectedValues);
                                             if (isSelected) {
-                                                selectedValues.delete(option.value);
+                                                newValues.delete(option.value);
+                                                setSelectedValues(newValues);
                                             } else {
-                                                selectedValues.add(option.value);
+                                                newValues.add(option.value);
+                                                setSelectedValues(newValues);
                                             }
-                                            const filterValues = Array.from(selectedValues);
-                                            column?.setFilterValue(filterValues.length ? filterValues : undefined);
+                                            onFilterChange
+                                                ? onFilterChange({
+                                                      ...currentFilters,
+                                                      [column?.id as string]: newValues,
+                                                  })
+                                                : column?.setFilterValue(
+                                                      selectedValues.size > 0 ? Array.from(newValues) : undefined,
+                                                  );
                                         }}
                                     >
                                         <div
                                             className={cn(
                                                 'mr-2 flex h-4 w-4 items-center justify-center rounded-xs border border-primary',
-                                                isSelected
-                                                    ? 'bg-primary text-primary-foreground'
-                                                    : 'opacity-50 [&_svg]:invisible',
+                                                {
+                                                    'opacity-50 [&_svg]:invisible': !isSelected,
+                                                },
                                             )}
                                         >
                                             <Check />
                                         </div>
-                                        {option.icon && <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />}
+                                        {option.icon as ReactNode}
                                         <span>{option.label}</span>
                                         {facets?.get(option.value) && (
                                             <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
@@ -116,7 +133,15 @@ export function DataTableFacetedFilter<TData, TValue>({
                                 <CommandSeparator />
                                 <CommandGroup>
                                     <CommandItem
-                                        onSelect={() => column?.setFilterValue(undefined)}
+                                        onSelect={() => {
+                                            setSelectedValues(new Set());
+                                            onFilterChange
+                                                ? onFilterChange({
+                                                      ...currentFilters,
+                                                      [column?.id as string]: new Set(),
+                                                  })
+                                                : column?.setFilterValue(undefined);
+                                        }}
                                         className="justify-center text-center"
                                     >
                                         Clear filters
