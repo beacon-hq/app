@@ -16,6 +16,7 @@ import { useDebounce } from 'use-debounce';
 export interface FilterProps {
     placeholder: string;
     column: string;
+    value: string;
 }
 
 interface DataTableToolbarProps<TData> {
