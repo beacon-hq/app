@@ -86,10 +86,10 @@ const StatusEditor = function ({
                                             aria-expanded={applicationsOpen}
                                             className="w-fit justify-between"
                                         >
-                                            {application ? (
+                                            {data.application ? (
                                                 <div className="flex flex-row items-center">
-                                                    <IconColor color={application.color} className="mr-2" />{' '}
-                                                    {application.display_name}
+                                                    <IconColor color={data.application.color} className="mr-2" />{' '}
+                                                    {data.application.display_name}
                                                 </div>
                                             ) : (
                                                 'Select application...'
@@ -108,7 +108,8 @@ const StatusEditor = function ({
                                                             key={application.slug}
                                                             value={application.slug as string}
                                                             onSelect={(currentValue) => {
-                                                                setApplication(
+                                                                setData(
+                                                                    'application',
                                                                     currentValue === application.slug
                                                                         ? application
                                                                         : null,
@@ -136,10 +137,10 @@ const StatusEditor = function ({
                                             aria-expanded={environmentsOpen}
                                             className="w-fit justify-between"
                                         >
-                                            {environment ? (
+                                            {data.environment ? (
                                                 <div className="flex flex-row items-center">
-                                                    <IconColor color={environment.color} className="mr-2" />{' '}
-                                                    {environment.name}
+                                                    <IconColor color={data.environment.color} className="mr-2" />{' '}
+                                                    {data.environment.name}
                                                 </div>
                                             ) : (
                                                 'Select environment...'
@@ -158,7 +159,8 @@ const StatusEditor = function ({
                                                             key={environment.slug}
                                                             value={environment.slug as string}
                                                             onSelect={(currentValue) => {
-                                                                setEnvironment(
+                                                                setData(
+                                                                    'environment',
                                                                     currentValue === environment.slug
                                                                         ? environment
                                                                         : null,
