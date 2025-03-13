@@ -204,9 +204,6 @@ export default function Table({
             filter={{
                 placeholder: 'Filter feature flags…',
                 column: 'name',
-                value: currentTableOptions?.filters['name']
-                    ? (Array.from(currentTableOptions.filters['name'])[0] ?? '')
-                    : '',
             }}
             facets={{
                 application: {
