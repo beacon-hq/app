@@ -41,6 +41,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Application whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Application whereTeamId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Application whereUpdatedAt($value)
+ * @property-read int|null $environments_count
  * @mixin \Eloquent
  */
 class Application extends Model

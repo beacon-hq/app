@@ -6,12 +6,46 @@ namespace App\Models;
 
 use App\Values\FeatureFlag as FeatureFlagValue;
 use App\Values\PolicyDefinition;
+use Bag\Bag;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
+/**
+ *
+ *
+ * @property string $id
+ * @property string $application_id
+ * @property string $environment_id
+ * @property string $feature_flag_id
+ * @property bool $status
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Bag|Collection|null $definition
+ * @property-read Application $application
+ * @property-read Environment $environment
+ * @property-read FeatureFlag $featureFlag
+ * @method static \Database\Factories\FeatureFlagStatusFactory factory($count = null, $state = [])
+ * @method static Builder<static>|FeatureFlagStatus newModelQuery()
+ * @method static Builder<static>|FeatureFlagStatus newQuery()
+ * @method static Builder<static>|FeatureFlagStatus query()
+ * @method static Builder<static>|FeatureFlagStatus whereApplication(string $application)
+ * @method static Builder<static>|FeatureFlagStatus whereApplicationId($value)
+ * @method static Builder<static>|FeatureFlagStatus whereCreatedAt($value)
+ * @method static Builder<static>|FeatureFlagStatus whereDefinition($value)
+ * @method static Builder<static>|FeatureFlagStatus whereEnvironment(string $environment)
+ * @method static Builder<static>|FeatureFlagStatus whereEnvironmentId($value)
+ * @method static Builder<static>|FeatureFlagStatus whereFeatureFlag(\App\Values\FeatureFlag $featureFlag)
+ * @method static Builder<static>|FeatureFlagStatus whereFeatureFlagId($value)
+ * @method static Builder<static>|FeatureFlagStatus whereId($value)
+ * @method static Builder<static>|FeatureFlagStatus whereStatus($value)
+ * @method static Builder<static>|FeatureFlagStatus whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class FeatureFlagStatus extends Model
 {
     use HasFactory;

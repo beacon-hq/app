@@ -134,7 +134,7 @@ class FeatureFlagStatusRepository
         $result = $values->shift();
 
         while ($values->isNotEmpty()) {
-            /** @var PolicyDefinition $operator */
+            /** @var PolicyDefinition|bool $operator */
             $operator = $values->shift();
             $nextValue = $values->shift();
 

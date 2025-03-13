@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Pivot\FeatureFlagFeatureStatus;
-use App\Models\Pivot\FeatureFlagStatusPolicy;
 use App\Models\Traits\BelongsToTeam;
 use App\Models\Traits\HasSlug;
 use Arr;
@@ -31,30 +30,36 @@ use Illuminate\Support\Carbon;
  * @property string $feature_type_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property bool $status
  * @property-read Collection<int, Application> $applications
  * @property-read int|null $applications_count
  * @property-read Collection<int, Environment> $environments
  * @property-read int|null $environments_count
  * @property-read FeatureType $featureType
- * @property-read FeatureFlagStatusPolicy|null $pivot
- * @property-read Collection<int, Policy> $policies
- * @property-read int|null $policies_count
+ * @property-read FeatureFlagFeatureStatus|null $pivot
+ * @property-read Collection<int, FeatureFlagStatus> $statuses
+ * @property-read int|null $statuses_count
  * @property-read Collection<int, Tag> $tags
  * @property-read int|null $tags_count
  * @property-read Team $team
  * @method static \Database\Factories\FeatureFlagFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder<static>|FeatureFlag newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|FeatureFlag newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|FeatureFlag query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|FeatureFlag whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|FeatureFlag whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|FeatureFlag whereFeatureTypeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|FeatureFlag whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|FeatureFlag whereLastSeenAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|FeatureFlag whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|FeatureFlag whereSlug($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|FeatureFlag whereTeamId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|FeatureFlag whereUpdatedAt($value)
+ * @method static Builder<static>|FeatureFlag newModelQuery()
+ * @method static Builder<static>|FeatureFlag newQuery()
+ * @method static Builder<static>|FeatureFlag query()
+ * @method static Builder<static>|FeatureFlag whereApplication(array|string $application)
+ * @method static Builder<static>|FeatureFlag whereCreatedAt($value)
+ * @method static Builder<static>|FeatureFlag whereDescription($value)
+ * @method static Builder<static>|FeatureFlag whereEnvironment(array|string $environment)
+ * @method static Builder<static>|FeatureFlag whereFeatureType(\Traversable|array|string $slug)
+ * @method static Builder<static>|FeatureFlag whereFeatureTypeId($value)
+ * @method static Builder<static>|FeatureFlag whereId($value)
+ * @method static Builder<static>|FeatureFlag whereLastSeenAt($value)
+ * @method static Builder<static>|FeatureFlag whereName($value)
+ * @method static Builder<static>|FeatureFlag whereSlug($value)
+ * @method static Builder<static>|FeatureFlag whereStatus($value)
+ * @method static Builder<static>|FeatureFlag whereTags(iterable $tags)
+ * @method static Builder<static>|FeatureFlag whereTeamId($value)
+ * @method static Builder<static>|FeatureFlag whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class FeatureFlag extends Model
