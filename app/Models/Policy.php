@@ -6,12 +6,13 @@ namespace App\Models;
 
 use App\Models\Traits\BelongsToTeam;
 use App\Models\Traits\HasSlug;
-use App\Values\Collections\PolicyValueCollection;
 use App\Values\PolicyDefinition;
+use Bag\Bag;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 /**
  *
@@ -21,11 +22,10 @@ use Illuminate\Support\Carbon;
  * @property string $name
  * @property string $slug
  * @property string|null $description
- * @property array<array-key, mixed> $definition
+ * @property Bag|Collection $definition
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Team $team
- * @property-read object{values: PolicyValueCollection} $pivot
  * @method static \Database\Factories\PolicyFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Policy newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Policy newQuery()
