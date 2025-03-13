@@ -70,7 +70,7 @@ export function Form({
                         <div>
                             <Label>Icon</Label>
                             <Icon
-                                name={data.icon == '' ? 'Image' : data.icon}
+                                name={data.icon == '' ? 'Image' : (data.icon as string)}
                                 className={cn('h-8 w-8', {
                                     'text-neutral-400': data.icon == '',
                                 })}
