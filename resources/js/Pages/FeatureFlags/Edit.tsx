@@ -141,21 +141,21 @@ export default function Edit({
                         <TabsList className="flex w-full mx-auto">
                             <TabsTrigger
                                 value="overview"
-                                className="rounded-lg grow px-6"
+                                className="rounded-lg grow px-6 cursor-pointer"
                                 onClick={changeTab('feature-flags.edit.overview')}
                             >
                                 Overview
                             </TabsTrigger>
                             <TabsTrigger
                                 value="edit"
-                                className="rounded-lg grow px-6"
+                                className="rounded-lg grow px-6 cursor-pointer"
                                 onClick={changeTab('feature-flags.edit')}
                             >
                                 Edit
                             </TabsTrigger>
                             <TabsTrigger
                                 value="policy"
-                                className="rounded-lg grow px-6"
+                                className="rounded-lg grow px-6 cursor-pointer"
                                 onClick={changeTab('feature-flags.edit.policy')}
                             >
                                 Status
