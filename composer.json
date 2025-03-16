@@ -21,6 +21,7 @@
         "ramsey/conventional-commits": "^1.5",
         "soloterm/solo": "^0.4.0",
         "spatie/laravel-ignition": "^2.9",
+        "spatie/laravel-permission": "^6.16",
         "spatie/laravel-typescript-transformer": "^2.5",
         "spatie/typescript-transformer": "^2.4",
         "tightenco/ziggy": "^2.0"

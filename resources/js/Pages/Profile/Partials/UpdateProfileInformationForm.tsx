@@ -2,9 +2,13 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
+import { Avatar, AvatarFallback, AvatarImage } from '@/Components/ui/avatar';
+import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
+import { cn } from '@/lib/utils';
 import { Transition } from '@headlessui/react';
-import { Link, useForm, usePage } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { Link, router, useForm, usePage } from '@inertiajs/react';
+import { FormEventHandler, useRef } from 'react';
 
 export default function UpdateProfileInformation({
     mustVerifyEmail,
@@ -17,21 +21,48 @@ export default function UpdateProfileInformation({
 }) {
     const user = usePage().props.auth.user;
 
-    const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
-        first_name: user.first_name,
-        last_name: user.last_name,
-        email: user.email,
+    const file = useRef<HTMLInputElement>(null);
+
+    const { data, setData, errors, processing, recentlySuccessful } = useForm<{
+        first_name: string;
+        last_name: string;
+        email: string;
+        avatar: File | string | null;
+    }>({
+        first_name: user.first_name ?? '',
+        last_name: user.last_name ?? '',
+        email: user.email ?? '',
+        avatar: user.avatar,
     });
+
+    const useGravatar = () => {
+        setData('avatar', null);
+        if (file.current) {
+            file.current.value = '';
+        }
+    };
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        patch(route('profile.update'));
+        console.log(data);
+
+        router.post(route('profile.update'), {
+            ...data,
+            _method: 'patch',
+        });
+
+        if (file.current) {
+            file.current.value = '';
+        }
     };
 
+    // @ts-ignore
+    // @ts-ignore
+    // @ts-ignore
     return (
-        <section className={className}>
-            <header>
+        <section className={cn('flex flex-row gap-8', className)}>
+            <header className="w-1/4">
                 <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Profile Information</h2>
 
                 <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
@@ -39,9 +70,50 @@ export default function UpdateProfileInformation({
                 </p>
             </header>
 
-            <form onSubmit={submit} className="mt-6 space-y-6">
-                <div>
-                    <div>
+            <form onSubmit={submit} className="mt-6 space-y-6 w-3/4 grow">
+                <div className="flex gap-8 items-center">
+                    <Avatar className="rounded-lg w-1/4 h-1/4">
+                        <AvatarImage
+                            src={
+                                typeof data.avatar === 'string'
+                                    ? data.avatar
+                                    : data.avatar
+                                      ? URL.createObjectURL(data.avatar)
+                                      : (user.gravatar ?? undefined)
+                            }
+                            alt={user.name ?? ''}
+                        />
+                        {!data.avatar && (
+                            <div className="rounded-b-lg bg-secondary absolute bottom-0 w-full text-center text-xs">
+                                Gravatar
+                            </div>
+                        )}
+                        <AvatarFallback className="aspect-square text-8xl rounded-lg">
+                            {user.first_name?.charAt(0)}
+                            {user.last_name?.charAt(0)}
+                        </AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col gap-2">
+                        <Input
+                            type="file"
+                            ref={file}
+                            className="block w-full h-12 border-0 p-0 shadow-none text-lg text-gray-500 file:me-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-secondary file:disabled:opacity-50 file:disabled:pointer-events-none text-primary"
+                            onChange={(e) =>
+                                setData(
+                                    'avatar',
+                                    // @ts-ignore
+                                    (e.target?.files ?? []).length > 0 ? (e.target.files[0] as File) : null,
+                                )
+                            }
+                        />
+                        <p className="text-primary/50 mb-2 mx-auto">or</p>
+                        <Button onClick={() => useGravatar()} disabled={data.avatar === null}>
+                            Use Gravatar
+                        </Button>
+                    </div>
+                </div>
+                <div className="flex justify-between gap-4">
+                    <div className="w-1/2">
                         <InputLabel htmlFor="first_name" value="First Name" />
 
                         <TextInput
@@ -57,7 +129,7 @@ export default function UpdateProfileInformation({
                         <InputError className="mt-2" message={errors.first_name} />
                     </div>
 
-                    <div>
+                    <div className="w-1/2">
                         <InputLabel htmlFor="last_name" value="Last Name" />
 
                         <TextInput

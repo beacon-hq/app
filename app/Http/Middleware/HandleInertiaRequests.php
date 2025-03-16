@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App;
+use App\Repositories\TeamRepository;
+use Auth;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -15,13 +18,8 @@ class HandleInertiaRequests extends Middleware
      * @var string
      */
     protected $rootView = 'app';
-
-    /**
-     * Determine the current asset version.
-     */
-    public function version(Request $request): ?string
+    public function __construct(protected TeamRepository $teamRepository)
     {
-        return parent::version($request);
     }
 
     /**
@@ -31,13 +29,20 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        return [
-            ...parent::share($request),
-            'alert' => fn () => $request->session()->get('alert'),
-            'notifications' => fn () => $request->session()->get('notifications') ?? [],
-            'auth' => [
-                'user' => $request->user(),
-            ],
-        ];
+        if (Auth::hasUser()) {
+            return [
+                ...parent::share($request),
+                'alert' => fn () => $request->session()->get('alert'),
+                'notifications' => fn () => $request->session()->get('notifications') ?? [],
+                'auth' => [
+                    'user' => $request->user(),
+                    'permissions' => $request->user()?->getPermissionsViaRoles()->pluck('name') ?? [],
+                    'currentTeam' => App::context()->team,
+                ],
+                'teams' => fn () => $this->teamRepository->all(auth()->user()->id),
+            ];
+        }
+
+        return parent::share($request);
     }
 }

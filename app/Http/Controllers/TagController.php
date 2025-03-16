@@ -7,12 +7,15 @@ namespace App\Http\Controllers;
 use App\Services\TagService;
 use App\Values\Tag;
 use Bag\Attributes\WithoutValidation;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class TagController extends Controller
 {
     public function index(TagService $tagService)
     {
+        Gate::authorize('view', Tag::class);
+
         return Inertia::render('Tags/Index', [
             'tags' => $tagService->all(),
         ]);
@@ -20,6 +23,8 @@ class TagController extends Controller
 
     public function store(Tag $tag, TagService $tagService)
     {
+        Gate::authorize('create', Tag::class);
+
         $tagService->create($tag);
 
         return redirect()->route('tags.index')->with(
@@ -36,6 +41,8 @@ class TagController extends Controller
         Tag $tag,
         TagService $tagService
     ) {
+        Gate::authorize('update', $tag);
+
         return Inertia::render('Tags/Edit', [
             'tag' => $tagService->findBySlug($tag->slug),
         ]);
@@ -43,6 +50,8 @@ class TagController extends Controller
 
     public function update(Tag $tag, TagService $tagService)
     {
+        Gate::authorize('update', $tag);
+
         $tagService->update($tag);
 
         return redirect()->route('tags.index')->with(

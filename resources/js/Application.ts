@@ -94,6 +94,63 @@ export type FeatureType = {
     id: string | null;
 };
 export type FeatureTypeCollection = FeatureType[];
+export enum Permission {
+    'BILLING' = 'billing',
+    'BILLING_CREATE' = 'billing.create',
+    'BILLING_UPDATE' = 'billing.update',
+    'BILLING_VIEW' = 'billing.view',
+    'BILLING_DELETE' = 'billing.delete',
+    'FEATURE_FLAGS' = 'feature-flags',
+    'FEATURE_FLAGS_CREATE' = 'feature-flags.create',
+    'FEATURE_FLAGS_UPDATE' = 'feature-flags.update',
+    'FEATURE_FLAGS_VIEW' = 'feature-flags.view',
+    'FEATURE_FLAGS_DELETE' = 'feature-flags.delete',
+    'FEATURE_FLAG_STATUS' = 'feature-flag-status',
+    'FEATURE_FLAG_STATUS_CREATE' = 'feature-flag-status.create',
+    'FEATURE_FLAG_STATUS_UPDATE' = 'feature-flag-status.update',
+    'FEATURE_FLAG_STATUS_VIEW' = 'feature-flag-status.view',
+    'FEATURE_FLAG_STATUS_DELETE' = 'feature-flag-status.delete',
+    'FEATURE_TYPES' = 'feature-types',
+    'FEATURE_TYPES_CREATE' = 'feature-types.create',
+    'FEATURE_TYPES_UPDATE' = 'feature-types.update',
+    'FEATURE_TYPES_VIEW' = 'feature-types.view',
+    'FEATURE_TYPES_DELETE' = 'feature-types.delete',
+    'APPLICATIONS' = 'applications',
+    'APPLICATIONS_CREATE' = 'applications.create',
+    'APPLICATIONS_UPDATE' = 'applications.update',
+    'APPLICATIONS_VIEW' = 'applications.view',
+    'APPLICATIONS_DELETE' = 'applications.delete',
+    'ENVIRONMENTS' = 'environments',
+    'ENVIRONMENTS_CREATE' = 'environments.create',
+    'ENVIRONMENTS_UPDATE' = 'environments.update',
+    'ENVIRONMENTS_VIEW' = 'environments.view',
+    'ENVIRONMENTS_DELETE' = 'environments.delete',
+    'POLICIES' = 'policies',
+    'POLICIES_CREATE' = 'policies.create',
+    'POLICIES_UPDATE' = 'policies.update',
+    'POLICIES_VIEW' = 'policies.view',
+    'POLICIES_DELETE' = 'policies.delete',
+    'TAGS' = 'tags',
+    'TAGS_CREATE' = 'tags.create',
+    'TAGS_UPDATE' = 'tags.update',
+    'TAGS_VIEW' = 'tags.view',
+    'TAGS_DELETE' = 'tags.delete',
+    'USERS' = 'users',
+    'USERS_CREATE' = 'users.create',
+    'USERS_UPDATE' = 'users.update',
+    'USERS_VIEW' = 'users.view',
+    'USERS_DELETE' = 'users.delete',
+    'TEAMS' = 'teams',
+    'TEAMS_CREATE' = 'teams.create',
+    'TEAMS_UPDATE' = 'teams.update',
+    'TEAMS_VIEW' = 'teams.view',
+    'TEAMS_DELETE' = 'teams.delete',
+    'API_TOKENS' = 'api-tokens',
+    'API_TOKENS_CREATE' = 'api-tokens.create',
+    'API_TOKENS_UPDATE' = 'api-tokens.update',
+    'API_TOKENS_VIEW' = 'api-tokens.view',
+    'API_TOKENS_DELETE' = 'api-tokens.delete',
+}
 export type Policy = {
     slug: string | null;
     name: string | null;
@@ -134,6 +191,12 @@ export enum PolicyDefinitionType {
     'OPERATOR' = 'operator',
     'POLICY' = 'policy',
 }
+export enum Role {
+    'OWNER' = 'Owner',
+    'ADMIN' = 'Admin',
+    'DEVELOPER' = 'Developer',
+    'BILLER' = 'Biller',
+}
 export type Tag = {
     slug: string | null;
     name: string | null;
@@ -144,3 +207,26 @@ export type Tag = {
     id: string | null;
 };
 export type TagCollection = Tag[];
+export type Team = {
+    slug: string;
+    id: string | null;
+    name: string | null;
+    color: Color | string | null;
+    icon: string | null;
+    members: UserCollection | null;
+};
+export type TeamCollection = Team[];
+export type User = {
+    id: number | null;
+    team: Team | null;
+    name: string | null;
+    first_name: string | null;
+    last_name: string | null;
+    email: string | null;
+    avatar: string | null;
+    gravatar: string | null;
+    teams: TeamCollection | null;
+    roles: Role[];
+    email_verified_at: string | null;
+};
+export type UserCollection = User[];

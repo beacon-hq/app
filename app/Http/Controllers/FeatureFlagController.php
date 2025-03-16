@@ -13,6 +13,7 @@ use App\Services\TagService;
 use App\Values\FeatureFlag;
 use Bag\Attributes\WithoutValidation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class FeatureFlagController extends Controller
@@ -37,6 +38,8 @@ class FeatureFlagController extends Controller
 
     public function store(FeatureFlag $featureFlag, FeatureFlagService $featureFlagService)
     {
+        Gate::authorize('create', $featureFlag);
+
         $featureFlagService->create($featureFlag);
 
         return redirect()->route('feature-flags.index')->with(
@@ -58,6 +61,8 @@ class FeatureFlagController extends Controller
         ApplicationService $applicationService,
         EnvironmentService $environmentService,
     ) {
+        Gate::authorize('update', $featureFlag);
+
         return Inertia::render('FeatureFlags/Edit', [
             'featureFlag' => $featureFlagService->findBySlug($featureFlag->slug),
             'featureTypes' => $featureTypeService->all(),
@@ -72,6 +77,8 @@ class FeatureFlagController extends Controller
         FeatureFlag $featureFlag,
         FeatureFlagService $featureFlagService
     ) {
+        Gate::authorize('update', $featureFlag);
+
         $featureFlagService->update($featureFlag);
 
         return redirect()->route('feature-flags.edit.overview', ['slug' => $featureFlag->slug])

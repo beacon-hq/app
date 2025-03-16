@@ -1,14 +1,14 @@
-export interface User {
-    id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-    email_verified_at?: string;
-    avatar: string;
-}
+import { Permission, Team, TeamCollection, User } from '@/Application';
 
-export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
+export interface AuthProp {
     auth: {
         user: User;
+        currentTeam: Team;
+        permissions: Permission[];
     };
-};
+}
+
+export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T &
+    AuthProp & {
+        teams: TeamCollection;
+    };

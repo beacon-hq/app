@@ -57,6 +57,7 @@ export default function Index({ applications }: PageProps & { applications: Appl
                         href={route('applications.edit', {
                             slug: application.slug,
                         })}
+                        key={application.slug}
                     >
                         <Card className="w-full min-h-56" key={application.slug}>
                             <CardHeader className="flex flex-row justify-between items-center">

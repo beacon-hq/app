@@ -24,7 +24,11 @@ class EnsureTeamMiddleware
             if (Auth::user() instanceof Team) {
                 Session::put('team', Auth::user());
             } else {
-                $team = Auth::user()->teams()->orderBy('created_at')->first();
+                if (Auth::user()->teams()->count() > 1 && !$request->routeIs('teams.select')) {
+                    return redirect()->route('teams.select');
+                }
+
+                $team = Auth::user()->teams()->first();
                 Session::put('team', $team);
             }
         }

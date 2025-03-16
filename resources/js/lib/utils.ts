@@ -5,7 +5,9 @@ import {
     PolicyDefinition,
     PolicyDefinitionCollection,
     PolicyDefinitionType,
+    Team,
 } from '@/Application';
+import { router } from '@inertiajs/react';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -117,4 +119,8 @@ export const containsPolicy = function (
 
     // If no sub-policies contain the target, return false
     return false;
+};
+
+export const chooseTeam = (team: Team) => {
+    router.post(route('teams.choose'), { team: team }, { preserveState: false });
 };

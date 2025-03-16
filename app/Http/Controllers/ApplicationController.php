@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Services\ApplicationService;
 use App\Values\Application;
 use Bag\Attributes\WithoutValidation;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -19,13 +20,10 @@ class ApplicationController extends Controller
         ]);
     }
 
-    public function create(): Response
-    {
-        return Inertia::render('Applications/Create');
-    }
-
     public function store(Application $application, ApplicationService $applicationService)
     {
+        Gate::authorize('create', $application);
+
         $applicationService->create($application->with(display_name: $application->display_name ?? $application->name));
 
         return redirect()
@@ -41,6 +39,8 @@ class ApplicationController extends Controller
         Application $application,
         ApplicationService $applicationService
     ): Response {
+        Gate::authorize('update', $application);
+
         return Inertia::render('Applications/Edit', [
             'application' => $applicationService->findBySlug($application->slug),
         ]);
@@ -48,6 +48,8 @@ class ApplicationController extends Controller
 
     public function update(Application $application, ApplicationService $applicationService)
     {
+        Gate::authorize('update', $application);
+
         $applicationService->update($application);
 
         return redirect()

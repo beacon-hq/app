@@ -2,6 +2,7 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
+import { cn } from '@/lib/utils';
 import { Transition } from '@headlessui/react';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
@@ -37,8 +38,8 @@ export default function UpdatePasswordForm({ className = '' }: { className?: str
     };
 
     return (
-        <section className={className}>
-            <header>
+        <section className={cn('flex flex-row gap-8', className)}>
+            <header className="w-1/4">
                 <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Update Password</h2>
 
                 <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
@@ -46,7 +47,7 @@ export default function UpdatePasswordForm({ className = '' }: { className?: str
                 </p>
             </header>
 
-            <form onSubmit={updatePassword} className="mt-6 space-y-6">
+            <form onSubmit={updatePassword} className="mt-6 space-y-6 w-3/4 grow">
                 <div>
                     <InputLabel htmlFor="current_password" value="Current Password" />
 

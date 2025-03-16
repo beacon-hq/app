@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Traits\HasSlug;
 use DateTimeInterface;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -40,10 +42,13 @@ class Team extends Model
 {
     use HasApiTokens;
     use HasFactory;
+    use HasSlug;
     use HasUlids;
 
     protected $fillable = [
         'name',
+        'color',
+        'icon',
     ];
 
     protected $casts = [
@@ -67,5 +72,14 @@ class Team extends Model
         ]);
 
         return new NewAccessToken($token, $token->getKey().'|'.$plainTextToken);
+    }
+
+    protected function owner(): Attribute
+    {
+        return Attribute::make(get: function () {
+            return User::role('owner')->whereHas('teams', function ($query) {
+                $query->where('team_id', $this->id);
+            })->first();
+        });
     }
 }

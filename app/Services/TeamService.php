@@ -6,7 +6,7 @@ namespace App\Services;
 
 use App\Repositories\TeamRepository;
 use App\Values\AppContext;
-use App\Values\Team as TeamValue;
+use App\Values\Team;
 
 class TeamService
 {
@@ -14,9 +14,13 @@ class TeamService
     {
     }
 
-    public function getTeam(): TeamValue
+    public function findById(string $id): Team
     {
-        // return TeamValue::from(Team::findOrFail(\App::context()->team->id));
-        return $this->teamRepository->getById($this->appContext->team->id);
+        return $this->teamRepository->findById($id);
+    }
+
+    public function create(Team $from): Team
+    {
+        return $this->teamRepository->create($from);
     }
 }

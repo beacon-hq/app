@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\APITokensController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\EnvironmentController;
 use App\Http\Controllers\FeatureFlagController;
@@ -10,7 +11,8 @@ use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TagController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\TeamsController;
+use Illuminate\Foundation\Application as ApplicationAlias;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -18,7 +20,7 @@ Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
+        'laravelVersion' => ApplicationAlias::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
 });
@@ -34,16 +36,80 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
-    Route::resource('applications', ApplicationController::class, ['parameters' => ['applications' => 'slug']])->except(['delete', 'create']);
-    Route::resource('environments', EnvironmentController::class, ['parameters' => ['environments' => 'slug']])->except(['delete', 'create']);
-    Route::resource('feature-flags', FeatureFlagController::class, ['parameters' => ['feature-flags' => 'slug']])->except(['delete', 'create']);
-    Route::resource('feature-types', FeatureTypeController::class, ['parameters' => ['feature-types' => 'slug']])->except(['delete', 'create']);
-    Route::resource('tags', TagController::class, ['parameters' => ['tags' => 'slug']])->except(['delete', 'create']);
-    Route::resource('settings', SettingsController::class, ['parameters' => ['settings' => 'slug']])->only(['index']);
-    Route::resource('policies', PolicyController::class, ['parameters' => ['policies' => 'slug']])->except(['delete', 'create']);
+    Route::resource(
+        'applications',
+        ApplicationController::class,
+        ['parameters' => ['applications' => 'slug']]
+    )->except(['delete', 'create', 'show']);
 
-    Route::get('/feature-flags/{slug}/overview', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.overview');
-    Route::get('/feature-flags/{slug}/policy', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.policy');
+    Route::resource(
+        'environments',
+        EnvironmentController::class,
+        ['parameters' => ['environments' => 'slug']]
+    )->except(['delete', 'create', 'show']);
+
+    Route::resource(
+        'feature-flags',
+        FeatureFlagController::class,
+        ['parameters' => ['feature-flags' => 'slug']]
+    )->except(['delete', 'create', 'show']);
+
+    Route::resource(
+        'feature-types',
+        FeatureTypeController::class,
+        ['parameters' => ['feature-types' => 'slug']]
+    )->except(['delete', 'create', 'show']);
+
+    Route::resource(
+        'tags',
+        TagController::class,
+        ['parameters' => ['tags' => 'slug']]
+    )->except(['delete', 'create', 'show']);
+
+    Route::resource(
+        'settings',
+        APITokensController::class,
+        ['parameters' => ['settings' => 'slug']]
+    )->only(['index']);
+
+    Route::resource(
+        'policies',
+        PolicyController::class,
+        ['parameters' => ['policies' => 'slug']]
+    )->except(['delete', 'create', 'show']);
+
+    Route::resource(
+        'teams',
+        TeamsController::class,
+        ['parameters' => ['teams' => 'slug']]
+    )->except(['delete', 'create', 'show']);
+
+    Route::prefix('settings')->group(function () {
+        Route::get('/', [SettingsController::class, 'index'])
+            ->name('settings.index');
+
+        Route::get('/api', [APITokensController::class, 'index'])
+            ->name('settings.api.index');
+    });
+
+    Route::prefix('policies')->group(function () {
+        Route::get('/', [PolicyController::class, 'index'])
+            ->name('policies.index');
+
+        Route::get('/{slug}/edit', [PolicyController::class, 'edit'])
+            ->name('policies.edit');
+
+        Route::patch('/{slug}', [PolicyController::class, 'update'])
+            ->name('policies.update');
+
+        Route::put('/{slug}', [PolicyController::class, 'update'])
+            ->name('policies.update');
+    });
+
+    Route::prefix('feature-flags')->group(function () {
+        Route::get('/feature-flags/{slug}/overview', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.overview');
+        Route::get('/feature-flags/{slug}/policy', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.policy');
+    });
 });
 
 require __DIR__.'/auth.php';

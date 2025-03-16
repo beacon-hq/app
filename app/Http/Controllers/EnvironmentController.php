@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Services\EnvironmentService;
 use App\Values\Environment;
 use Bag\Attributes\WithoutValidation;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -21,6 +22,8 @@ class EnvironmentController extends Controller
 
     public function store(Environment $environment, EnvironmentService $environmentService)
     {
+        Gate::authorize('create', $environment);
+
         $environmentService->create($environment);
 
         return redirect()
@@ -36,6 +39,8 @@ class EnvironmentController extends Controller
         Environment $environment,
         EnvironmentService $environmentService
     ): Response {
+        Gate::authorize('update', $environment);
+
         return Inertia::render('Environments/Edit', [
             'environment' => $environmentService->findBySlug($environment->slug),
         ]);
@@ -43,6 +48,8 @@ class EnvironmentController extends Controller
 
     public function update(Environment $environment, EnvironmentService $environmentService)
     {
+        Gate::authorize('update', $environment);
+
         $environmentService->update($environment);
 
         return redirect()

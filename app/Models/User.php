@@ -16,6 +16,8 @@ use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
+use Spatie\Permission\Traits\HasRoles;
+use Storage;
 
 /**
  *
@@ -55,6 +57,7 @@ class User extends Authenticatable
     use BelongsToTeam;
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
+    use HasRoles;
     use Notifiable;
 
     /**
@@ -65,9 +68,9 @@ class User extends Authenticatable
     protected $fillable = [
         'first_name',
         'last_name',
-        'name',
         'email',
         'password',
+        'avatar_url',
     ];
 
     /**
@@ -78,10 +81,14 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'roles',
+        'avatar_url',
     ];
 
     protected $appends = [
         'avatar',
+        'gravatar',
+        'name',
     ];
 
     public function teams(): BelongsToMany
@@ -105,7 +112,21 @@ class User extends Authenticatable
     protected function avatar(): Attribute
     {
         return Attribute::make(function () {
+            return $this->avatar_url !== null ? Storage::url($this->avatar_url) : null;
+        });
+    }
+
+    protected function gravatar(): Attribute
+    {
+        return Attribute::make(function () {
             return Gravatar::get($this->email);
+        });
+    }
+
+    protected function name(): Attribute
+    {
+        return Attribute::make(function () {
+            return $this->first_name . ' ' . $this->last_name;
         });
     }
 }

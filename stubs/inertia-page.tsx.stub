@@ -1,0 +1,19 @@
+{{ AuthImports }}
+import { Head } from '@inertiajs/react';
+import React from 'react';
+
+export default function {{ name }}({{ AuthProps }}) {
+    return (
+        {{ <AuthenticatedLayout> }}
+            <Head title="{{ name }}" />
+
+            <div className="py-6">
+                <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
+                    <div className="prose px-6 lg:px-0">
+                        <h1>{{ name }}</h1>
+                    </div>
+                </div>
+            </div>
+        {{ </AuthenticatedLayout> }}
+    );
+}

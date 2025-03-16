@@ -1,7 +1,9 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
+import { ColorPicker } from '@/Components/ColorPicker';
 import Footer from '@/Components/Footer';
 import Icon from '@/Components/Icon';
-import { Avatar, AvatarFallback, AvatarImage } from '@/Components/ui/avatar';
+import IconPicker from '@/Components/IconPicker';
+import Sidebar from '@/Components/Sidebar';
+import TeamSelect from '@/Components/TeamSelect';
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -11,51 +13,14 @@ import {
     BreadcrumbSeparator,
 } from '@/Components/ui/breadcrumb';
 import { Button } from '@/Components/ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/Components/ui/dialog';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/Components/ui/dropdown-menu';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/Components/ui/dialog';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
-import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
-    SidebarGroup,
-    SidebarHeader,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-    SidebarTrigger,
-    SidebarWrapper,
-    useSidebar,
-} from '@/Components/ui/sidebar';
+import { SidebarTrigger, SidebarWrapper, useSidebar } from '@/Components/ui/sidebar';
 import { Toaster } from '@/Components/ui/sonner';
 import { cn } from '@/lib/utils';
 import { Link, usePage } from '@inertiajs/react';
-import {
-    AppWindowMac,
-    BadgeCheck,
-    Bell,
-    Component,
-    Flag,
-    Gauge,
-    Globe,
-    LogOut,
-    PlusCircle,
-    Settings,
-    SlidersHorizontal,
-    Sparkles,
-    Tag,
-    Users,
-} from 'lucide-react';
-import React, { Fragment, PropsWithChildren, useEffect } from 'react';
+import React, { Fragment, PropsWithChildren, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 export default function Authenticated({
@@ -70,12 +35,15 @@ export default function Authenticated({
     icon?: string;
     headerAction?: React.ReactNode;
 }>) {
-    const user = usePage().props.auth.user;
+    const auth = usePage().props.auth;
     const alert = usePage<any>().props.alert;
     usePage<any>().props.alert = null; // clear the alert after it's been handled
     // const notifications = usePage().props.notifications;
+    const teams = usePage().props.teams;
 
-    const { state, open, setOpen, openMobile, setOpenMobile, isMobile, toggleSidebar } = useSidebar();
+    const { open } = useSidebar();
+
+    const [createTeamOpen, setCreateTeamOpen] = useState<boolean>(false);
 
     useEffect(() => {
         // @ts-ignore
@@ -91,210 +59,14 @@ export default function Authenticated({
 
     return (
         <SidebarWrapper>
-            <Sidebar collapsible="icon" variant="inset">
-                <SidebarHeader>
-                    <SidebarMenu>
-                        <SidebarMenuItem className="data-[state=open]:flex data-[state=open]:flex-row data-[state=open]:justify-between items-center">
-                            <Link href={route('dashboard')}>
-                                <ApplicationLogo
-                                    className="fill-current h-12 w-auto text-gray-800 dark:text-gray-200"
-                                    expanded={open}
-                                />
-                            </Link>
-                        </SidebarMenuItem>
-                    </SidebarMenu>
-                </SidebarHeader>
-                <SidebarContent>
-                    <SidebarGroup>
-                        <SidebarMenu>
-                            <SidebarMenuItem>
-                                <SidebarMenuButton asChild tooltip="Dashboard" isActive={route().current('dashboard')}>
-                                    <Link href={route('dashboard')}>
-                                        <Gauge className="h-6 w-6" />
-                                        <span>Dashboard</span>
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                            <SidebarMenuItem>
-                                <SidebarMenuButton
-                                    asChild
-                                    tooltip="Applications"
-                                    isActive={route().current('applications.*')}
-                                >
-                                    <Link href={route('applications.index')}>
-                                        <AppWindowMac className="h-6 w-6" />
-                                        <span>Applications</span>
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                            <SidebarMenuItem>
-                                <SidebarMenuButton
-                                    asChild
-                                    tooltip="Environments"
-                                    isActive={route().current('environments.*')}
-                                >
-                                    <Link href={route('environments.index')}>
-                                        <Globe className="h-6 w-6" />
-                                        <span>Environments</span>
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                            <SidebarMenuItem>
-                                <SidebarMenuButton
-                                    asChild
-                                    tooltip="Feature Flags"
-                                    isActive={route().current('feature-flags.*')}
-                                >
-                                    <Link href={route('feature-flags.index')}>
-                                        <Flag className="h-6 w-6" />
-                                        <span>Feature Flags</span>
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                            <SidebarMenuItem>
-                                <SidebarMenuButton
-                                    asChild
-                                    tooltip="Feature Types"
-                                    isActive={route().current('feature-types.*')}
-                                >
-                                    <Link href={route('feature-types.index')}>
-                                        <Component className="h-6 w-6" />
-                                        <span>Feature Types</span>
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                            <SidebarMenuItem>
-                                <SidebarMenuButton asChild tooltip="Policies" isActive={route().current('policies.*')}>
-                                    <Link href={route('policies.index')}>
-                                        <SlidersHorizontal className="h-6 w-6" />
-                                        <span>Policies</span>
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                            <SidebarMenuItem>
-                                <SidebarMenuButton asChild tooltip="Tags" isActive={route().current('tags.*')}>
-                                    <Link href={route('tags.index')}>
-                                        <Tag className="h-6 w-6" />
-                                        <span>Tags</span>
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                            <SidebarMenuItem>
-                                <SidebarMenuButton asChild tooltip="Settings" isActive={route().current('settings.*')}>
-                                    <Link href={route('settings.index')}>
-                                        <Settings className="h-6 w-6" />
-                                        <span>Settings</span>
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        </SidebarMenu>
-                    </SidebarGroup>
-                </SidebarContent>
-                <SidebarFooter className="p-0">
-                    <SidebarMenu>
-                        <SidebarMenuItem>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <SidebarMenuButton
-                                        size="lg"
-                                        className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                                    >
-                                        <Avatar className="h-10 w-10 rounded-full shadow-md">
-                                            <AvatarImage
-                                                src={user.avatar}
-                                                alt={`${user.first_name} ${user.last_name}`}
-                                            />
-                                            <AvatarFallback>
-                                                ${user.first_name.charAt(1)} ${user.last_name.charAt(1)}
-                                            </AvatarFallback>
-                                        </Avatar>
-                                        <div className="grid grow text-left text-sm leading-tight">
-                                            <span className="truncate font-semibold">{`${user.first_name} ${user.last_name}`}</span>
-                                            <span className="truncate text-xs">{user.email}</span>
-                                        </div>
-                                    </SidebarMenuButton>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-                                    side="bottom"
-                                    align="start"
-                                    sideOffset={4}
-                                >
-                                    <DropdownMenuGroup>
-                                        <DropdownMenuLabel asChild>
-                                            <div className="grid flex-1 text-left text-sm leading-tight">
-                                                <span className="truncate font-semibold">{`${user.first_name} ${user.last_name}`}</span>
-                                                <span className="truncate text-xs">{user.email}</span>
-                                            </div>
-                                        </DropdownMenuLabel>
-                                        <DropdownMenuItem asChild>
-                                            <Dialog>
-                                                <DialogTrigger asChild>
-                                                    <Button
-                                                        type="button"
-                                                        className="w-full bg-blue-300 text-foreground hover:bg-blue-200 text-left"
-                                                    >
-                                                        <Sparkles />
-                                                        Invite a team member…
-                                                    </Button>
-                                                </DialogTrigger>
-                                                <DialogContent>
-                                                    <DialogHeader>
-                                                        <DialogTitle>Invite team members</DialogTitle>
-                                                    </DialogHeader>
-                                                    <Label className="email hidden">E-mail</Label>
-                                                    <div className="flex flex-row items-center gap-2">
-                                                        <Input
-                                                            type="email"
-                                                            placeholder="E-mail address…"
-                                                            className="input"
-                                                        />
-                                                        <PlusCircle className="w-6 h-6" />
-                                                    </div>
-                                                    <DialogFooter>
-                                                        <Button type="submit" className="w-full">
-                                                            Send invitation
-                                                        </Button>
-                                                    </DialogFooter>
-                                                </DialogContent>
-                                            </Dialog>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem asChild>
-                                            <Link href={route('profile.edit')} className="w-full">
-                                                <BadgeCheck />
-                                                Account
-                                            </Link>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem asChild>
-                                            <Link href="#" className="w-full">
-                                                <Users />
-                                                Team
-                                            </Link>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem>
-                                            <Bell />
-                                            Notifications
-                                        </DropdownMenuItem>
-                                    </DropdownMenuGroup>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem asChild>
-                                        <Link method="post" href={route('logout')} className="w-full">
-                                            <LogOut />
-                                            Log out
-                                        </Link>
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </SidebarMenuItem>
-                    </SidebarMenu>
-                </SidebarFooter>
-            </Sidebar>
+            <Sidebar expanded={open} auth={auth} />
             <div className="flex flex-col w-full">
                 {(header || breadcrumbs) && (
-                    <div className="bg-background w-full sticky top-0 z-50 flex flex-row justify-between items-center">
-                        <div className="pt-7 ml-12">
+                    <div className="bg-background w-full sticky top-0 z-50 flex flex-row justify-between items-center pt-6 px-12">
+                        <div className="">
                             <SidebarTrigger />
                         </div>
+                        {!route().current('teams.*') && !route().current('profile.*') && <TeamSelect teams={teams} />}
                     </div>
                 )}
 
@@ -350,6 +122,25 @@ export default function Authenticated({
                 <main className="w-full min-h-screen block bg-background px-12 pb-6">{children}</main>
                 <Footer />
             </div>
+            <Dialog open={createTeamOpen} onOpenChange={setCreateTeamOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Create a new team</DialogTitle>
+                    </DialogHeader>
+                    <Label htmlFor="name" aria-hidden aria-required>
+                        Name
+                    </Label>
+                    <Input id="name" type="text" placeholder="Name…" />
+                    <Label aria-required>Color</Label>
+                    <ColorPicker color={null} onColorChange={() => {}} />
+                    <IconPicker icon="" onIconSelect={() => {}} errors={{}} />
+                    <DialogFooter>
+                        <Button type="submit" className="w-full">
+                            Create team
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
             {alert && <Toaster richColors closeButton />}
         </SidebarWrapper>

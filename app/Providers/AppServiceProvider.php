@@ -9,6 +9,7 @@ use App\Models\Team;
 use App\Values\AppContext;
 use App\Values\Team as TeamValue;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Sanctum\Sanctum;
@@ -27,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
 
             if ($team !== null) {
                 if ($team instanceof Team) {
-                    $team = TeamValue::from(id: $team->id, name: $team->name);
+                    $team = TeamValue::from($team);
                 }
 
                 $context = $context->with(team: $team);
@@ -39,6 +40,10 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
+
+        Gate::guessPolicyNamesUsing(function (string $class) {
+            return '\\App\\Policies\\' . class_basename($class) . 'Policy';
+        });
     }
 
     /**
