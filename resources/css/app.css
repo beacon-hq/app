@@ -36,11 +36,7 @@
         --muted-foreground: hsl(240 3.8% 46.1%);
         --accent: hsl(240 4.8% 95.9%);
         --accent-foreground: hsl(240 5.9% 10%);
-        --info: var(--color-blue-600);
-        --success: var(--color-green-600);
-        --warning: var(--color-yellow-600);
         --destructive: var(--color-red-600);
-
         --destructive-foreground: hsl(0 0% 98%);
         --border: hsl(240 5.9% 90%);
         --input: hsl(240 5.9% 90%);
@@ -61,6 +57,11 @@
         --sidebar-ring: hsl(217.2 91.2% 59.8%);
         --sidebar-tooltip-bg: hsl(328.6 85.5% 70.2%);
         --sidebar-active: hsl(217.2 91.2% 59.8%);
+
+        --info: var(--color-blue-600);
+        --success: var(--color-green-600);
+        --warning: var(--color-yellow-600);
+        --error: var(--color-red-600);
     }
 
     .dark {
@@ -78,9 +79,6 @@
         --muted-foreground: hsl(240 5% 64.9%);
         --accent: hsl(240 3.7% 15.9%);
         --accent-foreground: hsl(0 0% 98%);
-        --info: var(--color-blue-900);
-        --success: var(--color-green-900);
-        --warning: var(--color-yellow-900);
         --destructive: var(--color-red-900);
         --destructive-foreground: hsl(0 0% 98%);
         --border: hsl(240 3.7% 15.9%);
@@ -102,6 +100,11 @@
         --sidebar-tooltip-bg: hsl(328.6 85.5% 70.2%);
         --sidebar-tooltip-color: var(--sidebar-accent);
         --sidebar-active: hsl(217.2 91.2% 59.8%);
+
+        --info: var(--color-blue-700);
+        --success: var(--color-green-700);
+        --warning: var(--color-yellow-700);
+        --error: var(--color-red-700);
     }
 }
 
@@ -120,6 +123,12 @@ div.react-colorful {
     --font--mono: "Source Code Pro", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     --font-optical-sizing: 'auto';
     --font-style: 'normal';
+
+    --color-info: var(--info);
+    --color-success: var(--success);
+    --color-warning: var(--warning);
+    --color-error: var(--error);
+
     @keyframes fade-in {
         0% {
             opacity: 0;
