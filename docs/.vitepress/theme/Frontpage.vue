@@ -8,6 +8,11 @@ const { isDark, theme } = useData();
 
 const toggleAppearance = inject('toggle-appearance', () => {
     isDark.value = !isDark.value;
+    if (isDark.value) {
+        localStorage.theme = 'dark';
+    } else {
+        localStorage.theme = 'light';
+    }
 });
 </script>
 <template>
