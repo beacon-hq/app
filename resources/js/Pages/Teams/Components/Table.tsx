@@ -36,6 +36,13 @@ export default function Table({ users }: { users: UserCollection }) {
             enableHiding: false,
             cell: ({ cell }) => cell.getValue().join(', '),
         }) as ColumnDef<User>,
+        columnHelper.accessor('email_verified_at', {
+            id: 'status',
+            header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
+            enableSorting: true,
+            enableHiding: false,
+            cell: ({ cell }) => (cell.getValue() ? 'Active' : 'Pending'),
+        }) as ColumnDef<User>,
     ];
 
     return (

@@ -94,6 +94,15 @@ export type FeatureType = {
     id: string | null;
 };
 export type FeatureTypeCollection = FeatureType[];
+export type Invite = {
+    email: string;
+    role: string;
+    team: Team;
+    user: User;
+    expires_at: string;
+    id: string | null;
+};
+export type InviteCollection = Invite[];
 export enum Permission {
     'BILLING' = 'billing',
     'BILLING_CREATE' = 'billing.create',
@@ -208,7 +217,7 @@ export type Tag = {
 };
 export type TagCollection = Tag[];
 export type Team = {
-    slug: string;
+    slug: string | null;
     id: string | null;
     name: string | null;
     color: Color | string | null;

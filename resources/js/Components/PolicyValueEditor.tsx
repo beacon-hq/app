@@ -1,11 +1,7 @@
-import { Badge } from '@/Components/ui/badge';
+import MultiValueInput from '@/Components/MultiValueInput';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
-import { Textarea } from '@/Components/ui/textarea';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/Components/ui/tooltip';
-import { cn } from '@/lib/utils';
-import { Info, PlusCircle } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 export const PolicyValueEditor = function ({
     id,
@@ -21,20 +17,7 @@ export const PolicyValueEditor = function ({
     disabled: boolean;
 }) {
     const [values, setValues] = useState<string[]>(typeof value === 'string' ? [value] : (value ?? []));
-    const [currentValue, setCurrentValue] = useState<string>(allowMultiple ? '' : (values[0] ?? ''));
-    const [interacted, setInteracted] = useState<boolean>(false);
-
-    useEffect(() => {
-        if (interacted) {
-            setValue(values);
-        }
-    }, [values]);
-
-    useEffect(() => {
-        if (currentValue !== '') {
-            setInteracted(true);
-        }
-    }, [currentValue]);
+    const [currentValue, setCurrentValue] = useState<string>('');
 
     if (allowMultiple) {
         return (
@@ -42,89 +25,12 @@ export const PolicyValueEditor = function ({
                 <Label htmlFor={`value_${id}`} aria-required hidden>
                     Values
                 </Label>
-                <div className="flex flex-row gap-1 flex-wrap">
-                    <div className="flex flex-row items-center w-full">
-                        <Textarea
-                            id={`value_${id}`}
-                            placeholder="Enter a new value"
-                            autoComplete="off"
-                            className={cn('pr-10 min-h-0 h-9', {})}
-                            onInput={(e) => {
-                                e.currentTarget.style.height = '';
-                                if (e.currentTarget.value.length > 20) {
-                                    if (e.currentTarget.scrollHeight < 120) {
-                                        e.currentTarget.style.height = e.currentTarget.scrollHeight + 3 + 'px';
-                                    } else if (e.currentTarget.scrollHeight >= 120) {
-                                        e.currentTarget.style.height = '120px';
-                                    }
-                                }
-                            }}
-                            value={currentValue}
-                            onChange={function (e) {
-                                setCurrentValue(e.target.value);
-                            }}
-                            onKeyUp={(e) => {
-                                if (e.key === 'Enter' && e.shiftKey) {
-                                    let tagValue = currentValue;
-                                    if (!values.includes(tagValue) && tagValue !== '') {
-                                        setValues([...values, tagValue]);
-                                        setCurrentValue('');
-                                    }
-                                }
-                                e.preventDefault();
-                            }}
-                        />
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger>
-                                    <PlusCircle
-                                        className="-ml-8"
-                                        onClick={() => {
-                                            let tagValue = currentValue;
-                                            if (!values.includes(tagValue) && tagValue !== '') {
-                                                setValues([...values, tagValue]);
-                                                setCurrentValue('');
-                                            }
-                                        }}
-                                    />
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <Info className="inline-block" /> Press <kbd>Shift</kbd> + <kbd>Enter</kbd> to add a
-                                    new tag
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-                    </div>
-                    {values.map((tag) => (
-                        <div key={tag}>
-                            {tag.length <= 25 && (
-                                <Badge
-                                    variant="default"
-                                    className="cursor-pointer"
-                                    onClick={() => setValues(values.filter((value) => value !== tag))}
-                                >
-                                    <span className="truncate max-w-40">{tag}</span>
-                                </Badge>
-                            )}
-                            {tag.length > 25 && (
-                                <TooltipProvider>
-                                    <Tooltip>
-                                        <TooltipTrigger>
-                                            <Badge
-                                                variant="default"
-                                                className="cursor-pointer"
-                                                onClick={() => setValues(values.filter((value) => value !== tag))}
-                                            >
-                                                <span className="truncate max-w-40">{tag}</span>
-                                            </Badge>
-                                        </TooltipTrigger>
-                                        <TooltipContent className="whitespace-pre-wrap">{tag}</TooltipContent>
-                                    </Tooltip>
-                                </TooltipProvider>
-                            )}
-                        </div>
-                    ))}
-                </div>
+                <MultiValueInput
+                    id={`value_${id}`}
+                    values={(value ?? []) as string[]}
+                    setValues={setValue as any}
+                    disabled={disabled}
+                />
             </>
         );
     }

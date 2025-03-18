@@ -17,7 +17,7 @@ export default function Select({ teams }: PageProps) {
                 <div className="mx-auto w-full space-y-6 sm:px-6 lg:px-8">
                     <div className="prose px-6 lg:px-0">
                         <h1 className="text-center">Choose a Team</h1>
-                        <Card className="w-96    p-4">
+                        <Card className="w-96 p-4">
                             <CardContent className="pb-0">
                                 {teams.map((team, index) => (
                                     <div className="cursor-pointer" onClick={() => chooseTeam(team)} key={team.id}>

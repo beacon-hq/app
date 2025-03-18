@@ -1,8 +1,6 @@
 import ApplicationLogo from './ApplicationLogo.js';
 import UserAvatar from './UserAvatar.js';
 import { Permission } from '@/Application';
-import { Button } from '@/Components/ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/Components/ui/dialog';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -12,8 +10,6 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/Components/ui/dropdown-menu';
-import { Input } from '@/Components/ui/input';
-import { Label } from '@/Components/ui/label';
 import {
     Sidebar as SidebarContainer,
     SidebarContent,
@@ -37,7 +33,6 @@ import {
     Gauge,
     Globe,
     LogOut,
-    PlusCircle,
     Settings,
     SlidersHorizontal,
     Sparkles,
@@ -183,36 +178,13 @@ const Sidebar = function (props: { expanded: boolean } & AuthProp) {
                                         </div>
                                     </DropdownMenuLabel>
                                     <DropdownMenuItem asChild>
-                                        <Dialog>
-                                            <DialogTrigger asChild>
-                                                <Button
-                                                    type="button"
-                                                    className="w-full bg-blue-300 text-foreground hover:bg-blue-200 text-left"
-                                                >
-                                                    <Sparkles />
-                                                    Invite a team member…
-                                                </Button>
-                                            </DialogTrigger>
-                                            <DialogContent>
-                                                <DialogHeader>
-                                                    <DialogTitle>Invite team members</DialogTitle>
-                                                </DialogHeader>
-                                                <Label className="email hidden">E-mail</Label>
-                                                <div className="flex flex-row items-center gap-2">
-                                                    <Input
-                                                        type="email"
-                                                        placeholder="E-mail address…"
-                                                        className="input"
-                                                    />
-                                                    <PlusCircle className="w-6 h-6" />
-                                                </div>
-                                                <DialogFooter>
-                                                    <Button type="submit" className="w-full">
-                                                        Send invitation
-                                                    </Button>
-                                                </DialogFooter>
-                                            </DialogContent>
-                                        </Dialog>
+                                        <Link
+                                            className="w-full bg-blue-300 text-foreground hover:bg-blue-200 text-left"
+                                            href={route('teams.index')}
+                                        >
+                                            <Sparkles />
+                                            Invite a team member…
+                                        </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem asChild>
                                         <Link href={route('profile.edit')} className="w-full">

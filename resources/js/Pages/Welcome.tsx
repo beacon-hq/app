@@ -2,7 +2,30 @@ import { PageProps } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 
 export default function Welcome({
-    auth,
+    auth = {
+        user: {
+            id: null,
+            team: null,
+            name: null,
+            first_name: null,
+            last_name: null,
+            email: null,
+            avatar: null,
+            gravatar: null,
+            teams: null,
+            roles: [],
+            email_verified_at: null,
+        },
+        currentTeam: {
+            slug: '',
+            id: null,
+            name: null,
+            color: null,
+            icon: null,
+            members: null,
+        },
+        permissions: [],
+    },
     laravelVersion,
     phpVersion,
 }: PageProps<{ laravelVersion: string; phpVersion: string }>) {

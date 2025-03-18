@@ -47,9 +47,9 @@ export default function UpdateProfileInformation({
 
         console.log(data);
 
-        router.post(route('profile.update'), {
+        router.post(route('user-profile-information.update'), {
             ...data,
-            _method: 'patch',
+            _method: 'put',
         });
 
         if (file.current) {

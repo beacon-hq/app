@@ -15,7 +15,7 @@ class ApplicationPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->hasPermissionTo(Permission::APPLICATIONS_VIEW());
     }
 
     /**
@@ -23,7 +23,7 @@ class ApplicationPolicy
      */
     public function view(User $user, Application $application): bool
     {
-        return true;
+        return $user->hasPermissionTo(Permission::APPLICATIONS_VIEW() . '.' . $application->id);
     }
 
     /**
@@ -31,7 +31,7 @@ class ApplicationPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo(Permission::APPLICATIONS);
+        return $user->hasPermissionTo(Permission::APPLICATIONS_CREATE());
     }
 
     /**
@@ -39,7 +39,7 @@ class ApplicationPolicy
      */
     public function update(User $user, Application $application): bool
     {
-        return $user->hasPermissionTo(Permission::APPLICATIONS() . '.' . $application->id);
+        return $user->hasPermissionTo(Permission::APPLICATIONS_UPDATE() . '.' . $application->id);
     }
 
     /**
@@ -47,22 +47,6 @@ class ApplicationPolicy
      */
     public function delete(User $user, Application $application): bool
     {
-        return $user->hasPermissionTo(Permission::APPLICATIONS() . '.' . $application->id);
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Application $application): bool
-    {
-        return $user->hasPermissionTo(Permission::APPLICATIONS() . '.' . $application->id);
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Application $application): bool
-    {
-        return $user->hasPermissionTo(Permission::APPLICATIONS() . '.' . $application->id);
+        return $user->hasPermissionTo(Permission::APPLICATIONS_DELETE() . '.' . $application->id);
     }
 }

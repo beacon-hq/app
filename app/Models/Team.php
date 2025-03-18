@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\Role;
 use App\Models\Traits\HasSlug;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -24,7 +25,7 @@ use Laravel\Sanctum\NewAccessToken;
  * @property string $name
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read Collection<int, PersonalAccessToken> $tokens
+ * @property-read Collection<int, AccessToken> $tokens
  * @property-read int|null $tokens_count
  * @property-read Collection<int, User> $users
  * @property-read int|null $users_count
@@ -77,7 +78,7 @@ class Team extends Model
     protected function owner(): Attribute
     {
         return Attribute::make(get: function () {
-            return User::role('owner')->whereHas('teams', function ($query) {
+            return User::role(Role::OWNER)->whereHas('teams', function ($query) {
                 $query->where('team_id', $this->id);
             })->first();
         });

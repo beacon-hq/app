@@ -341,6 +341,8 @@ export function PolicyDefinitionForm({
                                                         return item;
                                                     }) ?? [];
 
+                                                console.log(definitions);
+
                                                 return setDefinitions(definitions as PolicyDefinitionCollection);
                                             }}
                                             allowMultiple={

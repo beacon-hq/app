@@ -1,12 +1,14 @@
+import { Invite } from '@/Application';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
+import InviteAlert from '@/Pages/Auth/Components/InviteAlert';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
-export default function Register() {
+export default function Register({ invite }: { invite: Invite | false | null }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         first_name: '',
         last_name: '',
@@ -18,7 +20,7 @@ export default function Register() {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('register'), {
+        post(route('register.store'), {
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };
@@ -27,6 +29,7 @@ export default function Register() {
         <GuestLayout>
             <Head title="Register" />
             <div className="mt-6 w-full overflow-hidden bg-white px-6 py-4 shadow-md sm:max-w-md sm:rounded-lg dark:bg-gray-800">
+                <InviteAlert invite={invite} variant="register" />
                 <form onSubmit={submit}>
                     <div className="grid grid-cols-2 space-x-2">
                         <div>

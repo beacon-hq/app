@@ -1,11 +1,193 @@
 import { Role, Team, User, UserCollection } from '@/Application';
 import { Button } from '@/Components/ui/button';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/Components/ui/dialog';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from '@/Components/ui/select';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import Table from '@/Pages/Teams/Components/Table';
+import { cn } from '@/lib/utils';
 import { Head, useForm } from '@inertiajs/react';
-import React from 'react';
+import { MinusCircle, PlusCircle } from 'lucide-react';
+import React, { useState } from 'react';
+
+const AddMembers = ({ team }: { team: Team }) => {
+    const [open, setOpen] = useState(false);
+    const [currentEmail, setCurrentEmail] = useState<string>('');
+    const [currentRole, setCurrentRole] = useState<string>('');
+    const { data, setData, post, transform } = useForm<{ users: { email: string; role: Role }[] }>({ users: [] });
+
+    transform((data) => {
+        console.log('transform');
+        console.log(data);
+        console.log(currentEmail);
+        console.log(currentRole);
+
+        if (currentEmail.includes('@') && currentRole !== '') {
+            console.log('modified data');
+            return { users: [...data.users, { email: currentEmail, role: currentRole as Role }] };
+        }
+
+        console.log('unmodified data');
+        return data;
+    });
+
+    const handleSubmit = () => {
+        post(route('teams.invite', { slug: team.slug }), {
+            onFinish: () => {
+                setOpen(false);
+                setData('users', []);
+            },
+        });
+
+        setOpen(false);
+    };
+
+    return (
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                <Button type="submit">
+                    <PlusCircle /> Add Members
+                </Button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Add Members to {team.name}</DialogTitle>
+                </DialogHeader>
+                {data.users.map((user, index) => (
+                    <div key={user.email} className="flex flex-row gap-4 items-center">
+                        <Label htmlFor={`add_member_${user.email}`} hidden>
+                            Email
+                        </Label>
+                        <Input
+                            id="add_members"
+                            value={user.email}
+                            onChange={(e) =>
+                                setData(
+                                    'users',
+                                    data.users.map(function (user, idx) {
+                                        if (idx !== index) {
+                                            return user;
+                                        }
+
+                                        return {
+                                            ...user,
+                                            email: e.target.value,
+                                        };
+                                    }),
+                                )
+                            }
+                        />
+                        <Select
+                            value={user.role}
+                            onValueChange={(value: string) =>
+                                setData(
+                                    'users',
+                                    data.users.map(function (user, idx) {
+                                        if (idx !== index) {
+                                            return user;
+                                        }
+
+                                        return {
+                                            ...user,
+                                            role: value as Role,
+                                        };
+                                    }),
+                                )
+                            }
+                        >
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Select a role" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectLabel>Role</SelectLabel>
+                                    {Object.values(Role).map((role) => (
+                                        <SelectItem key={role} value={role}>
+                                            {role}
+                                        </SelectItem>
+                                    ))}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                        <MinusCircle
+                            size="40"
+                            onClick={() =>
+                                setData(
+                                    'users',
+                                    data.users.filter((currentUser) => user.email !== currentUser.email),
+                                )
+                            }
+                        />
+                    </div>
+                ))}
+                <div className="flex flew-row gap-2 items-center">
+                    <Label htmlFor="add_members" hidden>
+                        Email
+                    </Label>
+                    <Input id="add_members" value={currentEmail} onChange={(e) => setCurrentEmail(e.target.value)} />
+                    <Select value={currentRole} onValueChange={setCurrentRole}>
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Select a role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectLabel>Role</SelectLabel>
+                                {Object.values(Role).map((role) => (
+                                    <SelectItem key={role} value={role}>
+                                        {role}
+                                    </SelectItem>
+                                ))}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                    <PlusCircle
+                        className={cn('cursor-pointer', {
+                            'cursor-not-allowed text-primary/30': !currentEmail.includes('@') || currentRole === '',
+                        })}
+                        size="40"
+                        onClick={function () {
+                            if (!currentEmail.includes('@') || currentRole === '') {
+                                return;
+                            }
+
+                            setData('users', [...data.users, { email: currentEmail, role: currentRole as Role }]);
+
+                            setCurrentEmail('');
+                            setCurrentRole('');
+                        }}
+                    />
+                </div>
+                <DialogFooter>
+                    <DialogClose asChild>
+                        <Button type="button" variant="secondary">
+                            Cancel
+                        </Button>
+                    </DialogClose>
+                    <Button type="button" onClick={handleSubmit}>
+                        Add
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    );
+};
 
 export default function Edit({ team }: { team: Team }) {
     const owners = team.members?.filter((member: User) => member.roles.includes(Role.OWNER) ?? []) as UserCollection;
@@ -30,6 +212,7 @@ export default function Edit({ team }: { team: Team }) {
                 { name: 'Teams', href: route('teams.index') },
                 { name: data.name as string, icon: data.icon ?? undefined },
             ]}
+            headerAction={<AddMembers team={team} />}
         >
             <Head title="Edit" />
             <div className="mt-12">

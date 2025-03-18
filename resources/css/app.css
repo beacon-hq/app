@@ -36,7 +36,11 @@
         --muted-foreground: hsl(240 3.8% 46.1%);
         --accent: hsl(240 4.8% 95.9%);
         --accent-foreground: hsl(240 5.9% 10%);
-        --destructive: hsl(0 84.2% 60.2%);
+        --info: var(--color-blue-600);
+        --success: var(--color-green-600);
+        --warning: var(--color-yellow-600);
+        --destructive: var(--color-red-600);
+
         --destructive-foreground: hsl(0 0% 98%);
         --border: hsl(240 5.9% 90%);
         --input: hsl(240 5.9% 90%);
@@ -74,7 +78,10 @@
         --muted-foreground: hsl(240 5% 64.9%);
         --accent: hsl(240 3.7% 15.9%);
         --accent-foreground: hsl(0 0% 98%);
-        --destructive: hsl(0 62.8% 30.6%);
+        --info: var(--color-blue-900);
+        --success: var(--color-green-900);
+        --warning: var(--color-yellow-900);
+        --destructive: var(--color-red-900);
         --destructive-foreground: hsl(0 0% 98%);
         --border: hsl(240 3.7% 15.9%);
         --input: hsl(240 3.7% 15.9%);

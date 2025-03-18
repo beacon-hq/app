@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Models\PersonalAccessToken;
+use App\Models\AccessToken;
 use App\Models\Team;
 use App\Values\AppContext;
 use App\Values\Team as TeamValue;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Vite;
@@ -39,10 +40,17 @@ class AppServiceProvider extends ServiceProvider
             return $context;
         });
 
-        Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
+        Sanctum::usePersonalAccessTokenModel(AccessToken::class);
 
         Gate::guessPolicyNamesUsing(function (string $class) {
             return '\\App\\Policies\\' . class_basename($class) . 'Policy';
+        });
+
+        RedirectResponse::macro('withAlert', function (string $status, string $message) {
+            return $this->with('alert', [
+                'status' => $status,
+                'message' => $message,
+            ]);
         });
     }
 

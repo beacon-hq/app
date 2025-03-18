@@ -12,10 +12,6 @@ use Session;
 
 class TeamSelectController extends Controller
 {
-    public function __construct(protected TeamService $teamService)
-    {
-    }
-
     /**
      * Display a listing of the resource.
      */
@@ -27,9 +23,9 @@ class TeamSelectController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Team $team)
+    public function update(Team $team, TeamService $teamService)
     {
-        $team = $this->teamService->findById($team->id);
+        $team = $teamService->findById($team->id);
 
         Session::put('team', $team);
         App::context(team: $team);

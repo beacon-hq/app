@@ -11,6 +11,7 @@ use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\TeamMemberManageController;
 use App\Http\Controllers\TeamsController;
 use Illuminate\Foundation\Application as ApplicationAlias;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +35,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('/teams/accept-invite', [TeamMemberManageController::class, 'show'])
+    ->middleware('signed')
+    ->name('teams.accept-invite');
 
 Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
     Route::resource(
@@ -83,6 +88,11 @@ Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
         TeamsController::class,
         ['parameters' => ['teams' => 'slug']]
     )->except(['delete', 'create', 'show']);
+
+    Route::post(
+        'teams/invite/{slug}',
+        [TeamMemberManageController::class, 'store'],
+    )->name('teams.invite');
 
     Route::prefix('settings')->group(function () {
         Route::get('/', [SettingsController::class, 'index'])

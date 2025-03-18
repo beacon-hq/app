@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Policies;
 
 use App\Enums\Permission;
-use App\Models\FeatureFlagStatus;
 use App\Models\User;
+use App\Values\FeatureFlagStatus;
 
 class FeatureFlagStatusPolicy
 {
@@ -15,7 +15,7 @@ class FeatureFlagStatusPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->hasAnyPermission(Permission::FEATURE_FLAGS_VIEW(), Permission::FEATURE_FLAG_STATUS_VIEW());
     }
 
     /**
@@ -23,7 +23,7 @@ class FeatureFlagStatusPolicy
      */
     public function view(User $user, FeatureFlagStatus $featureFlagStatus): bool
     {
-        return true;
+        return $user->hasAnyPermission(Permission::FEATURE_FLAGS_VIEW(), Permission::FEATURE_FLAG_STATUS_VIEW() . '.' . $featureFlagStatus->id);
     }
 
     /**
@@ -31,7 +31,10 @@ class FeatureFlagStatusPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo(Permission::FEATURE_FLAGS);
+        return $user->hasAnyPermission(
+            Permission::FEATURE_FLAGS_CREATE(),
+            Permission::FEATURE_FLAG_STATUS_CREATE(),
+        );
     }
 
     /**
@@ -40,8 +43,8 @@ class FeatureFlagStatusPolicy
     public function update(User $user, FeatureFlagStatus $featureFlagStatus): bool
     {
         return $user->hasAnyPermission(
-            Permission::FEATURE_FLAGS() . '.' . $featureFlagStatus->id,
-            Permission::FEATURE_FLAG_STATUS() . '.' . $featureFlagStatus->id,
+            Permission::FEATURE_FLAGS_UPDATE() . '.' . $featureFlagStatus->id,
+            Permission::FEATURE_FLAG_STATUS_UPDATE() . '.' . $featureFlagStatus->id,
         );
     }
 
@@ -50,22 +53,9 @@ class FeatureFlagStatusPolicy
      */
     public function delete(User $user, FeatureFlagStatus $featureFlagStatus): bool
     {
-        return $user->hasPermissionTo(Permission::FEATURE_FLAGS() . '.' . $featureFlagStatus->id);
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, FeatureFlagStatus $featureFlagStatus): bool
-    {
-        return $user->hasPermissionTo(Permission::FEATURE_FLAGS() . '.' . $featureFlagStatus->id);
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, FeatureFlagStatus $featureFlagStatus): bool
-    {
-        return $user->hasPermissionTo(Permission::FEATURE_FLAGS() . '.' . $featureFlagStatus->id);
+        return $user->hasAnyPermission(
+            Permission::FEATURE_FLAGS_DELETE() . '.' . $featureFlagStatus->id,
+            Permission::FEATURE_FLAG_STATUS_DELETE() . '.' . $featureFlagStatus->id,
+        );
     }
 }

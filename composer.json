@@ -15,6 +15,7 @@
         "dshafik/bag": "^2.4",
         "eliseekn/laravel-metrics": "^3.1",
         "inertiajs/inertia-laravel": "^2.0",
+        "laravel/fortify": "^1.25",
         "laravel/framework": "^11|^12.1.1",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",

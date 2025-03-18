@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Policies;
 
 use App\Enums\Permission;
-use App\Models\FeatureType;
 use App\Models\User;
+use App\Values\FeatureType;
 
 class FeatureTypePolicy
 {
@@ -15,7 +15,7 @@ class FeatureTypePolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->hasPermissionTo(Permission::FEATURE_TYPES_VIEW());
     }
 
     /**
@@ -23,7 +23,7 @@ class FeatureTypePolicy
      */
     public function view(User $user, FeatureType $featureType): bool
     {
-        return true;
+        return $user->hasPermissionTo(Permission::FEATURE_TYPES_VIEW() . '.' . $featureType->id);
     }
 
     /**
@@ -31,7 +31,7 @@ class FeatureTypePolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo(Permission::FEATURE_TYPES);
+        return $user->hasPermissionTo(Permission::FEATURE_TYPES_CREATE());
     }
 
     /**
@@ -39,7 +39,7 @@ class FeatureTypePolicy
      */
     public function update(User $user, FeatureType $featureType): bool
     {
-        return $user->hasPermissionTo(Permission::FEATURE_TYPES() . '.' . $featureType->id);
+        return $user->hasPermissionTo(Permission::FEATURE_TYPES_UPDATE() . '.' . $featureType->id);
     }
 
     /**
@@ -47,22 +47,6 @@ class FeatureTypePolicy
      */
     public function delete(User $user, FeatureType $featureType): bool
     {
-        return $user->hasPermissionTo(Permission::FEATURE_TYPES() . '.' . $featureType->id);
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, FeatureType $featureType): bool
-    {
-        return $user->hasPermissionTo(Permission::FEATURE_TYPES() . '.' . $featureType->id);
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, FeatureType $featureType): bool
-    {
-        return $user->hasPermissionTo(Permission::FEATURE_TYPES() . '.' . $featureType->id);
+        return $user->hasPermissionTo(Permission::FEATURE_TYPES_DELETE() . '.' . $featureType->id);
     }
 }

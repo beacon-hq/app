@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Policies;
 
 use App\Enums\Permission;
-use App\Models\Environment;
 use App\Models\User;
+use App\Values\Environment;
 
 class EnvironmentPolicy
 {
@@ -15,7 +15,7 @@ class EnvironmentPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->hasPermissionTo(Permission::ENVIRONMENTS_VIEW());
     }
 
     /**
@@ -23,7 +23,7 @@ class EnvironmentPolicy
      */
     public function view(User $user, Environment $environment): bool
     {
-        return true;
+        return $user->hasPermissionTo(Permission::ENVIRONMENTS_VIEW() . '.' . $environment->id);
     }
 
     /**
@@ -31,7 +31,7 @@ class EnvironmentPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo(Permission::ENVIRONMENTS);
+        return $user->hasPermissionTo(Permission::ENVIRONMENTS_CREATE());
     }
 
     /**
@@ -39,7 +39,7 @@ class EnvironmentPolicy
      */
     public function update(User $user, Environment $environment): bool
     {
-        return $user->hasPermissionTo(Permission::ENVIRONMENTS() . '.' . $environment->id);
+        return $user->hasPermissionTo(Permission::ENVIRONMENTS_UPDATE() . '.' . $environment->id);
     }
 
     /**
@@ -47,22 +47,6 @@ class EnvironmentPolicy
      */
     public function delete(User $user, Environment $environment): bool
     {
-        return $user->hasPermissionTo(Permission::ENVIRONMENTS() . '.' . $environment->id);
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Environment $environment): bool
-    {
-        return $user->hasPermissionTo(Permission::ENVIRONMENTS() . '.' . $environment->id);
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Environment $environment): bool
-    {
-        return $user->hasPermissionTo(Permission::ENVIRONMENTS() . '.' . $environment->id);
+        return $user->hasPermissionTo(Permission::ENVIRONMENTS_DELETE() . '.' . $environment->id);
     }
 }

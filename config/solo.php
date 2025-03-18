@@ -49,6 +49,7 @@ return [
     'commands' => [
         'Sail' => './vendor/bin/sail up',
         'Logs' => EnhancedTailCommand::file(storage_path('logs/laravel.log')),
+        'Dumps' => './vendor/bin/sail artisan solo:dumps',
         'Pest' => Command::from('./vendor/bin/sail pest')->lazy(),
         'Vite' => './vendor/bin/sail npm run dev; ./vendor/bin/sail exec beacon killall -9 node',
         // Lazy commands do no automatically start when Solo starts.
@@ -56,7 +57,6 @@ return [
         'Pint' => Command::from('./vendor/bin/sail pint')->lazy(),
         'Queue' => Command::from('./vendor/bin/sail artisan queue:work')->lazy(),
         'Typescript' => Command::from('./vendor/bin/sail artisan typescript:transform')->lazy(),
-
     ],
 
     /*

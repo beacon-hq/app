@@ -6,6 +6,7 @@ namespace App\Policies;
 
 use App\Enums\Permission;
 use App\Models\User;
+use App\Values\User as UserValue;
 use Auth;
 
 class UserPolicy
@@ -15,15 +16,15 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->hasPermissionTo(Permission::USERS_VIEW());
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, User $model): bool
+    public function view(User $user, User|UserValue $value): bool
     {
-        return $user->id === $model->id;
+        return $user->hasPermissionTo(Permission::USERS_VIEW() . '.' . $value->id) && $user->id === $value->id;
     }
 
     /**
@@ -31,38 +32,22 @@ class UserPolicy
      */
     public function create(?User $user): bool
     {
-        return $user === null || $user->hasPermissionTo(Permission::USERS);
+        return $user === null || $user->hasPermissionTo(Permission::USERS_CREATE());
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, User $model): bool
+    public function update(User $user, User|UserValue $value): bool
     {
-        return $user->id === Auth::user()->id || $user->hasPermissionTo(Permission::USERS() . '.' . $model->id);
+        return $user->hasPermissionTo(Permission::USERS_UPDATE() . '.' . $value->id) || $user->id === Auth::user()->id;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, User $model): bool
+    public function delete(User $user, User|UserValue $value): bool
     {
-        return $user->id === Auth::user()->id || $user->hasPermissionTo(Permission::USERS() . '.' . $model->id);
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, User $model): bool
-    {
-        return $user->id === Auth::user()->id || $user->hasPermissionTo(Permission::USERS() . '.' . $model->id);
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, User $model): bool
-    {
-        return $user->id === Auth::user()->id || $user->hasPermissionTo(Permission::USERS() . '.' . $model->id);
+        return $user->hasPermissionTo(Permission::USERS() . '.' . $value->id) || $user->id === Auth::user()->id;
     }
 }

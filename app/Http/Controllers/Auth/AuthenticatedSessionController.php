@@ -6,10 +6,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Values\Invite;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -20,9 +22,13 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): Response
     {
+        /** @var Invite $invite */
+        $invite = Session::get('invite');
+
         return Inertia::render('Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
-            'status' => session('status'),
+            'status' => Session::get('status'),
+            'invite' => !$invite || $invite->expires_at->isAfter(now()) ? $invite : false ,
         ]);
     }
 

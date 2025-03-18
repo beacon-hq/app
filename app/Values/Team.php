@@ -36,7 +36,7 @@ readonly class Team extends Bag
 
     public function __construct(
         #[FromRouteParameter]
-        public string $slug,
+        public ?string $slug,
         public ?string $id = null,
         public ?string $name = null,
         public string|Color|null $color = null,

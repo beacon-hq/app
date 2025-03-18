@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Values;
 
-use App\Models\PersonalAccessToken;
+use App\Models\AccessToken as AccessTokenModel;
 use App\Values\Collections\AccessTokenCollection;
 use App\Values\Factories\AccessTokenFactory;
 use Bag\Attributes\Collection;
@@ -39,8 +39,8 @@ readonly class AccessToken extends Bag
     ) {
     }
 
-    #[Transforms(PersonalAccessToken::class)]
-    public static function fromModel(PersonalAccessToken $personalAccessToken)
+    #[Transforms(AccessTokenModel::class)]
+    public static function fromModel(AccessTokenModel $personalAccessToken)
     {
         return [
             'id' => $personalAccessToken->id,

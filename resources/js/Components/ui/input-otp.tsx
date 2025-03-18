@@ -3,16 +3,19 @@ import { OTPInput, OTPInputContext } from 'input-otp';
 import { Minus } from 'lucide-react';
 import * as React from 'react';
 
-const InputOTP = React.forwardRef<React.ElementRef<typeof OTPInput>, React.ComponentPropsWithoutRef<typeof OTPInput>>(
-    ({ className, containerClassName, ...props }, ref) => (
-        <OTPInput
-            ref={ref}
-            containerClassName={cn('flex items-center gap-2 has-disabled:opacity-50', containerClassName)}
-            className={cn('disabled:cursor-not-allowed', className)}
-            {...props}
-        />
-    ),
-);
+const InputOTP = React.forwardRef<
+    React.ElementRef<typeof OTPInput>,
+    React.ComponentPropsWithoutRef<typeof OTPInput> & { error?: string }
+>(({ className, containerClassName, error, ...props }, ref) => (
+    <OTPInput
+        ref={ref}
+        containerClassName={cn('flex items-center gap-2 has-disabled:opacity-50', containerClassName, {
+            'group error': error !== undefined,
+        })}
+        className={cn('disabled:cursor-not-allowed', className)}
+        {...props}
+    />
+));
 InputOTP.displayName = 'InputOTP';
 
 const InputOTPGroup = React.forwardRef<React.ElementRef<'div'>, React.ComponentPropsWithoutRef<'div'>>(
@@ -34,6 +37,7 @@ const InputOTPSlot = React.forwardRef<
                 'relative flex h-9 w-9 items-center justify-center border-y border-r border-input text-sm shadow-xs transition-all first:rounded-l-md first:border-l last:rounded-r-md',
                 isActive && 'z-10 ring-1 ring-ring',
                 className,
+                'group-[.error]:border-y-red-500 group-[.error]:first:border-l-red-500 group-[.error]:last:border-r-red-500',
             )}
             {...props}
         >

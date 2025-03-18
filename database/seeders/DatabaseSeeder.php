@@ -4,19 +4,21 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Enums\Permission as PermissionType;
+use App\Enums\Role as RoleType;
 use App\Models\Application;
 use App\Models\Environment;
 use App\Models\FeatureFlag;
 use App\Models\FeatureFlagStatus;
 use App\Models\FeatureType;
 use App\Models\Tag;
-use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\UniqueConstraintViolationException;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Lottery;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -25,8 +27,40 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $team = Team::factory(['name' => 'Davey\'s Team'])->create();
-        App::context(team: $team);
+        $subPermissions = collect(['create', 'update', 'delete', 'view']);
+
+        collect(PermissionType::values())->each(function ($permission) use ($subPermissions) {
+            return $subPermissions->each(fn ($perm) => Permission::create(['name' => $permission . '.' . $perm]));
+        });
+
+        Role::create(['name' => RoleType::OWNER()])->givePermissionTo(Permission::all());
+
+        Role::create(['name' => RoleType::ADMIN()])->givePermissionTo(Permission::all());
+
+        Role::create(['name' => RoleType::DEVELOPER()])->givePermissionTo([
+            ... $subPermissions->map(fn ($sub) => PermissionType::FEATURE_FLAGS() . '.' . $sub)->toArray(),
+            ... $subPermissions->map(fn ($sub) => PermissionType::FEATURE_TYPES() . '.' . $sub)->toArray(),
+            ... $subPermissions->map(fn ($sub) => PermissionType::FEATURE_FLAG_STATUS() . '.' . $sub)->toArray(),
+            ... $subPermissions->map(fn ($sub) => PermissionType::APPLICATIONS() . '.' . $sub)->toArray(),
+            ... $subPermissions->map(fn ($sub) => PermissionType::ENVIRONMENTS() . '.' . $sub)->toArray(),
+            ... $subPermissions->map(fn ($sub) => PermissionType::TAGS() . '.' . $sub)->toArray(),
+        ]);
+
+        Role::create(['name' => RoleType::BILLER()])->givePermissionTo([
+            ... $subPermissions->map(fn ($sub) => PermissionType::BILLING() . '.' . $sub)->toArray(),
+        ]);
+
+        $user = User::factory()
+            ->create([
+                'first_name' => 'Davey',
+                'last_name' => 'Shafik',
+                'email' => 'davey@php.net',
+                'password' => 'qtf7vnd!ejn5TEN*dbh',
+            ]);
+
+        $user->assignRole('owner');
+
+        $team = User::first()->teams()->first();
 
         Application::factory(18)
             ->for($team)
@@ -82,14 +116,5 @@ class DatabaseSeeder extends Seeder
                 }
             })->choose(3);
         });
-
-        User::factory()
-            ->hasAttached($team)
-            ->create([
-                'first_name' => 'Davey',
-                'last_name' => 'Shafik',
-                'email' => 'davey@php.net',
-                'password' => 'qtf7vnd!ejn5TEN*dbh',
-            ]);
     }
 }

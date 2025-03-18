@@ -8,6 +8,7 @@ use App\Repositories\TeamRepository;
 use App\Values\Team;
 use Bag\Attributes\WithoutValidation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class TeamsController extends Controller
@@ -22,7 +23,7 @@ class TeamsController extends Controller
     public function index()
     {
         return Inertia::render('Teams/Index', [
-            'teams' => $this->teamRepository->all(null, true),
+            'teams' => $this->teamRepository->all(Auth::user()->id, true),
         ]);
     }
 

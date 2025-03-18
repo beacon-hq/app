@@ -23,4 +23,9 @@ class TeamService
     {
         return $this->teamRepository->create($from);
     }
+
+    public function findBySlug(string $slug)
+    {
+        return $this->teamRepository->findBySlug($slug);
+    }
 }

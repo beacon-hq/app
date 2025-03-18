@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Models\PersonalAccessToken;
+use App\Models\AccessToken;
 use App\Models\Team;
 use App\Values\AccessToken as AccessTokenValue;
 use App\Values\Collections\AccessTokenCollection;
@@ -50,6 +50,6 @@ class AccessTokenRepository
 
     public function findById(string $id): AccessTokenValue
     {
-        return AccessTokenValue::from(PersonalAccessToken::findOrFail($id));
+        return AccessTokenValue::from(AccessToken::findOrFail($id));
     }
 }

@@ -1,13 +1,23 @@
+import { Invite } from '@/Application';
 import Checkbox from '@/Components/Checkbox';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
+import InviteAlert from '@/Pages/Auth/Components/InviteAlert';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
-export default function Login({ status, canResetPassword }: { status?: string; canResetPassword: boolean }) {
+export default function Login({
+    status,
+    canResetPassword,
+    invite,
+}: {
+    status?: string;
+    canResetPassword: boolean;
+    invite: Invite | false | null;
+}) {
     const { data, setData, post, processing, errors, reset } = useForm<{
         email: string;
         password: string;
@@ -21,7 +31,7 @@ export default function Login({ status, canResetPassword }: { status?: string; c
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('login'), {
+        post(route('login.store'), {
             onFinish: () => reset('password'),
         });
     };
@@ -30,6 +40,8 @@ export default function Login({ status, canResetPassword }: { status?: string; c
         <GuestLayout>
             <Head title="Log in" />
             <div className="mt-6 w-full overflow-hidden bg-white px-6 py-4 shadow-md sm:max-w-md sm:rounded-lg dark:bg-gray-800">
+                <InviteAlert invite={invite} variant="login" />
+
                 {status && <div className="mb-4 text-sm font-medium text-green-600">{status}</div>}
 
                 <form onSubmit={submit}>

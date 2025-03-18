@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Enums\Role;
 use App\Models\User;
 use App\Services\TeamService;
 use App\Values\Team;
@@ -27,5 +28,16 @@ class UserRepository
         $user->teams()->syncWithoutDetaching($team->id);
 
         return UserValue::from($user);
+    }
+
+    public function findByEmail(string $email): UserValue
+    {
+        return UserValue::from(User::where('email', $email)->firstOrFail());
+    }
+
+    public function assignRole(UserValue $user, ?Role $role)
+    {
+        $user = User::find($user->id);
+        $user->assignRole($role);
     }
 }
