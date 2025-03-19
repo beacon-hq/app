@@ -1,13 +1,15 @@
 import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Avatar, AvatarFallback, AvatarImage } from '@/Components/ui/avatar';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
+import { Tabs, TabsList, TabsTrigger } from '@/Components/ui/tabs';
 import { cn } from '@/lib/utils';
+import { Theme, useTheme } from '@/theme-provider';
 import { Transition } from '@headlessui/react';
 import { Link, router, useForm, usePage } from '@inertiajs/react';
+import { Monitor, Moon, Sun } from 'lucide-react';
 import { FormEventHandler, useRef } from 'react';
 
 export default function UpdateProfileInformation({
@@ -23,16 +25,20 @@ export default function UpdateProfileInformation({
 
     const file = useRef<HTMLInputElement>(null);
 
+    const { theme, setTheme } = useTheme();
+
     const { data, setData, errors, processing, recentlySuccessful } = useForm<{
         first_name: string;
         last_name: string;
         email: string;
         avatar: File | string | null;
+        theme: string;
     }>({
         first_name: user.first_name ?? '',
         last_name: user.last_name ?? '',
         email: user.email ?? '',
         avatar: user.avatar,
+        theme: theme,
     });
 
     const useGravatar = () => {
@@ -44,8 +50,6 @@ export default function UpdateProfileInformation({
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
-        console.log(data);
 
         router.post(route('user-profile-information.update'), {
             ...data,
@@ -63,11 +67,9 @@ export default function UpdateProfileInformation({
     return (
         <section className={cn('flex flex-row gap-8', className)}>
             <header className="w-1/4">
-                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Profile Information</h2>
+                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Profile Settings</h2>
 
-                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                    Update your account's profile information and email address.
-                </p>
+                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Update your account's profile settings.</p>
             </header>
 
             <form onSubmit={submit} className="mt-6 space-y-6 w-3/4 grow">
@@ -84,7 +86,7 @@ export default function UpdateProfileInformation({
                             alt={user.name ?? ''}
                         />
                         {!data.avatar && (
-                            <div className="rounded-b-lg bg-secondary absolute bottom-0 w-full text-center text-xs">
+                            <div className="rounded-b-lg bg-secondary text-primary absolute bottom-0 w-full text-center text-xs">
                                 Gravatar
                             </div>
                         )}
@@ -114,7 +116,7 @@ export default function UpdateProfileInformation({
                 </div>
                 <div className="flex justify-between gap-4">
                     <div className="w-1/2">
-                        <InputLabel htmlFor="first_name" value="First Name" />
+                        <Label htmlFor="first_name">First Name</Label>
 
                         <TextInput
                             id="first_name"
@@ -130,7 +132,7 @@ export default function UpdateProfileInformation({
                     </div>
 
                     <div className="w-1/2">
-                        <InputLabel htmlFor="last_name" value="Last Name" />
+                        <Label htmlFor="last_name">Last Name</Label>
 
                         <TextInput
                             id="last_name"
@@ -147,7 +149,7 @@ export default function UpdateProfileInformation({
                 </div>
 
                 <div>
-                    <InputLabel htmlFor="email" value="Email" />
+                    <Label htmlFor="email">Email</Label>
 
                     <TextInput
                         id="email"
@@ -184,8 +186,46 @@ export default function UpdateProfileInformation({
                     </div>
                 )}
 
+                <div>
+                    <Label>Theme Preference</Label>
+                    <Tabs
+                        value={data.theme}
+                        onValueChange={function (value) {
+                            setData('theme', value);
+                            setTheme(value as Theme);
+                        }}
+                    >
+                        <TabsList>
+                            <TabsTrigger value="light">
+                                <Sun
+                                    className={cn('mr-2', {
+                                        'stroke-yellow-400 transition-color duration-1000': theme === 'light',
+                                    })}
+                                />{' '}
+                                Light
+                            </TabsTrigger>
+                            <TabsTrigger value="dark">
+                                <Moon
+                                    className={cn('mr-2', {
+                                        'stroke-sky-400 transition-color duration-1000': theme === 'dark',
+                                    })}
+                                />{' '}
+                                Dark
+                            </TabsTrigger>
+                            <TabsTrigger value="system">
+                                <Monitor
+                                    className={cn('mr-2', {
+                                        'stroke-purple-400 transition-color duration-1000': theme === 'system',
+                                    })}
+                                />{' '}
+                                System
+                            </TabsTrigger>
+                        </TabsList>
+                    </Tabs>
+                </div>
+
                 <div className="flex items-center gap-4">
-                    <PrimaryButton disabled={processing}>Save</PrimaryButton>
+                    <Button disabled={processing}>Save</Button>
 
                     <Transition
                         show={recentlySuccessful}

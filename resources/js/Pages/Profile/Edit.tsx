@@ -8,8 +8,8 @@ import { Head } from '@inertiajs/react';
 
 export default function Edit({ mustVerifyEmail, status }: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
     return (
-        <Authenticated header="Profile">
-            <Head title="Profile" />
+        <Authenticated breadcrumbs={[{ name: 'My Account', icon: 'CircleUser' }]}>
+            <Head title="My Account" />
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">

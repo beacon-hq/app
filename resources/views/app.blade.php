@@ -29,23 +29,13 @@
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
         
         <script>
-            console.log('{{asset('assets/images/favicon.ico')}}');
-            console.log('{{public_path('assets/images/favicon.ico')}}');
+            localStorage.setItem('ui-theme', '{{Auth::user()?->theme}}');
         </script>
         
         <link rel="icon" href="{{asset('images/favicon.ico')}}" sizes="32x32">
         <link rel="icon" href="{{asset('images/icon.svg')}}" type="image/svg+xml">
         <link rel="apple-touch-icon" href="{{asset('images/apple-touch-icon.png')}}">
         
-        <!-- Scripts -->
-        <script>
-            // On page load or when changing themes, best to add inline in `head` to avoid FOUC
-            document.documentElement.classList.toggle(
-                "dark",
-                localStorage.theme === "dark" ||
-                (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches),
-            );
-        </script>
         @routes
         @viteReactRefresh
         @vite(['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx"])

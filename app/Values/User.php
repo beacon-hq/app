@@ -35,6 +35,7 @@ readonly class User extends Bag
         public ?string $email = null,
         public ?string $avatar = null,
         public ?string $gravatar = null,
+        public string $theme = 'system',
         #[Cast(Collection::class, Team::class)]
         public ?TeamCollection $teams = null,
         #[LiteralTypeScriptType('Role[]')]
@@ -55,6 +56,7 @@ readonly class User extends Bag
             'email' => $user->email,
             'avatar' => $user->avatar,
             'gravatar' => $user->gravatar,
+            'theme' => $user->theme,
             'teams' => $user->relationLoaded('teams') ? $user->teams : null,
             'roles' => collect($user->roles->pluck('name')->map(fn (string $role) => Role::tryFrom($role)?->value)),
             'emailVerifiedAt' => $user->email_verified_at,

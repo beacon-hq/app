@@ -83,7 +83,7 @@ export default function Authenticated({
                                                         {breadcrumb.icon && (
                                                             <Icon
                                                                 name={breadcrumb.icon}
-                                                                className={cn('h-8 w-8 inline-block', {})}
+                                                                className={cn('h-8 w-8 inline-block')}
                                                             />
                                                         )}
                                                         <Link href={breadcrumb.href}>{breadcrumb.name}</Link>
@@ -99,7 +99,7 @@ export default function Authenticated({
                                                     {breadcrumb.icon && (
                                                         <Icon
                                                             name={breadcrumb.icon}
-                                                            className={cn('h-8 w-8 inline-block', {})}
+                                                            className={cn('h-8 w-8 inline-block')}
                                                         />
                                                     )}
                                                     {breadcrumb.name}

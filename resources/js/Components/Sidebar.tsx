@@ -26,8 +26,8 @@ import { AuthProp } from '@/types';
 import { Link } from '@inertiajs/react';
 import {
     AppWindowMac,
-    BadgeCheck,
     Bell,
+    CircleUser,
     Component,
     Flag,
     Gauge,
@@ -188,8 +188,8 @@ const Sidebar = function (props: { expanded: boolean } & AuthProp) {
                                     </DropdownMenuItem>
                                     <DropdownMenuItem asChild>
                                         <Link href={route('profile.edit')} className="w-full">
-                                            <BadgeCheck />
-                                            Account
+                                            <CircleUser />
+                                            My Account
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem asChild>

@@ -1,7 +1,7 @@
 import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
+import { Button } from '@/Components/ui/button';
+import { Label } from '@/Components/ui/label';
 import { cn } from '@/lib/utils';
 import { Transition } from '@headlessui/react';
 import { useForm } from '@inertiajs/react';
@@ -49,7 +49,7 @@ export default function UpdatePasswordForm({ className = '' }: { className?: str
 
             <form onSubmit={updatePassword} className="mt-6 space-y-6 w-3/4 grow">
                 <div>
-                    <InputLabel htmlFor="current_password" value="Current Password" />
+                    <Label htmlFor="current_password">Current Password</Label>
 
                     <TextInput
                         id="current_password"
@@ -65,7 +65,7 @@ export default function UpdatePasswordForm({ className = '' }: { className?: str
                 </div>
 
                 <div>
-                    <InputLabel htmlFor="password" value="New Password" />
+                    <Label htmlFor="password">New Password</Label>
 
                     <TextInput
                         id="password"
@@ -81,7 +81,7 @@ export default function UpdatePasswordForm({ className = '' }: { className?: str
                 </div>
 
                 <div>
-                    <InputLabel htmlFor="password_confirmation" value="Confirm Password" />
+                    <Label htmlFor="password_confirmation">Confirm Password</Label>
 
                     <TextInput
                         id="password_confirmation"
@@ -96,7 +96,7 @@ export default function UpdatePasswordForm({ className = '' }: { className?: str
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <PrimaryButton disabled={processing}>Save</PrimaryButton>
+                    <Button disabled={processing}>Save</Button>
 
                     <Transition
                         show={recentlySuccessful}

@@ -96,7 +96,7 @@ export type FeatureType = {
 export type FeatureTypeCollection = FeatureType[];
 export type Invite = {
     email: string;
-    role: string;
+    role: Role;
     team: Team;
     user: User;
     expires_at: string;
@@ -234,6 +234,7 @@ export type User = {
     email: string | null;
     avatar: string | null;
     gravatar: string | null;
+    theme: string;
     teams: TeamCollection | null;
     roles: Role[];
     email_verified_at: string | null;

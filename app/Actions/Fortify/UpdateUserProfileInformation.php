@@ -37,6 +37,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 Rule::unique('users')->ignore($user->id),
             ],
             'avatar' => ['nullable', 'file', 'image', 'max:1024'],
+            'theme' => ['nullable', 'string', Rule::in(['light', 'dark', 'system'])],
         ])->validateWithBag('updateProfileInformation');
 
         $input['avatar_url'] = null;
@@ -44,6 +45,10 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $avatar = Storage::disk('public')->putFile('avatars', $this->request->file('avatar'));
             $input['avatar_url'] = $avatar;
             unset($input['avatar']);
+        }
+
+        if (!$this->request->has('theme')) {
+            $input['theme'] = $user->theme;
         }
 
         if ($input['email'] !== $user->email &&
@@ -54,7 +59,8 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'first_name' => $input['first_name'],
                 'last_name' => $input['last_name'],
                 'email' => $input['email'],
-                'avatar_url' => $input['avatar_url']
+                'avatar_url' => $input['avatar_url'],
+                'theme' => $input['theme'],
             ])->save();
         }
 
