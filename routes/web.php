@@ -10,10 +10,10 @@ use App\Http\Controllers\FeatureTypeController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TeamMemberManageController;
-use App\Http\Controllers\TeamsController;
 use Illuminate\Foundation\Application as ApplicationAlias;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -96,12 +96,12 @@ Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
 
     Route::resource(
         'teams',
-        TeamsController::class,
+        TeamController::class,
         ['parameters' => ['teams' => 'slug']]
     )->except(['delete', 'create', 'show']);
 
     Route::prefix('settings')->group(function () {
-        Route::get('/', [SettingsController::class, 'index'])
+        Route::get('/', [SettingController::class, 'index'])
             ->name('settings.index');
 
         Route::get('/api', [AccessTokenController::class, 'index'])

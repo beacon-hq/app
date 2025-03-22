@@ -7,7 +7,7 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class SettingsController extends Controller
+class SettingController extends Controller
 {
     public function index(): Response
     {

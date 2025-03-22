@@ -8,7 +8,7 @@ use App\Services\AccessTokenService;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class AccessTokensController extends Controller
+class AccessTokenController extends Controller
 {
     public function index(AccessTokenService $accessTokenService): Response
     {
