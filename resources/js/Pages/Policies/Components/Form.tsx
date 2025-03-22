@@ -44,7 +44,7 @@ export function Form({
                         onChange={(e) => setData('name', e.target.value)}
                     />
                 </div>
-                {errors.name && <InputError message={errors.name} />}
+                <InputError message={errors?.name} />
             </div>
             <div>
                 <Label htmlFor="description" aria-required>
@@ -56,6 +56,7 @@ export function Form({
                     rows={8}
                     onChange={(e) => setData('description', e.target.value)}
                 />
+                <InputError message={errors?.description} />
             </div>
             {data.slug && (
                 <PolicyDefinitionForm

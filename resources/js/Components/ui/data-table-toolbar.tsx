@@ -25,6 +25,7 @@ interface DataTableToolbarProps<TData> {
     facets?: DataTableFacets;
     currentFilters?: TableFilters;
     onFilterChange?: (filterState?: any) => void;
+    onFilterReset?: () => void;
 }
 
 // Create a type for manual filters that is an object of arrays of objects with a value: string, a label: string, and icon?: React.ComponentType<{ className?: string }> keyed on the filter name, e.g. {status: [{filterValue: 'active', displayValue: 'Active'}, {filterValue: 'inactive', displayValue: 'Inactive'}]} that can be mapped over
@@ -39,6 +40,7 @@ export function DataTableToolbar<TData>({
     facets,
     currentFilters,
     onFilterChange,
+    onFilterReset,
 }: DataTableToolbarProps<TData>) {
     const isFiltered =
         currentFilters && onFilterChange
@@ -112,6 +114,11 @@ export function DataTableToolbar<TData>({
                     <Button
                         variant="ghost"
                         onClick={() => {
+                            if (onFilterReset) {
+                                onFilterReset();
+                                return;
+                            }
+
                             if (onFilterChange) {
                                 onFilterChange();
                             }

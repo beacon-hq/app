@@ -1,5 +1,6 @@
 import {
     FeatureFlagStatus,
+    Organization,
     Policy,
     PolicyCollection,
     PolicyDefinition,
@@ -122,5 +123,16 @@ export const containsPolicy = function (
 };
 
 export const chooseTeam = (team: Team) => {
-    router.post(route('teams.choose'), { team: team }, { preserveState: false });
+    router.post(`${route('teams.choose')}`, { team: team }, { preserveState: false });
+};
+
+export const chooseOrganization = (organization: Organization) => {
+    router.post(
+        route('organizations.choose'),
+        { id: organization.id },
+        {
+            preserveState: false,
+            onError: () => router.get(route('dashboard')),
+        },
+    );
 };

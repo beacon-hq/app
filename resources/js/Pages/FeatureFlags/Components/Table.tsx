@@ -8,20 +8,15 @@ import {
 } from '@/Application';
 import { IconColor } from '@/Components/IconColor';
 import ItemList from '@/Components/ItemList';
-import { DataTable } from '@/Components/ui/data-table';
+import { DataTable, TableOptions } from '@/Components/ui/data-table';
 import { DataTableColumnHeader } from '@/Components/ui/data-table-column-header';
 import { localDateTime } from '@/lib/utils';
-import { Link, router } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { Pencil } from 'lucide-react';
 import React, { useState } from 'react';
 
 export type TableFilters = { [key: string]: Set<string> };
-export type TableOptions = {
-    page: number;
-    perPage: number;
-    filters: TableFilters;
-};
 
 export default function Table({
     featureFlags,
@@ -41,9 +36,9 @@ export default function Table({
     tableOptions: TableOptions;
 }) {
     const columnHelper = createColumnHelper<FeatureFlag>();
-    const [currentTableOptions, setCurrentTableOptions] = useState<TableOptions>(tableOptions);
+    const [currentTableOptions] = useState<TableOptions>(tableOptions);
 
-    const columns: ColumnDef<FeatureFlag, unknown>[] = [
+    const columns: ColumnDef<FeatureFlag, any>[] = [
         columnHelper.accessor('feature_type', {
             id: 'featureType',
             header: ({ column }) => <DataTableColumnHeader column={column} title="" />,
@@ -149,53 +144,6 @@ export default function Table({
         }) as ColumnDef<FeatureFlag>,
     ];
 
-    const handleFilterChange = (filters?: TableFilters) => {
-        if (!filters) {
-            router.get(route(route().current() as string));
-            return;
-        }
-
-        if (Object.entries(filters).length === 0) {
-            return;
-        }
-
-        const nonEmptyFilters = Object.fromEntries(
-            Object.entries(filters).filter(([key, value]) => {
-                return value.size > 0;
-            }),
-        );
-
-        const filterQuery = Object.fromEntries(
-            Object.entries({ ...currentTableOptions.filters, ...nonEmptyFilters }).map(function ([key, value]) {
-                return [key, Array.from(value)];
-            }),
-        );
-
-        router.get(route(route().current() as string), {
-            page: 1,
-            perPage: currentTableOptions.perPage,
-            filters: filterQuery as any,
-        });
-    };
-
-    const handlePaginationChange = (pagination: { pageIndex: number; pageSize: number }) => {
-        if (
-            pagination.pageIndex + 1 !== currentTableOptions.page ||
-            pagination.pageSize !== currentTableOptions.perPage
-        ) {
-            router.get(route(route().current() as string), {
-                page: pagination.pageIndex + 1,
-                perPage: pagination.pageSize,
-                filters:
-                    Object.entries(currentTableOptions.filters).length > 0
-                        ? Object.entries(currentTableOptions.filters).map(([values]) => {
-                              return Array.from(values);
-                          })
-                        : {},
-            });
-        }
-    };
-
     return (
         <DataTable
             columns={columns}
@@ -253,9 +201,8 @@ export default function Table({
             page={currentTableOptions.page}
             columnVisibility={{ Updated: false }}
             sortBy={[{ id: 'name', desc: false }]}
-            onFilterChange={handleFilterChange}
-            onPageChange={handlePaginationChange}
             currentFilters={currentTableOptions.filters}
+            tableOptions={tableOptions}
         />
     );
 }

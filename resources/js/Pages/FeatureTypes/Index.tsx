@@ -26,7 +26,7 @@ export default function Index({ featureTypes }: PageProps & { featureTypes: Feat
 
     const submit = (e: FormEvent<Element>) => {
         e.preventDefault();
-        post(route('feature-flags.store'), {
+        post(route('feature-types.store'), {
             onSuccess: function () {
                 setShowSheet(false);
                 reset();

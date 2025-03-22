@@ -67,7 +67,7 @@ export function Form({
                     disabled={data.slug != null && data.slug !== ''}
                     onChange={(e) => setData('name', e.target.value)}
                 />
-                {errors.name && <InputError message={errors.name} />}
+                <InputError message={errors?.name} />
             </div>
             <div>
                 <Label htmlFor="feature_type" aria-required>
@@ -115,7 +115,7 @@ export function Form({
                         </SelectGroup>
                     </SelectContent>
                 </Select>
-                {errors.feature_type && <InputError message={errors.feature_type} />}
+                <InputError message={errors?.feature_type} />
             </div>
             <div>
                 <Label htmlFor="tags">Tags</Label>
@@ -207,6 +207,7 @@ export function Form({
                         </Command>
                     </PopoverContent>
                 </Popover>
+                <InputError message={errors?.tags} />
             </div>
             <div>
                 <Label htmlFor="description">Description</Label>
@@ -216,6 +217,7 @@ export function Form({
                     rows={8}
                     onChange={(e) => setData('description', e.target.value)}
                 />
+                <InputError message={errors?.description} />
             </div>
             <div className="flex justify-end">
                 <Button variant="link" className="mr-2" type="button" onClick={onCancel}>

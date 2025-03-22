@@ -30,7 +30,7 @@ beforeEach(function () {
     $this->environment = Environment::factory()->for($this->team)->create();
     $this->featureFlag = FeatureFlag::factory()->active()->for($this->team)->for($featureType)->hasAttached($tags)->create();
 
-    App::context($this->team);
+    App::context(team: $this->team);
 });
 
 it('evaluates scalar value policies', function (array $policyDefinition, array $context, bool $expected) {

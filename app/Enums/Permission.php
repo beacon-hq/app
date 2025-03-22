@@ -72,9 +72,9 @@ enum Permission: string
     case TEAMS_VIEW = 'teams.view';
     case TEAMS_DELETE = 'teams.delete';
 
-    case API_TOKENS = 'api-tokens';
-    case API_TOKENS_CREATE = 'api-tokens.create';
-    case API_TOKENS_UPDATE = 'api-tokens.update';
-    case API_TOKENS_VIEW = 'api-tokens.view';
-    case API_TOKENS_DELETE = 'api-tokens.delete';
+    case ACCESS_TOKENS = 'access-tokens';
+    case ACCESS_TOKENS_CREATE = 'access-tokens.create';
+    case ACCESS_TOKENS_UPDATE = 'access-tokens.update';
+    case ACCESS_TOKENS_VIEW = 'access-tokens.view';
+    case ACCESS_TOKENS_DELETE = 'access-tokens.delete';
 }

@@ -9,6 +9,12 @@ import { ChevronRight } from 'lucide-react';
 import React from 'react';
 
 export default function Select({ teams }: PageProps) {
+    const uniqueOrganizationCount = teams.reduce((acc, team) => {
+        if (team.organization?.id && !acc.includes(team.organization.id)) {
+            acc.push(team.organization.id);
+        }
+        return acc;
+    }, [] as string[]).length;
     return (
         <Guest>
             <Head title="Choose a Team" />
@@ -21,12 +27,16 @@ export default function Select({ teams }: PageProps) {
                             <CardContent className="pb-0">
                                 {teams.map((team, index) => (
                                     <div className="cursor-pointer" onClick={() => chooseTeam(team)} key={team.id}>
-                                        <div className="flex flex-row gap-4 items-center h-20 justify-between">
+                                        <div className="flex flex-row gap-4 items-center h-20 justify-start">
                                             <div className="flex flex-row gap-4 items-center">
-                                                <IconColor color={team.color} icon={team.icon} />
-                                                {team.name}
+                                                {uniqueOrganizationCount > 1 && (
+                                                    <>
+                                                        {team.organization?.name}
+                                                        <ChevronRight />
+                                                    </>
+                                                )}
+                                                <IconColor color={team.color} icon={team.icon} /> {team.name}
                                             </div>
-                                            <ChevronRight />
                                         </div>
                                         {teams.length - 1 !== index && <Separator />}
                                     </div>

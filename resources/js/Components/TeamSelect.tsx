@@ -9,12 +9,19 @@ import {
 } from '@/Components/ui/dropdown-menu';
 import { chooseTeam } from '@/lib/utils';
 import { usePage } from '@inertiajs/react';
-import { Check, ChevronsUpDown } from 'lucide-react';
+import { Check, ChevronRight, ChevronsUpDown } from 'lucide-react';
 import React, { useState } from 'react';
 
 const TeamSelect = ({ teams }: { teams: TeamCollection }) => {
     const auth = usePage().props.auth;
     const [selectedTeam] = useState<Team>(auth.currentTeam);
+
+    const uniqueOrganizationCount = teams.reduce((acc, team) => {
+        if (team.organization?.id && !acc.includes(team.organization.id)) {
+            acc.push(team.organization.id);
+        }
+        return acc;
+    }, [] as string[]).length;
 
     if (teams.length === 1) {
         return (
@@ -34,6 +41,12 @@ const TeamSelect = ({ teams }: { teams: TeamCollection }) => {
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button type="button" variant="secondary" className="flex flex-row items-center gap-0.5">
+                        {uniqueOrganizationCount > 1 && (
+                            <>
+                                {auth.currentTeam.organization?.name}
+                                <ChevronRight />
+                            </>
+                        )}
                         <div className="flex aspect-square size-8 items-center justify-center rounded-lg">
                             <IconColor color={auth.currentTeam.color} icon={auth.currentTeam.icon} />
                         </div>
@@ -46,6 +59,12 @@ const TeamSelect = ({ teams }: { teams: TeamCollection }) => {
                         .filter((team) => team.id != selectedTeam.id)
                         .map((team) => (
                             <DropdownMenuItem key={team.id} onSelect={() => chooseTeam(team)}>
+                                {uniqueOrganizationCount > 1 && (
+                                    <>
+                                        {team.organization?.name}
+                                        <ChevronRight />
+                                    </>
+                                )}
                                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg">
                                     <IconColor color={team.color} icon={team.icon} />
                                 </div>

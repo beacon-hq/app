@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\APITokensController;
+use App\Http\Controllers\AccessTokenController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\EnvironmentController;
 use App\Http\Controllers\FeatureFlagController;
 use App\Http\Controllers\FeatureTypeController;
+use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
@@ -73,7 +74,7 @@ Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
 
     Route::resource(
         'settings',
-        APITokensController::class,
+        AccessTokenController::class,
         ['parameters' => ['settings' => 'slug']]
     )->only(['index']);
 
@@ -83,24 +84,35 @@ Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
         ['parameters' => ['policies' => 'slug']]
     )->except(['delete', 'create', 'show']);
 
+    Route::post(
+        'team=members/invite/{slug}',
+        [TeamMemberManageController::class, 'store'],
+    )->name('team-members.invite');
+
+    Route::delete(
+        'teams-members/delete/{slug}',
+        [TeamMemberManageController::class, 'destroy'],
+    )->name('team-members.delete');
+
     Route::resource(
         'teams',
         TeamsController::class,
         ['parameters' => ['teams' => 'slug']]
     )->except(['delete', 'create', 'show']);
 
-    Route::post(
-        'teams/invite/{slug}',
-        [TeamMemberManageController::class, 'store'],
-    )->name('teams.invite');
-
     Route::prefix('settings')->group(function () {
         Route::get('/', [SettingsController::class, 'index'])
             ->name('settings.index');
 
-        Route::get('/api', [APITokensController::class, 'index'])
-            ->name('settings.api.index');
+        Route::get('/api', [AccessTokenController::class, 'index'])
+            ->name('access-tokens.index');
     });
+
+    Route::resource(
+        'organizations',
+        OrganizationController::class,
+        ['parameters' => ['organizations' => 'id']]
+    )->except('create', 'show');
 
     Route::prefix('policies')->group(function () {
         Route::get('/', [PolicyController::class, 'index'])

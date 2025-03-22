@@ -1,9 +1,8 @@
 import InputError from '@/Components/InputError';
-import TextInput from '@/Components/TextInput';
 import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { cn } from '@/lib/utils';
-import { Transition } from '@headlessui/react';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
 
@@ -51,7 +50,7 @@ export default function UpdatePasswordForm({ className = '' }: { className?: str
                 <div>
                     <Label htmlFor="current_password">Current Password</Label>
 
-                    <TextInput
+                    <Input
                         id="current_password"
                         ref={currentPasswordInput}
                         value={data.current_password}
@@ -59,15 +58,15 @@ export default function UpdatePasswordForm({ className = '' }: { className?: str
                         type="password"
                         className="mt-1 block w-full"
                         autoComplete="current-password"
+                        aria-required
                     />
-
-                    <InputError message={errors.current_password} className="mt-2" />
+                    <InputError message={errors?.current_password} />
                 </div>
 
                 <div>
                     <Label htmlFor="password">New Password</Label>
 
-                    <TextInput
+                    <Input
                         id="password"
                         ref={passwordInput}
                         value={data.password}
@@ -75,38 +74,29 @@ export default function UpdatePasswordForm({ className = '' }: { className?: str
                         type="password"
                         className="mt-1 block w-full"
                         autoComplete="new-password"
+                        aria-required
                     />
-
-                    <InputError message={errors.password} className="mt-2" />
+                    <InputError message={errors.password} />
                 </div>
 
                 <div>
                     <Label htmlFor="password_confirmation">Confirm Password</Label>
 
-                    <TextInput
+                    <Input
                         id="password_confirmation"
                         value={data.password_confirmation}
                         onChange={(e) => setData('password_confirmation', e.target.value)}
                         type="password"
                         className="mt-1 block w-full"
                         autoComplete="new-password"
+                        aria-required
                     />
 
-                    <InputError message={errors.password_confirmation} className="mt-2" />
+                    <InputError message={errors.password_confirmation} />
                 </div>
 
                 <div className="flex items-center gap-4">
                     <Button disabled={processing}>Save</Button>
-
-                    <Transition
-                        show={recentlySuccessful}
-                        enter="transition ease-in-out"
-                        enterFrom="opacity-0"
-                        leave="transition ease-in-out"
-                        leaveTo="opacity-0"
-                    >
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Saved.</p>
-                    </Transition>
                 </div>
             </form>
         </section>

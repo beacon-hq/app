@@ -21,6 +21,7 @@ use Bag\Bag;
 use Bag\Casts\CollectionOf;
 use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
+use Illuminate\Support\Carbon;
 use Spatie\TypeScriptTransformer\Attributes\Hidden as HiddenFromTypeScript;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
@@ -45,7 +46,7 @@ readonly class Application extends Bag
         public ?string $name = null,
         public ?string $displayName = null,
         public ?string $description = null,
-        public ?string $lastSeenAt = null,
+        public ?Carbon $lastSeenAt = null,
         #[Cast(ColorCast::class)]
         public string|Color $color = '#e3e3e3',
         #[Cast(CollectionOf::class, Environment::class)]

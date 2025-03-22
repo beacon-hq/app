@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\UserStatus;
+use App\Models\Traits\BelongsToOrganization;
 use App\Models\Traits\BelongsToTeam;
 use Creativeorange\Gravatar\Facades\Gravatar;
 use Illuminate\Auth\MustVerifyEmail;
@@ -57,6 +59,7 @@ use Storage;
  */
 class User extends Authenticatable implements MustVerifyEmailContract
 {
+    use BelongsToOrganization;
     use BelongsToTeam;
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
@@ -76,6 +79,7 @@ class User extends Authenticatable implements MustVerifyEmailContract
         'email',
         'password',
         'avatar_url',
+        'status',
     ];
 
     /**
@@ -101,6 +105,11 @@ class User extends Authenticatable implements MustVerifyEmailContract
         return $this->belongsToMany(Team::class)->withTimestamps();
     }
 
+    public function organizations(): BelongsToMany
+    {
+        return $this->belongsToMany(Organization::class)->withTimestamps();
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -111,6 +120,7 @@ class User extends Authenticatable implements MustVerifyEmailContract
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'status' => UserStatus::class,
         ];
     }
 

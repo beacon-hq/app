@@ -14,7 +14,7 @@ class TagController extends Controller
 {
     public function index(TagService $tagService)
     {
-        Gate::authorize('view', Tag::class);
+        Gate::authorize('viewAny', Tag::class);
 
         return Inertia::render('Tags/Index', [
             'tags' => $tagService->all(),

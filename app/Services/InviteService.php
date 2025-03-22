@@ -37,6 +37,11 @@ class InviteService
         return $this->inviteRepository->findById($inviteId);
     }
 
+    public function findTeamInvite(Team $team, string $email): Invite
+    {
+        return $this->inviteRepository->findTeamInvite($team, $email);
+    }
+
     public function delete(Invite $invite)
     {
         $this->inviteRepository->delete($invite);

@@ -15,6 +15,8 @@ class EnvironmentController extends Controller
 {
     public function index(EnvironmentService $environmentService): Response
     {
+        Gate::authorize('viewAny', Environment::class);
+
         return Inertia::render('Environments/Index', [
             'environments' => $environmentService->all(),
         ]);

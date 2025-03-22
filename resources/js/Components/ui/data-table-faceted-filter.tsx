@@ -14,8 +14,10 @@ import { Separator } from '@/Components/ui/separator';
 import { TableFilters } from '@/Pages/FeatureFlags/Components/Table';
 import { cn } from '@/lib/utils';
 import { Column } from '@tanstack/react-table';
+import _ from 'lodash';
 import { Check, PlusCircle } from 'lucide-react';
 import React, { ReactNode } from 'react';
+import { useDebounceCallback } from 'usehooks-ts';
 
 interface DataTableFacetedFilterProps<TData, TValue> {
     column: Column<TData, TValue>;
@@ -42,6 +44,17 @@ export function DataTableFacetedFilter<TData, TValue>({
             ? currentFilters[column.id]
             : new Set(column?.getFilterValue() as string[]),
     );
+
+    const debounce = useDebounceCallback((values) => {
+        if (currentFilters && !_.isEqual(currentFilters[column?.id as string], values)) {
+            onFilterChange
+                ? onFilterChange({
+                      ...currentFilters,
+                      [column?.id as string]: values,
+                  })
+                : column?.setFilterValue(selectedValues.size > 0 ? Array.from(values) : undefined);
+        }
+    }, 700);
     return (
         <Popover>
             <PopoverTrigger asChild>
@@ -93,18 +106,12 @@ export function DataTableFacetedFilter<TData, TValue>({
                                             if (isSelected) {
                                                 newValues.delete(option.value);
                                                 setSelectedValues(newValues);
+                                                debounce(newValues);
                                             } else {
                                                 newValues.add(option.value);
                                                 setSelectedValues(newValues);
+                                                debounce(newValues);
                                             }
-                                            onFilterChange
-                                                ? onFilterChange({
-                                                      ...currentFilters,
-                                                      [column?.id as string]: newValues,
-                                                  })
-                                                : column?.setFilterValue(
-                                                      selectedValues.size > 0 ? Array.from(newValues) : undefined,
-                                                  );
                                         }}
                                     >
                                         <div
@@ -135,6 +142,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                                     <CommandItem
                                         onSelect={() => {
                                             setSelectedValues(new Set());
+                                            debounce(new Set());
                                             onFilterChange
                                                 ? onFilterChange({
                                                       ...currentFilters,

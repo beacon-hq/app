@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\Role;
+use App\Models\Traits\BelongsToOrganization;
 use App\Models\Traits\HasSlug;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -41,6 +43,7 @@ use Laravel\Sanctum\NewAccessToken;
  */
 class Team extends Model
 {
+    use BelongsToOrganization;
     use HasApiTokens;
     use HasFactory;
     use HasSlug;
@@ -53,6 +56,10 @@ class Team extends Model
     ];
 
     protected $casts = [
+    ];
+
+    protected $with = [
+        'organization',
     ];
 
     public function users(): BelongsToMany
@@ -73,6 +80,11 @@ class Team extends Model
         ]);
 
         return new NewAccessToken($token, $token->getKey().'|'.$plainTextToken);
+    }
+
+    public function organization(): BelongsTo
+    {
+        return $this->belongsTo(Organization::class);
     }
 
     protected function owner(): Attribute

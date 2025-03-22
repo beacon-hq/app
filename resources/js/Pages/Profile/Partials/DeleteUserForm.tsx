@@ -1,8 +1,8 @@
 import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
 import Modal from '@/Components/Modal';
-import TextInput from '@/Components/TextInput';
 import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef, useState } from 'react';
 
@@ -71,9 +71,11 @@ export default function DeleteUserForm({ className = '' }: { className?: string 
                     </p>
 
                     <div className="mt-6">
-                        <InputLabel htmlFor="password" value="Password" className="sr-only" />
+                        <Label htmlFor="password" hidden>
+                            Password
+                        </Label>
 
-                        <TextInput
+                        <Input
                             id="password"
                             type="password"
                             name="password"
@@ -81,11 +83,11 @@ export default function DeleteUserForm({ className = '' }: { className?: string 
                             value={data.password}
                             onChange={(e) => setData('password', e.target.value)}
                             className="mt-1 block w-3/4"
-                            isFocused
+                            autoFocus
                             placeholder="Password"
+                            aria-required
                         />
-
-                        <InputError message={errors.password} className="mt-2" />
+                        <InputError message={errors?.password} />
                     </div>
 
                     <div className="mt-6 flex justify-end">

@@ -37,7 +37,7 @@ class FeatureFlagRepository
 
     public function first(array $filters): FeatureFlagValue
     {
-        $query = $this->buildQuery([], $filters);
+        $query = $this->buildQuery(filters: $filters);
 
         return FeatureFlagValue::from($query->firstOrFail());
     }
@@ -117,29 +117,13 @@ class FeatureFlagRepository
      */
     protected function filter(Builder $query, array $filters = []): Builder
     {
-        if (isset($filters['name'][0])) {
-            $query->whereName($filters['name'][0]);
-        }
-
-        if (isset($filters['slug'])) {
-            $query->whereSlug($filters['slug']);
-        }
-
-        if (isset($filters['tag'])) {
-            $query->whereTags($filters['tag']);
-        }
-
-        if (isset($filters['application'])) {
-            $query->whereApplication($filters['application']);
-        }
-
-        if (isset($filters['environment'])) {
-            $query->whereEnvironment($filters['environment']);
-        }
-
-        if (isset($filters['featureType'])) {
-            $query->whereFeatureType($filters['featureType']);
-        }
+        $query
+            ->when(isset($filters['name'][0]), fn (Builder $query) => $query->whereName($filters['name'][0]))
+            ->when(isset($filters['slug']), fn (Builder $query) => $query->whereSlug($filters['slug']))
+            ->when(isset($filters['tag']), fn (Builder $query) => $query->whereTags($filters['tag']))
+            ->when(isset($filters['application']), fn (Builder $query) => $query->whereApplication($filters['application']))
+            ->when(isset($filters['environment']), fn (Builder $query) => $query->whereEnvironment($filters['environment']))
+            ->when(isset($filters['featureType']), fn (Builder $query) => $query->whereFeatureType($filters['featureType']));
 
         return $query;
     }

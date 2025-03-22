@@ -1,3 +1,4 @@
+import InputError from '@/Components/InputError';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/Components/ui/accordion';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
@@ -63,8 +64,8 @@ export default function ManageTwoFactorForm({ className = '' }: { className?: st
                                     onChange={(e) => {
                                         setPassword(e.target.value);
                                     }}
-                                    error={errors.password}
                                 />
+                                <InputError message={errors?.password} />
                             </div>
                             <Button type="button" className="w-fit" onClick={retrieveOTP} disabled={loadingSecrets}>
                                 Reveal

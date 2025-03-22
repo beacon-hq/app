@@ -20,7 +20,7 @@ export default function Edit({ featureType }: { featureType: FeatureType }) {
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
-        put(route('feature-types.update', { feature_type: featureType.slug }));
+        put(route('feature-types.update', { slug: featureType.slug }));
     };
 
     const handleCancel = () => {

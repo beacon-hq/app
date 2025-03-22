@@ -55,6 +55,7 @@ export default function Index({ auth, qrCode, secret }: PageProps & { qrCode: st
                                                 pattern={REGEXP_ONLY_DIGITS}
                                                 value={data.code}
                                                 onChange={(code) => setData('code', code)}
+                                                autoFocus={true}
                                             >
                                                 <InputOTPGroup>
                                                     <InputOTPSlot index={0} />

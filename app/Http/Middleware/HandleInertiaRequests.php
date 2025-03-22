@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App;
-use App\Repositories\TeamRepository;
+use App\Services\OrganizationService;
+use App\Services\TeamService;
+use App\Values\User;
 use Auth;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -18,7 +20,7 @@ class HandleInertiaRequests extends Middleware
      * @var string
      */
     protected $rootView = 'app';
-    public function __construct(protected TeamRepository $teamRepository)
+    public function __construct(protected TeamService $teamService, protected OrganizationService $organizationService)
     {
     }
 
@@ -39,7 +41,9 @@ class HandleInertiaRequests extends Middleware
                     'permissions' => $request->user()?->getPermissionsViaRoles()->pluck('name') ?? [],
                     'currentTeam' => App::context()->team,
                 ],
-                'teams' => fn () => $this->teamRepository->all(auth()->user()->id),
+                'teams' => fn () => $this->teamService->all(auth()->user()->id, limitToOrganization: false),
+                'organizations' => $this->organizationService->all(User::from(Auth::user())),
+                'theme' => fn () => $request->user()?->theme ?? 'system',
             ];
         }
 

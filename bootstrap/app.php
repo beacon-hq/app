@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Middleware\EnsureOrganizationMiddleware;
 use App\Http\Middleware\EnsureTeamMiddleware;
 use App\Http\Middleware\EnsureTwoFactorAuthMiddleware;
 use App\Http\Middleware\HandleInertiaRequests;
@@ -27,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             EnsureTwoFactorAuthMiddleware::class,
             EnsureTeamMiddleware::class,
+            EnsureOrganizationMiddleware::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);

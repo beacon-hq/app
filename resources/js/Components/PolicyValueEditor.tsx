@@ -17,7 +17,17 @@ export const PolicyValueEditor = function ({
     disabled: boolean;
 }) {
     const [values, setValues] = useState<string[]>(typeof value === 'string' ? [value] : (value ?? []));
-    const [currentValue, setCurrentValue] = useState<string>('');
+    const [currentValue, setCurrentValue] = useState<string>(() => {
+        if (typeof value === 'string') {
+            return value;
+        }
+
+        if (value?.[0]) {
+            return value[0];
+        }
+
+        return '';
+    });
 
     if (allowMultiple) {
         return (
@@ -27,7 +37,7 @@ export const PolicyValueEditor = function ({
                 </Label>
                 <MultiValueInput
                     id={`value_${id}`}
-                    values={(value ?? []) as string[]}
+                    values={(values ?? []) as string[]}
                     setValues={setValue as any}
                     disabled={disabled}
                 />

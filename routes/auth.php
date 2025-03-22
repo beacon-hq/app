@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\TwoFactorConfirmedController;
 use App\Http\Controllers\Auth\TwoFactorSetupController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\OrganizationSelectController;
 use App\Http\Controllers\TeamSelectController;
 use Illuminate\Support\Facades\Route;
 
@@ -52,4 +53,9 @@ Route::middleware('auth')->prefix('/teams')->group(function () {
 
     Route::post('/select', [TeamSelectController::class, 'update'])
         ->name('teams.choose');
+});
+
+Route::middleware('auth')->prefix('/organizations')->group(function () {
+    Route::post('/select', [OrganizationSelectController::class, 'update'])
+        ->name('organizations.choose');
 });

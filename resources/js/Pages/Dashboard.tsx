@@ -1,3 +1,4 @@
+import { Alert, AlertDescription, AlertTitle } from '@/Components/ui/alert';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/Components/ui/card';
 import {
     ChartConfig,
@@ -13,7 +14,7 @@ import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { DotFilledIcon } from '@radix-ui/react-icons';
 import { ColumnDef, ColumnSort, createColumnHelper } from '@tanstack/react-table';
-import { ArrowDownLeft, ArrowRight, ArrowUpRight, TrendingDown, TrendingUp } from 'lucide-react';
+import { AlertCircle, ArrowDownLeft, ArrowRight, ArrowUpRight, TrendingDown, TrendingUp } from 'lucide-react';
 import { Area, AreaChart, CartesianGrid, Label, Line, LineChart, Pie, PieChart, XAxis, YAxis } from 'recharts';
 
 const flagStatusData = [
@@ -213,6 +214,12 @@ export default function Dashboard() {
     return (
         <Authenticated header="Dashboard" icon="Gauge">
             <Head title="Dashboard" />
+
+            <Alert variant="info" className="mt-6">
+                <AlertCircle />
+                <AlertTitle>For Demo Purposes Only</AlertTitle>
+                <AlertDescription>This page is currently for demo purposes only!</AlertDescription>
+            </Alert>
 
             <div className="mt-4">
                 <div className="overflow-hidden">

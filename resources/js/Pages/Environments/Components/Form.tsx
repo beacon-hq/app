@@ -50,11 +50,12 @@ export function Form({
                     disabled={data.slug !== null && data.slug !== ''}
                     onChange={(e) => setData('name', e.target.value)}
                 />
-                {errors.name && <InputError message={errors.name} />}
+                <InputError message={errors?.name} />
             </div>
             <div>
                 <Label>Color</Label>
                 <ColorPicker onColorChange={(color) => setData('color', color)} color={data.color} />
+                <InputError message={errors?.color} />
             </div>
             <div>
                 <Label htmlFor="description">Description</Label>
@@ -64,6 +65,7 @@ export function Form({
                     rows={8}
                     onChange={(e) => setData('description', e.target.value)}
                 />
+                <InputError message={errors?.description} />
             </div>
             <div className="flex justify-end">
                 <Button variant="link" className="mr-2" type="button" onClick={onCancel}>

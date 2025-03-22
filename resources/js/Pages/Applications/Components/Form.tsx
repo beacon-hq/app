@@ -67,7 +67,7 @@ export function Form({
                     disabled={data.slug !== null && data.slug !== ''}
                     onChange={(e) => setData('name', e.target.value)}
                 />
-                {errors.name && <InputError message={errors.name} />}
+                <InputError message={errors?.name} />
             </div>
             <div>
                 <Label htmlFor="display_name">Display Name</Label>
@@ -78,7 +78,7 @@ export function Form({
                     value={data.display_name ?? ''}
                     onChange={(e) => setData('display_name', e.target.value)}
                 />
-                {errors.display_name && <InputError message={errors.display_name} />}
+                <InputError message={errors?.display_name} />
             </div>
             <div>
                 <Label>Color</Label>

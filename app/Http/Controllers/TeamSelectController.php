@@ -7,6 +7,8 @@ namespace App\Http\Controllers;
 use App;
 use App\Services\TeamService;
 use App\Values\Team;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
 use Session;
 
@@ -23,13 +25,17 @@ class TeamSelectController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Team $team, TeamService $teamService)
+    public function update(Team $team, TeamService $teamService, Request $request)
     {
         $team = $teamService->findById($team->id);
 
         Session::put('team', $team);
-        App::context(team: $team);
+        App::context(organization: $team->organization, team: $team);
 
-        return request()->routeIs('teams.choose', 'teams.select') ? redirect('dashboard') : redirect()->back();
+        if ($request->json('previous') !== null) {
+            return \redirect()->to($request->json('previous'))->withAlert('success', 'Team changed successfully.');
+        }
+
+        return \redirect()->back()->getTargetUrl() !== URL::route('teams.select') ? redirect()->back()->withAlert('success', 'Team changed successfully.') : \redirect()->to(route('dashboard'));
     }
 }

@@ -1,8 +1,8 @@
 import { Invite } from '@/Application';
 import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
 import GuestLayout from '@/Layouts/GuestLayout';
 import InviteAlert from '@/Pages/Auth/Components/InviteAlert';
 import { Head, Link, useForm } from '@inertiajs/react';
@@ -33,33 +33,33 @@ export default function Register({ invite }: { invite: Invite | false | null }) 
                 <form onSubmit={submit}>
                     <div className="grid grid-cols-2 space-x-2">
                         <div>
-                            <InputLabel htmlFor="first_name" value="First Name" />
+                            <Label htmlFor="first_name">First Name</Label>
 
-                            <TextInput
+                            <Input
                                 id="first_name"
                                 name="first_name"
                                 value={data.first_name}
                                 className="mt-1 block w-full"
                                 autoComplete="given-name"
-                                isFocused={true}
+                                autoFocus
                                 onChange={(e) => setData('first_name', e.target.value)}
-                                required
+                                aria-required
                             />
 
                             <InputError message={errors.first_name} className="mt-2" />
                         </div>
 
                         <div>
-                            <InputLabel htmlFor="last_name" value="Last Name" />
+                            <Label htmlFor="last_name">Last Name</Label>
 
-                            <TextInput
+                            <Input
                                 id="last_name"
                                 name="last_name"
                                 value={data.last_name}
                                 className="mt-1 block w-full"
                                 autoComplete="family-name"
                                 onChange={(e) => setData('last_name', e.target.value)}
-                                required
+                                aria-required
                             />
 
                             <InputError message={errors.last_name} className="mt-2" />
@@ -67,9 +67,9 @@ export default function Register({ invite }: { invite: Invite | false | null }) 
                     </div>
 
                     <div className="mt-4">
-                        <InputLabel htmlFor="email" value="Email" />
+                        <Label htmlFor="email">Email</Label>
 
-                        <TextInput
+                        <Input
                             id="email"
                             type="email"
                             name="email"
@@ -77,16 +77,16 @@ export default function Register({ invite }: { invite: Invite | false | null }) 
                             className="mt-1 block w-full"
                             autoComplete="work email"
                             onChange={(e) => setData('email', e.target.value)}
-                            required
+                            aria-required
                         />
 
                         <InputError message={errors.email} className="mt-2" />
                     </div>
 
                     <div className="mt-4">
-                        <InputLabel htmlFor="password" value="Password" />
+                        <Label htmlFor="password">Password</Label>
 
-                        <TextInput
+                        <Input
                             id="password"
                             type="password"
                             name="password"
@@ -94,16 +94,16 @@ export default function Register({ invite }: { invite: Invite | false | null }) 
                             className="mt-1 block w-full"
                             autoComplete="new-password"
                             onChange={(e) => setData('password', e.target.value)}
-                            required
+                            aria-required
                         />
 
                         <InputError message={errors.password} className="mt-2" />
                     </div>
 
                     <div className="mt-4">
-                        <InputLabel htmlFor="password_confirmation" value="Confirm Password" />
+                        <Label htmlFor="password_confirmation">Confirm Password</Label>
 
-                        <TextInput
+                        <Input
                             id="password_confirmation"
                             type="password"
                             name="password_confirmation"
@@ -111,7 +111,7 @@ export default function Register({ invite }: { invite: Invite | false | null }) 
                             className="mt-1 block w-full"
                             autoComplete="new-password"
                             onChange={(e) => setData('password_confirmation', e.target.value)}
-                            required
+                            aria-required
                         />
 
                         <InputError message={errors.password_confirmation} className="mt-2" />

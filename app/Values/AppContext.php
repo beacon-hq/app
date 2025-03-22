@@ -12,6 +12,7 @@ use Bag\Mappers\SnakeCase;
 readonly class AppContext extends Bag
 {
     public function __construct(
+        public ?Organization $organization = null,
         public ?Team $team = null,
     ) {
     }
@@ -19,6 +20,7 @@ readonly class AppContext extends Bag
     public static function empty(): array
     {
         return [
+            'organization' => null,
             'team' => null,
         ];
     }

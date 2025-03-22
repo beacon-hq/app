@@ -42,15 +42,16 @@ export function Form({
                         onChange={(e) => setData('name', e.target.value)}
                     />
                 </div>
-                {errors.name && <InputError message={errors.name} />}
+                <InputError message={errors?.name} />
             </div>
             <div>
                 <Label>Color</Label>
                 <ColorPicker onColorChange={(color) => setData('color', color)} color={data.color} />
-                {errors.color && <InputError message={errors.color} />}
+                <InputError message={errors?.color} />
             </div>
             <div>
                 <IconPicker icon={data.icon ?? ''} onIconSelect={(icon) => setData('icon', icon)} errors={errors} />
+                <InputError message={errors?.icon} />
             </div>
             <div>
                 <Label htmlFor="description" aria-required>
@@ -62,6 +63,7 @@ export function Form({
                     rows={8}
                     onChange={(e) => setData('description', e.target.value)}
                 />
+                <InputError message={errors?.description} />
             </div>
             <div className="flex items-center">
                 <Switch
@@ -83,6 +85,7 @@ export function Form({
                         </Tooltip>
                     </TooltipProvider>
                 </Label>
+                <InputError message={errors?.temporary} />
             </div>
             <div></div>
             <div className="flex justify-end">

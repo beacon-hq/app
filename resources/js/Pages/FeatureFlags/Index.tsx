@@ -8,10 +8,11 @@ import {
 } from '@/Application';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent } from '@/Components/ui/card';
+import { TableOptions } from '@/Components/ui/data-table';
 import { Sheet, SheetContent, SheetTitle } from '@/Components/ui/sheet';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Form } from '@/Pages/FeatureFlags/Components/Form';
-import Table, { TableOptions } from '@/Pages/FeatureFlags/Components/Table';
+import Table from '@/Pages/FeatureFlags/Components/Table';
 import { PageProps } from '@/types';
 import { Deferred, Head, useForm } from '@inertiajs/react';
 import { PlusCircle } from 'lucide-react';
@@ -51,7 +52,7 @@ export default function Index({
         created_at: '',
         updated_at: '',
     });
-    const [tableOptions, setTableOptions] = useState<TableOptions>({
+    const [tableOptions] = useState<TableOptions>({
         page,
         perPage,
         filters: Object.fromEntries(Object.entries(filters).map(([key, value]) => [key, new Set(value)])),

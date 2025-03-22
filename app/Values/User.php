@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Values;
 
 use App\Enums\Role;
+use App\Enums\UserStatus;
 use App\Models\User as UserModel;
 use App\Values\Collections\TeamCollection;
 use App\Values\Collections\UserCollection;
@@ -41,6 +42,7 @@ readonly class User extends Bag
         #[LiteralTypeScriptType('Role[]')]
         public ?LaravelCollection $roles = null,
         public ?Carbon $emailVerifiedAt = null,
+        public ?UserStatus $status = null,
     ) {
     }
 
@@ -56,10 +58,11 @@ readonly class User extends Bag
             'email' => $user->email,
             'avatar' => $user->avatar,
             'gravatar' => $user->gravatar,
-            'theme' => $user->theme,
+            'theme' => $user->theme ?? 'system',
             'teams' => $user->relationLoaded('teams') ? $user->teams : null,
             'roles' => collect($user->roles->pluck('name')->map(fn (string $role) => Role::tryFrom($role)?->value)),
             'emailVerifiedAt' => $user->email_verified_at,
+            'status' => $user->status,
         ];
     }
 }

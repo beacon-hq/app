@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
-import { ChevronRight, KeyRound, UserCircle, Users } from 'lucide-react';
+import { ChevronRight, KeyRound, Network, UserCircle, Users } from 'lucide-react';
 import React from 'react';
 
 export default function Index() {
@@ -9,7 +9,28 @@ export default function Index() {
         <AuthenticatedLayout breadcrumbs={[{ name: 'Settings', icon: 'Settings' }]}>
             <Head title="Settings" />
             <div className="py-10">
-                <div className="flex flex-row gap-2 justify-between w-full items-stretch">
+                <div className="flex flex-col gap-2 w-full items-center">
+                    <Card className="relative flex flex-row items-center justify-between w-1/3 cursor-pointer">
+                        <div>
+                            <CardHeader>
+                                <Network className="size-12" />
+                            </CardHeader>
+                            <CardContent>
+                                <CardTitle>
+                                    <Link href={route('organizations.index')}>
+                                        <span className="absolute inset-0"></span>
+                                        Manage Organizations
+                                    </Link>
+                                </CardTitle>
+                                <CardDescription>
+                                    <p>Manage Organization settings.</p>
+                                </CardDescription>
+                            </CardContent>
+                        </div>
+                        <div>
+                            <ChevronRight className="mr-4" />
+                        </div>
+                    </Card>
                     <Card className="relative flex flex-row items-center justify-between w-1/3 cursor-pointer">
                         <div>
                             <CardHeader>
@@ -17,7 +38,7 @@ export default function Index() {
                             </CardHeader>
                             <CardContent>
                                 <CardTitle>
-                                    <Link href={route('settings.api.index')}>
+                                    <Link href={route('access-tokens.index')}>
                                         <span className="absolute inset-0"></span>
                                         Team Members
                                     </Link>
@@ -59,7 +80,7 @@ export default function Index() {
                             </CardHeader>
                             <CardContent>
                                 <CardTitle>
-                                    <Link href={route('settings.api.index')}>
+                                    <Link href={route('access-tokens.index')}>
                                         <span className="absolute inset-0"></span>API Keys
                                     </Link>
                                 </CardTitle>

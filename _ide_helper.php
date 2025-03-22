@@ -23688,6 +23688,7 @@ namespace Spatie\LaravelIgnition\Facades {
 }
 
 namespace Illuminate\Foundation {
+    use App\Models\Organization;
     use App\Models\Team;
     use App\Values\AppContext;
 
@@ -23701,13 +23702,14 @@ namespace Illuminate\Foundation {
          *
          *
          * @see \App\Providers\AppServiceProvider::register()
+         * @param Organization|\App\Values\Organization|null $organization
          * @param Team|\App\Values\Team|null $team
          * @return AppContext
          * @static
          */
-        public static function context($team = null)
+        public static function context($organization = null, $team = null)
         {
-            return Application::context($team);
+            return Application::context($organization, $team);
         }
 
     }
@@ -23826,6 +23828,26 @@ namespace Illuminate\Http {
         }
 
     }
+    /**
+     *
+     *
+     */
+    class RedirectResponse
+    {
+        /**
+         *
+         *
+         * @see \App\Providers\AppServiceProvider::register()
+         * @param string $status
+         * @param string $message
+         * @static
+         */
+        public static function withAlert($status, $message)
+        {
+            return RedirectResponse::withAlert($status, $message);
+        }
+
+    }
 }
 
 namespace Illuminate\Routing {
@@ -23845,6 +23867,35 @@ namespace Illuminate\Routing {
         public static function inertia($uri, $component, $props = [])
         {
             return Router::inertia($uri, $component, $props);
+        }
+
+    }
+    /**
+     *
+     *
+     */
+    class Route
+    {
+        /**
+         *
+         *
+         * @see \Spatie\Permission\PermissionServiceProvider::registerMacroHelpers()
+         * @static
+         */
+        public static function role($roles = [])
+        {
+            return Route::role($roles);
+        }
+
+        /**
+         *
+         *
+         * @see \Spatie\Permission\PermissionServiceProvider::registerMacroHelpers()
+         * @static
+         */
+        public static function permission($permissions = [])
+        {
+            return Route::permission($permissions);
         }
 
     }

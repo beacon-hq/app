@@ -46,4 +46,13 @@ class InviteRepository
     {
         Invite::destroy($invite->id);
     }
+
+    public function findTeamInvite(Team $team, string $email): InviteValue
+    {
+        return InviteValue::from(
+            Invite::where('team_id', $team->id)
+                ->where('email', $email)
+                ->firstOrFail()
+        );
+    }
 }

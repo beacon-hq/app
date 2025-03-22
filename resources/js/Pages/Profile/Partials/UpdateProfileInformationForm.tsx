@@ -1,5 +1,4 @@
 import InputError from '@/Components/InputError';
-import TextInput from '@/Components/TextInput';
 import { Avatar, AvatarFallback, AvatarImage } from '@/Components/ui/avatar';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
@@ -7,7 +6,6 @@ import { Label } from '@/Components/ui/label';
 import { Tabs, TabsList, TabsTrigger } from '@/Components/ui/tabs';
 import { cn } from '@/lib/utils';
 import { Theme, useTheme } from '@/theme-provider';
-import { Transition } from '@headlessui/react';
 import { Link, router, useForm, usePage } from '@inertiajs/react';
 import { Monitor, Moon, Sun } from 'lucide-react';
 import { FormEventHandler, useRef } from 'react';
@@ -118,50 +116,49 @@ export default function UpdateProfileInformation({
                     <div className="w-1/2">
                         <Label htmlFor="first_name">First Name</Label>
 
-                        <TextInput
+                        <Input
                             id="first_name"
                             className="mt-1 block w-full"
                             value={data.first_name}
                             onChange={(e) => setData('first_name', e.target.value)}
-                            required
-                            isFocused
+                            aria-required
+                            autoFocus
                             autoComplete="given-name"
                         />
 
-                        <InputError className="mt-2" message={errors.first_name} />
+                        <InputError message={errors?.first_name} />
                     </div>
 
                     <div className="w-1/2">
                         <Label htmlFor="last_name">Last Name</Label>
 
-                        <TextInput
+                        <Input
                             id="last_name"
                             className="mt-1 block w-full"
                             value={data.last_name}
                             onChange={(e) => setData('last_name', e.target.value)}
-                            required
-                            isFocused
+                            aria-required
                             autoComplete="family-name"
                         />
 
-                        <InputError className="mt-2" message={errors.last_name} />
+                        <InputError message={errors?.last_name} />
                     </div>
                 </div>
 
                 <div>
                     <Label htmlFor="email">Email</Label>
 
-                    <TextInput
+                    <Input
                         id="email"
                         type="email"
                         className="mt-1 block w-full"
                         value={data.email}
                         onChange={(e) => setData('email', e.target.value)}
-                        required
+                        aria-required
                         autoComplete="username"
                     />
 
-                    <InputError className="mt-2" message={errors.email} />
+                    <InputError message={errors?.email} />
                 </div>
 
                 {mustVerifyEmail && user.email_verified_at === null && (
@@ -201,7 +198,7 @@ export default function UpdateProfileInformation({
                                     className={cn('mr-2', {
                                         'stroke-yellow-400 transition-color duration-1000': theme === 'light',
                                     })}
-                                />{' '}
+                                />
                                 Light
                             </TabsTrigger>
                             <TabsTrigger value="dark">
@@ -209,7 +206,7 @@ export default function UpdateProfileInformation({
                                     className={cn('mr-2', {
                                         'stroke-sky-400 transition-color duration-1000': theme === 'dark',
                                     })}
-                                />{' '}
+                                />
                                 Dark
                             </TabsTrigger>
                             <TabsTrigger value="system">
@@ -217,7 +214,7 @@ export default function UpdateProfileInformation({
                                     className={cn('mr-2', {
                                         'stroke-purple-400 transition-color duration-1000': theme === 'system',
                                     })}
-                                />{' '}
+                                />
                                 System
                             </TabsTrigger>
                         </TabsList>
@@ -226,16 +223,6 @@ export default function UpdateProfileInformation({
 
                 <div className="flex items-center gap-4">
                     <Button disabled={processing}>Save</Button>
-
-                    <Transition
-                        show={recentlySuccessful}
-                        enter="transition ease-in-out"
-                        enterFrom="opacity-0"
-                        leave="transition ease-in-out"
-                        leaveTo="opacity-0"
-                    >
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Saved.</p>
-                    </Transition>
                 </div>
             </form>
         </section>

@@ -5,10 +5,16 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Enums\Role;
+use App\Models\Scopes\CurrentTeamScope;
 use App\Models\User;
 use App\Services\TeamService;
+use App\Values\Collections\UserCollection;
+use App\Values\Organization;
 use App\Values\Team;
 use App\Values\User as UserValue;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 class UserRepository
 {
@@ -21,23 +27,108 @@ class UserRepository
         if ($team->id !== null) {
             $team = $this->teamService->findById($team->id);
         } else {
-            $team = $this->teamService->create($team);
+            $team = $this->teamService->create($team, $user);
         }
 
-        $user = User::find($user->id);
+        $user = User::withoutGlobalScopes([CurrentTeamScope::class])->find($user->id);
         $user->teams()->syncWithoutDetaching($team->id);
+
+        return UserValue::from($user);
+    }
+
+    public function removeTeam(Team $team, UserValue $user): UserValue
+    {
+        $user = User::findOrFail($user->id);
+        $user->teams()->detach($team->id);
 
         return UserValue::from($user);
     }
 
     public function findByEmail(string $email): UserValue
     {
-        return UserValue::from(User::where('email', $email)->firstOrFail());
+        return UserValue::from(User::withoutGlobalScopes([CurrentTeamScope::class])->where('email', $email)->firstOrFail());
     }
 
-    public function assignRole(UserValue $user, ?Role $role)
+    public function addOrganization(UserValue $user, Organization $organization): UserValue
+    {
+        $user = User::withoutGlobalScopes([CurrentTeamScope::class])->find($user->id);
+        $user->organizations()->syncWithoutDetaching($organization->id);
+
+        return UserValue::from($user);
+    }
+
+    public function assignRole(UserValue $user, ?Role $role): UserValue
     {
         $user = User::find($user->id);
         $user->assignRole($role);
+
+        return UserValue::from($user);
+    }
+
+    public function teamMembers(Team $team, array|string $orderBy = ['name'], ?int $page, int $perPage, array $filters): UserCollection
+    {
+        $filters['teams'][] = $team->id;
+
+        return UserValue::collect($this->buildQuery(orderBy: $orderBy, filters: $filters, page: $page, perPage: $perPage)->get());
+    }
+
+    public function nonTeamMembers(Team $team): UserCollection
+    {
+        return UserValue::collect(User::withoutGlobalScopes([CurrentTeamScope::class])
+            ->whereDoesntHave('teams', fn (Builder $query) => $query->where('id', $team->id))
+            ->get());
+    }
+
+    public function create(UserValue $user): UserValue
+    {
+        return UserValue::from(User::create($user->toArray()));
+    }
+
+    /**
+     * @param Builder<User> $query
+     */
+    protected function filter(Builder $query, array $filters = []): Builder
+    {
+        $query
+            ->when(isset($filters['teams'][0]), fn (Builder $query) => $query->whereHas(
+                'teams',
+                fn (Builder $query) => $query->where(
+                    fn (Builder $query) => $query
+                        ->whereIn('id', $filters['teams'])
+                        ->orWhereIn(
+                            'name',
+                            $filters['teams']
+                        )
+                )
+            ))
+            ->when(isset($filters['name'][0]), fn (Builder $query) => $query->where(fn (Builder $query) => $query->where(DB::raw('CONCAT(first_name, \' \', last_name)'), 'ILIKE', '%' . $filters['name'][0] . '%')->orWhere('email', 'ILIKE', '%' . $filters['name'][0] . '%')))
+            ->when(isset($filters['roles']), fn (Builder $query) => $query->role($filters['roles']))
+            ->when(isset($filters['status']), fn (Builder $query) => $query->whereIn('status', $filters['status']));
+
+        return $query;
+    }
+
+    protected function buildQuery(array|string|null $orderBy = null, array $filters = [], ?int $page = null, int $perPage = 20): Builder
+    {
+        $query = User::query();
+
+        foreach (Arr::wrap($orderBy) as $column) {
+            if ($column === 'name') {
+                $query = $query->orderBy('first_name')->orderBy('last_name');
+
+                continue;
+            }
+            $query = $query->orderBy($column);
+        }
+
+        if (!empty($filters)) {
+            $query = $this->filter($query, $filters);
+        }
+
+        if ($page !== null) {
+            $query = $query->forPage($page, $perPage);
+        }
+
+        return $query;
     }
 }

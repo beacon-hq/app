@@ -1,7 +1,9 @@
+import { Permission } from '@/Application';
 import { ColorPicker } from '@/Components/ColorPicker';
 import Footer from '@/Components/Footer';
 import Icon from '@/Components/Icon';
 import IconPicker from '@/Components/IconPicker';
+import OrganizationSelect from '@/Components/OrganizationSelect';
 import Sidebar from '@/Components/Sidebar';
 import TeamSelect from '@/Components/TeamSelect';
 import {
@@ -18,6 +20,7 @@ import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { SidebarTrigger, SidebarWrapper, useSidebar } from '@/Components/ui/sidebar';
 import { Toaster } from '@/Components/ui/sonner';
+import { Gate } from '@/lib/permissions';
 import { cn } from '@/lib/utils';
 import { Link, usePage } from '@inertiajs/react';
 import React, { Fragment, PropsWithChildren, useEffect, useState } from 'react';
@@ -30,7 +33,7 @@ export default function Authenticated({
     headerAction,
     children,
 }: PropsWithChildren<{
-    breadcrumbs?: { name: string; href?: string; icon?: string }[];
+    breadcrumbs?: { name: string; href?: string; icon?: string | React.ReactNode }[];
     header?: string;
     icon?: string;
     headerAction?: React.ReactNode;
@@ -40,6 +43,7 @@ export default function Authenticated({
     usePage<any>().props.alert = null; // clear the alert after it's been handled
     // const notifications = usePage().props.notifications;
     const teams = usePage().props.teams;
+    const organizations = usePage().props.organizations;
 
     const { open } = useSidebar();
 
@@ -53,7 +57,7 @@ export default function Authenticated({
     if (!breadcrumbs && header) {
         breadcrumbs = [{ name: header }];
         if (icon !== undefined) {
-            breadcrumbs[0].icon = icon;
+            breadcrumbs[0].icon = icon as string;
         }
     }
 
@@ -66,7 +70,14 @@ export default function Authenticated({
                         <div className="">
                             <SidebarTrigger />
                         </div>
-                        {!route().current('teams.*') && !route().current('profile.*') && <TeamSelect teams={teams} />}
+                        {!route().current('teams.*') &&
+                            !route().current('profile.*') &&
+                            !route().current('organizations.*') &&
+                            !route().current('settings.*') &&
+                            !Gate.canOnly([`${Permission.BILLING}.*`]) && <TeamSelect teams={teams} />}
+                        {(route().current('teams.*') || Gate.canOnly([`${Permission.BILLING}.*`])) && (
+                            <OrganizationSelect organizations={organizations} />
+                        )}
                     </div>
                 )}
 
@@ -80,12 +91,15 @@ export default function Authenticated({
                                             {breadcrumb.href && (
                                                 <BreadcrumbLink asChild>
                                                     <>
-                                                        {breadcrumb.icon && (
+                                                        {breadcrumb.icon && typeof breadcrumb.icon === 'string' && (
                                                             <Icon
                                                                 name={breadcrumb.icon}
                                                                 className={cn('h-8 w-8 inline-block')}
                                                             />
                                                         )}
+                                                        {breadcrumb.icon &&
+                                                            typeof breadcrumb.icon !== 'string' &&
+                                                            breadcrumb.icon}
                                                         <Link href={breadcrumb.href}>{breadcrumb.name}</Link>
                                                     </>
                                                 </BreadcrumbLink>
@@ -96,12 +110,15 @@ export default function Authenticated({
                                                         'font-semibold': breadcrumbs.length - 1 === index,
                                                     })}
                                                 >
-                                                    {breadcrumb.icon && (
+                                                    {breadcrumb.icon && typeof breadcrumb.icon === 'string' && (
                                                         <Icon
                                                             name={breadcrumb.icon}
                                                             className={cn('h-8 w-8 inline-block')}
                                                         />
                                                     )}
+                                                    {breadcrumb.icon &&
+                                                        typeof breadcrumb.icon !== 'string' &&
+                                                        breadcrumb.icon}
                                                     {breadcrumb.name}
                                                 </BreadcrumbPage>
                                             )}
@@ -119,7 +136,7 @@ export default function Authenticated({
                     )}
                     {headerAction}
                 </header>
-                <main className="w-full min-h-screen block bg-background px-12 pb-6">{children}</main>
+                <main className="w-full min-h-(--body-height) block bg-background px-12 pb-6">{children}</main>
                 <Footer />
             </div>
             <Dialog open={createTeamOpen} onOpenChange={setCreateTeamOpen}>

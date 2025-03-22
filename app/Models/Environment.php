@@ -55,6 +55,7 @@ class Environment extends Model
     {
         return [
             'id' => 'string',
+            'last_seen_at' => 'datetime',
         ];
     }
 }

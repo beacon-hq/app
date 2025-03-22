@@ -1,14 +1,14 @@
 import { Environment, EnvironmentCollection } from '@/Application';
 import { IconColor } from '@/Components/IconColor';
 import { Button } from '@/Components/ui/button';
-import { Card, CardContent } from '@/Components/ui/card';
-import { Separator } from '@/Components/ui/separator';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Sheet, SheetContent, SheetTitle } from '@/Components/ui/sheet';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Form } from '@/Pages/Environments/Components/Form';
+import { localDateTime } from '@/lib/utils';
 import { PageProps } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Pencil, PlusCircle } from 'lucide-react';
+import { PlusCircle } from 'lucide-react';
 import React, { FormEvent, useState } from 'react';
 
 export default function Index({ environments }: PageProps & { environments: EnvironmentCollection }) {
@@ -18,6 +18,7 @@ export default function Index({ environments }: PageProps & { environments: Envi
         color: '',
         slug: null,
         description: '',
+        last_seen_at: '',
     });
 
     const submit = (e: FormEvent) => {
@@ -47,42 +48,57 @@ export default function Index({ environments }: PageProps & { environments: Envi
             }
         >
             <Head title="Environments" />
-            <div className="mx-auto py-12 md:w-7/12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden p-4">
-                        <Card className="mt-8">
-                            <CardContent className="px-12 py-4">
-                                <ul>
-                                    {environments.map((environment: Environment) => (
-                                        <li key={environment.slug} className="w-full">
-                                            <div className="flex h-24 items-center justify-between">
-                                                <div className="flex flex-row items-center space-x-2">
-                                                    <IconColor color={environment.color} />
-                                                    <div className="text-lg font-semibold leading-none">
-                                                        {environment.name}
-                                                    </div>
-                                                </div>
-                                                <div className="flex gap-4">
-                                                    <Link
-                                                        href={route('environments.edit', {
-                                                            slug: environment.slug,
-                                                        })}
-                                                    >
-                                                        <Pencil className="h-4 w-4" />
-                                                    </Link>
-                                                </div>
-                                            </div>
-                                            {environments[environments.length - 1].slug !== environment.slug && (
-                                                <Separator />
-                                            )}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </CardContent>
-                        </Card>
-                    </div>
-                </div>
+            <div className="grid grid-cols-3 gap-6 mt-6">
+                {environments.map((environment: Environment) => (
+                    <Card className="w-full relative" key={environment.slug}>
+                        <CardHeader className="flex flex-row justify-between items-center">
+                            <CardTitle>
+                                <h2 className="text-xl truncate">
+                                    <Link
+                                        href={route('applications.edit', {
+                                            slug: environment.slug,
+                                        })}
+                                    >
+                                        <span className="absolute inset-0"></span>
+                                        <div className="flex flex-row items-center gap-2">
+                                            <IconColor color={environment.color} /> {environment.name}
+                                        </div>
+                                    </Link>
+                                </h2>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="grow">
+                            <p className="text-sm overflow-hidden truncate -mt-2 text-neutral-500">
+                                {environment.description}
+                            </p>
+                        </CardContent>
+                        <CardFooter variant="inset" className="bg-neutral-100">
+                            <p className="text-xs text-neutral-500">
+                                Last Seen:{' '}
+                                {environment.last_seen_at ? localDateTime(environment.last_seen_at) : 'never'}
+                            </p>
+                        </CardFooter>
+                    </Card>
+                ))}
             </div>
+            {environments.length === 0 && (
+                <div className="h-full flex items-center">
+                    <Card className="mx-auto">
+                        <CardHeader>
+                            <CardTitle>
+                                <h2 className="text-xl">No Environments</h2>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="flex flex-col gap-6">
+                            <p className="text-sm text-neutral-500">You have not created any applications yet.</p>
+                            <Button onClick={() => setShowSheet(true)}>
+                                <PlusCircle className="mr-2 inline-block h-6 w-6" />
+                                New Environment
+                            </Button>
+                        </CardContent>
+                    </Card>
+                </div>
+            )}
             <Sheet open={showSheet} onOpenChange={setShowSheet}>
                 <SheetContent onOpenAutoFocus={(event) => event.preventDefault()}>
                     <SheetTitle className="mb-4">New Environment</SheetTitle>

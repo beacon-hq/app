@@ -18,6 +18,7 @@ use Bag\Attributes\Transforms;
 use Bag\Bag;
 use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
+use Illuminate\Support\Carbon;
 use Spatie\TypeScriptTransformer\Attributes\Hidden as HiddenFromTypeScript;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
@@ -42,6 +43,7 @@ readonly class Environment extends Bag
         public ?string $description = null,
         #[Cast(ColorCast::class)]
         public string|Color $color = '#e3e3e3',
+        public ?Carbon $lastSeenAt = null,
     ) {
     }
 
@@ -54,6 +56,7 @@ readonly class Environment extends Bag
             'description' => $environment->description,
             'slug' => $environment->slug,
             'color' => $environment->color,
+            'lastSeenAt' => $environment->last_seen_at,
         ];
     }
 

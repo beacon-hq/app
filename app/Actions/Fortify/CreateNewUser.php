@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Actions\Fortify;
 
+use App;
+use App\Enums\UserStatus;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Services\UserService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
@@ -14,6 +17,10 @@ use Session;
 class CreateNewUser implements CreatesNewUsers
 {
     use PasswordValidationRules;
+
+    public function __construct(protected UserService $userService)
+    {
+    }
 
     /**
      * Validate and create a newly registered user.
@@ -37,20 +44,17 @@ class CreateNewUser implements CreatesNewUsers
 
         Session::put('auth.password_confirmed_at', time());
 
-        $user = User::create([
-            'first_name' => $input['first_name'],
-            'last_name' => $input['last_name'],
-            'email' => $input['email'],
-            'password' => Hash::make($input['password']),
-        ]);
-
-        if (Session::has('invite')) {
-            $invite = Session::get('invite');
-            $user->teams()->attach($invite->team->id);
-            $user->assignRole($invite->role);
-            Session::forget('invite');
-        }
-
-        return $user;
+        return DB::transaction(function () use ($input) {
+            return $this->userService->create(
+                App\Values\User::from(
+                    firstName: $input['first_name'],
+                    lastName: $input['last_name'],
+                    email: $input['email'],
+                    password: $input['password'],
+                    status: UserStatus::ACTIVE,
+                ),
+                Session::has('invite') ? App\Values\Invite::from(Session::get('invite')) : null,
+            );
+        });
     }
 }

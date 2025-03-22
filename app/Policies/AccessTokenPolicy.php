@@ -16,7 +16,7 @@ class AccessTokenPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo(Permission::API_TOKENS_VIEW());
+        return $user->hasPermissionTo(Permission::ACCESS_TOKENS_VIEW());
     }
 
     /**
@@ -24,7 +24,7 @@ class AccessTokenPolicy
      */
     public function view(User $user, AccessToken|AccessTokenValue $personalAccessToken): bool
     {
-        return $user->hasPermissionTo(Permission::API_TOKENS_VIEW() . '.' . $personalAccessToken->id);
+        return $user->hasPermissionTo(Permission::ACCESS_TOKENS_VIEW() . '.' . $personalAccessToken->id);
     }
 
     /**
@@ -32,7 +32,7 @@ class AccessTokenPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo(Permission::API_TOKENS_CREATE());
+        return $user->hasPermissionTo(Permission::ACCESS_TOKENS_CREATE());
     }
 
     /**
@@ -40,7 +40,7 @@ class AccessTokenPolicy
      */
     public function update(User $user, AccessToken|AccessTokenValue $accessToken): bool
     {
-        return $user->hasPermissionTo(Permission::API_TOKENS_UPDATE() . '.' . $accessToken->id);
+        return $user->hasPermissionTo(Permission::ACCESS_TOKENS_UPDATE() . '.' . $accessToken->id);
     }
 
     /**
@@ -48,6 +48,6 @@ class AccessTokenPolicy
      */
     public function delete(User $user, AccessToken|AccessTokenValue $accessToken): bool
     {
-        return $user->hasPermissionTo(Permission::API_TOKENS_DELETE() . '.' . $accessToken->id);
+        return $user->hasPermissionTo(Permission::ACCESS_TOKENS_DELETE() . '.' . $accessToken->id);
     }
 }

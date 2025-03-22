@@ -32,7 +32,7 @@ class TagPolicy
      */
     public function create(User $user): bool
     {
-        $user->hasPermissionTo(Permission::TAGS);
+        $user->hasPermissionTo(Permission::TAGS_CREATE());
     }
 
     /**
@@ -40,30 +40,6 @@ class TagPolicy
      */
     public function update(User $user, Tag|TagValue $tag): bool
     {
-        return $user->hasPermissionTo(Permission::TAGS() . '.' . $tag->id);
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Tag|TagValue $tag): bool
-    {
-        return $user->hasPermissionTo(Permission::TAGS() . '.' . $tag->id);
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Tag|TagValue $tag): bool
-    {
-        return $user->hasPermissionTo(Permission::TAGS() . '.' . $tag->id);
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Tag|TagValue $tag): bool
-    {
-        return $user->hasPermissionTo(Permission::TAGS() . '.' . $tag->id);
+        return $user->hasPermissionTo(Permission::TAGS_UPDATE() . '.' . $tag->id);
     }
 }

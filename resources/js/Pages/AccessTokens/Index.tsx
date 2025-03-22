@@ -7,7 +7,7 @@ import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { Toaster } from '@/Components/ui/sonner';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
-import Table from '@/Pages/Settings/APITokens/Components/Table';
+import Table from '@/Pages/AccessTokens/Components/Table';
 import { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
 import { AxiosError, AxiosResponse } from 'axios';
@@ -58,7 +58,7 @@ export default function Index({ settings }: PageProps & { settings: { tokens: Ac
             return;
         }
 
-        window.axios.delete(route('tokens.destroy', { token: id })).then((response) => {
+        window.axios.delete(route('api.tokens.destroy', { token: id })).then((response) => {
             setTokens(tokens.filter((token) => token.id !== id));
             toast.success('API Token deleted successfully.');
         });
@@ -66,7 +66,10 @@ export default function Index({ settings }: PageProps & { settings: { tokens: Ac
 
     return (
         <Authenticated
-            breadcrumbs={[{ name: 'Settings', icon: 'Settings' }, { name: 'API Tokens' }]}
+            breadcrumbs={[
+                { name: 'Settings', icon: 'Settings', href: route('settings.index') },
+                { name: 'API Tokens' },
+            ]}
             headerAction={
                 <Button onClick={() => setShowTokenDialog(true)}>
                     <PlusCircle className="mr-2 inline-block h-6 w-6" />

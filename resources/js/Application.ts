@@ -41,6 +41,7 @@ export type Environment = {
     name: string | null;
     description: string | null;
     color: Color | string;
+    last_seen_at: string | null;
 };
 export type EnvironmentCollection = Environment[];
 export type FeatureFlag = {
@@ -103,6 +104,13 @@ export type Invite = {
     id: string | null;
 };
 export type InviteCollection = Invite[];
+export type Organization = {
+    slug: string | null;
+    id: string | null;
+    owner: User | null;
+    name: string | null;
+};
+export type OrganizationCollection = Organization[];
 export enum Permission {
     'BILLING' = 'billing',
     'BILLING_CREATE' = 'billing.create',
@@ -154,11 +162,11 @@ export enum Permission {
     'TEAMS_UPDATE' = 'teams.update',
     'TEAMS_VIEW' = 'teams.view',
     'TEAMS_DELETE' = 'teams.delete',
-    'API_TOKENS' = 'api-tokens',
-    'API_TOKENS_CREATE' = 'api-tokens.create',
-    'API_TOKENS_UPDATE' = 'api-tokens.update',
-    'API_TOKENS_VIEW' = 'api-tokens.view',
-    'API_TOKENS_DELETE' = 'api-tokens.delete',
+    'ACCESS_TOKENS' = 'access-tokens',
+    'ACCESS_TOKENS_CREATE' = 'access-tokens.create',
+    'ACCESS_TOKENS_UPDATE' = 'access-tokens.update',
+    'ACCESS_TOKENS_VIEW' = 'access-tokens.view',
+    'ACCESS_TOKENS_DELETE' = 'access-tokens.delete',
 }
 export type Policy = {
     slug: string | null;
@@ -217,6 +225,7 @@ export type Tag = {
 };
 export type TagCollection = Tag[];
 export type Team = {
+    organization: Organization | null;
     slug: string | null;
     id: string | null;
     name: string | null;
@@ -238,5 +247,11 @@ export type User = {
     teams: TeamCollection | null;
     roles: Role[];
     email_verified_at: string | null;
+    status: UserStatus | null;
 };
 export type UserCollection = User[];
+export enum UserStatus {
+    'ACTIVE' = 'active',
+    'INACTIVE' = 'inactive',
+    'PENDING' = 'pending',
+}

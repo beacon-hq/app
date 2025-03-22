@@ -4,70 +4,69 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Repositories\TeamRepository;
+use App\Services\TeamService;
 use App\Values\Team;
+use App\Values\User;
 use Bag\Attributes\WithoutValidation;
+use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class TeamsController extends Controller
 {
-    public function __construct(protected TeamRepository $teamRepository)
+    public function __construct(protected TeamService $teamService)
     {
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
+        Gate::authorize('viewAny', Team::class);
+
         return Inertia::render('Teams/Index', [
-            'teams' => $this->teamRepository->all(Auth::user()->id, true),
+            'teams' => $this->teamService->all(Auth::user()->id, true),
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(Team $team)
     {
-        //
+        Gate::authorize('create', Team::class);
+
+        $team = $this->teamService->create($team, User::from(Auth::user()));
+
+        return redirect(route('teams.edit', ['slug' => $team->slug]))
+            ->withAlert('success', 'Team Created Successfully.');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(
         #[WithoutValidation]
-        Team $team
+        Team $team,
+        Request $request
     ) {
+        Gate::authorize('update', $team);
+
         return Inertia::render('Teams/Edit', [
-            'team' => $this->teamRepository->findBySlug($team->slug, true),
+            'team' => $team = $this->teamService->findBySlug($team->slug),
+            'users' => $this->teamService->nonMembers($team),
+            'members' => $this->teamService->members(
+                $team,
+                $request->get('orderBy', ['name']),
+                $request->integer('page', null),
+                $request->integer('perPage', 20),
+                $request->get('filters', [])
+            ),
+            'page' => $request->integer('page', 1),
+            'perPage' => $request->integer('perPage', 10),
+            'filters' => $request->get('filters', []),
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Team $team)
     {
-        //
-    }
+        Gate::authorize('update', $team);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $team = $this->teamService->update($team);
+
+        return redirect(route('teams.edit', ['slug' => $team->slug]))->withAlert('success', 'Team Updated Successfully.');
     }
 }

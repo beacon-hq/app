@@ -1,4 +1,4 @@
-import { Permission, Team, TeamCollection, User } from '@/Application';
+import { OrganizationCollection, Permission, Team, TeamCollection, User } from '@/Application';
 
 export interface AuthProp {
     auth: {
@@ -11,4 +11,5 @@ export interface AuthProp {
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T &
     AuthProp & {
         teams: TeamCollection;
+        organizations: OrganizationCollection;
     };

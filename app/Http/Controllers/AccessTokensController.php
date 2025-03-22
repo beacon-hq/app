@@ -8,11 +8,11 @@ use App\Services\AccessTokenService;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class APITokensController extends Controller
+class AccessTokensController extends Controller
 {
     public function index(AccessTokenService $accessTokenService): Response
     {
-        return Inertia::render('Settings/APITokens/Index', [
+        return Inertia::render('AccessTokens/Index', [
             'settings' => [
                 'tokens' => $accessTokenService->all(),
             ],

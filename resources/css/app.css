@@ -22,6 +22,7 @@
 
 @layer base {
     :root {
+        --body-height: calc(100vh - 12rem);
         --background: hsl(0, 0%, 98%);
         --foreground: hsl(240 10% 3.9%);
         --card: hsl(0 0% 100%);

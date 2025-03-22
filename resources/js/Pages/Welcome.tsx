@@ -15,6 +15,8 @@ export default function Welcome({
             teams: null,
             roles: [],
             email_verified_at: null,
+            theme: '',
+            status: null,
         },
         currentTeam: {
             slug: '',
@@ -23,6 +25,7 @@ export default function Welcome({
             color: null,
             icon: null,
             members: null,
+            organization: null,
         },
         permissions: [],
     },
@@ -62,7 +65,7 @@ export default function Welcome({
                                 </svg>
                             </div>
                             <nav className="-mx-3 flex flex-1 justify-end">
-                                {auth.user ? (
+                                {auth?.user ? (
                                     <Link
                                         href={route('dashboard')}
                                         className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-hidden focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"

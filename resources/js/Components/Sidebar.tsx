@@ -137,7 +137,7 @@ const Sidebar = function (props: { expanded: boolean } & AuthProp) {
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
-                        <SidebarMenuItem className={cn({ hidden: !Gate.can(Permission.API_TOKENS_VIEW) })}>
+                        <SidebarMenuItem className={cn({ hidden: !Gate.can(Permission.ACCESS_TOKENS_VIEW) })}>
                             <SidebarMenuButton asChild tooltip="Settings" isActive={route().current('settings.*')}>
                                 <Link href={route('settings.index')}>
                                     <Settings className="h-6 w-6" />
