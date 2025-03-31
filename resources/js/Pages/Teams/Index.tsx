@@ -42,7 +42,10 @@ export default function Index({ teams }: { teams: TeamCollection }) {
 
     return (
         <AuthenticatedLayout
-            breadcrumbs={[{ name: 'Settings', icon: 'Settings', href: route('settings.index') }, { name: 'Teams' }]}
+            breadcrumbs={[
+                { name: 'Settings', icon: 'Settings', href: route('settings.index') },
+                { name: 'Teams', icon: 'Users' },
+            ]}
             headerAction={
                 <Button onClick={() => setShowSheet(true)}>
                     <PlusCircle className="mr-2 inline-block h-6 w-6" />

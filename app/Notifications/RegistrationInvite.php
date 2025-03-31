@@ -17,35 +17,19 @@ class RegistrationInvite extends Notification
     {
     }
 
-    /**
-     * Get the notification's channels.
-     *
-     * @return array|string
-     */
-    public function via($notifiable)
+    public function via(): array
     {
         return ['mail'];
     }
 
-    /**
-     * Build the mail representation of the notification.
-     *
-     * @return MailMessage
-     */
-    public function toMail($notifiable)
+    public function toMail(): MailMessage
     {
-        $verificationUrl = $this->verificationUrl($notifiable);
+        $verificationUrl = $this->verificationUrl();
 
         return $this->buildMailMessage($verificationUrl);
     }
 
-    /**
-     * Get the verify email notification mail message for the given URL.
-     *
-     * @param  string  $url
-     * @return MailMessage
-     */
-    protected function buildMailMessage($url)
+    protected function buildMailMessage(string $url): MailMessage
     {
         return (new MailMessage())
             ->subject(sprintf('You\'ve been invited to join the "%s" team on Beacon!', $this->invite->team->name))
@@ -55,12 +39,7 @@ class RegistrationInvite extends Notification
             ->line(sprintf('The invitation expires in %s.', CarbonInterval::instance(config('beacon.teams.invitation_expiration'))));
     }
 
-    /**
-     * Get the verification URL for the given notifiable.
-     *
-     * @return string
-     */
-    protected function verificationUrl($notifiable)
+    protected function verificationUrl(): string
     {
         return URL::temporarySignedRoute(
             'teams.accept-invite',

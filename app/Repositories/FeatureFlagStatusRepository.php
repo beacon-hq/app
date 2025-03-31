@@ -92,10 +92,10 @@ class FeatureFlagStatusRepository
                 PolicyDefinitionMatchOperator::NOT_CONTAINS_ALL => $contextValues->filter(fn (mixed $contextValue) => !$policyValues->contains($contextValue))->count() === $contextValues->count(),
                 PolicyDefinitionMatchOperator::CONTAINS_ANY => $contextValues->filter(fn (mixed $contextValue) => $policyValues->contains($contextValue))->isNotEmpty(),
                 PolicyDefinitionMatchOperator::NOT_CONTAINS_ANY => $contextValues->filter(fn (mixed $contextValue) => !$policyValues->contains($contextValue))->isNotEmpty(),
-                PolicyDefinitionMatchOperator::MATCHES_ALL => $contextValues->filter(fn (mixed $contextValue) => !$policyValues->reduce(fn ($carry, $policyValue) => $carry && Str::of($contextValue)->isMatch($policyValue), true))->isEmpty(),
-                PolicyDefinitionMatchOperator::NOT_MATCHES_ALL => $contextValues->filter(fn (mixed $contextValue) => !$policyValues->reduce(fn ($carry, $policyValue) => $carry && !Str::of($contextValue)->isMatch($policyValue), true))->isEmpty(),
-                PolicyDefinitionMatchOperator::MATCHES_ANY => $contextValues->filter(fn (mixed $contextValue) => !$policyValues->reduce(fn ($carry, $policyValue) => $carry || Str::of($contextValue)->isMatch($policyValue), false))->isEmpty(),
-                PolicyDefinitionMatchOperator::NOT_MATCHES_ANY => $contextValues->filter(fn (mixed $contextValue) => !$policyValues->reduce(fn ($carry, $policyValue) => !$carry || !Str::of($contextValue)->isMatch($policyValue), true))->isEmpty(),
+                PolicyDefinitionMatchOperator::MATCHES_ALL => $contextValues->filter(fn (mixed $contextValue) => !$policyValues->reduce(fn (bool $carry, mixed $policyValue) => $carry && Str::of($contextValue)->isMatch($policyValue), true))->isEmpty(),
+                PolicyDefinitionMatchOperator::NOT_MATCHES_ALL => $contextValues->filter(fn (mixed $contextValue) => !$policyValues->reduce(fn (bool $carry, mixed $policyValue) => $carry && !Str::of($contextValue)->isMatch($policyValue), true))->isEmpty(),
+                PolicyDefinitionMatchOperator::MATCHES_ANY => $contextValues->filter(fn (mixed $contextValue) => !$policyValues->reduce(fn (bool $carry, mixed $policyValue) => $carry || Str::of($contextValue)->isMatch($policyValue), false))->isEmpty(),
+                PolicyDefinitionMatchOperator::NOT_MATCHES_ANY => $contextValues->filter(fn (mixed $contextValue) => !$policyValues->reduce(fn (bool $carry, mixed $policyValue) => !$carry || !Str::of($contextValue)->isMatch($policyValue), true))->isEmpty(),
                 PolicyDefinitionMatchOperator::ONE_OF => $contextValues->filter(fn (mixed $contextValue) => !$policyValues->contains($contextValue))->isEmpty(),
                 PolicyDefinitionMatchOperator::NOT_ONE_OF => $contextValues->filter(fn (mixed $contextValue) => $policyValues->contains($contextValue))->isEmpty(),
             };
@@ -129,7 +129,7 @@ class FeatureFlagStatusRepository
         })->toBase());
     }
 
-    protected function evaluateExpressionResults($values): bool
+    protected function evaluateExpressionResults(LaravelCollection $values): bool
     {
         $result = $values->shift();
 

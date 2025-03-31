@@ -8,6 +8,7 @@ use App\Enums\Role;
 use App\Models\Scopes\CurrentTeamScope;
 use App\Models\User;
 use App\Services\TeamService;
+use App\Values\Collections\TeamCollection;
 use App\Values\Collections\UserCollection;
 use App\Values\Organization;
 use App\Values\Team;
@@ -57,10 +58,10 @@ class UserRepository
         return UserValue::from($user);
     }
 
-    public function assignRole(UserValue $user, ?Role $role): UserValue
+    public function assignRole(UserValue $user, Role $role): UserValue
     {
-        $user = User::find($user->id);
-        $user->assignRole($role);
+        $user = User::withoutGlobalScopes([CurrentTeamScope::class])->findOrFail($user->id);
+        $user->syncRoles($role);
 
         return UserValue::from($user);
     }
@@ -82,6 +83,53 @@ class UserRepository
     public function create(UserValue $user): UserValue
     {
         return UserValue::from(User::create($user->toArray()));
+    }
+
+    public function all(array $orderBy = ['first_name', 'last_name'], array $filters = [], ?int $page = null, int $perPage = 20): UserCollection
+    {
+        return UserValue::collect(
+            $this->buildQuery(orderBy: $orderBy, filters: $filters, page: $page, perPage: $perPage)
+                ->with('teams')
+                ->withoutGlobalScopes([CurrentTeamScope::class])
+                ->get()
+        );
+    }
+
+    public function syncTeams(UserValue $user, TeamCollection $teams): UserValue
+    {
+        $user = User::withoutGlobalScopes([CurrentTeamScope::class])->find($user->id);
+        $user->teams()->sync($teams->pluck('id')->toArray());
+
+        return UserValue::from($user);
+    }
+
+    public function delete(UserValue $user): void
+    {
+        $user = User::withoutGlobalScopes([CurrentTeamScope::class])->find($user->id);
+
+        // Remove Roles
+        $user->syncRoles([]);
+
+
+        $user->delete();
+    }
+
+    public function update(UserValue $user)
+    {
+        $userModel = User::withoutGlobalScopes([CurrentTeamScope::class])->findOrFail($user->id);
+        $userModel->update($user->toCollection()->only('status')->toArray());
+
+        return UserValue::from($userModel);
+    }
+
+    public function find(int $id): UserValue
+    {
+        return UserValue::from(User::withoutGlobalScopes([CurrentTeamScope::class])->findOrFail($id));
+    }
+
+    public function sendEmailVerificationNotification(int $id): void
+    {
+        User::withoutGlobalScopes([CurrentTeamScope::class])->findOrFail($id)->sendEmailVerificationNotification();
     }
 
     /**

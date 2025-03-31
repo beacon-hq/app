@@ -7,6 +7,7 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\EnvironmentController;
 use App\Http\Controllers\FeatureFlagController;
 use App\Http\Controllers\FeatureTypeController;
+use App\Http\Controllers\IndexController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\ProfileController;
@@ -14,18 +15,12 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TeamMemberManageController;
-use Illuminate\Foundation\Application as ApplicationAlias;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => ApplicationAlias::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+Route::get('/', [IndexController::class, 'index'])->name('welcome');
+Route::post('/subscribe', [IndexController::class, 'store'])->name('subscribe');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -113,6 +108,8 @@ Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
         OrganizationController::class,
         ['parameters' => ['organizations' => 'id']]
     )->except('create', 'show');
+
+    Route::resource('users', UserController::class, ['parameters' => ['users' => 'id']]);
 
     Route::prefix('policies')->group(function () {
         Route::get('/', [PolicyController::class, 'index'])

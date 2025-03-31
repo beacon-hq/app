@@ -8,6 +8,7 @@ use App\Enums\Role;
 use App\Models\Traits\BelongsToOrganization;
 use App\Models\Traits\HasSlug;
 use DateTimeInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -67,7 +68,7 @@ class Team extends Model
         return $this->belongsToMany(User::class)->withTimestamps();
     }
 
-    public function createToken(string $name, array $abilities = ['*'], ?DateTimeInterface $expiresAt = null)
+    public function createToken(string $name, array $abilities = ['*'], ?DateTimeInterface $expiresAt = null): NewAccessToken
     {
         $plainTextToken = $this->generateTokenString();
 
@@ -90,7 +91,7 @@ class Team extends Model
     protected function owner(): Attribute
     {
         return Attribute::make(get: function () {
-            return User::role(Role::OWNER)->whereHas('teams', function ($query) {
+            return User::role(Role::OWNER)->whereHas('teams', function (Builder $query) {
                 $query->where('team_id', $this->id);
             })->first();
         });

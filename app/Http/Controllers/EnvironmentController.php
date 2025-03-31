@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Services\EnvironmentService;
 use App\Values\Environment;
 use Bag\Attributes\WithoutValidation;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -22,7 +23,7 @@ class EnvironmentController extends Controller
         ]);
     }
 
-    public function store(Environment $environment, EnvironmentService $environmentService)
+    public function store(Environment $environment, EnvironmentService $environmentService): RedirectResponse
     {
         Gate::authorize('create', $environment);
 
@@ -48,7 +49,7 @@ class EnvironmentController extends Controller
         ]);
     }
 
-    public function update(Environment $environment, EnvironmentService $environmentService)
+    public function update(Environment $environment, EnvironmentService $environmentService): RedirectResponse
     {
         Gate::authorize('update', $environment);
 

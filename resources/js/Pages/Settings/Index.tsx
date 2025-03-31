@@ -38,9 +38,9 @@ export default function Index() {
                             </CardHeader>
                             <CardContent>
                                 <CardTitle>
-                                    <Link href={route('access-tokens.index')}>
+                                    <Link href={route('users.index')}>
                                         <span className="absolute inset-0"></span>
-                                        Team Members
+                                        Users
                                     </Link>
                                 </CardTitle>
                                 <CardDescription>
@@ -81,11 +81,11 @@ export default function Index() {
                             <CardContent>
                                 <CardTitle>
                                     <Link href={route('access-tokens.index')}>
-                                        <span className="absolute inset-0"></span>API Keys
+                                        <span className="absolute inset-0"></span>Access Tokens
                                     </Link>
                                 </CardTitle>
                                 <CardDescription>
-                                    <p>Create and manage API keys for Laravel Pennant.</p>
+                                    <p>Create and manage Access Tokens for Laravel Pennant.</p>
                                 </CardDescription>
                             </CardContent>
                         </div>

@@ -76,12 +76,12 @@ class FeatureFlagStatus extends Model
 
     public function scopeWhereApplication(Builder $query, string $application): Builder
     {
-        return $query->whereHas('application', fn ($query) => $query->where('name', $application));
+        return $query->whereHas('application', fn (Builder $query) => $query->where('name', $application));
     }
 
     public function scopeWhereEnvironment(Builder $query, string $environment): Builder
     {
-        return $query->whereHas('environment', fn ($query) => $query->where('name', $environment));
+        return $query->whereHas('environment', fn (Builder $query) => $query->where('name', $environment));
     }
 
     public function scopeWhereFeatureFlag(Builder $query, FeatureFlagValue $featureFlag): Builder
@@ -90,7 +90,7 @@ class FeatureFlagStatus extends Model
             return $query->where('feature_flag_id', $featureFlag->id);
         }
 
-        return $query->whereHas('featureFlag', fn ($query) => $query->where('slug', $featureFlag->slug));
+        return $query->whereHas('featureFlag', fn (Builder $query) => $query->where('slug', $featureFlag->slug));
     }
 
     protected function casts(): array

@@ -11,6 +11,7 @@ use App\Values\Collections\TeamCollection;
 use App\Values\Collections\UserCollection;
 use Bag\Attributes\Cast;
 use Bag\Attributes\Collection;
+use Bag\Attributes\Laravel\FromRouteParameter;
 use Bag\Attributes\MapName;
 use Bag\Attributes\StripExtraParameters;
 use Bag\Attributes\Transforms;
@@ -28,6 +29,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 readonly class User extends Bag
 {
     public function __construct(
+        #[FromRouteParameter]
         public ?int $id = null,
         public ?Team $team = null,
         public ?string $name = null,

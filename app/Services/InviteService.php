@@ -42,7 +42,7 @@ class InviteService
         return $this->inviteRepository->findTeamInvite($team, $email);
     }
 
-    public function delete(Invite $invite)
+    public function delete(Invite $invite): void
     {
         $this->inviteRepository->delete($invite);
     }

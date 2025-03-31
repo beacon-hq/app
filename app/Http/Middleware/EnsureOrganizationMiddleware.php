@@ -19,9 +19,11 @@ class EnsureOrganizationMiddleware
             return $next($request);
         }
 
-        $organization = Session::get('team')->organization;
+        if (Session::has('team')) {
+            $organization = Session::get('team')->organization;
 
-        App::context(organization: $organization);
+            App::context(organization: $organization);
+        }
 
         return $next($request);
     }

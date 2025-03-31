@@ -102,12 +102,12 @@ class User extends Authenticatable implements MustVerifyEmailContract
 
     public function teams(): BelongsToMany
     {
-        return $this->belongsToMany(Team::class)->withTimestamps();
+        return $this->belongsToMany(Team::class)->withTimestamps()->orderBy('name');
     }
 
     public function organizations(): BelongsToMany
     {
-        return $this->belongsToMany(Organization::class)->withTimestamps();
+        return $this->belongsToMany(Organization::class)->withTimestamps()->orderBy('name');
     }
 
     /**

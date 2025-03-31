@@ -57,7 +57,8 @@ export default function Edit({
     return (
         <AuthenticatedLayout
             breadcrumbs={[
-                { name: 'Teams', href: route('teams.index') },
+                { name: 'Settings', href: route('settings.index'), icon: 'Settings' },
+                { name: 'Teams', href: route('teams.index'), icon: 'Users' },
                 {
                     name: data.name as string,
                     icon: data.icon ? <IconColor color={data.color} icon={data.icon} className="w-8 h-8" /> : undefined,

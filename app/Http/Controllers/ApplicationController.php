@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Services\ApplicationService;
 use App\Values\Application;
 use Bag\Attributes\WithoutValidation;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -20,7 +21,7 @@ class ApplicationController extends Controller
         ]);
     }
 
-    public function store(Application $application, ApplicationService $applicationService)
+    public function store(Application $application, ApplicationService $applicationService): RedirectResponse
     {
         Gate::authorize('create', $application);
 
@@ -46,7 +47,7 @@ class ApplicationController extends Controller
         ]);
     }
 
-    public function update(Application $application, ApplicationService $applicationService)
+    public function update(Application $application, ApplicationService $applicationService): RedirectResponse
     {
         Gate::authorize('update', $application);
 

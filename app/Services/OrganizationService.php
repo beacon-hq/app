@@ -35,7 +35,7 @@ class OrganizationService
         return $this->organizationRepository->findById($id);
     }
 
-    public function delete(Organization $organization)
+    public function delete(Organization $organization): void
     {
         $this->organizationRepository->delete($organization);
     }

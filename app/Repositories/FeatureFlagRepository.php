@@ -107,7 +107,7 @@ class FeatureFlagRepository
         return $featureFlag;
     }
 
-    public function count(array $filters = [])
+    public function count(array $filters = []): int
     {
         return $this->buildQuery(filters: $filters)->count();
     }

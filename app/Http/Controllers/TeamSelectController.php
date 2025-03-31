@@ -7,9 +7,11 @@ namespace App\Http\Controllers;
 use App;
 use App\Services\TeamService;
 use App\Values\Team;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
+use Inertia\Response;
 use Session;
 
 class TeamSelectController extends Controller
@@ -17,7 +19,7 @@ class TeamSelectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Response
     {
         return Inertia::render('Teams/Select');
     }
@@ -25,7 +27,7 @@ class TeamSelectController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Team $team, TeamService $teamService, Request $request)
+    public function update(Team $team, TeamService $teamService, Request $request): RedirectResponse
     {
         $team = $teamService->findById($team->id);
 

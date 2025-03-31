@@ -55,7 +55,7 @@ export default function Index({ environments }: PageProps & { environments: Envi
                             <CardTitle>
                                 <h2 className="text-xl truncate">
                                     <Link
-                                        href={route('applications.edit', {
+                                        href={route('environments.edit', {
                                             slug: environment.slug,
                                         })}
                                     >
@@ -90,7 +90,7 @@ export default function Index({ environments }: PageProps & { environments: Envi
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="flex flex-col gap-6">
-                            <p className="text-sm text-neutral-500">You have not created any applications yet.</p>
+                            <p className="text-sm text-neutral-500">You have not created any environments yet.</p>
                             <Button onClick={() => setShowSheet(true)}>
                                 <PlusCircle className="mr-2 inline-block h-6 w-6" />
                                 New Environment

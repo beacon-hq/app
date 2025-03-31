@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace App\Models {
 
+    use Illuminate\Database\Eloquent\Concerns\HasUlids;
     use Illuminate\Database\Eloquent\Model;
 
-    class Tenant extends Model
-    {
+    if (!class_exists(Tenant::class)) {
+        class Tenant extends Model
+        {
+            use HasUlids;
+        }
     }
 }
 

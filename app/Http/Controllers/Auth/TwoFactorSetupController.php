@@ -8,14 +8,12 @@ use App\Http\Controllers\Controller;
 use Auth;
 use function decrypt;
 use Inertia\Inertia;
+use Inertia\Response;
 use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
 
 class TwoFactorSetupController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): Response
     {
         $enable = resolve(EnableTwoFactorAuthentication::class);
         $enable(Auth::user(), false);
@@ -26,10 +24,7 @@ class TwoFactorSetupController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show()
+    public function show(): Response
     {
         return Inertia::render('Auth/TwoFactorAuth/Login');
     }

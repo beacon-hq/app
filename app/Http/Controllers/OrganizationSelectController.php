@@ -9,6 +9,7 @@ use App\Services\OrganizationService;
 use App\Services\TeamService;
 use App\Values\Organization;
 use Bag\Attributes\WithoutValidation;
+use Illuminate\Http\RedirectResponse;
 use Session;
 
 class OrganizationSelectController extends Controller
@@ -20,7 +21,7 @@ class OrganizationSelectController extends Controller
     public function update(
         #[WithoutValidation]
         Organization $organization
-    ) {
+    ): RedirectResponse {
         App::context(organization: $this->organizationService->findById($organization->id));
 
         $team = $this->teamService->all()->first();

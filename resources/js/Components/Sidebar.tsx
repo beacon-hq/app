@@ -26,7 +26,6 @@ import { AuthProp } from '@/types';
 import { Link } from '@inertiajs/react';
 import {
     AppWindowMac,
-    Bell,
     CircleUser,
     Component,
     Flag,
@@ -37,7 +36,6 @@ import {
     SlidersHorizontal,
     Sparkles,
     Tag,
-    Users,
 } from 'lucide-react';
 import React from 'react';
 
@@ -109,6 +107,14 @@ const Sidebar = function (props: { expanded: boolean } & AuthProp) {
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
+                        <SidebarMenuItem className={cn({ hidden: !Gate.can(Permission.POLICIES_VIEW) })}>
+                            <SidebarMenuButton asChild tooltip="Policies" isActive={route().current('policies.*')}>
+                                <Link href={route('policies.index')}>
+                                    <SlidersHorizontal className="h-6 w-6" />
+                                    <span>Policies</span>
+                                </Link>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
                         <SidebarMenuItem className={cn({ hidden: !Gate.can(Permission.FEATURE_TYPES_VIEW) })}>
                             <SidebarMenuButton
                                 asChild
@@ -118,14 +124,6 @@ const Sidebar = function (props: { expanded: boolean } & AuthProp) {
                                 <Link href={route('feature-types.index')}>
                                     <Component className="h-6 w-6" />
                                     <span>Feature Types</span>
-                                </Link>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem className={cn({ hidden: !Gate.can(Permission.POLICIES_VIEW) })}>
-                            <SidebarMenuButton asChild tooltip="Policies" isActive={route().current('policies.*')}>
-                                <Link href={route('policies.index')}>
-                                    <SlidersHorizontal className="h-6 w-6" />
-                                    <span>Policies</span>
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
@@ -177,31 +175,24 @@ const Sidebar = function (props: { expanded: boolean } & AuthProp) {
                                             <span className="truncate text-xs">{props.auth.user.email}</span>
                                         </div>
                                     </DropdownMenuLabel>
-                                    <DropdownMenuItem asChild>
-                                        <Link
-                                            className="w-full bg-blue-300 text-foreground hover:bg-blue-200 text-left"
-                                            href={route('teams.index')}
-                                        >
-                                            <Sparkles />
-                                            Invite a team member…
-                                        </Link>
-                                    </DropdownMenuItem>
+                                    {Gate.can(Permission.TEAMS_UPDATE) && (
+                                        <DropdownMenuItem asChild>
+                                            <Link className="w-full text-left" href={route('teams.index')}>
+                                                <Sparkles className="stroke-yellow-500" />
+                                                Invite a team member…
+                                            </Link>
+                                        </DropdownMenuItem>
+                                    )}
                                     <DropdownMenuItem asChild>
                                         <Link href={route('profile.edit')} className="w-full">
                                             <CircleUser />
                                             My Account
                                         </Link>
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem asChild>
-                                        <Link href={route('teams.index')} className="w-full">
-                                            <Users />
-                                            {Gate.can(Permission.TEAMS_UPDATE) ? 'Manage Teams' : 'View Teams'}
-                                        </Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem>
-                                        <Bell />
-                                        Notifications
-                                    </DropdownMenuItem>
+                                    {/*<DropdownMenuItem>*/}
+                                    {/*    <Bell />*/}
+                                    {/*    Notifications*/}
+                                    {/*</DropdownMenuItem>*/}
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem asChild>

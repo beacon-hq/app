@@ -158,7 +158,7 @@ export default function Edit({
                                 className="rounded-lg grow px-6 cursor-pointer"
                                 onClick={changeTab('feature-flags.edit.policy')}
                             >
-                                Status
+                                Configuration
                             </TabsTrigger>
                         </TabsList>
                         {featureFlag.status && (

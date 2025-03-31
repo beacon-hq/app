@@ -35,7 +35,7 @@ class TeamService
         return $this->teamRepository->update($team);
     }
 
-    public function findBySlug(string $slug)
+    public function findBySlug(string $slug): Team
     {
         return $this->teamRepository->findBySlug($slug);
     }
@@ -50,7 +50,7 @@ class TeamService
         return $this->teamRepository->members($team, $orderBy, $page, $perPage, $filters);
     }
 
-    public function nonMembers(Team $team)
+    public function nonMembers(Team $team): UserCollection
     {
         return $this->teamRepository->nonMembers($team);
     }

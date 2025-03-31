@@ -40,7 +40,7 @@ readonly class AccessToken extends Bag
     }
 
     #[Transforms(AccessTokenModel::class)]
-    public static function fromModel(AccessTokenModel $personalAccessToken)
+    public static function fromModel(AccessTokenModel $personalAccessToken): array
     {
         return [
             'id' => $personalAccessToken->id,

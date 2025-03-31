@@ -40,7 +40,7 @@ export default function Index({ settings }: PageProps & { settings: { tokens: Ac
                 reset();
 
                 setTokens([...tokens, (response as AxiosResponse).data]);
-                toast.success('API Token created successfully.');
+                toast.success('Access Token created successfully.');
             })
             .catch((err: AxiosError) => {
                 setErrors((err.response as any).data.errors);
@@ -60,7 +60,7 @@ export default function Index({ settings }: PageProps & { settings: { tokens: Ac
 
         window.axios.delete(route('api.tokens.destroy', { token: id })).then((response) => {
             setTokens(tokens.filter((token) => token.id !== id));
-            toast.success('API Token deleted successfully.');
+            toast.success('Access Token deleted successfully.');
         });
     };
 
@@ -68,12 +68,12 @@ export default function Index({ settings }: PageProps & { settings: { tokens: Ac
         <Authenticated
             breadcrumbs={[
                 { name: 'Settings', icon: 'Settings', href: route('settings.index') },
-                { name: 'API Tokens' },
+                { name: 'Access Tokens' },
             ]}
             headerAction={
                 <Button onClick={() => setShowTokenDialog(true)}>
                     <PlusCircle className="mr-2 inline-block h-6 w-6" />
-                    New API Token
+                    New Access Token
                 </Button>
             }
         >
@@ -92,7 +92,7 @@ export default function Index({ settings }: PageProps & { settings: { tokens: Ac
             <Dialog open={showTokenDialog} onOpenChange={handleCancel}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle className="mb-4">New API Token</DialogTitle>
+                        <DialogTitle className="mb-4">New Access Token</DialogTitle>
                     </DialogHeader>
                     <form onSubmit={submit}>
                         <Label htmlFor="name" aria-required>
@@ -113,7 +113,7 @@ export default function Index({ settings }: PageProps & { settings: { tokens: Ac
                                 </Button>
                             </DialogClose>
                             <Button type="submit" className="mt-4" disabled={processing}>
-                                Create API Token
+                                Create Access Token
                             </Button>
                         </div>
                     </form>

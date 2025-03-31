@@ -9,9 +9,11 @@ use App\Values\Team;
 use App\Values\User;
 use Bag\Attributes\WithoutValidation;
 use Gate;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class TeamController extends Controller
 {
@@ -19,7 +21,7 @@ class TeamController extends Controller
     {
     }
 
-    public function index()
+    public function index(): Response
     {
         Gate::authorize('viewAny', Team::class);
 
@@ -28,7 +30,7 @@ class TeamController extends Controller
         ]);
     }
 
-    public function store(Team $team)
+    public function store(Team $team): RedirectResponse
     {
         Gate::authorize('create', Team::class);
 
@@ -42,7 +44,7 @@ class TeamController extends Controller
         #[WithoutValidation]
         Team $team,
         Request $request
-    ) {
+    ): Response {
         Gate::authorize('update', $team);
 
         return Inertia::render('Teams/Edit', [
@@ -61,7 +63,7 @@ class TeamController extends Controller
         ]);
     }
 
-    public function update(Team $team)
+    public function update(Team $team): RedirectResponse
     {
         Gate::authorize('update', $team);
 

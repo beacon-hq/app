@@ -12,6 +12,7 @@ use App\Values\User;
 use Bag\Attributes\WithoutValidation;
 use Gate;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -23,7 +24,7 @@ class TeamMemberManageController extends Controller
         Request $request,
         UserService $userService,
         TeamService $teamService,
-    ) {
+    ): RedirectResponse {
         Gate::authorize('update', $team);
 
         $request->validate([
@@ -49,7 +50,7 @@ class TeamMemberManageController extends Controller
         return \redirect()->route('teams.edit', ['slug' => $team->slug])->withAlert('success', 'Team members added successfully.');
     }
 
-    public function show(Request $request, InviteService $inviteService, UserService $userService)
+    public function show(Request $request, InviteService $inviteService, UserService $userService): RedirectResponse
     {
         try {
             $invite = $inviteService->findById($request->get('id'));
@@ -73,7 +74,7 @@ class TeamMemberManageController extends Controller
         Team $team,
         Request $request,
         UserService $userService
-    ) {
+    ): RedirectResponse {
         $user = User::withoutValidation(id: $request->integer('user_id') ?: null, email: $request->get('email'));
         $userService->removeTeam($team, $user);
 

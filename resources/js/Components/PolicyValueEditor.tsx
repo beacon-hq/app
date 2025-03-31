@@ -35,12 +35,7 @@ export const PolicyValueEditor = function ({
                 <Label htmlFor={`value_${id}`} aria-required hidden>
                     Values
                 </Label>
-                <MultiValueInput
-                    id={`value_${id}`}
-                    values={(values ?? []) as string[]}
-                    setValues={setValue as any}
-                    disabled={disabled}
-                />
+                <MultiValueInput id={`value_${id}`} values={values} setValues={setValue as any} disabled={disabled} />
             </>
         );
     }

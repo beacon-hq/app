@@ -8,6 +8,7 @@ use App\Enums\Role;
 use App\Models\Traits\BelongsToTeam;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Invite extends Model
 {
@@ -22,12 +23,12 @@ class Invite extends Model
         'expires_at',
     ];
 
-    public function team()
+    public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

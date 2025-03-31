@@ -68,9 +68,4 @@ readonly class Environment extends Bag
             'color' => ['present'],
         ];
     }
-
-    public function toJson($options = 0): string|false
-    {
-        return json_encode($this->toCollection()->except('id')->toArray(), JSON_THROW_ON_ERROR | $options);
-    }
 }

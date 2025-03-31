@@ -34,7 +34,7 @@ class FeatureFlagService
         return $this->featureFlagRepository->update($featureFlag);
     }
 
-    public function count(array $filters = [])
+    public function count(array $filters = []): int
     {
         return $this->featureFlagRepository->count($filters);
     }

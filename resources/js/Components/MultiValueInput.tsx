@@ -19,8 +19,13 @@ const MultiValueInput = ({
     type?: string;
 }) => {
     const [currentValue, setCurrentValue] = useState<string>('');
+    const [currentValues, setCurrentValues] = useState<string[]>(values);
 
-    const handleInput = (e) => {
+    // useEffect(() => {
+    //     setValues(currentValues);
+    // }, [currentValues]);
+
+    const handleInput = (e: React.FormEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         e.preventDefault();
         e.currentTarget.style.height = '';
         if (e.currentTarget.value.length > 20) {
@@ -32,17 +37,17 @@ const MultiValueInput = ({
         }
     };
 
-    const handleChange = function (e) {
+    const handleChange = function (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
         e.preventDefault();
         setCurrentValue(e.target.value);
     };
 
-    const handleKeyUp = (e) => {
+    const handleKeyUp = (e: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         e.preventDefault();
         if (e.key === 'Enter' && e.shiftKey) {
-            let value = currentValue;
-            if (!values.includes(value) && value !== '') {
-                setValues([...values, value]);
+            let value = currentValue.substring(0, currentValue.length - 1);
+            if (!currentValues.includes(value) && value !== '') {
+                setCurrentValues([...currentValues, value]);
                 setCurrentValue('');
             }
         }
@@ -84,8 +89,8 @@ const MultiValueInput = ({
                                 className="-ml-8"
                                 onClick={() => {
                                     let value = currentValue;
-                                    if (!values.includes(value) && value !== '') {
-                                        setValues([...values, value]);
+                                    if (!currentValues.includes(value) && value !== '') {
+                                        setCurrentValues([...currentValues, value]);
                                         setCurrentValue('');
                                     }
                                 }}
@@ -98,13 +103,13 @@ const MultiValueInput = ({
                     </Tooltip>
                 </TooltipProvider>
             </div>
-            {values.map((value) => (
+            {currentValues.map((value) => (
                 <div key={value}>
                     {value.length <= 25 && (
                         <Badge
                             variant="default"
                             className="cursor-pointer"
-                            onClick={() => setValues(values.filter((v) => v !== value))}
+                            onClick={() => setCurrentValues(currentValues.filter((v) => v !== value))}
                         >
                             <span className="truncate max-w-40">{value}</span>
                         </Badge>
@@ -116,7 +121,9 @@ const MultiValueInput = ({
                                     <Badge
                                         variant="default"
                                         className="cursor-pointer"
-                                        onClick={() => setValues(values.filter((value) => value !== value))}
+                                        onClick={() =>
+                                            setCurrentValues(currentValues.filter((value) => value !== value))
+                                        }
                                     >
                                         <span className="truncate max-w-40">{value}</span>
                                     </Badge>

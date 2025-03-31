@@ -12,6 +12,7 @@ use App\Values\Collections\UserCollection;
 use App\Values\Team as TeamValue;
 use Auth;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TeamRepository
 {
@@ -32,9 +33,11 @@ class TeamRepository
         return TeamValue::from(
             Team::query()
                 ->withoutGlobalScopes([CurrentOrganizationScope::class])
-                ->with('organization', function ($query) {
-                    $query->whereIn('id', Auth::user()->organizations()->pluck('id'));
-                })
+                ->with(
+                    'organization',
+                    fn (BelongsTo $query) => $query
+                        ->whereIn('id', Auth::user()->organizations()->pluck('id'))
+                )
                 ->findOrFail($id)
         );
     }
@@ -85,7 +88,7 @@ class TeamRepository
         return $userService->teamMembers($team, $orderBy, $page, $perPage, $filters);
     }
 
-    public function nonMembers(TeamValue $team)
+    public function nonMembers(TeamValue $team): UserCollection
     {
         $userService = resolve(UserService::class);
 

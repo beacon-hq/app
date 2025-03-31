@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace App\Models {
 
+    use Illuminate\Database\Eloquent\Concerns\HasUlids;
     use Illuminate\Database\Eloquent\Model;
 
-    class Tenant extends Model
-    {
+    if (!class_exists(Tenant::class)) {
+        class Tenant extends Model
+        {
+            use HasUlids;
+        }
     }
 }
 
@@ -32,14 +36,18 @@ namespace {
                 $table->string('tenant_id')->nullable();
             });
 
-            $tenant = Tenant::create([
-                'owner_id' => User::query()
-                    ->oldest()
-                    ->whereHas('roles', function (Builder $query) {
-                        $query->where('name', Role::OWNER());
-                    })->first()->id,
-            ]);
-            Team::query()->update(['tenant_id' => $tenant->id]);
+            $userId = User::query()
+                ->oldest()
+                ->whereHas('roles', function (Builder $query) {
+                    $query->where('name', Role::OWNER());
+                })->first()?->id;
+
+            if ($userId !== null) {
+                $tenant = Tenant::create([
+                    'owner_id' => $userId,
+                ]);
+                Team::query()->update(['tenant_id' => $tenant->id]);
+            }
 
             Schema::table('teams', function (Blueprint $table) {
                 $table->string('tenant_id')->nullable(false)->change();

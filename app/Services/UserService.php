@@ -8,6 +8,7 @@ use App;
 use App\Enums\Color;
 use App\Enums\Role;
 use App\Repositories\UserRepository;
+use App\Values\Collections\TeamCollection;
 use App\Values\Collections\UserCollection;
 use App\Values\Invite;
 use App\Values\Organization;
@@ -22,9 +23,24 @@ class UserService
     {
     }
 
-    public function all(?int $page, int $perPage, array $filters): UserCollection
+    public function all(array $orderBy = ['first_name', 'last_name'], array $filters = [], ?int $page = null, int $perPage = 20): UserCollection
     {
-        return UserValue::collect($this->buildQuery(filters: $filters, page: $page, perPage: $perPage)->get());
+        return $this->userRepository->all(orderBy: $orderBy, filters: $filters, page: $page, perPage: $perPage);
+    }
+
+    public function find(int $id): UserValue
+    {
+        return $this->userRepository->find($id);
+    }
+
+    public function update(UserValue $user, array $data): UserValue
+    {
+        return $this->userRepository->update($user, $data);
+    }
+
+    public function delete(UserValue $user): void
+    {
+        $this->userRepository->delete($user);
     }
 
     public function addTeam(UserValue $user, Team $team): UserValue
@@ -46,6 +62,11 @@ class UserService
         }
     }
 
+    public function syncTeams(UserValue $user, TeamCollection $teams): void
+    {
+        $this->userRepository->syncTeams($user, $teams);
+    }
+
     public function findByEmail(string $email): UserValue
     {
         return $this->userRepository->findByEmail($email);
@@ -61,7 +82,7 @@ class UserService
         return $this->userRepository->teamMembers($team, $orderBy, $page, $perPage, $filters);
     }
 
-    public function nonTeamMembers(Team $team)
+    public function nonTeamMembers(Team $team): UserCollection
     {
         return $this->userRepository->nonTeamMembers($team);
     }
@@ -95,5 +116,10 @@ class UserService
         $user = $this->userRepository->assignRole($user, Role::OWNER);
 
         return UserValue::from($user);
+    }
+
+    public function sendEmailVerificationNotification(int $id): void
+    {
+        $this->userRepository->sendEmailVerificationNotification($id);
     }
 }

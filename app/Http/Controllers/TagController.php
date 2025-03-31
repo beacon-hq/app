@@ -7,12 +7,14 @@ namespace App\Http\Controllers;
 use App\Services\TagService;
 use App\Values\Tag;
 use Bag\Attributes\WithoutValidation;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class TagController extends Controller
 {
-    public function index(TagService $tagService)
+    public function index(TagService $tagService): Response
     {
         Gate::authorize('viewAny', Tag::class);
 
@@ -21,7 +23,7 @@ class TagController extends Controller
         ]);
     }
 
-    public function store(Tag $tag, TagService $tagService)
+    public function store(Tag $tag, TagService $tagService): RedirectResponse
     {
         Gate::authorize('create', Tag::class);
 
@@ -40,7 +42,7 @@ class TagController extends Controller
         #[WithoutValidation]
         Tag $tag,
         TagService $tagService
-    ) {
+    ): Response {
         Gate::authorize('update', $tag);
 
         return Inertia::render('Tags/Edit', [
@@ -48,7 +50,7 @@ class TagController extends Controller
         ]);
     }
 
-    public function update(Tag $tag, TagService $tagService)
+    public function update(Tag $tag, TagService $tagService): RedirectResponse
     {
         Gate::authorize('update', $tag);
 

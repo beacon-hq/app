@@ -12,14 +12,22 @@ use App\Services\PolicyService;
 use App\Services\TagService;
 use App\Values\FeatureFlag;
 use Bag\Attributes\WithoutValidation;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class FeatureFlagController extends Controller
 {
-    public function index(FeatureFlagService $featureFlagService, FeatureTypeService $featureTypeService, TagService $tagService, ApplicationService $applicationService, EnvironmentService $environmentService, Request $request)
-    {
+    public function index(
+        FeatureFlagService $featureFlagService,
+        FeatureTypeService $featureTypeService,
+        TagService $tagService,
+        ApplicationService $applicationService,
+        EnvironmentService $environmentService,
+        Request $request
+    ): Response {
         debug($request->get('filters', false));
         debug($featureFlagService->count(filters: $request->get('filters', [])));
 
@@ -36,7 +44,7 @@ class FeatureFlagController extends Controller
         ]);
     }
 
-    public function store(FeatureFlag $featureFlag, FeatureFlagService $featureFlagService)
+    public function store(FeatureFlag $featureFlag, FeatureFlagService $featureFlagService): RedirectResponse
     {
         Gate::authorize('create', $featureFlag);
 
@@ -60,7 +68,7 @@ class FeatureFlagController extends Controller
         PolicyService $policyService,
         ApplicationService $applicationService,
         EnvironmentService $environmentService,
-    ) {
+    ): Response {
         Gate::authorize('update', $featureFlag);
 
         return Inertia::render('FeatureFlags/Edit', [
@@ -76,7 +84,7 @@ class FeatureFlagController extends Controller
     public function update(
         FeatureFlag $featureFlag,
         FeatureFlagService $featureFlagService
-    ) {
+    ): RedirectResponse {
         Gate::authorize('update', $featureFlag);
 
         $featureFlagService->update($featureFlag);

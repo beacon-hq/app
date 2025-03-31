@@ -7,12 +7,14 @@ namespace App\Http\Controllers;
 use App\Services\PolicyService;
 use App\Values\Policy;
 use Bag\Attributes\WithoutValidation;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class PolicyController extends Controller
 {
-    public function index(PolicyService $policyService)
+    public function index(PolicyService $policyService): Response
     {
         $policies = $policyService->all();
 
@@ -21,7 +23,7 @@ class PolicyController extends Controller
         ]);
     }
 
-    public function store(Policy $policy, PolicyService $policyService)
+    public function store(Policy $policy, PolicyService $policyService): RedirectResponse
     {
         Gate::authorize('create', $policy);
 
@@ -40,7 +42,7 @@ class PolicyController extends Controller
         #[WithoutValidation]
         Policy $policy,
         PolicyService $policyService
-    ) {
+    ): Response {
         Gate::authorize('update', $policy);
 
         return Inertia::render('Policies/Edit', [
@@ -49,7 +51,7 @@ class PolicyController extends Controller
         ]);
     }
 
-    public function update(Policy $policy, PolicyService $policyService)
+    public function update(Policy $policy, PolicyService $policyService): RedirectResponse
     {
         Gate::authorize('update', $policy);
 

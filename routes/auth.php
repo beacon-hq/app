@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
+use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -13,9 +14,11 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\OrganizationSelectController;
 use App\Http\Controllers\TeamSelectController;
 use Illuminate\Support\Facades\Route;
+use Laravel\Pennant\Middleware\EnsureFeaturesAreActive;
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
+        ->middleware(['guest', EnsureFeaturesAreActive::using('beacon-enabled')])
         ->name('register');
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
@@ -59,3 +62,7 @@ Route::middleware('auth')->prefix('/organizations')->group(function () {
     Route::post('/select', [OrganizationSelectController::class, 'update'])
         ->name('organizations.choose');
 });
+
+Route::middleware('auth')->post('/email/verification-resend', [EmailVerificationNotificationController::class, 'update'])
+    ->middleware(['auth', 'throttle:6,1'])
+    ->name('verification.resend');

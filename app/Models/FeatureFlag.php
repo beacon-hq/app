@@ -119,25 +119,25 @@ class FeatureFlag extends Model
             ->withTimestamps();
     }
 
-    public function scopeWhereEnvironment($query, string|array $environment): void
+    public function scopeWhereEnvironment(Builder $query, string|array $environment): void
     {
         $query->whereHas(
             'environments',
-            fn ($query) =>
+            fn (Builder $query) =>
             $query->where('name', Arr::wrap($environment))
         );
     }
 
-    public function scopeWhereApplication($query, string|array $application): void
+    public function scopeWhereApplication(Builder $query, string|array $application): void
     {
         $query->whereHas(
             'applications',
-            fn ($query) =>
+            fn (Builder $query) =>
             $query->whereIn('name', Arr::wrap($application))
         );
     }
 
-    public function scopeWhereTags($query, iterable $tags): void
+    public function scopeWhereTags(Builder $query, iterable $tags): void
     {
         $query->whereHas(
             'tags',
@@ -146,21 +146,21 @@ class FeatureFlag extends Model
         );
     }
 
-    public function scopeWhereName($query, string $name): void
+    public function scopeWhereName(Builder $query, string $name): void
     {
         $query->where('name', 'LIKE', "%$name%");
     }
 
-    public function scopeWhereSlug($query, string $slug): void
+    public function scopeWhereSlug(Builder $query, string $slug): void
     {
         $query->where('slug', $slug);
     }
 
-    public function scopeWhereFeatureType($query, string|iterable $slug): void
+    public function scopeWhereFeatureType(Builder $query, string|iterable $slug): void
     {
         $query->whereHas(
             'featureType',
-            fn ($query) =>
+            fn (Builder $query) =>
             $query->whereIn('slug', Arr::wrap($slug))
         );
     }

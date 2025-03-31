@@ -40,6 +40,7 @@ return Application::configure(basePath: dirname(__DIR__))
             EnsureTeamMiddleware::class,
         ]);
 
+        $middleware->prependToPriorityList(SubstituteBindings::class, EnsureOrganizationMiddleware::class);
         $middleware->prependToPriorityList(SubstituteBindings::class, EnsureTeamMiddleware::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {

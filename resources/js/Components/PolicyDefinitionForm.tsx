@@ -60,7 +60,7 @@ export function PolicyDefinitionForm({
 }) {
     const [definitions, setDefinitions] = useState<PolicyDefinitionCollection>([
         ...(data.definition === null || data.definition.length === 0
-            ? [{ type: 'expression', subject: '', operator: '' }]
+            ? [{ type: 'expression', subject: '', operator: '', values: [] }]
             : data.definition),
     ] as PolicyDefinitionCollection);
 
@@ -75,7 +75,7 @@ export function PolicyDefinitionForm({
     const handleAddNew = () => {
         return setDefinitions([
             ...definitions,
-            { type: 'expression', subject: '', operator: '' },
+            { type: 'expression', subject: '', operator: '', values: [] },
         ] as PolicyDefinitionCollection);
     };
 
@@ -330,7 +330,7 @@ export function PolicyDefinitionForm({
                                     <div className="w-1/3">
                                         <PolicyValueEditor
                                             id={id}
-                                            key={id}
+                                            key={`policy_value_editor_${id}`}
                                             value={definition.values}
                                             setValue={(values) => {
                                                 let definitions =
@@ -340,8 +340,6 @@ export function PolicyDefinitionForm({
                                                         }
                                                         return item;
                                                     }) ?? [];
-
-                                                console.log(definitions);
 
                                                 return setDefinitions(definitions as PolicyDefinitionCollection);
                                             }}

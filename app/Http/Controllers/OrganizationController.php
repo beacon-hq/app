@@ -10,10 +10,12 @@ use App\Services\TeamService;
 use App\Values\Organization;
 use App\Values\User;
 use Bag\Attributes\WithoutValidation;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
+use Inertia\Response;
 use Session;
 
 class OrganizationController extends Controller
@@ -22,19 +24,24 @@ class OrganizationController extends Controller
     {
     }
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): Response
     {
         return Inertia::render('Organizations/Index');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Organization $organization, Request $request)
+    public function store(Organization $organization, Request $request): RedirectResponse
     {
+        Validator::make($request->json()->all(), [
+            'name' => ['required', 'string', 'max:255'],
+            'team.name' => ['required', 'string', 'max:255'],
+            'team.color' => ['required', 'string', 'max:255'],
+            'team.icon' => ['required', 'string', 'max:255'],
+        ], [
+            'team.name.required' => __('The team name field is required.'),
+            'team.color.required' => __('The color field is required.'),
+            'team.icon.required' => __('The icon field is required.'),
+        ])->validate();
+
         $organization = $this->organizationService->create(User::from(Auth::user()), $organization);
 
         App::context(organization: $organization);
@@ -52,32 +59,24 @@ class OrganizationController extends Controller
             ->withAlert('success', 'Organization Created Successfully.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Organization $organization)
+    public function edit(Organization $organization): Response
     {
         return Inertia::render('Organizations/Edit', [
             'organization' => $this->organizationService->findById($organization->id),
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    #[WithoutValidation]
-    public function update(Organization $organization)
-    {
+    public function update(
+        #[WithoutValidation]
+        Organization $organization
+    ): RedirectResponse {
         $organization = $this->organizationService->update($organization);
 
         return redirect()->to(route('organizations.edit', ['id' => $organization->id]))
             ->withAlert('success', 'Organization Updated Successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Organization $organization, Request $request)
+    public function destroy(Organization $organization, Request $request): RedirectResponse
     {
         if ($request->json('password') === null) {
             return redirect()->back()

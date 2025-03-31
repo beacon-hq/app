@@ -50,7 +50,7 @@ class PolicyRepository
         return PolicyValue::from(Policy::where('slug', $slug)->firstOrFail());
     }
 
-    public function findById(string $id)
+    public function findById(string $id): PolicyValue
     {
         return PolicyValue::from(Policy::find($id)->firstOrFail());
     }

@@ -46,7 +46,6 @@ export function Form({
                 <InputError message={errors?.color} />
             </div>
             <div>
-                <Label>Icon</Label>
                 <IconPicker onIconSelect={(icon) => setData('icon', icon)} icon={data.icon} errors={errors} />
                 <InputError message={errors?.icon} />
             </div>

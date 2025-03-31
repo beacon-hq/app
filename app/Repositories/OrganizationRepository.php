@@ -25,7 +25,7 @@ class OrganizationRepository
         return OrganizationValue::from($organization);
     }
 
-    public function update(OrganizationValue $organization)
+    public function update(OrganizationValue $organization): OrganizationValue
     {
         $organizationModel = Organization::where('id', $organization->id)->firstOrFail();
         $organizationModel->update([
@@ -55,7 +55,7 @@ class OrganizationRepository
         return OrganizationValue::from(Organization::findOrFail($id));
     }
 
-    public function delete(OrganizationValue $organization)
+    public function delete(OrganizationValue $organization): void
     {
         $organizationModel = Organization::where('id', $organization->id)->firstOrFail();
         $organizationModel->delete();

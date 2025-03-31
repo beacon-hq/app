@@ -42,7 +42,7 @@ class InviteRepository
         );
     }
 
-    public function delete(InviteValue $invite)
+    public function delete(InviteValue $invite): void
     {
         Invite::destroy($invite->id);
     }
