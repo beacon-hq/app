@@ -7,6 +7,7 @@ import React, { FormEvent } from 'react';
 
 export default function Edit({ environment }: { environment: Environment }) {
     const { data, setData, put, errors, processing } = useForm<Environment>({
+        last_seen_at: null,
         slug: environment.slug,
         name: environment.name,
         color: environment.color,

@@ -16,7 +16,7 @@ export default function Index({ auth, qrCode, secret }: PageProps & { qrCode: st
         code: '',
     });
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: any) => {
         e.preventDefault();
         post(route('two-factor.confirm'));
     };

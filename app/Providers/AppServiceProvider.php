@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Pennant\Middleware\EnsureFeaturesAreActive;
 use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
@@ -62,6 +63,12 @@ class AppServiceProvider extends ServiceProvider
                 'message' => $message,
             ]);
         });
+
+        EnsureFeaturesAreActive::whenInactive(
+            function () {
+                abort(503);
+            }
+        );
     }
 
     /**

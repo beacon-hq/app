@@ -198,7 +198,7 @@ export function DataTable<TData, TValue>({
                 filter={filter}
                 facets={facets}
                 onFilterChange={(filters) => debounceFilterChange(filters)}
-                onFilterReset={() => setNewFilters()}
+                onFilterReset={() => setNewFilters({})}
                 currentFilters={currentFilters}
             />
             <div className="rounded-md border">

@@ -17,7 +17,7 @@ export default function Index({ errors }: { errors: FormErrors }) {
 
     const [useRecoveryCode, setUseRecoveryCode] = useState(false);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: any) => {
         e.preventDefault();
 
         post(route('two-factor.login.store'));

@@ -30,7 +30,7 @@ export default withMermaid({
 
         footer: {
             message: 'Made with 🦁💖🏳️‍🌈 by <a href="https://www.daveyshafik.com">Davey Shafik</a>.',
-            copyright: 'Released under the MIT License. Copyright © 2025 Davey Shafik.',
+            copyright: `Released under the <a href="https://github.com/beacon-hq/app/blob/main/LICENSE.md">FCL-1.0-MIT</a> License. Copyright © 2024-${new Date().getFullYear()} Davey Shafik.`,
         },
 
         socialLinks: [

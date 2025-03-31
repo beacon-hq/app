@@ -48,6 +48,7 @@ const Form = ({ organization, onCancel }: { organization?: Organization; onCance
 
     // @ts-ignore
     // @ts-ignore
+    // @ts-ignore
     return (
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
             <div>
@@ -76,6 +77,8 @@ const Form = ({ organization, onCancel }: { organization?: Organization; onCance
                                 value={data.team.name ?? ''}
                                 onChange={(e) => setData('team', { ...data.team, name: e.target.value })}
                             />
+                            {/*
+                            // @ts-ignore */}
                             <InputError message={errors?.['team.name'] as string} />
                         </div>
                         <div>
@@ -84,6 +87,8 @@ const Form = ({ organization, onCancel }: { organization?: Organization; onCance
                                 onColorChange={(color) => setData('team', { ...data.team, color: color as string })}
                                 color={data.team.color}
                             />
+                            {/*
+                            // @ts-ignore */}
                             <InputError message={errors?.['team.color'] as string} />
                         </div>
                         <div>
@@ -92,6 +97,8 @@ const Form = ({ organization, onCancel }: { organization?: Organization; onCance
                                 onIconSelect={(icon) => setData('team', { ...data.team, icon })}
                                 errors={errors}
                             />
+                            {/*
+                            // @ts-ignore */}
                             <InputError message={errors?.['team.icon'] as string} />
                         </div>
                     </CardContent>
