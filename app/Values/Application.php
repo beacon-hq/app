@@ -21,13 +21,15 @@ use Bag\Bag;
 use Bag\Casts\CollectionOf;
 use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
+use Bag\Validation\Rules\OptionalOr;
+use Bag\Values\Optional;
 use Illuminate\Support\Carbon;
-use Spatie\TypeScriptTransformer\Attributes\Hidden as HiddenFromTypeScript;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
- * @method static static from(?string $slug = null, ?string $name = null, ?string $display_name = null, ?string $description = null, ?string $last_seen_at = null, string|Color $color = '#e3e3e3', ?EnvironmentCollection $environments = null)
- * @method static ApplicationCollection collect(iterable $items)
+ * @method static static from(Optional|string $id, Optional|string $name, Optional|string $displayName, string|null $description, EnvironmentCollection|Optional $environments, Color|string $color = '#e3e3e3', Carbon|null $lastSeenAt = null)
+ * @method static ApplicationCollection<Application> collect(iterable $items)
+ * @method static ApplicationFactory<Application> factory(Collection|array|int $data = [])
  */
 #[Collection(ApplicationCollection::class)]
 #[Factory(ApplicationFactory::class)]
@@ -39,18 +41,16 @@ readonly class Application extends Bag
     use HasFactory;
 
     public function __construct(
-        #[HiddenFromTypeScript]
-        public ?string $id = null,
-        #[FromRouteParameter]
-        public ?string $slug = null,
-        public ?string $name = null,
-        public ?string $displayName = null,
-        public ?string $description = null,
-        public ?Carbon $lastSeenAt = null,
-        #[Cast(ColorCast::class)]
-        public string|Color $color = '#e3e3e3',
+        #[FromRouteParameter('application')]
+        public Optional|string $id,
+        public Optional|string $name,
+        public Optional|string $displayName,
+        public string|null $description,
         #[Cast(CollectionOf::class, Environment::class)]
-        public ?EnvironmentCollection $environments = null,
+        public EnvironmentCollection|Optional $environments,
+        #[Cast(ColorCast::class)]
+        public Color|string $color = '#e3e3e3',
+        public Carbon|null $lastSeenAt = null,
     ) {
     }
 
@@ -59,7 +59,6 @@ readonly class Application extends Bag
     {
         return [
             'id' => $application->id,
-            'slug' => $application->slug,
             'name' => $application->name,
             'display_name' => $application->display_name,
             'description' => $application->description,
@@ -72,9 +71,9 @@ readonly class Application extends Bag
     public static function rules(): array
     {
         return [
-            'name' => ['required_without:slug', 'exclude_with:slug'],
-            'description' => ['nullable'],
-            'color' => ['present'],
+            'name' => [new OptionalOr(['required_without:id', 'exclude_with:id'])],
+            'description' => [new OptionalOr(['nullable'])],
+            'color' => [new OptionalOr(['present'])],
         ];
     }
 }

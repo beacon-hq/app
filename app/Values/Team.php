@@ -19,11 +19,15 @@ use Bag\Attributes\Transforms;
 use Bag\Bag;
 use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
+use Bag\Validation\Rules\OptionalOr;
+use Bag\Values\Optional;
 use Illuminate\Support\Facades\Gate;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
- * @method static static from(?string|TeamModel $id = null, ?string $name = null, ?string $color = null, ?string $icon = null)
+ * @method static static from(Optional|string $id, Optional|Organization $organization, Optional|string $name, Optional|string $icon, Optional|UserCollection $members, Color|string|null $color = null)
+ * @method static TeamCollection<Team> collect(iterable $items)
+ * @method static TeamFactory<Team> factory(Collection|array|int $data = [])
  */
 #[Collection(TeamCollection::class)]
 #[Factory(TeamFactory::class)]
@@ -35,16 +39,14 @@ readonly class Team extends Bag
     use HasFactory;
 
     public function __construct(
-        public ?Organization $organization,
-        #[FromRouteParameter]
-        public ?string $slug,
-        #[FromRouteParameter]
-        public ?string $id = null,
-        public ?string $name = null,
-        public string|Color|null $color = null,
-        public ?string $icon = null,
+        #[FromRouteParameter('team')]
+        public Optional|string $id,
+        public Optional|Organization $organization,
+        public Optional|string $name,
+        public Optional|string $icon,
         #[Cast(Collection::class, User::class)]
-        public ?UserCollection $members = null,
+        public Optional|UserCollection $members,
+        public Color|string|null $color = null,
     ) {
     }
 
@@ -52,9 +54,8 @@ readonly class Team extends Bag
     public static function fromModel(TeamModel $team): array
     {
         return [
-            'organization' => $team->organization,
-            'slug' => $team->slug,
             'id' => $team->id,
+            'organization' => $team->organization,
             'name' => $team->name,
             'color' => $team->color,
             'icon' => $team->icon,
@@ -65,9 +66,9 @@ readonly class Team extends Bag
     public static function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'color' => ['required', 'string', 'max:255'],
-            'icon' => ['nullable', 'string', 'max:255'],
+            'name' => [new OptionalOr(['required', 'string', 'max:255'])],
+            'color' => [new OptionalOr(['required', 'string', 'max:255'])],
+            'icon' => [new OptionalOr(['nullable', 'string', 'max:255'])],
         ];
     }
 }

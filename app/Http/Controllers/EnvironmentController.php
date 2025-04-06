@@ -45,7 +45,7 @@ class EnvironmentController extends Controller
         Gate::authorize('update', $environment);
 
         return Inertia::render('Environments/Edit', [
-            'environment' => $environmentService->findBySlug($environment->slug),
+            'environment' => $environmentService->find($environment->id),
         ]);
     }
 

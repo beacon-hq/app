@@ -34,7 +34,7 @@ export default function Index({
     const handleDelete = (user: { id?: number; email?: string }) => {
         if (!user.id) return;
 
-        router.delete(route('users.destroy', { id: user.id }));
+        router.delete(route('users.destroy', { user: user.id as number }));
     };
 
     const handleManage = (user: User) => {

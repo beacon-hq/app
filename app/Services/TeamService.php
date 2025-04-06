@@ -35,14 +35,9 @@ class TeamService
         return $this->teamRepository->update($team);
     }
 
-    public function findBySlug(string $slug): Team
+    public function find(string $id): Team
     {
-        return $this->teamRepository->findBySlug($slug);
-    }
-
-    public function findById(string $id): Team
-    {
-        return $this->teamRepository->findById($id);
+        return $this->teamRepository->find($id);
     }
 
     public function members(Team $team, array|string $orderBy = ['name'], ?int $page = null, int $perPage = 20, array $filters = []): UserCollection

@@ -35,19 +35,19 @@ class ApplicationRepository
 
     public function update(ApplicationValue $application): ApplicationValue
     {
-        Application::where('slug', $application->slug)->firstOrFail()->update(
+        Application::findOrFail($application->id)->update(
             $application
                 ->with(color: $application->color ?? '')
                 ->toCollection()
-                ->except('name', 'slug', 'last_seen_at')
+                ->except('name', 'id', 'last_seen_at')
                 ->toArray()
         );
 
         return $application;
     }
 
-    public function findBySlug(?string $slug): ApplicationValue
+    public function find(string $id): ApplicationValue
     {
-        return ApplicationValue::from(Application::where('slug', $slug)->firstOrFail());
+        return ApplicationValue::from(Application::findOrFail($id));
     }
 }

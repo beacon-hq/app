@@ -12,7 +12,7 @@
         "captainhook/captainhook-phar": "^5.24",
         "captainhook/hook-installer": "^1.0",
         "creativeorange/gravatar": "^1.0",
-        "dshafik/bag": "^2.4",
+        "dshafik/bag": "^2",
         "eliseekn/laravel-metrics": "^3.1",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/fortify": "^1.25",

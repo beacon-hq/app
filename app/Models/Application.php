@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Traits\BelongsToTeam;
-use App\Models\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +17,6 @@ use Illuminate\Support\Carbon;
  * @property string $id
  * @property string $team_id
  * @property string $name
- * @property string $slug
  * @property string $display_name
  * @property string|null $description
  * @property string $color
@@ -38,7 +36,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Application whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Application whereLastSeenAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Application whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Application whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Application whereTeamId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Application whereUpdatedAt($value)
  * @property-read int|null $environments_count
@@ -48,7 +45,6 @@ class Application extends Model
 {
     use BelongsToTeam;
     use HasFactory;
-    use HasSlug;
     use HasUlids;
 
     protected $fillable = [

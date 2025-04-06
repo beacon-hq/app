@@ -90,7 +90,7 @@ class FeatureFlagStatus extends Model
             return $query->where('feature_flag_id', $featureFlag->id);
         }
 
-        return $query->whereHas('featureFlag', fn (Builder $query) => $query->where('slug', $featureFlag->slug));
+        return $query->whereHas('featureFlag', fn (Builder $query) => $query->where('id', $featureFlag->id));
     }
 
     protected function casts(): array

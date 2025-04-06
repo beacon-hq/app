@@ -30,13 +30,8 @@ class PolicyService
         return $this->policyRepository->update($policy);
     }
 
-    public function findBySlug(string $slug): Policy
+    public function find(string $id): Policy
     {
-        return $this->policyRepository->findBySlug($slug);
-    }
-
-    public function findById(string $id): Policy
-    {
-        return $this->policyRepository->findById($id);
+        return $this->policyRepository->find($id);
     }
 }

@@ -30,11 +30,11 @@ export default function Index({ organizations }: { organizations: OrganizationCo
                 {organizations.map((organization) => (
                     <Card
                         className="relative flex flex-row items-center justify-between w-1/3 cursor-pointer"
-                        key={organization.slug}
+                        key={organization.id}
                     >
                         <div>
                             <CardHeader>
-                                <Link href={route('organizations.edit', { id: organization.id })}>
+                                <Link href={route('organizations.edit', { id: organization.id as string })}>
                                     <span className="absolute inset-0"></span>
                                     {organization.name}
                                 </Link>

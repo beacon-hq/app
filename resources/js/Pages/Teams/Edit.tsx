@@ -29,13 +29,12 @@ export default function Edit({
     perPage: number;
 }) {
     const { data, setData, errors, patch } = useForm<Team>({
+        id: team.id,
         color: team.color,
         icon: team.icon,
-        id: team.id,
-        members: null, // members are managed elsewhere
+        members: undefined,
         name: team.name,
-        organization: null,
-        slug: team.slug,
+        organization: undefined,
     });
 
     const [tableOptions] = useState<TableOptions>({
@@ -45,11 +44,11 @@ export default function Edit({
     });
 
     const handleSubmit = () => {
-        patch(route('teams.update', { slug: team.slug }));
+        patch(route('teams.update', { team: team.id as string }));
     };
 
     const handleDelete = (user: { id?: number; email?: string }) => {
-        router.delete(route('team-members.delete', { slug: team.slug }), {
+        router.delete(route('team-members.delete', { team: team.id as string }), {
             data: user,
         });
     };

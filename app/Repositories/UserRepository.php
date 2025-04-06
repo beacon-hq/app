@@ -26,7 +26,7 @@ class UserRepository
     public function addTeam(UserValue $user, Team $team): UserValue
     {
         if ($team->id !== null) {
-            $team = $this->teamService->findById($team->id);
+            $team = $this->teamService->find($team->id);
         } else {
             $team = $this->teamService->create($team, $user);
         }

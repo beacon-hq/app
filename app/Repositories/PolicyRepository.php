@@ -34,24 +34,19 @@ class PolicyRepository
 
     public function update(PolicyValue $policy): PolicyValue
     {
-        Policy::where('slug', $policy->slug)->firstOrFail()->update(
+        Policy::findOrFail($policy->id)->update(
             $policy
                 ->with(definition: $policy->definition ?? PolicyDefinitionCollection::empty())
                 ->toCollection()
-                ->except('slug')
+                ->except('id')
                 ->toArray()
         );
 
         return $policy;
     }
 
-    public function findBySlug(string $slug): PolicyValue
+    public function find(string $id): PolicyValue
     {
-        return PolicyValue::from(Policy::where('slug', $slug)->firstOrFail());
-    }
-
-    public function findById(string $id): PolicyValue
-    {
-        return PolicyValue::from(Policy::find($id)->firstOrFail());
+        return PolicyValue::from(Policy::findOrFail($id));
     }
 }

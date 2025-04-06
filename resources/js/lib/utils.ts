@@ -16,9 +16,9 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-export function localDateTime(dateTime: string | null): string {
+export function localDateTime(dateTime?: string | null): string {
     // If the date is null, return an empty string
-    if (dateTime === null) return '';
+    if (dateTime === null || dateTime === undefined) return '';
 
     // format the dateTime using Intl.DateTimeFormat
     return new Intl.DateTimeFormat('default', {
@@ -33,9 +33,9 @@ export function localDateTime(dateTime: string | null): string {
     }).format(new Date(dateTime));
 }
 
-export function localDate(date: string | null): string {
+export function localDate(date?: string | null | undefined): string {
     // If the date is null, return an empty string
-    if (date === null) return '';
+    if (date === null || date === undefined) return '';
 
     // format the date using Intl.DateTimeFormat
     return new Intl.DateTimeFormat('default', {
@@ -61,10 +61,10 @@ export const flattenPolicy = function (policy: Policy, policies: PolicyCollectio
     const seenPolicies = new Set<string>();
 
     const flatten = (policy: Policy): Policy => {
-        if (seenPolicies.has(policy.slug as string)) {
-            throw new Error(`Circular dependency detected for policy: ${policy.slug}`);
+        if (seenPolicies.has(policy.id as string)) {
+            throw new Error(`Circular dependency detected for policy: ${policy.id}`);
         }
-        seenPolicies.add(policy.slug as string);
+        seenPolicies.add(policy.id as string);
 
         const definition = policy.definition?.reduce(function (
             previous: PolicyDefinition[],
@@ -78,7 +78,7 @@ export const flattenPolicy = function (policy: Policy, policies: PolicyCollectio
             }
 
             if (current.type === PolicyDefinitionType.POLICY) {
-                const subPolicy = policies.filter((p) => p.slug === current.subject)[0];
+                const subPolicy = policies.filter((p) => p.id === current.subject)[0];
                 if (!keepAll) {
                     return [...previous, ...(flatten(subPolicy).definition ?? [])];
                 }
@@ -87,7 +87,7 @@ export const flattenPolicy = function (policy: Policy, policies: PolicyCollectio
             return previous;
         }, []);
 
-        seenPolicies.delete(policy.slug as string);
+        seenPolicies.delete(policy.id as string);
         return { ...policy, definition: definition as PolicyDefinitionCollection };
     };
 

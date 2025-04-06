@@ -13,11 +13,10 @@ import React, { FormEvent, useState } from 'react';
 export default function Index({ policies }: PageProps & { policies: PolicyCollection }) {
     const [showSheet, setShowSheet] = useState(false);
     const { data, setData, post, errors, reset, processing } = useForm<Policy>({
-        id: null,
-        slug: null,
+        id: undefined,
         name: '',
         description: '',
-        definition: null,
+        definition: undefined,
         created_at: null,
         updated_at: null,
     });

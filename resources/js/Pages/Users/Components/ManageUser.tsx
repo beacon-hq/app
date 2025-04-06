@@ -25,7 +25,7 @@ const ManageUser = ({
 }) => {
     console.log(teams);
     const { data, setData, patch, post, processing, errors, reset } = useForm({
-        role: user.roles[0] ?? Role.DEVELOPER,
+        role: user.roles?.[0] ?? Role.DEVELOPER,
         status: user.status ?? UserStatus.ACTIVE,
         teams: user.teams ?? [],
     });
@@ -35,7 +35,7 @@ const ManageUser = ({
     useEffect(() => {
         if (open) {
             setData({
-                role: user.roles[0] ?? Role.DEVELOPER,
+                role: user.roles?.[0] ?? Role.DEVELOPER,
                 status: user.status ?? UserStatus.ACTIVE,
                 teams: user.teams ?? [],
             });
@@ -43,7 +43,7 @@ const ManageUser = ({
     }, [user, open]);
 
     const handleSubmit = () => {
-        patch(route('users.update', { id: user.id }), {
+        patch(route('users.update', { user: user.id as number }), {
             onSuccess: () => {
                 onOpenChange(false);
                 reset();

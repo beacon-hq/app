@@ -72,7 +72,7 @@ class FeatureFlagController extends Controller
         Gate::authorize('update', $featureFlag);
 
         return Inertia::render('FeatureFlags/Edit', [
-            'featureFlag' => $featureFlagService->findBySlug($featureFlag->slug),
+            'featureFlag' => $featureFlagService->find($featureFlag->id),
             'featureTypes' => $featureTypeService->all(),
             'tags' => $tagService->all(),
             'policies' => $policyService->all(),
@@ -89,7 +89,7 @@ class FeatureFlagController extends Controller
 
         $featureFlagService->update($featureFlag);
 
-        return redirect()->route('feature-flags.edit.overview', ['slug' => $featureFlag->slug])
+        return redirect()->route('feature-flags.edit.overview', ['feature_flag' => $featureFlag->id])
             ->with(
                 'alert',
                 [

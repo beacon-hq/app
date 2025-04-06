@@ -13,7 +13,6 @@ const Form = ({ organization, onCancel }: { organization?: Organization; onCance
     const { data, setData, patch, post, errors, reset, processing } = useForm({
         id: organization?.id ?? '',
         owner: organization?.owner ?? null,
-        slug: organization?.slug ?? null,
         name: organization?.name ?? '',
         team: {
             name: '',
@@ -22,7 +21,6 @@ const Form = ({ organization, onCancel }: { organization?: Organization; onCance
             color: '',
             icon: '',
             id: '',
-            slug: '',
         },
     });
 
@@ -31,8 +29,8 @@ const Form = ({ organization, onCancel }: { organization?: Organization; onCance
     const handleSubmit = (e: any) => {
         e.preventDefault();
 
-        if (organization?.slug) {
-            patch(route('organizations.update', { id: organization.id }));
+        if (organization?.id) {
+            patch(route('organizations.update', { id: organization.id as string }));
             return;
         }
 
@@ -62,7 +60,7 @@ const Form = ({ organization, onCancel }: { organization?: Organization; onCance
                 />
                 <InputError message={errors?.name} />
             </div>
-            {(organization?.slug === null || organization?.slug === undefined) && (
+            {(organization?.id === null || organization?.id === undefined) && (
                 <Card className="mt-6">
                     <CardHeader>
                         <CardTitle>Default Team</CardTitle>
@@ -111,7 +109,7 @@ const Form = ({ organization, onCancel }: { organization?: Organization; onCance
                     </Button>
                 )}
                 <Button type="submit" className="w-24" disabled={processing}>
-                    {organization?.slug ? 'Update' : 'Create'}
+                    {organization?.id ? 'Update' : 'Create'}
                 </Button>
             </div>
         </form>

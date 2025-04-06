@@ -15,11 +15,15 @@ use Bag\Attributes\Transforms;
 use Bag\Bag;
 use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
+use Bag\Validation\Rules\OptionalOr;
+use Bag\Values\Optional;
 use Illuminate\Support\Str;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
- * @method static static from(?int $id = null, ?string $name = null, ?string $token = null, ?string $lastUsedAt = null, ?string $createdAt = null)
+ * @method static static from(Optional|int $id, Optional|string $name, Optional|string $token, string|null $lastUsedAt = null, string|null $createdAt = null)
+ * @method static AccessTokenCollection<AccessToken> collect(iterable $items)
+ * @method static AccessTokenFactory<AccessToken> factory(Collection|array|int $data = [])
  */
 #[Collection(AccessTokenCollection::class)]
 #[Factory(AccessTokenFactory::class)]
@@ -31,11 +35,11 @@ readonly class AccessToken extends Bag
 
     public function __construct(
         #[FromRouteParameter('token')]
-        public ?int $id = null,
-        public ?string $name = null,
-        public ?string $token = null,
-        public ?string $lastUsedAt = null,
-        public ?string $createdAt = null,
+        public Optional|int $id,
+        public Optional|string $name,
+        public Optional|string $token,
+        public string|null $lastUsedAt = null,
+        public string|null $createdAt = null,
     ) {
     }
 
@@ -54,7 +58,7 @@ readonly class AccessToken extends Bag
     public static function rules(): array
     {
         return [
-            'name' => ['required', 'string'],
+            'name' => [new OptionalOr(['required', 'string'])],
         ];
     }
 }

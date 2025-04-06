@@ -20,15 +20,7 @@ class TeamRepository
     {
     }
 
-    public function findBySlug(string $slug): TeamValue
-    {
-        return TeamValue::from(
-            Team::where('slug', $slug)
-                ->firstOrFail()
-        );
-    }
-
-    public function findById(string $id): TeamValue
+    public function find(string $id): TeamValue
     {
         return TeamValue::from(
             Team::query()
@@ -78,7 +70,7 @@ class TeamRepository
                 ->toArray()
         );
 
-        return $team->with(slug: $teamModel->slug);
+        return $team->with(id: $teamModel->id);
     }
 
     public function members(TeamValue $team, array|string $orderBy = ['name'], ?int $page = null, int $perPage = 20, array $filters = []): UserCollection

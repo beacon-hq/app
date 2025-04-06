@@ -30,8 +30,8 @@ class TagService
         return $this->tagRepository->update($policy);
     }
 
-    public function findBySlug(string ...$slug): Tag|TagCollection
+    public function find(string ...$id): Tag|TagCollection
     {
-        return $this->tagRepository->findBySlug(...$slug);
+        return $this->tagRepository->find(...$id);
     }
 }

@@ -13,17 +13,18 @@ use Bag\Attributes\Factory;
 use Bag\Attributes\MapName;
 use Bag\Attributes\StripExtraParameters;
 use Bag\Bag;
-use Bag\Collection as BagCollection;
+use Bag\Collection as Collection1;
 use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
+use Bag\Values\Optional;
 use Illuminate\Validation\Rule;
 use Spatie\TypeScriptTransformer\Attributes\LiteralTypeScriptType;
-use Spatie\TypeScriptTransformer\Attributes\Optional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
- * @method static static from(PolicyDefinitionType $type, string $subject, ?PolicyDefinitionMatchOperator $operator = null, ?BagCollection $values = null)
- * @method static PolicyDefinitionCollection collect(iterable $items)
+ * @method static static from(PolicyDefinitionType $type, string $subject, Optional|PolicyDefinitionMatchOperator $operator, Collection|Optional $values)
+ * @method static PolicyDefinitionCollection<PolicyDefinition> collect(iterable $items)
+ * @method static PolicyDefinitionFactory<PolicyDefinition> factory(Collection|array|int $data = [])
  */
 #[Collection(PolicyDefinitionCollection::class)]
 #[Factory(PolicyDefinitionFactory::class)]
@@ -37,10 +38,9 @@ readonly class PolicyDefinition extends Bag
     public function __construct(
         public PolicyDefinitionType $type,
         public string $subject,
-        #[Optional]
-        public ?PolicyDefinitionMatchOperator $operator = null,
+        public Optional|PolicyDefinitionMatchOperator $operator,
         #[LiteralTypeScriptType('string[]')]
-        public ?BagCollection $values = null,
+        public Collection1|Optional $values,
     ) {
     }
 

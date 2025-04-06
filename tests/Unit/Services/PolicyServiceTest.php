@@ -13,6 +13,6 @@ it('counts policies', function () {
     $policy = Policy::factory()->for($team)->create();
 
     $policyService = resolve(PolicyService::class);
-    $found = $policyService->findById($policy->id);
+    $found = $policyService->find($policy->id);
     expect($found->id)->toBe($policy->id);
 });

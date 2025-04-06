@@ -10,7 +10,7 @@ use Bag\Mappers\SnakeCase;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
- * @method static static from(string $featureFlag, mixed $value, bool $active)
+ * @method static static from(string $featureFlag, mixed|null $value, bool $active)
  */
 #[MapName(SnakeCase::class, SnakeCase::class)]
 #[TypeScript]

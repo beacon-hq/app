@@ -12,7 +12,7 @@ class ApplicationFactory extends Factory
     public function definition(): array
     {
         return [
-            'slug' => $this->faker->word(),
+            'id' => $this->faker->uuid(),
             'name' => $this->faker->word(),
             'display_name' => $this->faker->word(),
             'description' => $this->faker->word(),

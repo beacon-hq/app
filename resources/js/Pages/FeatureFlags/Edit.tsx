@@ -43,12 +43,12 @@ export default function Edit({
     function changeTab(routeName: string) {
         return () =>
             router.push({
-                url: route(routeName, { slug: featureFlag.slug }),
+                url: route(routeName, { feature_flag: featureFlag.id }),
             });
     }
 
     const { data, setData, put, errors, processing } = useForm<FeatureFlag>({
-        slug: featureFlag.slug,
+        id: featureFlag.id,
         name: featureFlag.name,
         description: featureFlag.description,
         feature_type: featureFlag.feature_type,
@@ -62,14 +62,14 @@ export default function Edit({
 
     const submitFeatureFlag = (e: FormEvent) => {
         e.preventDefault();
-        put(route('feature-flags.update', { slug: featureFlag.slug }));
+        put(route('feature-flags.update', { feature_flag: featureFlag.id as string }));
         changeTab('feature-flags.edit.overview')();
     };
 
     const submitPolicy = (e: FormEvent) => {
         e.preventDefault();
 
-        put(route('feature-flags.update', { slug: featureFlag.slug }));
+        put(route('feature-flags.update', { feature_flag: featureFlag.id as string }));
         changeTab('feature-flags.edit.overview')();
     };
 
@@ -224,7 +224,7 @@ export default function Edit({
                                         <DefinitionTerm>Tags</DefinitionTerm>
                                         <DefinitionDescription>
                                             {featureFlag.tags?.map((tag) => (
-                                                <Tag key={tag.slug} tag={tag} className="mb-2 inline-block"></Tag>
+                                                <Tag key={tag.id} tag={tag} className="mb-2 inline-block"></Tag>
                                             ))}
                                             {featureFlag.tags === null && 'No tags'}
                                         </DefinitionDescription>
@@ -274,7 +274,7 @@ export default function Edit({
                                                 <Button className="mt-4 w-32 mx-auto block">
                                                     <Link
                                                         href={route('feature-flags.edit.policy', {
-                                                            slug: featureFlag.slug,
+                                                            feature_flag: featureFlag.id as string,
                                                         })}
                                                         className="flex items-center"
                                                     >

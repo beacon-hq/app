@@ -32,7 +32,7 @@ class TeamMemberManageController extends Controller
             'users.*.email' => 'required_with:emails|email',
         ]);
 
-        $team = $teamService->findBySlug($team->slug);
+        $team = $teamService->find($team->id);
 
         collect($request->json('users'))->each(function (array $user) use ($team, $userService) {
             // $role = Role::tryFrom($user['role']);
@@ -47,7 +47,7 @@ class TeamMemberManageController extends Controller
             }
         });
 
-        return \redirect()->route('teams.edit', ['slug' => $team->slug])->withAlert('success', 'Team members added successfully.');
+        return \redirect()->route('teams.edit', ['team' => $team->id])->withAlert('success', 'Team members added successfully.');
     }
 
     public function show(Request $request, InviteService $inviteService, UserService $userService): RedirectResponse

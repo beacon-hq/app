@@ -8,8 +8,7 @@ import React, { FormEvent } from 'react';
 export default function Edit({ policy, policies }: { policy: Policy; policies: PolicyCollection }) {
     const subjects: string[] = [];
     const { data, setData, put, errors, processing } = useForm<Policy>({
-        id: null,
-        slug: policy.slug,
+        id: undefined,
         name: policy.name,
         description: policy.description,
         definition: policy.definition,
@@ -19,7 +18,7 @@ export default function Edit({ policy, policies }: { policy: Policy; policies: P
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
-        put(route('policies.update', { slug: policy.slug }), { preserveScroll: true });
+        put(route('policies.update', { policy: policy.id as string }), { preserveScroll: true });
     };
 
     const handleCancel = () => {

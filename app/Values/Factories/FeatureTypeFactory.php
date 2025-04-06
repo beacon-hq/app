@@ -14,7 +14,6 @@ class FeatureTypeFactory extends Factory
         return [
             'name' => $this->faker->word(),
             'id' => $this->faker->uuid(),
-            'slug' => $this->faker->word(),
             'description' => $this->faker->word(),
             'temporary' => $this->faker->boolean(),
             'color' => $this->faker->hexColor(),

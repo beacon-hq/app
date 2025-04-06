@@ -44,7 +44,7 @@ class FeatureTypeController extends Controller
         Gate::authorize('update', $featureType);
 
         return Inertia::render('FeatureTypes/Edit', [
-            'featureType' => $featureTypeService->findBySlug($featureType->slug),
+            'featureType' => $featureTypeService->find($featureType->id),
         ]);
     }
 

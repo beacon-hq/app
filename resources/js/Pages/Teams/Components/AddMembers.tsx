@@ -32,7 +32,7 @@ const AddMembers = ({ team, users }: { team: Team; users: UserCollection }) => {
     });
 
     const handleSubmit = () => {
-        post(route('team-members.invite', { slug: team.slug }), {
+        post(route('team-members.invite', { team: team.id as string }), {
             onSuccess: () => {
                 setOpen(false);
                 setData('users', []);

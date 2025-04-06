@@ -17,7 +17,7 @@ const Tag = function ({
 }) {
     return (
         <Badge
-            key={tag.slug}
+            key={tag.id}
             className={cn(
                 'bg-background border-2 hover:bg-background flex items-center',
                 tag.color?.charAt(0) != '#' ? `border-${tag.color}-400` : '',

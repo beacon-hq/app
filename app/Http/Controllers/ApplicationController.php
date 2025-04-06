@@ -43,7 +43,7 @@ class ApplicationController extends Controller
         Gate::authorize('update', $application);
 
         return Inertia::render('Applications/Edit', [
-            'application' => $applicationService->findBySlug($application->slug),
+            'application' => $applicationService->find($application->id),
         ]);
     }
 

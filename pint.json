@@ -13,6 +13,10 @@
         "ordered_imports": true,
         "ordered_attributes": true,
         "ordered_traits": true,
+        "ordered_types": {
+            "case_sensitive": true,
+            "null_adjustment": "always_last"
+        },
         "ordered_class_elements": {
           "order": [
             "use_trait",

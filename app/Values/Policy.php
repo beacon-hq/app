@@ -18,12 +18,14 @@ use Bag\Bag;
 use Bag\Casts\CollectionOf;
 use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
+use Bag\Values\Optional;
 use Illuminate\Support\Carbon;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
- * @method static static from(?string $slug = null, ?string $name = null, ?string $description = null, ?string $id = null, ?PolicyDefinitionCollection $definition = null, ?Carbon $createdAt = null, ?Carbon $updatedAt = null)
- * @method static PolicyCollection collect(iterable $items)
+ * @method static static from(Optional|string $id, Optional|string $name, Optional|string $description, Optional|PolicyDefinitionCollection $definition, Carbon|null $createdAt = null, Carbon|null $updatedAt = null)
+ * @method static PolicyCollection<Policy> collect(iterable $items)
+ * @method static PolicyFactory<Policy> factory(Collection|array|int $data = [])
  */
 #[Collection(PolicyCollection::class)]
 #[Factory(PolicyFactory::class)]
@@ -34,15 +36,14 @@ readonly class Policy extends Bag
     use HasFactory;
 
     public function __construct(
-        #[FromRouteParameter]
-        public ?string $slug = null,
-        public ?string $name = null,
-        public ?string $description = null,
+        #[FromRouteParameter('policy')]
+        public Optional|string $id,
+        public Optional|string $name,
+        public Optional|string $description,
         #[Cast(CollectionOf::class, PolicyDefinition::class)]
-        public ?PolicyDefinitionCollection $definition = null,
+        public Optional|PolicyDefinitionCollection $definition,
         public ?Carbon $createdAt = null,
         public ?Carbon $updatedAt = null,
-        public ?string $id = null,
     ) {
     }
 
@@ -50,13 +51,12 @@ readonly class Policy extends Bag
     public static function fromModel(PolicyModel $policy): array
     {
         return [
-            'slug' => $policy->slug,
+            'id' => $policy->id,
             'name' => $policy->name,
             'description' => $policy->description,
             'definition' => PolicyDefinitionCollection::make($policy->definition),
             'created_at' => $policy->created_at,
             'updated_at' => $policy->updated_at,
-            'id' => $policy->id,
         ];
     }
 

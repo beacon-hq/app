@@ -46,7 +46,7 @@ class PolicyController extends Controller
         Gate::authorize('update', $policy);
 
         return Inertia::render('Policies/Edit', [
-            'policy' => $policyService->findBySlug($policy->slug),
+            'policy' => $policyService->find($policy->id),
             'policies' => $policyService->all(),
         ]);
     }
@@ -57,7 +57,7 @@ class PolicyController extends Controller
 
         $policyService->update($policy);
 
-        return redirect()->route('policies.edit', ['slug' => $policy->slug])->with(
+        return redirect()->route('policies.edit', ['policy' => $policy->id])->with(
             'alert',
             [
                 'message' => 'Policy updated successfully.',

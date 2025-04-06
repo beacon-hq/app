@@ -29,7 +29,7 @@ class TeamSelectController extends Controller
      */
     public function update(Team $team, TeamService $teamService, Request $request): RedirectResponse
     {
-        $team = $teamService->findById($team->id);
+        $team = $teamService->find($team->id);
 
         Session::put('team', $team);
         App::context(organization: $team->organization, team: $team);

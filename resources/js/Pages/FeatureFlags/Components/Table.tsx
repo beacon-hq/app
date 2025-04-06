@@ -135,7 +135,7 @@ export default function Table({
             cell: function ({ row }) {
                 return (
                     <div className="flex">
-                        <Link href={route('feature-flags.edit.overview', { slug: row.original.slug })}>
+                        <Link href={route('feature-flags.edit.overview', { feature_flag: row.original.id as string })}>
                             <Pencil className="h-6 w-6" />
                         </Link>
                     </div>
@@ -158,7 +158,7 @@ export default function Table({
                     label: 'Application',
                     values: applications.map((application) => {
                         return {
-                            value: application.slug,
+                            value: application.id,
                             label: application.name,
                             icon: (<IconColor color={application.color} className="aspect-square" />) as unknown,
                         };
@@ -168,7 +168,7 @@ export default function Table({
                     label: 'Environments',
                     values: environments.map((environment) => {
                         return {
-                            value: environment.slug,
+                            value: environment.id,
                             label: environment.name,
                             icon: (<IconColor color={environment.color} className="aspect-square" />) as unknown,
                         };
@@ -178,7 +178,7 @@ export default function Table({
                     label: 'Tags',
                     values: tags.map((tag) => {
                         return {
-                            value: tag.slug,
+                            value: tag.id,
                             label: tag.name,
                             icon: (<IconColor color={tag.color} className="aspect-square" />) as unknown,
                         };
@@ -188,7 +188,7 @@ export default function Table({
                     label: 'Feature Type',
                     values: featureTypes.map((featureType) => {
                         return {
-                            value: featureType.slug,
+                            value: featureType.id,
                             label: featureType.name,
                             icon: featureType.icon ? (
                                 <IconColor icon={featureType.icon} color={featureType.color} />

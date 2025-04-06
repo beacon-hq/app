@@ -24,11 +24,6 @@ class FeatureFlagService
         return $this->featureFlagRepository->create($featureFlag);
     }
 
-    public function findBySlug(string $slug): FeatureFlag
-    {
-        return $this->featureFlagRepository->findBySlug($slug);
-    }
-
     public function update(FeatureFlag $featureFlag): FeatureFlag
     {
         return $this->featureFlagRepository->update($featureFlag);
@@ -37,5 +32,10 @@ class FeatureFlagService
     public function count(array $filters = []): int
     {
         return $this->featureFlagRepository->count($filters);
+    }
+
+    public function find(string $id): FeatureFlag
+    {
+        return $this->featureFlagRepository->find($id);
     }
 }

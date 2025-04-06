@@ -68,7 +68,7 @@ export default function Table({
             enableHiding: false,
             cell: ({ cell }) => (
                 <div className="flex flex-wrap gap-1">
-                    {cell.getValue().map((role: string) => (
+                    {(cell?.getValue() ?? []).map((role: string) => (
                         <Badge className={cn(roleColors[role as Role], 'text-black')} key={role}>
                             {role}
                         </Badge>

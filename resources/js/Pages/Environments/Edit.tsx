@@ -7,8 +7,8 @@ import React, { FormEvent } from 'react';
 
 export default function Edit({ environment }: { environment: Environment }) {
     const { data, setData, put, errors, processing } = useForm<Environment>({
+        id: environment.id,
         last_seen_at: null,
-        slug: environment.slug,
         name: environment.name,
         color: environment.color,
         description: environment.description,
@@ -16,7 +16,7 @@ export default function Edit({ environment }: { environment: Environment }) {
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
-        put(route('environments.update', { slug: environment.slug }));
+        put(route('environments.update', { environment: environment.id as string }));
     };
 
     const handleCancel = () => {

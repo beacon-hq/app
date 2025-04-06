@@ -7,7 +7,7 @@ import React, { FormEvent } from 'react';
 
 export default function Edit({ application }: { application: Application }) {
     const { data, setData, put, errors, processing, transform } = useForm<Application>({
-        slug: application.slug,
+        id: application.id,
         name: application.name,
         display_name: application.display_name,
         description: application.description,
@@ -19,7 +19,7 @@ export default function Edit({ application }: { application: Application }) {
     const submit = (e: FormEvent) => {
         e.preventDefault();
 
-        put(route('applications.update', { slug: application.slug }));
+        put(route('applications.update', { application: application.id as string }));
     };
 
     const handleCancel = () => {

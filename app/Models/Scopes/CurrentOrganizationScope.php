@@ -13,13 +13,13 @@ class CurrentOrganizationScope implements Scope
 {
     public function apply(Builder $builder, Model $model): void
     {
-        $currentOrganization = App::context()->organization;
 
-        if ($currentOrganization === null) {
+        if (!App::context()->has('organization')) {
             return;
         }
 
-        if (method_exists($model, 'organizations')) {
+        $currentOrganization = App::context()->organization;
+        if (method_exists($model, 'organizations') && $currentOrganization->has('id')) {
             $builder->whereHas('organizations', function (Builder $query) use ($currentOrganization) {
                 $query->where('id', $currentOrganization->id);
             });

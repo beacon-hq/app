@@ -6,7 +6,6 @@ namespace App\Models;
 
 use App\Enums\Role;
 use App\Models\Traits\BelongsToOrganization;
-use App\Models\Traits\HasSlug;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -47,7 +46,6 @@ class Team extends Model
     use BelongsToOrganization;
     use HasApiTokens;
     use HasFactory;
-    use HasSlug;
     use HasUlids;
 
     protected $fillable = [

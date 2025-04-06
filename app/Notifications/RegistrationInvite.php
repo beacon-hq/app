@@ -46,7 +46,7 @@ class RegistrationInvite extends Notification
             $this->invite->expires_at,
             [
                 'id' => $this->invite->id,
-                'slug' => $this->invite->team->slug,
+                'team' => $this->invite->team->id,
             ]
         );
     }

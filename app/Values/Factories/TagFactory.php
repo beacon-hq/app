@@ -13,7 +13,6 @@ class TagFactory extends Factory
     {
         return [
             'id' => $this->faker->uuid(),
-            'slug' => $this->faker->word(),
             'name' => $this->faker->word(),
             'description' => $this->faker->word(),
             'color' => $this->faker->hexColor(),

@@ -29,8 +29,8 @@ class EnvironmentService
         return $this->environmentRepository->update($environment);
     }
 
-    public function findBySlug(?string $slug): Environment
+    public function find(string $id)
     {
-        return $this->environmentRepository->findBySlug($slug);
+        return $this->environmentRepository->find($id);
     }
 }

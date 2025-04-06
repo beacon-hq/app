@@ -7,18 +7,17 @@ import React, { FormEvent } from 'react';
 
 export default function Edit({ tag }: { tag: Tag }) {
     const { data, setData, put, errors, processing } = useForm<Tag>({
-        slug: tag.slug,
+        id: tag.id,
         name: tag.name,
         description: tag.description,
         color: tag.color,
-        id: tag.id,
         created_at: tag.created_at,
         updated_at: tag.updated_at,
     });
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
-        put(route('tags.update', { slug: tag.slug }));
+        put(route('tags.update', { tag: tag.id as string }));
     };
 
     const handleCancel = () => {

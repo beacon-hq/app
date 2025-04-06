@@ -19,7 +19,7 @@ class FeatureFlagStatusService
     public function getStatus(FeatureFlag $featureFlag, FeatureFlagContext $context): FeatureFlagResponse
     {
         $featureFlag = $this->featureFlagRepository->first(filters: [
-            'slug' => $featureFlag->slug,
+            'id' => $featureFlag->id,
             'application' => $context->appName,
             'environment' => $context->environment,
         ]);

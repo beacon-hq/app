@@ -33,19 +33,19 @@ class EnvironmentRepository
 
     public function update(EnvironmentValue $environment): EnvironmentValue
     {
-        Environment::where('slug', $environment->slug)->firstOrFail()->update(
+        Environment::find($environment->id)->update(
             $environment
                 ->with(color: $environment->color ?? '')
                 ->toCollection()
-                ->except('name', 'slug')
+                ->except('name', 'id')
                 ->toArray()
         );
 
         return $environment;
     }
 
-    public function findBySlug(?string $slug): EnvironmentValue
+    public function find(string $id)
     {
-        return EnvironmentValue::from(Environment::where('slug', $slug)->firstOrFail());
+        return EnvironmentValue::from(Environment::findOrFail($id));
     }
 }

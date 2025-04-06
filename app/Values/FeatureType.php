@@ -12,7 +12,6 @@ use App\Values\Factories\FeatureTypeFactory;
 use Bag\Attributes\Cast;
 use Bag\Attributes\Collection;
 use Bag\Attributes\Factory;
-use Bag\Attributes\Hidden;
 use Bag\Attributes\Laravel\FromRouteParameter;
 use Bag\Attributes\MapName;
 use Bag\Attributes\StripExtraParameters;
@@ -20,12 +19,14 @@ use Bag\Attributes\Transforms;
 use Bag\Bag;
 use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
+use Bag\Values\Optional;
 use Illuminate\Support\Carbon;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
- * @method static static from(string $name, ?string $id = null, ?string $slug = null, ?string $description = null, ?bool $temporary = null, string|Color $color = '#e3e3e3', ?string $icon = null, ?Carbon $createdAt = null, ?Carbon $updatedAt = null)
- * @method static FeatureTypeCollection collect(iterable $items)
+ * @method static static from(Optional|string $id, Optional|string $name, Optional|string $description, Optional|string $icon, Color|string $color = '#e3e3e3', bool $temporary = false, Carbon|null $createdAt = null, Carbon|null $updatedAt = null)
+ * @method static FeatureTypeCollection<FeatureType> collect(iterable $items)
+ * @method static FeatureTypeFactory<FeatureType> factory(Collection|array|int $data = [])
  */
 #[Collection(FeatureTypeCollection::class)]
 #[Factory(FeatureTypeFactory::class)]
@@ -38,17 +39,15 @@ readonly class FeatureType extends Bag
 
     public function __construct(
         #[FromRouteParameter]
-        public ?string $slug = null,
-        public ?string $name = null,
-        public ?string $description = null,
-        public bool $temporary = false,
+        public Optional|string $id,
+        public Optional|string $name,
+        public Optional|string $description,
+        public Optional|string $icon,
         #[Cast(ColorCast::class)]
-        public string|Color $color = '#e3e3e3',
-        public ?string $icon = null,
+        public Color|string $color = '#e3e3e3',
+        public bool $temporary = false,
         public ?Carbon $createdAt = null,
         public ?Carbon $updatedAt = null,
-        #[Hidden]
-        public ?string $id = null,
     ) {
     }
 
@@ -56,22 +55,21 @@ readonly class FeatureType extends Bag
     public static function fromModel(FeatureTypeModel $featureType): array
     {
         return [
+            'id' => $featureType->id,
             'name' => $featureType->name,
-            'slug' => $featureType->slug,
             'description' => $featureType->description,
             'temporary' => $featureType->temporary,
             'color' => $featureType->color,
             'icon' => $featureType->icon,
             'createdAt' => $featureType->created_at,
             'updatedAt' => $featureType->updated_at,
-            'id' => $featureType->id,
         ];
     }
 
     public static function rules(): array
     {
         return [
-            'name' => ['required_without:slug', 'exclude_with:slug'],
+            'name' => ['required_without:id', 'exclude_with:id'],
             'description' => ['nullable'],
             'color' => ['required'],
             'icon' => ['required'],

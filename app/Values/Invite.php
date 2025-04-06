@@ -8,12 +8,18 @@ use App\Enums\Role;
 use App\Models\Invite as InviteModel;
 use App\Values\Collections\InviteCollection;
 use Bag\Attributes\Collection;
+use Bag\Attributes\Laravel\FromRouteParameter;
 use Bag\Attributes\Transforms;
 use Bag\Bag;
+use Bag\Values\Optional;
 use Illuminate\Notifications\RoutesNotifications;
 use Illuminate\Support\Carbon;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
+/**
+ * @method static static from(Optional|string $id, string $email, Role $role, Team $team, User $user, Carbon $expires_at)
+ * @method static InviteCollection<Invite> collect(iterable $items)
+ */
 #[Collection(InviteCollection::class)]
 #[TypeScript]
 readonly class Invite extends Bag
@@ -21,12 +27,13 @@ readonly class Invite extends Bag
     use RoutesNotifications;
 
     public function __construct(
+        #[FromRouteParameter]
+        public Optional|string $id,
         public string $email,
         public Role $role,
         public Team $team,
         public User $user,
         public Carbon $expires_at,
-        public ?string $id = null,
     ) {
     }
 

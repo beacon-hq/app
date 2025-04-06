@@ -22,13 +22,12 @@ export default function Index({ teams }: { teams: TeamCollection }) {
     }, [] as string[]).length;
 
     const { data, setData, errors, post, processing, reset } = useForm<Team>({
-        organization: null,
+        id: undefined,
+        organization: undefined,
+        name: '',
         color: '',
         icon: '',
-        id: '',
-        members: null, // members are managed elsewhere
-        name: '',
-        slug: '',
+        members: undefined,
     });
 
     const handleSubmit = () => {
@@ -70,7 +69,7 @@ export default function Index({ teams }: { teams: TeamCollection }) {
                                                     </>
                                                 )}
                                                 <IconColor color={team.color} icon={team.icon} />
-                                                <Link href={route('teams.edit', { slug: team.slug })}>
+                                                <Link href={route('teams.edit', { team: team.id as string })}>
                                                     <span className="absolute inset-0"></span>
                                                     {team.name}
                                                 </Link>

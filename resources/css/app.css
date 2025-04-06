@@ -1,4 +1,6 @@
-@import 'tailwindcss' source("../../");
+@import 'tailwindcss';
+@source "../../";
+@source inline('{bg,stroke,border}-{red,orange,yellow,lime,green,emerald,cyan,sky,blue,indigo,purple,fuchsia,info,success,warning,error}-400');
 
 @custom-variant dark (&:where(.dark, .dark *));
 

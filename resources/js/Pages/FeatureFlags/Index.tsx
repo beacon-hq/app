@@ -41,16 +41,16 @@ export default function Index({
 }) {
     const [showSheet, setShowSheet] = useState(false);
     const { data, setData, post, errors, reset, processing, transform } = useForm<FeatureFlag>({
+        id: undefined,
         status: false,
         description: '',
-        feature_type: null,
-        last_seen_at: '',
+        feature_type: undefined,
         name: '',
-        slug: null,
         tags: [],
         statuses: [],
-        created_at: '',
-        updated_at: '',
+        last_seen_at: null,
+        created_at: null,
+        updated_at: null,
     });
     const [tableOptions] = useState<TableOptions>({
         page,

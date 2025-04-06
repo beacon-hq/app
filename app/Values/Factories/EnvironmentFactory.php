@@ -11,9 +11,9 @@ class EnvironmentFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => $this->faker->uuid(),
             'name' => $this->faker->word(),
             'description' => $this->faker->word(),
-            'slug' => $this->faker->word(),
             'color' => $this->faker->hexColor(),
         ];
     }

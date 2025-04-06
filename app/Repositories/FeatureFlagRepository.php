@@ -8,7 +8,6 @@ use App\Models\FeatureFlag;
 use App\Models\FeatureFlagStatus;
 use App\Services\ApplicationService;
 use App\Services\EnvironmentService;
-use App\Services\FeatureFlagService;
 use App\Services\FeatureTypeService;
 use App\Services\TagService;
 use App\Values\Collections\FeatureFlagCollection;
@@ -46,14 +45,14 @@ class FeatureFlagRepository
     {
         $data = $featureFlag
             ->toCollection()
-            ->put('feature_type_id', $this->featureTypeService->findBySlug($featureFlag->featureType->slug)->id)
-            ->except('slug', 'tags', 'feature_type', 'created_at', 'updated_at', 'last_seen_at', 'statuses')
+            ->put('feature_type_id', $featureFlag->featureType->id)
+            ->except('id', 'tags', 'feature_type', 'created_at', 'updated_at', 'last_seen_at', 'statuses')
             ->toArray();
 
         $flag = FeatureFlag::create($data);
 
         if ($featureFlag->tags !== null && count($featureFlag->tags) > 0) {
-            $tags = $this->tagService->findBySlug(... $featureFlag->tags->pluck('slug')->toArray());
+            $tags = $this->tagService->find(... $featureFlag->tags->pluck('id')->toArray());
 
             $flag->tags()->sync($tags instanceof Tag ? [$tags->id] : $tags->pluck('id'));
         }
@@ -61,39 +60,37 @@ class FeatureFlagRepository
         return $featureFlag;
     }
 
-    public function findBySlug(string $slug): FeatureFlagValue
+    public function find(string $id): FeatureFlagValue
     {
-        return FeatureFlagValue::from(FeatureFlag::with(['tags', 'statuses'])->where('slug', $slug)->firstOrFail());
+        return FeatureFlagValue::from(FeatureFlag::with(['tags', 'statuses'])->where('id', $id)->firstOrFail());
     }
 
     public function update(FeatureFlagValue $featureFlag): FeatureFlagValue
     {
-        $flag = FeatureFlag::where('slug', $featureFlag->slug)->firstOrFail();
+        $flag = FeatureFlag::where('id', $featureFlag->id)->firstOrFail();
 
         $data = $featureFlag
             ->toCollection()
-            ->put('feature_type_id', $this->featureTypeService->findBySlug($featureFlag->featureType->slug)->id)
-            ->except('name', 'slug', 'tags', 'feature_type', 'created_at', 'updated_at', 'last_seen_at')
+            ->put('feature_type_id', $featureFlag->featureType->id)
+            ->except('name', 'id', 'tags', 'feature_type', 'created_at', 'updated_at', 'last_seen_at')
             ->toArray();
 
         $flag->update($data);
 
-        $tags = $featureFlag->tags->pluck('slug')->toArray();
+        $tags = $featureFlag->tags->pluck('id')->toArray();
         if (count($tags) > 0) {
-            $tags = $this->tagService->findBySlug(... $tags);
+            $tags = $this->tagService->find(... $tags);
             $flag->tags()->sync($tags instanceof Tag ? [$tags->id] : $tags->pluck('id'));
         }
 
         if ($featureFlag->statuses?->count() > 0) {
-            $featureFlagId = resolve(FeatureFlagService::class)->findBySlug($featureFlag->slug)->id;
-
-            $statuses = $featureFlag->statuses->map(function (FeatureFlagStatusValue $status) use ($featureFlagId) {
+            $statuses = $featureFlag->statuses->map(function (FeatureFlagStatusValue $status) use ($featureFlag) {
                 return FeatureFlagStatus::updateOrCreate([
                     'id' => $status->id,
                 ], [
-                    'application_id' => $this->applicationService->findBySlug($status->application->slug)->id,
-                    'environment_id' => $this->environmentService->findBySlug($status->environment->slug)->id,
-                    'feature_flag_id' => $featureFlagId,
+                    'application_id' => $status->application->id,
+                    'environment_id' => $status->environment->id,
+                    'feature_flag_id' => $featureFlag->id,
                     'status' => $status->status,
                     'definition' => $status->definition,
                 ]);
@@ -119,7 +116,6 @@ class FeatureFlagRepository
     {
         $query
             ->when(isset($filters['name'][0]), fn (Builder $query) => $query->whereName($filters['name'][0]))
-            ->when(isset($filters['slug']), fn (Builder $query) => $query->whereSlug($filters['slug']))
             ->when(isset($filters['tag']), fn (Builder $query) => $query->whereTags($filters['tag']))
             ->when(isset($filters['application']), fn (Builder $query) => $query->whereApplication($filters['application']))
             ->when(isset($filters['environment']), fn (Builder $query) => $query->whereEnvironment($filters['environment']))

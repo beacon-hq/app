@@ -14,13 +14,13 @@ import React, { FormEvent, useState } from 'react';
 export default function Index({ applications }: PageProps & { applications: ApplicationCollection }) {
     const [showSheet, setShowSheet] = useState(false);
     const { data, setData, post, errors, reset, processing, transform } = useForm<Application>({
+        id: undefined,
         color: '#e6e6e6',
         description: '',
         display_name: '',
         environments: [],
         last_seen_at: '',
         name: '',
-        slug: null,
     });
 
     const submit = (e: FormEvent) => {
@@ -52,13 +52,13 @@ export default function Index({ applications }: PageProps & { applications: Appl
             <Head title="Applications" />
             <div className="grid grid-cols-3 gap-6 mt-6">
                 {applications.map((application: Application) => (
-                    <Card className="w-full relative" key={application.slug}>
+                    <Card className="w-full relative" key={application.id}>
                         <CardHeader className="flex flex-row justify-between items-center">
                             <CardTitle>
                                 <h2 className="text-xl truncate">
                                     <Link
                                         href={route('applications.edit', {
-                                            slug: application.slug,
+                                            application: application.id as string,
                                         })}
                                     >
                                         <span className="absolute inset-0"></span>

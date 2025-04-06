@@ -59,7 +59,7 @@ export function PolicyDefinitionForm({
     policies?: PolicyCollection;
 }) {
     const [definitions, setDefinitions] = useState<PolicyDefinitionCollection>([
-        ...(data.definition === null || data.definition.length === 0
+        ...(data.definition === undefined || data.definition.length === 0
             ? [{ type: 'expression', subject: '', operator: '', values: [] }]
             : data.definition),
     ] as PolicyDefinitionCollection);
@@ -331,7 +331,7 @@ export function PolicyDefinitionForm({
                                         <PolicyValueEditor
                                             id={id}
                                             key={`policy_value_editor_${id}`}
-                                            value={definition.values}
+                                            value={definition.values ?? null}
                                             setValue={(values) => {
                                                 let definitions =
                                                     data.definition?.map((item: PolicyDefinition, index: number) => {

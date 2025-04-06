@@ -13,11 +13,10 @@ import React, { FormEvent, useState } from 'react';
 export default function Index({ tags }: PageProps & { tags: TagCollection }) {
     const [showSheet, setShowSheet] = useState(false);
     const { data, setData, post, errors, reset, processing } = useForm<Tag>({
+        id: undefined,
         name: '',
         description: '',
         color: '#e6e6e6',
-        id: null,
-        slug: null,
         created_at: null,
         updated_at: null,
     });

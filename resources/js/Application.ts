@@ -1,19 +1,19 @@
 export type AccessToken = {
-    id: number | null;
-    name: string | null;
-    token: string | null;
+    id?: number;
+    name?: string;
+    token?: string;
     last_used_at: string | null;
     created_at: string | null;
 };
 export type AccessTokenCollection = AccessToken[];
 export type Application = {
-    slug: string | null;
-    name: string | null;
-    display_name: string | null;
+    id?: string;
+    name?: string;
+    display_name?: string;
     description: string | null;
-    last_seen_at: string | null;
+    environments?: EnvironmentCollection;
     color: Color | string;
-    environments: EnvironmentCollection | null;
+    last_seen_at: string | null;
 };
 export type ApplicationCollection = Application[];
 export enum Boolean {
@@ -37,21 +37,21 @@ export enum Color {
     'FUCHSIA' = 'fuchsia',
 }
 export type Environment = {
-    slug: string | null;
-    name: string | null;
-    description: string | null;
+    id?: string;
+    name?: string;
+    description?: string;
     color: Color | string;
     last_seen_at: string | null;
 };
 export type EnvironmentCollection = Environment[];
 export type FeatureFlag = {
-    name: string | null;
-    slug: string | null;
-    description: string | null;
+    id?: string;
+    name?: string;
+    description?: string;
     last_seen_at: string | null;
-    feature_type: FeatureType | null;
-    tags: TagCollection | null;
-    statuses: FeatureFlagStatusCollection | null;
+    feature_type?: FeatureType;
+    tags?: TagCollection;
+    statuses?: FeatureFlagStatusCollection;
     created_at: string | null;
     updated_at: string | null;
     status: boolean;
@@ -59,15 +59,15 @@ export type FeatureFlag = {
 export type FeatureFlagCollection = FeatureFlag[];
 export type FeatureFlagContext = {
     scope_type: string | null;
-    scope: Array<any> | null;
+    scope?: Array<any>;
     app_name: string;
     environment: string;
-    session_id: string | null;
-    ip: string | null;
-    user_agent: string | null;
-    referrer: string | null;
-    url: string | null;
-    method: string | null;
+    session_id?: string;
+    ip?: string;
+    user_agent?: string;
+    referrer?: string;
+    url?: string;
+    method?: string;
 };
 export type FeatureFlagResponse = {
     feature_flag: string;
@@ -75,37 +75,35 @@ export type FeatureFlagResponse = {
     active: boolean;
 };
 export type FeatureFlagStatus = {
+    id?: string;
     application: Application | null;
     environment: Environment | null;
     feature_flag: FeatureFlag | null;
     status: boolean;
-    definition: PolicyDefinitionCollection | null;
-    id: string | null;
+    definition?: PolicyDefinitionCollection;
 };
 export type FeatureFlagStatusCollection = FeatureFlagStatus[];
 export type FeatureType = {
-    slug: string | null;
-    name: string | null;
-    description: string | null;
-    temporary: boolean;
+    id?: string;
+    name?: string;
+    description?: string;
+    icon?: string;
     color: Color | string;
-    icon: string | null;
+    temporary: boolean;
     created_at: string | null;
     updated_at: string | null;
-    id: string | null;
 };
 export type FeatureTypeCollection = FeatureType[];
 export type Invite = {
+    id?: string;
     email: string;
     role: Role;
     team: Team;
     user: User;
     expires_at: string;
-    id: string | null;
 };
 export type InviteCollection = Invite[];
 export type Organization = {
-    slug: string | null;
     id: string | null;
     owner: User | null;
     name: string | null;
@@ -169,20 +167,19 @@ export enum Permission {
     'ACCESS_TOKENS_DELETE' = 'access-tokens.delete',
 }
 export type Policy = {
-    slug: string | null;
-    name: string | null;
-    description: string | null;
-    definition: PolicyDefinitionCollection | null;
+    id?: string;
+    name?: string;
+    description?: string;
+    definition?: PolicyDefinitionCollection;
     created_at: string | null;
     updated_at: string | null;
-    id: string | null;
 };
 export type PolicyCollection = Policy[];
 export type PolicyDefinition = {
     type: PolicyDefinitionType;
     subject: string;
     operator?: PolicyDefinitionMatchOperator;
-    values: string[];
+    values?: string[];
 };
 export type PolicyDefinitionCollection = PolicyDefinition[];
 export enum PolicyDefinitionMatchOperator {
@@ -215,39 +212,37 @@ export enum Role {
     'BILLER' = 'Biller',
 }
 export type Tag = {
-    slug: string | null;
-    name: string | null;
-    description: string | null;
+    id?: string;
+    name?: string;
+    description?: string;
     color: Color | string;
     created_at: string | null;
     updated_at: string | null;
-    id: string | null;
 };
 export type TagCollection = Tag[];
 export type Team = {
-    organization: Organization | null;
-    slug: string | null;
-    id: string | null;
-    name: string | null;
+    id?: string;
+    organization?: Organization;
+    name?: string;
+    icon?: string;
+    members?: UserCollection;
     color: Color | string | null;
-    icon: string | null;
-    members: UserCollection | null;
 };
 export type TeamCollection = Team[];
 export type User = {
-    id: number | null;
-    team: Team | null;
-    name: string | null;
-    first_name: string | null;
-    last_name: string | null;
-    email: string | null;
-    avatar: string | null;
-    gravatar: string | null;
+    id?: number;
+    team?: Team;
+    name?: string;
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+    avatar?: string;
+    gravatar?: string;
+    teams?: TeamCollection;
+    roles?: Role[];
+    status?: UserStatus;
     theme: string;
-    teams: TeamCollection | null;
-    roles: Role[];
     email_verified_at: string | null;
-    status: UserStatus | null;
 };
 export type UserCollection = User[];
 export enum UserStatus {

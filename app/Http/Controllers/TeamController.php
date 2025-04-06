@@ -36,7 +36,7 @@ class TeamController extends Controller
 
         $team = $this->teamService->create($team, User::from(Auth::user()));
 
-        return redirect(route('teams.edit', ['slug' => $team->slug]))
+        return redirect(route('teams.edit', ['team' => $team->id]))
             ->withAlert('success', 'Team Created Successfully.');
     }
 
@@ -48,7 +48,7 @@ class TeamController extends Controller
         Gate::authorize('update', $team);
 
         return Inertia::render('Teams/Edit', [
-            'team' => $team = $this->teamService->findBySlug($team->slug),
+            'team' => $team = $this->teamService->find($team->id),
             'users' => $this->teamService->nonMembers($team),
             'members' => $this->teamService->members(
                 $team,
@@ -69,6 +69,6 @@ class TeamController extends Controller
 
         $team = $this->teamService->update($team);
 
-        return redirect(route('teams.edit', ['slug' => $team->slug]))->withAlert('success', 'Team Updated Successfully.');
+        return redirect(route('teams.edit', ['team' => $team->id]))->withAlert('success', 'Team Updated Successfully.');
     }
 }

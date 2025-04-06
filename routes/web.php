@@ -40,59 +40,51 @@ Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
     Route::resource(
         'applications',
         ApplicationController::class,
-        ['parameters' => ['applications' => 'slug']]
     )->except(['delete', 'create', 'show']);
 
     Route::resource(
         'environments',
         EnvironmentController::class,
-        ['parameters' => ['environments' => 'slug']]
     )->except(['delete', 'create', 'show']);
 
     Route::resource(
         'feature-flags',
         FeatureFlagController::class,
-        ['parameters' => ['feature-flags' => 'slug']]
     )->except(['delete', 'create', 'show']);
 
     Route::resource(
         'feature-types',
         FeatureTypeController::class,
-        ['parameters' => ['feature-types' => 'slug']]
     )->except(['delete', 'create', 'show']);
 
     Route::resource(
         'tags',
         TagController::class,
-        ['parameters' => ['tags' => 'slug']]
     )->except(['delete', 'create', 'show']);
 
     Route::resource(
         'settings',
         AccessTokenController::class,
-        ['parameters' => ['settings' => 'slug']]
     )->only(['index']);
 
     Route::resource(
         'policies',
         PolicyController::class,
-        ['parameters' => ['policies' => 'slug']]
     )->except(['delete', 'create', 'show']);
 
     Route::post(
-        'team=members/invite/{slug}',
+        'team-members/invite/{team}',
         [TeamMemberManageController::class, 'store'],
     )->name('team-members.invite');
 
     Route::delete(
-        'teams-members/delete/{slug}',
+        'teams-members/delete/{team}',
         [TeamMemberManageController::class, 'destroy'],
     )->name('team-members.delete');
 
     Route::resource(
         'teams',
         TeamController::class,
-        ['parameters' => ['teams' => 'slug']]
     )->except(['delete', 'create', 'show']);
 
     Route::prefix('settings')->group(function () {
@@ -106,28 +98,27 @@ Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
     Route::resource(
         'organizations',
         OrganizationController::class,
-        ['parameters' => ['organizations' => 'id']]
     )->except('create', 'show');
 
-    Route::resource('users', UserController::class, ['parameters' => ['users' => 'id']]);
+    Route::resource('users', UserController::class);
 
     Route::prefix('policies')->group(function () {
         Route::get('/', [PolicyController::class, 'index'])
             ->name('policies.index');
 
-        Route::get('/{slug}/edit', [PolicyController::class, 'edit'])
+        Route::get('/{policy}/edit', [PolicyController::class, 'edit'])
             ->name('policies.edit');
 
-        Route::patch('/{slug}', [PolicyController::class, 'update'])
+        Route::patch('/{policy}', [PolicyController::class, 'update'])
             ->name('policies.update');
 
-        Route::put('/{slug}', [PolicyController::class, 'update'])
+        Route::put('/{policy}', [PolicyController::class, 'update'])
             ->name('policies.update');
     });
 
     Route::prefix('feature-flags')->group(function () {
-        Route::get('/feature-flags/{slug}/overview', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.overview');
-        Route::get('/feature-flags/{slug}/policy', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.policy');
+        Route::get('/feature-flags/{feature_flag}/overview', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.overview');
+        Route::get('/feature-flags/{feature_flag}/policy', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.policy');
     });
 });
 

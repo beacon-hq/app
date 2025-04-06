@@ -17,11 +17,16 @@ use Bag\Attributes\StripExtraParameters;
 use Bag\Attributes\Transforms;
 use Bag\Bag;
 use Bag\Mappers\SnakeCase;
+use Bag\Values\Optional;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection as LaravelCollection;
+use Illuminate\Support\Collection as Collection1;
 use Spatie\TypeScriptTransformer\Attributes\LiteralTypeScriptType;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
+/**
+ * @method static static from(Optional|int $id, Optional|Team $team, Optional|string $name, Optional|string $firstName, Optional|string $lastName, Optional|string $email, Optional|string $avatar, Optional|string $gravatar, Optional|TeamCollection $teams, Collection|Optional $roles, Optional|UserStatus $status, string $theme = 'system', Carbon|null $emailVerifiedAt = null)
+ * @method static UserCollection<User> collect(iterable $items)
+ */
 #[Collection(UserCollection::class)]
 #[MapName(SnakeCase::class, SnakeCase::class)]
 #[StripExtraParameters]
@@ -30,21 +35,21 @@ readonly class User extends Bag
 {
     public function __construct(
         #[FromRouteParameter]
-        public ?int $id = null,
-        public ?Team $team = null,
-        public ?string $name = null,
-        public ?string $firstName = null,
-        public ?string $lastName = null,
-        public ?string $email = null,
-        public ?string $avatar = null,
-        public ?string $gravatar = null,
-        public string $theme = 'system',
+        public Optional|int $id,
+        public Optional|Team $team,
+        public Optional|string $name,
+        public Optional|string $firstName,
+        public Optional|string $lastName,
+        public Optional|string $email,
+        public Optional|string $avatar,
+        public Optional|string $gravatar,
         #[Cast(Collection::class, Team::class)]
-        public ?TeamCollection $teams = null,
+        public Optional|TeamCollection $teams,
         #[LiteralTypeScriptType('Role[]')]
-        public ?LaravelCollection $roles = null,
+        public Collection1|Optional $roles,
+        public Optional|UserStatus $status,
+        public string $theme = 'system',
         public ?Carbon $emailVerifiedAt = null,
-        public ?UserStatus $status = null,
     ) {
     }
 

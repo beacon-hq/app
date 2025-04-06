@@ -47,7 +47,7 @@ export function Form({
                     type="text"
                     value={data.name ?? ''}
                     autoComplete="off"
-                    disabled={data.slug !== null && data.slug !== ''}
+                    disabled={data.id !== undefined && data.id !== ''}
                     onChange={(e) => setData('name', e.target.value)}
                 />
                 <InputError message={errors?.name} />
@@ -72,7 +72,7 @@ export function Form({
                     Cancel
                 </Button>
                 <Button type="submit" className="w-24" disabled={processing}>
-                    {data.slug ? 'Update' : 'Create'}
+                    {data.id ? 'Update' : 'Create'}
                 </Button>
             </div>
         </form>

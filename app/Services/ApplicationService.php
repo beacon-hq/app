@@ -29,8 +29,8 @@ class ApplicationService
         return $this->applicationRepository->update($application);
     }
 
-    public function findBySlug(?string $slug): Application
+    public function find(string $id): Application
     {
-        return $this->applicationRepository->findBySlug($slug);
+        return $this->applicationRepository->find($id);
     }
 }

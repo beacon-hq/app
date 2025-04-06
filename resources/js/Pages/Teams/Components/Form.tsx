@@ -54,7 +54,7 @@ export function Form({
                     Cancel
                 </Button>
                 <Button type="submit" className="w-24" disabled={processing}>
-                    {data.slug ? 'Update' : 'Create'}
+                    {data.id ? 'Update' : 'Create'}
                 </Button>
             </div>
         </form>

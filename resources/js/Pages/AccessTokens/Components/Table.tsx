@@ -93,7 +93,7 @@ export default function Table({
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={() => onDelete(row.original.id)}>
+                                    <AlertDialogAction onClick={() => onDelete(row.original.id as number)}>
                                         Delete
                                     </AlertDialogAction>
                                 </AlertDialogFooter>

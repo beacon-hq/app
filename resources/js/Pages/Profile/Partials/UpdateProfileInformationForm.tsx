@@ -25,7 +25,7 @@ export default function UpdateProfileInformation({
 
     const { theme, setTheme } = useTheme();
 
-    const { data, setData, errors, processing, recentlySuccessful } = useForm<{
+    const { data, setData, errors, processing } = useForm<{
         first_name: string;
         last_name: string;
         email: string;
@@ -35,7 +35,7 @@ export default function UpdateProfileInformation({
         first_name: user.first_name ?? '',
         last_name: user.last_name ?? '',
         email: user.email ?? '',
-        avatar: user.avatar,
+        avatar: user.avatar ?? null,
         theme: theme,
     });
 

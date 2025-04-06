@@ -29,8 +29,8 @@ class FeatureTypeService
         return $this->featureTypeRepository->update($featureType);
     }
 
-    public function findBySlug(?string $slug): FeatureType
+    public function find(?string $id): FeatureType
     {
-        return $this->featureTypeRepository->findBySlug($slug);
+        return $this->featureTypeRepository->find($id);
     }
 }

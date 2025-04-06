@@ -14,9 +14,9 @@ import React, { FormEvent, useState } from 'react';
 export default function Index({ environments }: PageProps & { environments: EnvironmentCollection }) {
     const [showSheet, setShowSheet] = useState(false);
     const { data, setData, post, errors, reset, processing } = useForm<Environment>({
+        id: undefined,
         name: '',
         color: '',
-        slug: null,
         description: '',
         last_seen_at: '',
     });
@@ -50,13 +50,13 @@ export default function Index({ environments }: PageProps & { environments: Envi
             <Head title="Environments" />
             <div className="grid grid-cols-3 gap-6 mt-6">
                 {environments.map((environment: Environment) => (
-                    <Card className="w-full relative" key={environment.slug}>
+                    <Card className="w-full relative" key={environment.id}>
                         <CardHeader className="flex flex-row justify-between items-center">
                             <CardTitle>
                                 <h2 className="text-xl truncate">
                                     <Link
                                         href={route('environments.edit', {
-                                            slug: environment.slug,
+                                            environment: environment.id as string,
                                         })}
                                     >
                                         <span className="absolute inset-0"></span>

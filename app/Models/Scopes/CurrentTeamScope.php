@@ -13,12 +13,11 @@ class CurrentTeamScope implements Scope
 {
     public function apply(Builder $builder, Model $model): void
     {
-        $currentTeam = App::context()->team;
-
-        if ($currentTeam === null) {
+        if (!App::context()->has('team')) {
             return;
         }
 
+        $currentTeam = App::context()->team;
         if (method_exists($model, 'teams')) {
             $builder->whereHas('teams', function (Builder $query) use ($currentTeam) {
                 $query->where('id', $currentTeam->id);

@@ -30,25 +30,25 @@ class TagRepository
 
     public function update(TagValue $tag): TagValue
     {
-        Tag::where('slug', $tag->slug)->firstOrFail()->update(
+        Tag::firstOrFail($tag->id)->update(
             $tag
                 ->toCollection()
-                ->except('slug')
+                ->except('id')
                 ->toArray()
         );
 
         return $tag;
     }
 
-    public function findBySlug(string ...$slug): TagValue|TagCollection
+    public function find(string ...$id): TagCollection|TagValue
     {
-        $tags = Tag::whereIn('slug', Arr::wrap($slug))->get();
+        $tags = Tag::whereIn('id', Arr::wrap($id))->get();
 
         if ($tags->isEmpty()) {
             throw (new ModelNotFoundException())->setModel(Tag::class);
         }
 
-        if (count($slug) === 1) {
+        if (count($id) === 1) {
             return TagValue::from($tags->first());
         }
 

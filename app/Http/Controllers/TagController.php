@@ -46,7 +46,7 @@ class TagController extends Controller
         Gate::authorize('update', $tag);
 
         return Inertia::render('Tags/Edit', [
-            'tag' => $tagService->findBySlug($tag->slug),
+            'tag' => $tagService->find($tag->id),
         ]);
     }
 

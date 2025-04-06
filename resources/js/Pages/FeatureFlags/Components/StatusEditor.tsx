@@ -51,12 +51,12 @@ const StatusEditor = function ({
     const [showPolicy, setShowPolicy] = useState<boolean>(false);
 
     const { data, setData, errors, processing } = useForm<FeatureFlagStatus>({
-        feature_flag: status?.feature_flag ?? null,
-        status: status?.status ?? false,
-        id: status?.id ?? null,
+        id: status?.id ?? undefined,
         application,
         environment,
-        definition: status?.definition ?? null,
+        feature_flag: status?.feature_flag ?? null,
+        status: status?.status ?? false,
+        definition: status?.definition,
     });
 
     useEffect(() => {
@@ -105,12 +105,12 @@ const StatusEditor = function ({
                                                 <CommandGroup>
                                                     {applications.map((application) => (
                                                         <CommandItem
-                                                            key={application.slug}
-                                                            value={application.slug as string}
+                                                            key={application.id}
+                                                            value={application.id as string}
                                                             onSelect={(currentValue) => {
                                                                 setData(
                                                                     'application',
-                                                                    currentValue === application.slug
+                                                                    currentValue === application.id
                                                                         ? application
                                                                         : null,
                                                                 );
@@ -156,12 +156,12 @@ const StatusEditor = function ({
                                                 <CommandGroup>
                                                     {environments.map((environment) => (
                                                         <CommandItem
-                                                            key={environment.slug}
-                                                            value={environment.slug as string}
+                                                            key={environment.id}
+                                                            value={environment.id as string}
                                                             onSelect={(currentValue) => {
                                                                 setData(
                                                                     'environment',
-                                                                    currentValue === environment.slug
+                                                                    currentValue === environment.id
                                                                         ? environment
                                                                         : null,
                                                                 );

@@ -13,8 +13,7 @@ import React, { FormEvent, useState } from 'react';
 export default function Index({ featureTypes }: PageProps & { featureTypes: FeatureTypeCollection }) {
     const [showSheet, setShowSheet] = useState(false);
     const { data, setData, post, errors, reset, processing } = useForm<FeatureType>({
-        id: null,
-        slug: null,
+        id: undefined,
         name: '',
         description: '',
         temporary: true,

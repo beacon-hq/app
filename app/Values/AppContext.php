@@ -7,13 +7,17 @@ namespace App\Values;
 use Bag\Attributes\MapName;
 use Bag\Bag;
 use Bag\Mappers\SnakeCase;
+use Bag\Values\Optional;
 
+/**
+ * @method static static from(Optional|Organization $organization, Optional|Team $team)
+ */
 #[MapName(SnakeCase::class, SnakeCase::class)]
 readonly class AppContext extends Bag
 {
     public function __construct(
-        public ?Organization $organization = null,
-        public ?Team $team = null,
+        public Optional|Organization $organization,
+        public Optional|Team $team,
     ) {
     }
 

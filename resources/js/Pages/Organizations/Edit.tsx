@@ -15,11 +15,10 @@ export default function Edit({ organization }: { organization: Organization }) {
         name: organization.name,
         id: organization.id,
         owner: organization.owner,
-        slug: organization.slug,
     });
 
     const handleSubmit = () => {
-        patch(route('organizations.update', { id: organization.id }));
+        patch(route('organizations.update', { id: organization.id as string }));
     };
 
     const [confirmingOrganizationDeletion, setConfirmingOrganizationDeletion] = useState(false);
@@ -44,7 +43,7 @@ export default function Edit({ organization }: { organization: Organization }) {
     const handleDelete: FormEventHandler = (e) => {
         e.preventDefault();
 
-        destroy(route('organizations.destroy', { id: organization.id }), {
+        destroy(route('organizations.destroy', { id: organization.id as string }), {
             preserveScroll: true,
             onSuccess: () => closeModal(),
             onError: () => passwordInput.current?.focus(),

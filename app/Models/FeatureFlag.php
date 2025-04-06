@@ -6,7 +6,6 @@ namespace App\Models;
 
 use App\Models\Pivot\FeatureFlagFeatureStatus;
 use App\Models\Traits\BelongsToTeam;
-use App\Models\Traits\HasSlug;
 use Arr;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -24,7 +23,6 @@ use Illuminate\Support\Carbon;
  * @property string $id
  * @property string $team_id
  * @property string $name
- * @property string $slug
  * @property string|null $description
  * @property Carbon|null $last_seen_at
  * @property string $feature_type_id
@@ -50,12 +48,11 @@ use Illuminate\Support\Carbon;
  * @method static Builder<static>|FeatureFlag whereCreatedAt($value)
  * @method static Builder<static>|FeatureFlag whereDescription($value)
  * @method static Builder<static>|FeatureFlag whereEnvironment(array|string $environment)
- * @method static Builder<static>|FeatureFlag whereFeatureType(\Traversable|array|string $slug)
+ * @method static Builder<static>|FeatureFlag whereFeatureType(\Traversable|array|string $id)
  * @method static Builder<static>|FeatureFlag whereFeatureTypeId($value)
  * @method static Builder<static>|FeatureFlag whereId($value)
  * @method static Builder<static>|FeatureFlag whereLastSeenAt($value)
  * @method static Builder<static>|FeatureFlag whereName($value)
- * @method static Builder<static>|FeatureFlag whereSlug($value)
  * @method static Builder<static>|FeatureFlag whereStatus($value)
  * @method static Builder<static>|FeatureFlag whereTags(iterable $tags)
  * @method static Builder<static>|FeatureFlag whereTeamId($value)
@@ -66,7 +63,6 @@ class FeatureFlag extends Model
 {
     use BelongsToTeam;
     use HasFactory;
-    use HasSlug;
     use HasUlids;
 
     protected $fillable = [
@@ -119,7 +115,7 @@ class FeatureFlag extends Model
             ->withTimestamps();
     }
 
-    public function scopeWhereEnvironment(Builder $query, string|array $environment): void
+    public function scopeWhereEnvironment(Builder $query, array|string $environment): void
     {
         $query->whereHas(
             'environments',
@@ -128,7 +124,7 @@ class FeatureFlag extends Model
         );
     }
 
-    public function scopeWhereApplication(Builder $query, string|array $application): void
+    public function scopeWhereApplication(Builder $query, array|string $application): void
     {
         $query->whereHas(
             'applications',
@@ -142,7 +138,7 @@ class FeatureFlag extends Model
         $query->whereHas(
             'tags',
             fn (Builder $query) =>
-            $query->whereIn('slug', \iterator_to_array($tags))
+            $query->whereIn('id', \iterator_to_array($tags))
         );
     }
 
@@ -151,17 +147,11 @@ class FeatureFlag extends Model
         $query->where('name', 'LIKE', "%$name%");
     }
 
-    public function scopeWhereSlug(Builder $query, string $slug): void
-    {
-        $query->where('slug', $slug);
-    }
-
-    public function scopeWhereFeatureType(Builder $query, string|iterable $slug): void
+    public function scopeWhereFeatureType(Builder $query, iterable|string $id): void
     {
         $query->whereHas(
             'featureType',
-            fn (Builder $query) =>
-            $query->whereIn('slug', Arr::wrap($slug))
+            fn (Builder $query) => $query->whereIn('id', Arr::wrap($id))
         );
     }
 

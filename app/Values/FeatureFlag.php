@@ -20,14 +20,16 @@ use Bag\Bag;
 use Bag\Casts\CollectionOf;
 use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
+use Bag\Values\Optional;
 use Cache;
 use Illuminate\Support\Carbon;
 use Spatie\TypeScriptTransformer\Attributes\Hidden as HiddenFromTypeScript;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
- * @method static static from(string $name, ?string $slug = null, ?string $description = null, ?string $lastSeenAt = null, ?FeatureType $featureType = null, ?TagCollection $tags = null, ?Carbon $createdAt = null, ?Carbon $updatedAt = null)
- * @method static FeatureFlagCollection collect(iterable $items)
+ * @method static static from(Optional|string $id, Optional|string $name, Optional|string $description, Carbon|null $lastSeenAt, FeatureType|Optional $featureType, Optional|TagCollection $tags, ApplicationCollection|Optional $applications, FeatureFlagStatusCollection|Optional $statuses, Carbon|null $createdAt = null, Carbon|null $updatedAt = null, bool $status = false)
+ * @method static FeatureFlagCollection<FeatureFlag> collect(iterable $items)
+ * @method static FeatureFlagFactory<FeatureFlag> factory(Collection|array|int $data = [])
  */
 #[Collection(FeatureFlagCollection::class)]
 #[Factory(FeatureFlagFactory::class)]
@@ -38,23 +40,20 @@ readonly class FeatureFlag extends Bag
     use HasFactory;
 
     public function __construct(
-        #[HiddenFromTypeScript]
-        public ?string $id = null,
-        public ?string $name = null,
-        #[FromRouteParameter]
-        public ?string $slug = null,
-        public ?string $description = null,
-        public ?string $lastSeenAt = null,
-        public ?FeatureType $featureType = null,
+        #[FromRouteParameter('feature_flag')]
+        public Optional|string $id,
+        public Optional|string $name,
+        public Optional|string $description,
+        public Carbon|null $lastSeenAt,
+        public FeatureType|Optional $featureType,
         #[Cast(CollectionOf::class, Tag::class)]
-        public ?TagCollection $tags = null,
-        #[Cast(CollectionOf::class, Application::class)]
-        #[HiddenFromTypeScript]
-        public ?ApplicationCollection $applications = null,
+        public Optional|TagCollection $tags,
+        #[Cast(CollectionOf::class, Application::class), HiddenFromTypeScript]
+        public ApplicationCollection|Optional $applications,
         #[Cast(CollectionOf::class, FeatureFlagStatus::class)]
-        public ?FeatureFlagStatusCollection $statuses = null,
-        public ?Carbon $createdAt = null,
-        public ?Carbon $updatedAt = null,
+        public FeatureFlagStatusCollection|Optional $statuses,
+        public Carbon|null $createdAt = null,
+        public Carbon|null $updatedAt = null,
         public bool $status = false,
     ) {
     }
@@ -65,7 +64,6 @@ readonly class FeatureFlag extends Bag
         return [
             'id' => $featureFlag->id,
             'name' => $featureFlag->name,
-            'slug' => $featureFlag->slug,
             'description' => $featureFlag->description,
             'last_seen_at' => $featureFlag->last_seen_at,
             'feature_type' => FeatureType::from($featureFlag->featureType),
@@ -80,7 +78,7 @@ readonly class FeatureFlag extends Bag
     public static function rules(): array
     {
         return [
-            'name' => ['required_without:slug', 'exclude_with:slug'],
+            'name' => ['required_without:id', 'exclude_with:id'],
             'description' => ['nullable'],
             'feature_type' => ['required'],
             'status' => ['boolean', 'nullable'],

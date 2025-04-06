@@ -33,19 +33,19 @@ class FeatureTypeRepository
 
     public function update(FeatureTypeValue $featureType): FeatureTypeValue
     {
-        FeatureType::where('slug', $featureType->slug)->firstOrFail()->update(
+        FeatureType::findOrFail($featureType->id)->update(
             $featureType
                 ->with(color: $featureType->color ?? '')
                 ->toCollection()
-                ->except('name', 'slug')
+                ->except('name', 'id')
                 ->toArray()
         );
 
         return $featureType;
     }
 
-    public function findBySlug(?string $slug): FeatureTypeValue
+    public function find(?string $id): FeatureTypeValue
     {
-        return FeatureTypeValue::from(FeatureType::where('slug', $slug)->firstOrFail());
+        return FeatureTypeValue::from(FeatureType::findOrFail($id));
     }
 }

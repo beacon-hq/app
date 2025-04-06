@@ -12,10 +12,12 @@ use Bag\Attributes\MapName;
 use Bag\Bag;
 use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
+use Bag\Values\Optional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
- * @method static static from(string $scopeType, mixed $scope, string $appName, string $environment, ?string $sessionId = null, ?string $ip = null, ?string $userAgent = null, ?string $referrer = null, ?string $url = null, ?string $method = null)
+ * @method static static from(string|null $scopeType, Optional|array $scope, string $appName, string $environment, Optional|string $sessionId, Optional|string $ip, Optional|string $userAgent, Optional|string $referrer, Optional|string $url, Optional|string $method)
+ * @method static FeatureFlagContextFactory<FeatureFlagContext> factory(Collection|array|int $data = [])
  */
 #[Factory(FeatureFlagContextFactory::class)]
 #[MapName(SnakeCase::class, SnakeCase::class)]
@@ -27,15 +29,15 @@ readonly class FeatureFlagContext extends Bag
     public function __construct(
         public ?string $scopeType,
         #[CastInput(FeatureScopeSerializeable::class)]
-        public ?array $scope,
+        public Optional|array $scope,
         public string $appName,
         public string $environment,
-        public ?string $sessionId = null,
-        public ?string $ip = null,
-        public ?string $userAgent = null,
-        public ?string $referrer = null,
-        public ?string $url = null,
-        public ?string $method = null,
+        public Optional|string $sessionId,
+        public Optional|string $ip,
+        public Optional|string $userAgent,
+        public Optional|string $referrer,
+        public Optional|string $url,
+        public Optional|string $method,
     ) {
     }
 

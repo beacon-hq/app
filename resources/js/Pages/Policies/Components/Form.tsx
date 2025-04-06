@@ -58,7 +58,7 @@ export function Form({
                 />
                 <InputError message={errors?.description} />
             </div>
-            {data.slug && (
+            {data.id && (
                 <PolicyDefinitionForm
                     data={data}
                     setData={setData}
@@ -72,7 +72,7 @@ export function Form({
                     Cancel
                 </Button>
                 <Button type="submit" className="w-24" disabled={processing} onClick={submit}>
-                    {data.slug ? 'Update' : 'Create'}
+                    {data.id ? 'Update' : 'Create'}
                 </Button>
             </div>
         </form>

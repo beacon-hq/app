@@ -34,12 +34,12 @@ class FeatureFlagController extends Controller
 
         try {
 
-            $featureFlag = $featureFlagService->findBySlug($featureFlag->slug);
+            $featureFlag = $featureFlagService->find($featureFlag->id);
 
             return $featureFlagStatusService->getStatus($featureFlag, $context);
         } catch (ModelNotFoundException $e) {
             return FeatureFlagResponse::from(
-                featureFlag:  $featureFlag->slug,
+                featureFlag:  $featureFlag->id,
                 value: null,
                 active: false,
             );

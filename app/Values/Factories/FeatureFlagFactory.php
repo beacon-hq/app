@@ -14,8 +14,8 @@ class FeatureFlagFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => $this->faker->uuid(),
             'name' => $this->faker->word(),
-            'slug' => $this->faker->word(),
             'description' => $this->faker->word(),
             'lastSeenAt' => $this->faker->word(),
             'featureType' => FeatureType::factory()->make(),

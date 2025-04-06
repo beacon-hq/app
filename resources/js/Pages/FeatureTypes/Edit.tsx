@@ -8,7 +8,6 @@ import React, { FormEvent } from 'react';
 export default function Edit({ featureType }: { featureType: FeatureType }) {
     const { data, setData, put, errors, processing } = useForm<FeatureType>({
         id: featureType.id,
-        slug: featureType.slug,
         name: featureType.name,
         description: featureType.description,
         temporary: featureType.temporary,
@@ -20,7 +19,7 @@ export default function Edit({ featureType }: { featureType: FeatureType }) {
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
-        put(route('feature-types.update', { slug: featureType.slug }));
+        put(route('feature-types.update', { feature_type: featureType.id as string }));
     };
 
     const handleCancel = () => {

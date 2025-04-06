@@ -64,7 +64,7 @@ export function Form({
                     type="text"
                     value={data.name as string}
                     autoComplete="off"
-                    disabled={data.slug != null && data.slug !== ''}
+                    disabled={data.id != null && data.id !== ''}
                     onChange={(e) => setData('name', e.target.value)}
                 />
                 <InputError message={errors?.name} />
@@ -74,9 +74,9 @@ export function Form({
                     Feature Type
                 </Label>
                 <Select
-                    value={data.feature_type?.slug ?? ''}
+                    value={data.feature_type?.id ?? ''}
                     onValueChange={(value) =>
-                        setData('feature_type', featureTypes.filter((type: FeatureType) => type.slug == value)[0])
+                        setData('feature_type', featureTypes.filter((type: FeatureType) => type.id == value)[0])
                     }
                 >
                     <SelectTrigger id="feature_type">
@@ -86,7 +86,7 @@ export function Form({
                         <SelectGroup>
                             {featureTypes.map(function (type) {
                                 return (
-                                    <SelectItem key={type.slug} value={type.slug as string}>
+                                    <SelectItem key={type.id} value={type.id as string}>
                                         <div className="flex items-center">
                                             {type.icon != null && (
                                                 <Icon
@@ -133,7 +133,7 @@ export function Form({
                                 <span className="flex flex-wrap gap-1">
                                     {data.tags?.map((tag: TagValue) => (
                                         <Tag
-                                            key={tag.slug}
+                                            key={tag.id}
                                             tag={tag}
                                             showClose={true}
                                             onClick={(e) => {
@@ -141,7 +141,7 @@ export function Form({
                                                 setData(
                                                     'tags',
                                                     data.tags?.filter(
-                                                        (existingTag: TagValue) => existingTag.slug !== tag.slug,
+                                                        (existingTag: TagValue) => existingTag.id !== tag.id,
                                                     ),
                                                 );
                                                 const oldFilter = tagFilter;
@@ -169,26 +169,25 @@ export function Form({
                                     {tags.map(function (tag) {
                                         if (
                                             tagFilter == '' &&
-                                            (data.tags?.filter((existingTag: TagValue) => existingTag.slug === tag.slug)
+                                            (data.tags?.filter((existingTag: TagValue) => existingTag.id === tag.id)
                                                 ?.length ?? 0) > 0
                                         ) {
                                             return;
                                         }
                                         return (
                                             <CommandItem
-                                                key={tag.slug}
-                                                value={tag.slug as string}
+                                                key={tag.id}
+                                                value={tag.id as string}
                                                 onSelect={() => {
                                                     if (
                                                         (data.tags?.filter(
-                                                            (existingTag: TagValue) => existingTag.slug === tag.slug,
+                                                            (existingTag: TagValue) => existingTag.id === tag.id,
                                                         ).length ?? 0) > 0
                                                     ) {
                                                         setData(
                                                             'tags',
                                                             data.tags?.filter(
-                                                                (existingTag: TagValue) =>
-                                                                    existingTag.slug !== tag.slug,
+                                                                (existingTag: TagValue) => existingTag.id !== tag.id,
                                                             ),
                                                         );
                                                         return;
@@ -224,7 +223,7 @@ export function Form({
                     Cancel
                 </Button>
                 <Button type="submit" className="w-24" disabled={processing}>
-                    {data.slug ? 'Update' : 'Create'}
+                    {data.id ? 'Update' : 'Create'}
                 </Button>
             </div>
         </form>

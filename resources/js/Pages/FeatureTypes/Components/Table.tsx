@@ -45,7 +45,7 @@ export default function Table({ featureTypes }: { featureTypes: FeatureTypeColle
             cell: function ({ row }) {
                 return (
                     <div className="flex">
-                        <Link href={route('feature-types.edit', { slug: row.original.slug })}>
+                        <Link href={route('feature-types.edit', { feature_type: row.original.id as string })}>
                             <Pencil className="h-6 w-6" />
                         </Link>
                     </div>

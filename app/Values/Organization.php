@@ -13,18 +13,17 @@ use Bag\Attributes\Transforms;
 use Bag\Bag;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
+/**
+ * @method static static from(string|null $id, User|null $owner, string|null $name)
+ * @method static OrganizationCollection<Organization> collect(iterable $items)
+ */
 #[Collection(OrganizationCollection::class)]
 #[StripExtraParameters]
 #[TypeScript]
-/**
- * @method static OrganizationCollection collect(iterable $items)
- */
 readonly class Organization extends Bag
 {
     public function __construct(
-        #[FromRouteParameter]
-        public ?string $slug,
-        #[FromRouteParameter]
+        #[FromRouteParameter('organization')]
         public ?string $id,
         public ?User $owner,
         public ?string $name,
@@ -35,7 +34,6 @@ readonly class Organization extends Bag
     public static function fromModel(OrganizationModel $organization): array
     {
         return [
-            'slug' => $organization->slug,
             'id' => $organization->id,
             'owner' => $organization->owner !== null ? User::from($organization->owner) : null,
             'name' => $organization->name,
