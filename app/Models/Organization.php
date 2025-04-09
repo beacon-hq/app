@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Scopes\CurrentOrganizationScope;
+use App\Models\Scopes\CurrentTeamScope;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -12,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Organization extends Model
 {
+    use HasFactory;
     use HasUlids;
 
     protected $fillable = [
@@ -21,7 +25,9 @@ class Organization extends Model
 
     public function owner(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'owner_id');
+        return $this->belongsTo(User::class, 'owner_id')->withoutGlobalScopes([
+            CurrentOrganizationScope::class, CurrentTeamScope::class
+        ]);
     }
 
     public function users(): BelongsToMany

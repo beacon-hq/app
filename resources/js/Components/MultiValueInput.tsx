@@ -3,7 +3,7 @@ import { Textarea } from '@/Components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/Components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { Info, PlusCircle } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const MultiValueInput = ({
     disabled = false,
@@ -21,9 +21,9 @@ const MultiValueInput = ({
     const [currentValue, setCurrentValue] = useState<string>('');
     const [currentValues, setCurrentValues] = useState<string[]>(values);
 
-    // useEffect(() => {
-    //     setValues(currentValues);
-    // }, [currentValues]);
+    useEffect(() => {
+        setValues(currentValues);
+    }, [currentValues, setValues]);
 
     const handleInput = (e: React.FormEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         e.preventDefault();
@@ -51,6 +51,18 @@ const MultiValueInput = ({
                 setCurrentValue('');
             }
         }
+    };
+
+    const addValue = () => {
+        let value = currentValue;
+        if (!currentValues.includes(value) && value !== '') {
+            setCurrentValues([...currentValues, value]);
+            setCurrentValue('');
+        }
+    };
+
+    const removeValue = (valueToRemove: string) => {
+        setCurrentValues(currentValues.filter(v => v !== valueToRemove));
     };
 
     return (
@@ -87,13 +99,7 @@ const MultiValueInput = ({
                         <TooltipTrigger>
                             <PlusCircle
                                 className="-ml-8"
-                                onClick={() => {
-                                    let value = currentValue;
-                                    if (!currentValues.includes(value) && value !== '') {
-                                        setCurrentValues([...currentValues, value]);
-                                        setCurrentValue('');
-                                    }
-                                }}
+                                onClick={addValue}
                             />
                         </TooltipTrigger>
                         <TooltipContent>
@@ -109,7 +115,7 @@ const MultiValueInput = ({
                         <Badge
                             variant="default"
                             className="cursor-pointer"
-                            onClick={() => setCurrentValues(currentValues.filter((v) => v !== value))}
+                            onClick={() => removeValue(value)}
                         >
                             <span className="truncate max-w-40">{value}</span>
                         </Badge>
@@ -121,9 +127,7 @@ const MultiValueInput = ({
                                     <Badge
                                         variant="default"
                                         className="cursor-pointer"
-                                        onClick={() =>
-                                            setCurrentValues(currentValues.filter((value) => value !== value))
-                                        }
+                                        onClick={() => removeValue(value)}
                                     >
                                         <span className="truncate max-w-40">{value}</span>
                                     </Badge>

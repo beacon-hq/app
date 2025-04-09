@@ -29,41 +29,39 @@ import { useForm } from '@inertiajs/react';
 import { ChevronRight, ChevronsUpDown, PlusCircle, Trash } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
-const StatusEditor = function ({
-    status,
-    applications,
-    environments,
-    policies,
-    onStatusChange,
-    onDelete,
-}: {
+const StatusEditor: React.FC<{
     status?: FeatureFlagStatus;
     applications: ApplicationCollection;
     environments: EnvironmentCollection;
     policies: PolicyCollection;
     onStatusChange?: (status: FeatureFlagStatus) => void;
     onDelete?: (status: FeatureFlagStatus) => void;
+}> = function ({
+    status,
+    applications,
+    environments,
+    policies,
+    onStatusChange,
+    onDelete,
 }) {
     const [applicationsOpen, setApplicationsOpen] = useState(false);
     const [environmentsOpen, setEnvironmentsOpen] = useState(false);
-    const [application, setApplication] = useState<Application | null>(status?.application ?? null);
-    const [environment, setEnvironment] = useState<Environment | null>(status?.environment ?? null);
     const [showPolicy, setShowPolicy] = useState<boolean>(false);
 
     const { data, setData, errors, processing } = useForm<FeatureFlagStatus>({
         id: status?.id ?? undefined,
-        application,
-        environment,
+        application: status?.application ?? null,
+        environment: status?.environment ?? null,
         feature_flag: status?.feature_flag ?? null,
         status: status?.status ?? false,
-        definition: status?.definition,
+        definition: status?.definition ?? [],
     });
 
     useEffect(() => {
         if (onStatusChange) {
             onStatusChange(data);
         }
-    }, [data]);
+    }, [data, onStatusChange]);
 
     const handleDelete = (status: FeatureFlagStatus | undefined) => {
         if (onDelete && status) {
@@ -107,12 +105,10 @@ const StatusEditor = function ({
                                                         <CommandItem
                                                             key={application.id}
                                                             value={application.id as string}
-                                                            onSelect={(currentValue) => {
+                                                            onSelect={() => {
                                                                 setData(
                                                                     'application',
-                                                                    currentValue === application.id
-                                                                        ? application
-                                                                        : null,
+                                                                    application
                                                                 );
                                                                 setApplicationsOpen(false);
                                                             }}
@@ -130,7 +126,7 @@ const StatusEditor = function ({
                             <ChevronRight className="inline-block" />
                             <div className="flex items-center">
                                 <Popover open={environmentsOpen} onOpenChange={setEnvironmentsOpen}>
-                                    <PopoverTrigger asChild disabled={application === undefined}>
+                                    <PopoverTrigger asChild disabled={data.application === null}>
                                         <Button
                                             variant="outline"
                                             role="combobox"
@@ -158,12 +154,10 @@ const StatusEditor = function ({
                                                         <CommandItem
                                                             key={environment.id}
                                                             value={environment.id as string}
-                                                            onSelect={(currentValue) => {
+                                                            onSelect={() => {
                                                                 setData(
                                                                     'environment',
-                                                                    currentValue === environment.id
-                                                                        ? environment
-                                                                        : null,
+                                                                    environment
                                                                 );
                                                                 setEnvironmentsOpen(false);
                                                             }}
@@ -198,25 +192,25 @@ const StatusEditor = function ({
                                 type="button"
                                 onClick={() => setShowPolicy(true)}
                             >
-                                <PlusCircle className="inline-block" /> Add Conditions
+                                <PlusCircle className="inline-block mr-2" /> Add Conditions
                             </Button>
                         )}
 
-                        {status !== undefined && ((status.definition?.length ?? 0) > 0 || showPolicy) && (
+                        {(status !== undefined && (status.definition?.length ?? 0) > 0) || showPolicy ? (
                             <PolicyDefinitionForm
-                                data={status as FeatureFlagStatus}
+                                data={data}
                                 setData={setData}
                                 errors={errors}
                                 processing={processing}
                                 policies={policies}
                             />
-                        )}
+                        ) : null}
                     </div>
-                    <CardFooter className="p-0">
+                    <CardFooter className="p-0 mt-4">
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
                                 <Button type="button" variant="ghost" className="ml-auto text-primary/40">
-                                    <Trash className="" /> Delete
+                                    <Trash className="mr-2" /> Delete
                                 </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>

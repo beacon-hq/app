@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App;
 use App\Enums\Color;
 use App\Enums\Role;
 use App\Repositories\UserRepository;
@@ -15,11 +14,11 @@ use App\Values\Organization;
 use App\Values\Team;
 use App\Values\User as UserValue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Session;
+use Illuminate\Support\Facades\Session;
 
 class UserService
 {
-    public function __construct(protected UserRepository $userRepository, protected InviteService $inviteService, protected OrganizationService $organizationService)
+    public function __construct(protected UserRepository $userRepository, protected InviteService $inviteService, protected OrganizationService $organizationService, protected AppContextService $appContextService)
     {
     }
 
@@ -89,15 +88,16 @@ class UserService
 
     public function create(UserValue $user, ?Invite $invite = null): UserValue
     {
-        $user = $this->userRepository->create($user, $invite);
+        $user = $this->userRepository->create($user);
 
         if ($invite !== null) {
-            /** @var App\Models\Invite $invite */
-            App::context(organization: $invite->team->organization);
+            $this->appContextService->setOrganization($invite->organization);
 
-            $user = $this->userRepository->addOrganization($user, Organization::from($invite->team->organization));
-            $user = $this->userRepository->addTeam($user, Team::from($invite->team));
+            $user = $this->userRepository->addOrganization($user, $invite->organization);
+            $user = $this->userRepository->addTeam($user, $invite->team);
             $user = $this->userRepository->assignRole($user, $invite->role);
+
+            $this->inviteService->delete($invite);
 
             Session::forget('invite');
 
@@ -108,7 +108,7 @@ class UserService
 
         $this->userRepository->addOrganization($user, $organization);
 
-        App::context(organization: $organization);
+        $this->appContextService->setOrganization($organization);
 
         $team = Team::from(name: $user->first_name . '\'s Team', color: collect(Color::values())->random());
         $user = $this->userRepository->addTeam(UserValue::from($user), $team);

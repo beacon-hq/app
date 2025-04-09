@@ -39,9 +39,9 @@ readonly class Policy extends Bag
         #[FromRouteParameter('policy')]
         public Optional|string $id,
         public Optional|string $name,
-        public Optional|string $description,
         #[Cast(CollectionOf::class, PolicyDefinition::class)]
         public Optional|PolicyDefinitionCollection $definition,
+        public ?string $description = null,
         public ?Carbon $createdAt = null,
         public ?Carbon $updatedAt = null,
     ) {
@@ -64,7 +64,6 @@ readonly class Policy extends Bag
     {
         return [
             'name' => ['required'],
-            'description' => ['required'],
             'definition' => ['nullable'],
         ];
     }

@@ -54,8 +54,8 @@ readonly class FeatureFlagStatus extends Bag
             'id' => $featureFlagStatus->id,
             'application' => Cache::driver('array')->rememberForever('application:' . $featureFlagStatus->application_id, fn () => $featureFlagStatus->application),
             'environment' => Cache::driver('array')->rememberForever('environment:' . $featureFlagStatus->environment_id, fn () => $featureFlagStatus->environment),
-            'definition' => $featureFlagStatus->definition,
             'status' => $featureFlagStatus->status,
+            'definition' => $featureFlagStatus->definition,
         ];
     }
 }

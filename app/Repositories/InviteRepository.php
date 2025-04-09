@@ -8,8 +8,11 @@ use App\Enums\Role;
 use App\Models\Invite;
 use App\Values\Collections\InviteCollection;
 use App\Values\Invite as InviteValue;
+use App\Values\Organization;
 use App\Values\Team;
 use App\Values\User;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class InviteRepository
 {
@@ -22,13 +25,24 @@ class InviteRepository
         );
     }
 
-    public function create(User $user, Team $team, Role $role, string $email): InviteValue
+    public function create(User $user, Team $team, Organization $organization, Role $role, string $email): InviteValue
     {
+        Validator::validate([
+            'email' => $email,
+        ], [
+            'email' => [Rule::unique('invites')->where(function ($query) use ($organization) {
+                return $query->where('organization_id', $organization->id);
+            })],
+        ], [
+            'email.unique' => __('This email has already been invited to this organization.'),
+        ]);
+
         return InviteValue::from(
             Invite::create([
                 'email' => $email,
                 'role' => $role,
                 'team_id' => $team->id,
+                'organization_id' => $organization->id,
                 'user_id' => $user->id,
                 'expires_at' => now()->add(config('beacon.teams.invitation_expiration')),
             ])
@@ -54,5 +68,20 @@ class InviteRepository
                 ->where('email', $email)
                 ->firstOrFail()
         );
+    }
+
+    public function all(): InviteCollection
+    {
+        return InviteValue::collect(Invite::query()->get());
+    }
+
+    public function refreshExpiration(InviteValue $invite): InviteValue
+    {
+        $model = Invite::findOrFail($invite->id);
+        $model->update([
+            'expires_at' => now()->add(config('beacon.teams.invitation_expiration')),
+        ]);
+
+        return InviteValue::from($model->fresh());
     }
 }

@@ -9,6 +9,7 @@ use App\Notifications\RegistrationInvite;
 use App\Repositories\InviteRepository;
 use App\Values\Collections\InviteCollection;
 use App\Values\Invite;
+use App\Values\Organization;
 use App\Values\Team;
 use App\Values\User;
 use Illuminate\Support\Facades\Notification;
@@ -19,9 +20,9 @@ class InviteService
     {
     }
 
-    public function create(User $user, Team $team, string $email, Role $role): Invite
+    public function create(User $user, Team $team, Organization $organization, string $email, Role $role): Invite
     {
-        $invite = $this->inviteRepository->create($user, $team, $role, $email);
+        $invite = $this->inviteRepository->create($user, $team, $organization, $role, $email);
         Notification::send($invite, new RegistrationInvite($invite));
 
         return $invite;
@@ -45,5 +46,19 @@ class InviteService
     public function delete(Invite $invite): void
     {
         $this->inviteRepository->delete($invite);
+    }
+
+    public function resend(Invite $invite): void
+    {
+        // Refreshing the invitation expiration time
+        $invite = $this->inviteRepository->refreshExpiration($invite);
+
+        // Resend the invitation email
+        Notification::send($invite, new RegistrationInvite($invite));
+    }
+
+    public function all(): InviteCollection
+    {
+        return $this->inviteRepository->all();
     }
 }

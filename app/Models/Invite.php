@@ -19,9 +19,15 @@ class Invite extends Model
         'email',
         'role',
         'team_id',
+        'organization_id',
         'user_id',
         'expires_at',
     ];
+
+    public function organization(): BelongsTo
+    {
+        return $this->belongsTo(Organization::class);
+    }
 
     public function team(): BelongsTo
     {

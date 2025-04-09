@@ -37,8 +37,6 @@ class PolicyRepository
         Policy::findOrFail($policy->id)->update(
             $policy
                 ->with(definition: $policy->definition ?? PolicyDefinitionCollection::empty())
-                ->toCollection()
-                ->except('id')
                 ->toArray()
         );
 

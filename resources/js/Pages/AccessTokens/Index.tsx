@@ -10,7 +10,7 @@ import Authenticated from '@/Layouts/AuthenticatedLayout';
 import Table from '@/Pages/AccessTokens/Components/Table';
 import { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosError } from 'axios';
 import { PlusCircle } from 'lucide-react';
 import React, { FormEvent, useState } from 'react';
 import { toast } from 'sonner';
@@ -20,7 +20,6 @@ export default function Index({ settings }: PageProps & { settings: { tokens: Ac
     const [processing, setProcessing] = useState(false);
     const [tokenName, setTokenName] = useState('');
     const [errors, setErrors] = useState<{ name?: string }>({});
-
     const [tokens, setTokens] = useState(settings.tokens);
 
     const reset = () => {
@@ -29,23 +28,28 @@ export default function Index({ settings }: PageProps & { settings: { tokens: Ac
         setErrors({});
     };
 
-    const submit = (e: FormEvent<Element>) => {
+    const submit = async (e: FormEvent<Element>) => {
         e.preventDefault();
         setProcessing(true);
+        setErrors({});
 
-        window.axios
-            .post(route('api.tokens.store'), { name: tokenName })
-            .then((response: AxiosResponse | void) => {
-                setShowTokenDialog(false);
-                reset();
+        try {
+            const response = await window.axios.post(route('api.access-tokens.store'), { name: tokenName });
+            setShowTokenDialog(false);
+            reset();
 
-                setTokens([...tokens, (response as AxiosResponse).data]);
-                toast.success('Access Token created successfully.');
-            })
-            .catch((err: AxiosError) => {
-                setErrors((err.response as any).data.errors);
-                setProcessing(false);
-            });
+            setTokens([...tokens, response.data]);
+            toast.success('Access token created successfully.');
+        } catch (error) {
+            const err = error as AxiosError;
+            if (err.response?.data && 'errors' in (err.response.data as any)) {
+                setErrors((err.response.data as any).errors);
+            } else {
+                toast.error('Failed to create access token. Please try again.');
+            }
+        } finally {
+            setProcessing(false);
+        }
     };
 
     const handleCancel = (e: boolean) => {
@@ -53,15 +57,18 @@ export default function Index({ settings }: PageProps & { settings: { tokens: Ac
         reset();
     };
 
-    const handleDelete = (id: number | null) => {
+    const handleDelete = async (id: number | null) => {
         if (id === null) {
             return;
         }
 
-        window.axios.delete(route('api.tokens.destroy', { token: id })).then((response) => {
+        try {
+            await window.axios.delete(route('api.access-tokens.destroy', { access_token: id }));
             setTokens(tokens.filter((token) => token.id !== id));
-            toast.success('Access Token deleted successfully.');
-        });
+            toast.success('Access token deleted successfully.');
+        } catch (error) {
+            toast.error('Failed to delete access token. Please try again.');
+        }
     };
 
     return (
@@ -77,7 +84,7 @@ export default function Index({ settings }: PageProps & { settings: { tokens: Ac
                 </Button>
             }
         >
-            <Head title="Settings" />
+            <Head title="Access Tokens" />
             <div className="mx-auto w-full py-12">
                 <div className="">
                     <div className="overflow-hidden">
@@ -99,21 +106,24 @@ export default function Index({ settings }: PageProps & { settings: { tokens: Ac
                             Name
                         </Label>
                         <Input
+                            id="name"
                             name="token_name"
                             type="text"
                             value={tokenName}
                             onChange={(e) => setTokenName(e.target.value)}
                             className="w-full"
+                            disabled={processing}
+                            autoComplete="off"
                         />
                         {errors.name && <InputError message={errors.name} />}
                         <div className="flex items-center justify-end">
                             <DialogClose asChild>
-                                <Button type="button" variant="link" className="mt-3">
+                                <Button type="button" variant="link" className="mt-3" disabled={processing}>
                                     Cancel
                                 </Button>
                             </DialogClose>
                             <Button type="submit" className="mt-4" disabled={processing}>
-                                Create Access Token
+                                {processing ? 'Creating...' : 'Create Access Token'}
                             </Button>
                         </div>
                     </form>

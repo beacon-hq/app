@@ -33,10 +33,10 @@ class FeatureFlagStatusRepository
 
         // No application/environment policy
         if ($featureFlag->status === false || $status->status === false || ($status->definition?->count() ?? 0) === 0) {
-            return FeatureFlagResponse::from(featureFlag: $featureFlag->id, value: null, active: $featureFlag->status && $status->status);
+            return FeatureFlagResponse::from(featureFlag: $featureFlag->name, value: null, active: $featureFlag->status && $status->status);
         }
 
-        return FeatureFlagResponse::from(featureFlag: $featureFlag->id, value: null, active: $this->evaluatePolicy($status, $context));
+        return FeatureFlagResponse::from(featureFlag: $featureFlag->name, value: null, active: $this->evaluatePolicy($status, $context));
     }
 
     protected function evaluateExpression(PolicyDefinition $policyDefinition, FeatureFlagContext $context): bool

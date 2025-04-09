@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App;
+use App\Services\AppContextService;
 use App\Services\OrganizationService;
 use App\Services\TeamService;
 use App\Values\Organization;
@@ -13,20 +13,22 @@ use Bag\Attributes\WithoutValidation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use Inertia\Response;
-use Session;
 
 class OrganizationController extends Controller
 {
-    public function __construct(protected OrganizationService $organizationService, protected TeamService $teamService)
+    public function __construct(protected OrganizationService $organizationService, protected TeamService $teamService, protected AppContextService $appContextService)
     {
     }
 
     public function index(): Response
     {
-        return Inertia::render('Organizations/Index');
+        return Inertia::render('Organizations/Index', [
+            'organizations' => $this->organizationService->all(User::from(Auth::user())),
+        ]);
     }
 
     public function store(Organization $organization, Request $request): RedirectResponse
@@ -44,7 +46,7 @@ class OrganizationController extends Controller
 
         $organization = $this->organizationService->create(User::from(Auth::user()), $organization);
 
-        App::context(organization: $organization);
+        $this->appContextService->setOrganization($organization);
 
         $team = $this->teamService->create(App\Values\Team::from(
             name: $request->json('team.name'),
@@ -53,7 +55,7 @@ class OrganizationController extends Controller
         ), User::from(Auth::user()));
 
         Session::put('team', $team);
-        App::context(team: $team);
+        $this->appContextService->setTeam($team);
 
         return redirect()->to(route('organizations.edit', ['id' => $organization->id]))
             ->withAlert('success', 'Organization Created Successfully.');

@@ -1,7 +1,8 @@
 import AddUser from './Components/AddUser';
+import InvitesTable from './Components/InvitesTable';
 import ManageUser from './Components/ManageUser';
 import Table from './Components/Table';
-import { Team, User, UserCollection } from '@/Application';
+import { InviteCollection, Team, User, UserCollection } from '@/Application';
 import { TableOptions } from '@/Components/ui/data-table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { cn } from '@/lib/utils';
@@ -11,12 +12,14 @@ import { useState } from 'react';
 
 export default function Index({
     users,
+    invites,
     teams,
     filters,
     page,
     perPage,
 }: {
     users: UserCollection;
+    invites: InviteCollection;
     teams: Team[];
     filters: { [key: string]: string[] };
     page: number;
@@ -60,13 +63,21 @@ export default function Index({
             <Head title="Users" />
 
             <div className="space-y-6 mt-8">
-                <Table
-                    users={users}
-                    teams={teams}
-                    tableOptions={tableOptions}
-                    onDelete={handleDelete}
-                    onManage={handleManage}
-                />
+                <div>
+                    <h2 className="text-xl font-semibold mb-4">Users</h2>
+                    <Table
+                        users={users}
+                        teams={teams}
+                        tableOptions={tableOptions}
+                        onDelete={handleDelete}
+                        onManage={handleManage}
+                    />
+                </div>
+
+                <div>
+                    <h2 className="text-xl font-semibold mb-4">Pending Invites</h2>
+                    <InvitesTable invites={invites} teams={teams} />
+                </div>
 
                 {selectedUser && (
                     <ManageUser

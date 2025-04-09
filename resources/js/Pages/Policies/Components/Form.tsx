@@ -47,9 +47,7 @@ export function Form({
                 <InputError message={errors?.name} />
             </div>
             <div>
-                <Label htmlFor="description" aria-required>
-                    Description
-                </Label>
+                <Label htmlFor="description">Description</Label>
                 <Textarea
                     id="description"
                     value={data.description ?? ''}

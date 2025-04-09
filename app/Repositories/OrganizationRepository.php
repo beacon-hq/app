@@ -37,16 +37,20 @@ class OrganizationRepository
 
     public function all(User $user): OrganizationCollection
     {
+        $query = Organization::whereHas(
+            'teams',
+            fn (Builder $query) => $query
+                ->withoutGlobalScopes([CurrentOrganizationScope::class])
+                ->whereHas(
+                    'users',
+                    fn (Builder $query) => $query
+                        ->withoutGlobalScopes([CurrentOrganizationScope::class])
+                        ->where('id', $user->id)
+                )
+        );
+
         return OrganizationValue::collect(
-            Organization::whereHas(
-                'teams',
-                fn (Builder $query) => $query
-                    ->withoutGlobalScopes([CurrentOrganizationScope::class])
-                    ->whereHas(
-                        'users',
-                        fn (Builder $query) => $query->where('id', $user->id)
-                    )
-            )->get()
+            $query->get()
         );
     }
 

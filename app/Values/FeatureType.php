@@ -38,7 +38,7 @@ readonly class FeatureType extends Bag
     use HasFactory;
 
     public function __construct(
-        #[FromRouteParameter]
+        #[FromRouteParameter('feature_type')]
         public Optional|string $id,
         public Optional|string $name,
         public Optional|string $description,

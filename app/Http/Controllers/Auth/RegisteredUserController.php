@@ -6,9 +6,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Values\Invite;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Inertia\Response;
-use Session;
 
 class RegisteredUserController extends Controller
 {

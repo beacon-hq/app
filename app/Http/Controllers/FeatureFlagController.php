@@ -28,9 +28,6 @@ class FeatureFlagController extends Controller
         EnvironmentService $environmentService,
         Request $request
     ): Response {
-        debug($request->get('filters', false));
-        debug($featureFlagService->count(filters: $request->get('filters', [])));
-
         return Inertia::render('FeatureFlags/Index', [
             'featureFlags' => $featureFlagService->all(filters: $request->get('filters', []), page: (int) $request->get('page', 1), perPage: (int) $request->get('perPage', 10))->toBase(),
             'featureFlagsCount' => $featureFlagService->count(filters: $request->get('filters', [])),

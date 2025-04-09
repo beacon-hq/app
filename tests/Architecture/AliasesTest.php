@@ -1,0 +1,47 @@
+<?php
+
+declare(strict_types=1);
+
+arch('do not use global Facades')->expect('App\*')
+    ->not
+    ->toUse([
+        \App::class,
+        \Artisan::class,
+        \Auth::class,
+        \Blade::class,
+        \Broadcast::class,
+        \Bus::class,
+        \Cache::class,
+        \Config::class,
+        \Context::class,
+        \Cookie::class,
+        \Crypt::class,
+        \Date::class,
+        \DB::class,
+        \Event::class,
+        \File::class,
+        \Gate::class,
+        \Hash::class,
+        \Http::class,
+        \Lang::class,
+        \Log::class,
+        \Mail::class,
+        \Notification::class,
+        \Password::class,
+        \Process::class,
+        \Queue::class,
+        \RateLimiter::class,
+        \Redirect::class,
+        \Redis::class,
+        \Request::class,
+        \Response::class,
+        \Route::class,
+        \Schedule::class,
+        \Schema::class,
+        \Session::class,
+        \Storage::class,
+        \URL::class,
+        \Validator::class,
+        \View::class,
+        \Vite::class,
+    ]);

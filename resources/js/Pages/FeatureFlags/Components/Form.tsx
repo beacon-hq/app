@@ -39,10 +39,6 @@ export function Form({
     const [tagsOpen, setTagsOpen] = useState(false);
     const [tagFilter, setTagFilter] = useState('');
 
-    useEffect(() => {
-        console.log(tagsOpen);
-    }, [tagsOpen]);
-
     return (
         <form onSubmit={submit} className="flex flex-col space-y-4">
             <div>

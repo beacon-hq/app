@@ -11,6 +11,7 @@ use App\Values\Collections\TeamCollection;
 use App\Values\Collections\UserCollection;
 use Bag\Attributes\Cast;
 use Bag\Attributes\Collection;
+use Bag\Attributes\HiddenFromJson;
 use Bag\Attributes\Laravel\FromRouteParameter;
 use Bag\Attributes\MapName;
 use Bag\Attributes\StripExtraParameters;
@@ -20,11 +21,12 @@ use Bag\Mappers\SnakeCase;
 use Bag\Values\Optional;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection as Collection1;
+use Spatie\TypeScriptTransformer\Attributes\Hidden as HiddenFromTypeScript;
 use Spatie\TypeScriptTransformer\Attributes\LiteralTypeScriptType;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
- * @method static static from(Optional|int $id, Optional|Team $team, Optional|string $name, Optional|string $firstName, Optional|string $lastName, Optional|string $email, Optional|string $avatar, Optional|string $gravatar, Optional|TeamCollection $teams, Collection|Optional $roles, Optional|UserStatus $status, string $theme = 'system', Carbon|null $emailVerifiedAt = null)
+ * @method static static from(Optional|int $id, Optional|Team $team, Optional|string $name, Optional|string $firstName, Optional|string $lastName, Optional|string $email, Optional|string $password, Optional|string $avatar, Optional|string $gravatar, Optional|TeamCollection $teams, Collection|Optional $roles, Optional|UserStatus $status, string $theme = 'system', Carbon|null $emailVerifiedAt = null)
  * @method static UserCollection<User> collect(iterable $items)
  */
 #[Collection(UserCollection::class)]
@@ -41,6 +43,9 @@ readonly class User extends Bag
         public Optional|string $firstName,
         public Optional|string $lastName,
         public Optional|string $email,
+        #[HiddenFromJson]
+        #[HiddenFromTypeScript]
+        public Optional|string $password,
         public Optional|string $avatar,
         public Optional|string $gravatar,
         #[Cast(Collection::class, Team::class)]

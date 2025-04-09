@@ -47,7 +47,7 @@ export default function Index({ policies }: PageProps & { policies: PolicyCollec
             }
         >
             <Head title="Policies" />
-            <div className="mx-auto w-full">
+            <div className="w-full">
                 <div className="">
                     <div className="overflow-hidden">
                         <Card className="mt-8">

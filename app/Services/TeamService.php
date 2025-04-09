@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Repositories\TeamRepository;
+use App\Values\Collections\OrganizationCollection;
 use App\Values\Collections\TeamCollection;
 use App\Values\Collections\UserCollection;
 use App\Values\Team;
@@ -35,9 +36,9 @@ class TeamService
         return $this->teamRepository->update($team);
     }
 
-    public function find(string $id): Team
+    public function find(string $id, OrganizationCollection $organizations): Team
     {
-        return $this->teamRepository->find($id);
+        return $this->teamRepository->find($id, $organizations);
     }
 
     public function members(Team $team, array|string $orderBy = ['name'], ?int $page = null, int $perPage = 20, array $filters = []): UserCollection

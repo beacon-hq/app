@@ -30,7 +30,7 @@ beforeEach(function () {
     $this->environment = Environment::factory()->for($this->team)->create();
     $this->featureFlag = FeatureFlag::factory()->active()->for($this->team)->for($featureType)->hasAttached($tags)->create();
 
-    App::context(team: $this->team);
+    App::context(team: $this->team, organization: $this->team->organization);
 });
 
 it('evaluates scalar value policies', function (array $policyDefinition, array $context, bool $expected) {
@@ -38,6 +38,7 @@ it('evaluates scalar value policies', function (array $policyDefinition, array $
         'status' => true,
         'definition' => $policyDefinition,
     ]);
+
     $this->featureFlag->statuses()->sync([$featureFlagStatus]);
 
     $context = FeatureFlagContext::from($context);
@@ -48,7 +49,7 @@ it('evaluates scalar value policies', function (array $policyDefinition, array $
     expect($result)
         ->toBeInstanceOf(FeatureFlagResponse::class)
         ->and($result->featureFlag)
-        ->toBe($this->featureFlag->slug)
+        ->toBe($this->featureFlag->name)
         ->and($result->value)
         ->toBeNull()
         ->and($result->active)
@@ -70,7 +71,7 @@ it('evaluates array value policies', function (array $policyDefinition, array $c
     expect($result)
         ->toBeInstanceOf(FeatureFlagResponse::class)
         ->and($result->featureFlag)
-        ->toBe($this->featureFlag->slug)
+        ->toBe($this->featureFlag->name)
         ->and($result->value)
         ->toBeNull()
         ->and($result->active)
@@ -100,7 +101,7 @@ it('does not evaluate invalid policies', function () {
     expect($result)
         ->toBeInstanceOf(FeatureFlagResponse::class)
         ->and($result->featureFlag)
-        ->toBe($this->featureFlag->slug)
+        ->toBe($this->featureFlag->name)
         ->and($result->value)
         ->toBeNull()
         ->and($result->active)

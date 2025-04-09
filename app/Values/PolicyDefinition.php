@@ -16,6 +16,7 @@ use Bag\Bag;
 use Bag\Collection as Collection1;
 use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
+use Bag\Validation\Rules\OptionalOr;
 use Bag\Values\Optional;
 use Illuminate\Validation\Rule;
 use Spatie\TypeScriptTransformer\Attributes\LiteralTypeScriptType;
@@ -38,9 +39,9 @@ readonly class PolicyDefinition extends Bag
     public function __construct(
         public PolicyDefinitionType $type,
         public string $subject,
-        public Optional|PolicyDefinitionMatchOperator $operator,
+        public ?PolicyDefinitionMatchOperator $operator = null,
         #[LiteralTypeScriptType('string[]')]
-        public Collection1|Optional $values,
+        public ?Collection1 $values = null,
     ) {
     }
 
@@ -49,8 +50,8 @@ readonly class PolicyDefinition extends Bag
         return [
             'type' => ['required', Rule::enum(PolicyDefinitionType::class)],
             'subject' => ['required', 'string'],
-            'operator' => ['nullable', 'required_if:type,' . PolicyDefinitionType::EXPRESSION->value],
-            'values' => ['nullable', 'required_if:type,' . PolicyDefinitionType::EXPRESSION->value],
+            'operator' => [new OptionalOr(['nullable', 'required_if:type,' . PolicyDefinitionType::EXPRESSION->value])],
+            'values' => [new OptionalOr(['nullable', 'required_if:type,' . PolicyDefinitionType::EXPRESSION->value])],
         ];
     }
 }

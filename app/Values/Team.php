@@ -67,7 +67,7 @@ readonly class Team extends Bag
     {
         return [
             'name' => [new OptionalOr(['required', 'string', 'max:255'])],
-            'color' => [new OptionalOr(['required', 'string', 'max:255'])],
+            'color' => [new OptionalOr(['nullable', 'string', 'max:255'])],
             'icon' => [new OptionalOr(['nullable', 'string', 'max:255'])],
         ];
     }

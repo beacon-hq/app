@@ -4,18 +4,24 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App;
+use App\Services\AppContextService;
 use App\Services\TeamService;
+use App\Values\Organization;
 use App\Values\Team;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
 use Inertia\Response;
-use Session;
 
 class TeamSelectController extends Controller
 {
+    public function __construct(protected AppContextService $appContextService)
+    {
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -29,10 +35,11 @@ class TeamSelectController extends Controller
      */
     public function update(Team $team, TeamService $teamService, Request $request): RedirectResponse
     {
-        $team = $teamService->find($team->id);
+        $team = $teamService->find($team->id, Organization::collect(Auth::user()->organizations));
 
         Session::put('team', $team);
-        App::context(organization: $team->organization, team: $team);
+        $this->appContextService->setOrganization($team->organization);
+        $this->appContextService->setTeam($team);
 
         if ($request->json('previous') !== null) {
             return \redirect()->to($request->json('previous'))->withAlert('success', 'Team changed successfully.');

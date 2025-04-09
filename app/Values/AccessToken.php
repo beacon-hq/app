@@ -34,7 +34,7 @@ readonly class AccessToken extends Bag
     use HasFactory;
 
     public function __construct(
-        #[FromRouteParameter('token')]
+        #[FromRouteParameter('access_token')]
         public Optional|int $id,
         public Optional|string $name,
         public Optional|string $token,

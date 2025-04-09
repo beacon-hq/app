@@ -39,7 +39,7 @@ export enum Color {
 export type Environment = {
     id?: string;
     name?: string;
-    description?: string;
+    description?: string | null;
     color: Color | string;
     last_seen_at: string | null;
 };
@@ -95,10 +95,12 @@ export type FeatureType = {
 };
 export type FeatureTypeCollection = FeatureType[];
 export type Invite = {
+    avatar?: string;
     id?: string;
     email: string;
     role: Role;
     team: Team;
+    organization: Organization;
     user: User;
     expires_at: string;
 };
@@ -169,8 +171,8 @@ export enum Permission {
 export type Policy = {
     id?: string;
     name?: string;
-    description?: string;
     definition?: PolicyDefinitionCollection;
+    description: string | null;
     created_at: string | null;
     updated_at: string | null;
 };
@@ -178,8 +180,8 @@ export type PolicyCollection = Policy[];
 export type PolicyDefinition = {
     type: PolicyDefinitionType;
     subject: string;
-    operator?: PolicyDefinitionMatchOperator;
-    values?: string[];
+    operator: PolicyDefinitionMatchOperator | null;
+    values: string[];
 };
 export type PolicyDefinitionCollection = PolicyDefinition[];
 export enum PolicyDefinitionMatchOperator {

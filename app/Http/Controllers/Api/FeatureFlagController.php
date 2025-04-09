@@ -39,7 +39,7 @@ class FeatureFlagController extends Controller
             return $featureFlagStatusService->getStatus($featureFlag, $context);
         } catch (ModelNotFoundException $e) {
             return FeatureFlagResponse::from(
-                featureFlag:  $featureFlag->id,
+                featureFlag:  $featureFlag->name,
                 value: null,
                 active: false,
             );

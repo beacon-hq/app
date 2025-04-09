@@ -11,6 +11,6 @@ class BeaconEnabled
      */
     public function resolve(mixed $scope): mixed
     {
-        return false;
+        return config('beacon.enabled', false);
     }
 }

@@ -30,22 +30,18 @@ trait BelongsToTeam
 
         static::creating(
             function (Model $model) {
-                if (App::context()->team !== null) {
-                    if (!\method_exists($model, 'teams')) {
-                        /** @phpstan-ignore-next-line property.notFound */
-                        if ($model->team_id === null) {
-                            $model->team_id = App::context()->team->id;
-                        }
+                if (App::context()->has('team') && !\method_exists($model, 'teams')) {
+                    /** @phpstan-ignore-next-line property.notFound */
+                    if ($model->team_id === null) {
+                        $model->team_id = App::context()->team->id;
                     }
                 }
             }
         );
 
         static::created(function (Model $model) {
-            if (App::context()->team !== null) {
-                if (\method_exists($model, 'teams')) {
-                    $model->teams()->attach(App::context()->team->id);
-                }
+            if (App::context()->has('team') && \method_exists($model, 'teams')) {
+                $model->teams()->attach(App::context()->team->id);
             }
         });
     }

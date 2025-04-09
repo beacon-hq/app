@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Services\MailService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Resend;
 
 class IndexController extends Controller
 {
@@ -18,7 +18,7 @@ class IndexController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, MailService $mailService)
     {
         $request->validate([
             'email' => [
@@ -27,14 +27,7 @@ class IndexController extends Controller
             ]
         ]);
 
-        $resend = Resend::client(\config('resend.api_key'));
-        $resend->contacts->create(
-            audienceId: config('resend.audience_id'),
-            parameters: [
-                'email' => $request->string('email'),
-                'unsubscribed' => false
-            ]
-        );
+        $mailService->addContact($request->string('email'));
 
         return back();
     }

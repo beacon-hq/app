@@ -8,7 +8,7 @@ import React, { FormEvent } from 'react';
 export default function Edit({ policy, policies }: { policy: Policy; policies: PolicyCollection }) {
     const subjects: string[] = [];
     const { data, setData, put, errors, processing } = useForm<Policy>({
-        id: undefined,
+        id: policy.id,
         name: policy.name,
         description: policy.description,
         definition: policy.definition,

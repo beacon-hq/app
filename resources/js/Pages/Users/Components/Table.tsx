@@ -16,7 +16,7 @@ import { Badge } from '@/Components/ui/badge';
 import { DataTable, TableOptions } from '@/Components/ui/data-table';
 import { DataTableColumnHeader } from '@/Components/ui/data-table-column-header';
 import { cn } from '@/lib/utils';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { Send, Trash, UserCog } from 'lucide-react';
 import React from 'react';
@@ -36,6 +36,8 @@ export default function Table({
     onManage: (user: User) => void;
     tableOptions: TableOptions;
 }) {
+    const currentUser = usePage().props.auth.user;
+
     const roleColors = {
         [Role.OWNER]: 'border-red-400 bg-red-200 hover:bg-red-300',
         [Role.ADMIN]: 'border-purple-400 bg-purple-200 hover:bg-purple-300',
@@ -60,6 +62,19 @@ export default function Table({
             header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
             enableSorting: true,
             enableHiding: false,
+            cell: ({ cell }) => {
+                const value = cell.getValue();
+                return (
+                    <div className="flex items-center gap-2">
+                        <span>{value}</span>
+                        {cell.row.original.id === currentUser.id && (
+                            <Badge variant="outline" className="text-primary/50 rounded-full bg-yellow-100">
+                                You
+                            </Badge>
+                        )}
+                    </div>
+                );
+            },
         }) as ColumnDef<User>,
         columnHelper.accessor('email', {
             id: 'email',
@@ -126,26 +141,30 @@ export default function Table({
                             />
                         )}
                         <UserCog className="h-6 w-6 cursor-pointer" onClick={() => onManage(row.original)} />
-                        <AlertDialog>
-                            <AlertDialogTrigger>
-                                <Trash className="h-6 w-6 cursor-pointer" />
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Delete User</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        Are you sure you want to delete <strong>{row.original.name}</strong>? This
-                                        action cannot be undone.
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={() => onDelete({ id: row.original.id ?? undefined })}>
-                                        Delete
-                                    </AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
+                        {row.original.id !== currentUser.id && (
+                            <AlertDialog>
+                                <AlertDialogTrigger>
+                                    <Trash className="h-6 w-6 cursor-pointer" />
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Delete User</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Are you sure you want to delete <strong>{row.original.name}</strong>? This
+                                            action cannot be undone.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={() => onDelete({ id: row.original.id ?? undefined })}
+                                        >
+                                            Delete
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        )}
                     </div>
                 );
             },

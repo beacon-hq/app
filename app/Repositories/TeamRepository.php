@@ -7,20 +7,16 @@ namespace App\Repositories;
 use App\Models\Scopes\CurrentOrganizationScope;
 use App\Models\Team;
 use App\Services\UserService;
+use App\Values\Collections\OrganizationCollection;
 use App\Values\Collections\TeamCollection;
 use App\Values\Collections\UserCollection;
 use App\Values\Team as TeamValue;
-use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TeamRepository
 {
-    public function __construct()
-    {
-    }
-
-    public function find(string $id): TeamValue
+    public function find(string $id, OrganizationCollection $organizations): TeamValue
     {
         return TeamValue::from(
             Team::query()
@@ -28,7 +24,7 @@ class TeamRepository
                 ->with(
                     'organization',
                     fn (BelongsTo $query) => $query
-                        ->whereIn('id', Auth::user()->organizations()->pluck('id'))
+                        ->whereIn('id', $organizations->pluck('id'))
                 )
                 ->findOrFail($id)
         );

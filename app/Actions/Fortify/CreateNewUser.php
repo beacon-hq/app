@@ -8,6 +8,7 @@ use App;
 use App\Enums\UserStatus;
 use App\Models\User;
 use App\Services\UserService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -44,17 +45,24 @@ class CreateNewUser implements CreatesNewUsers
 
         Session::put('auth.password_confirmed_at', time());
 
-        return DB::transaction(function () use ($input) {
-            return $this->userService->create(
-                App\Values\User::from(
-                    firstName: $input['first_name'],
-                    lastName: $input['last_name'],
-                    email: $input['email'],
-                    password: $input['password'],
-                    status: UserStatus::ACTIVE,
-                ),
-                Session::has('invite') ? App\Values\Invite::from(Session::get('invite')) : null,
-            );
-        });
+        try {
+            return DB::transaction(function () use ($input) {
+                return $this->userService->create(
+                    App\Values\User::from(
+                        firstName: $input['first_name'],
+                        lastName: $input['last_name'],
+                        email: $input['email'],
+                        password: $input['password'],
+                        status: UserStatus::ACTIVE,
+                    ),
+                    Session::has('invite') ? Session::get('invite') : null,
+                );
+
+            });
+        } catch (\Exception $e) {
+            Auth::hasUser() && Auth::logout();
+
+            throw $e;
+        }
     }
 }

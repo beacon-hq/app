@@ -8,6 +8,7 @@ use App\Http\Controllers\EnvironmentController;
 use App\Http\Controllers\FeatureFlagController;
 use App\Http\Controllers\FeatureTypeController;
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\InviteController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\ProfileController;
@@ -101,6 +102,9 @@ Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
     )->except('create', 'show');
 
     Route::resource('users', UserController::class);
+
+    Route::delete('invites/{invite}', [InviteController::class, 'destroy'])->name('invites.destroy');
+    Route::post('invites/{invite}/resend', [InviteController::class, 'update'])->name('invites.resend');
 
     Route::prefix('policies')->group(function () {
         Route::get('/', [PolicyController::class, 'index'])

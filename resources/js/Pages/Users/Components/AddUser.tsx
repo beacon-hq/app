@@ -19,7 +19,7 @@ import React, { useState } from 'react';
 type NewUserForm = {
     email: string;
     role: Role;
-    team_id: string;
+    team: string;
     [key: string]: string | undefined;
 };
 
@@ -28,7 +28,7 @@ const AddUser = ({ teams }: { teams: Team[] }) => {
     const { data, setData, post, processing, errors, reset } = useForm<NewUserForm>({
         email: '',
         role: Role.DEVELOPER,
-        team_id: '',
+        team: '',
     });
 
     const handleSubmit = () => {
@@ -59,12 +59,10 @@ const AddUser = ({ teams }: { teams: Team[] }) => {
                             id="email"
                             type="email"
                             value={data.email}
-                            onChange={e => setData('email', e.target.value)}
+                            onChange={(e) => setData('email', e.target.value)}
                             placeholder="john@example.com"
                         />
-                        {errors.email && (
-                            <span className="text-sm text-destructive">{errors.email}</span>
-                        )}
+                        {errors.email && <span className="text-sm text-destructive">{errors.email}</span>}
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="role">Role</Label>
@@ -79,16 +77,13 @@ const AddUser = ({ teams }: { teams: Team[] }) => {
                                 <SelectItem value={Role.OWNER}>Owner</SelectItem>
                             </SelectContent>
                         </Select>
-                        {errors.role && (
-                            <span className="text-sm text-destructive">{errors.role}</span>
-                        )}
+                        {errors.role && <span className="text-sm text-destructive">{errors.role}</span>}
                     </div>
                     <div className="grid gap-2">
-                        <Label htmlFor="team">Team <span className="text-destructive">*</span></Label>
-                        <Select
-                            value={data.team_id}
-                            onValueChange={(value) => setData('team_id', value)}
-                        >
+                        <Label htmlFor="team">
+                            Team <span className="text-destructive">*</span>
+                        </Label>
+                        <Select value={data.team} onValueChange={(value) => setData('team', value)}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Select a team" />
                             </SelectTrigger>
@@ -100,19 +95,14 @@ const AddUser = ({ teams }: { teams: Team[] }) => {
                                 ))}
                             </SelectContent>
                         </Select>
-                        {errors.team_id && (
-                            <span className="text-sm text-destructive">{errors.team_id}</span>
-                        )}
+                        {errors.team && <span className="text-sm text-destructive">{errors.team}</span>}
                     </div>
                 </div>
                 <DialogFooter>
                     <DialogClose asChild>
                         <Button variant="secondary">Cancel</Button>
                     </DialogClose>
-                    <Button 
-                        onClick={handleSubmit} 
-                        disabled={processing || !data.email || !data.team_id}
-                    >
+                    <Button onClick={handleSubmit} disabled={processing || !data.email || !data.team}>
                         Send Invite
                     </Button>
                 </DialogFooter>

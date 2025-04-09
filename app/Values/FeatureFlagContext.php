@@ -12,6 +12,7 @@ use Bag\Attributes\MapName;
 use Bag\Bag;
 use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
+use Bag\Validation\Rules\OptionalOr;
 use Bag\Values\Optional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
@@ -45,15 +46,15 @@ readonly class FeatureFlagContext extends Bag
     {
         return [
             'scopeType' => ['nullable', 'string'],
-            'scope' => ['nullable', 'array'],
+            'scope' => [new OptionalOr(['nullable', 'array'])],
             'appName' => ['required', 'string'],
             'environment' => ['required', 'string'],
-            'sessionId' => ['nullable', 'string'],
-            'ip' => ['nullable', 'string'],
-            'userAgent' => ['nullable', 'string'],
-            'referrer' => ['nullable', 'string'],
-            'url' => ['nullable', 'string'],
-            'method' => ['nullable', 'string'],
+            'sessionId' => [new OptionalOr(['nullable', 'string'])],
+            'ip' => [new OptionalOr(['nullable', 'string'])],
+            'userAgent' => [new OptionalOr(['nullable', 'string'])],
+            'referrer' => [new OptionalOr(['nullable', 'string'])],
+            'url' => [new OptionalOr(['nullable', 'string'])],
+            'method' => [new OptionalOr(['nullable', 'string'])],
         ];
     }
 }

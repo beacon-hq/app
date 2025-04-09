@@ -175,9 +175,9 @@ const Sidebar = function (props: { expanded: boolean } & AuthProp) {
                                             <span className="truncate text-xs">{props.auth.user.email}</span>
                                         </div>
                                     </DropdownMenuLabel>
-                                    {Gate.can(Permission.TEAMS_UPDATE) && (
+                                    {Gate.can(Permission.USERS_CREATE) && (
                                         <DropdownMenuItem asChild>
-                                            <Link className="w-full text-left" href={route('teams.index')}>
+                                            <Link className="w-full text-left" href={route('users.index')}>
                                                 <Sparkles className="stroke-yellow-500" />
                                                 Invite a team member…
                                             </Link>

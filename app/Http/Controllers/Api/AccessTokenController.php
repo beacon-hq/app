@@ -16,7 +16,7 @@ class AccessTokenController extends Controller
 {
     public function store(AccessToken $accessToken, AccessTokenService $accessTokenService): JsonResponse
     {
-        Gate::authorize('update', $accessToken);
+        Gate::authorize('create', $accessToken);
 
         return response()->json($accessTokenService->create($accessToken));
     }

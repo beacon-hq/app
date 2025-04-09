@@ -8,9 +8,11 @@ use App\Models\Organization as OrganizationModel;
 use App\Values\Collections\OrganizationCollection;
 use Bag\Attributes\Collection;
 use Bag\Attributes\Laravel\FromRouteParameter;
+use Bag\Attributes\MapName;
 use Bag\Attributes\StripExtraParameters;
 use Bag\Attributes\Transforms;
 use Bag\Bag;
+use Bag\Mappers\SnakeCase;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
@@ -18,6 +20,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
  * @method static OrganizationCollection<Organization> collect(iterable $items)
  */
 #[Collection(OrganizationCollection::class)]
+#[MapName(SnakeCase::class, SnakeCase::class)]
 #[StripExtraParameters]
 #[TypeScript]
 readonly class Organization extends Bag

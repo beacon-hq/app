@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Services\TeamService;
+use App\Values\Organization;
 use App\Values\Team;
 use App\Values\User;
 use Bag\Attributes\WithoutValidation;
@@ -48,7 +49,7 @@ class TeamController extends Controller
         Gate::authorize('update', $team);
 
         return Inertia::render('Teams/Edit', [
-            'team' => $team = $this->teamService->find($team->id),
+            'team' => $team = $this->teamService->find($team->id, Organization::collect(Auth::user()->organizations)),
             'users' => $this->teamService->nonMembers($team),
             'members' => $this->teamService->members(
                 $team,

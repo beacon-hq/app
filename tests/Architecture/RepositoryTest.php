@@ -6,7 +6,7 @@ arch()
     ->expect('App\Repositories')
     ->classes()
     ->toHaveSuffix('Repository')
-    ->toOnlyBeUsedIn('App\Services')
+    ->toOnlyBeUsedIn(['App\Services', 'App\Console\Commands'])
     ->toOnlyUse([
         'App\Values',
         'App\Models',

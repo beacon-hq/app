@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Enums\Role;
+use App\Models\Scopes\CurrentOrganizationScope;
 use App\Models\Scopes\CurrentTeamScope;
 use App\Models\User;
 use App\Services\TeamService;
@@ -15,6 +16,7 @@ use App\Values\Team;
 use App\Values\User as UserValue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class UserRepository
@@ -26,7 +28,7 @@ class UserRepository
     public function addTeam(UserValue $user, Team $team): UserValue
     {
         if ($team->id !== null) {
-            $team = $this->teamService->find($team->id);
+            $team = $this->teamService->find($team->id, Organization::collect(Auth::user()->organizations));
         } else {
             $team = $this->teamService->create($team, $user);
         }
@@ -52,7 +54,7 @@ class UserRepository
 
     public function addOrganization(UserValue $user, Organization $organization): UserValue
     {
-        $user = User::withoutGlobalScopes([CurrentTeamScope::class])->find($user->id);
+        $user = User::withoutGlobalScopes([CurrentOrganizationScope::class, CurrentTeamScope::class])->findOrFail($user->id);
         $user->organizations()->syncWithoutDetaching($organization->id);
 
         return UserValue::from($user);
@@ -66,7 +68,7 @@ class UserRepository
         return UserValue::from($user);
     }
 
-    public function teamMembers(Team $team, array|string $orderBy = ['name'], ?int $page, int $perPage, array $filters): UserCollection
+    public function teamMembers(Team $team, array|string $orderBy = ['name'], ?int $page = null, int $perPage = null, array $filters = []): UserCollection
     {
         $filters['teams'][] = $team->id;
 
@@ -82,7 +84,11 @@ class UserRepository
 
     public function create(UserValue $user): UserValue
     {
-        return UserValue::from(User::create($user->toArray()));
+        $user = User::create($user->toArray());
+
+        Auth::login($user);
+
+        return UserValue::from($user);
     }
 
     public function all(array $orderBy = ['first_name', 'last_name'], array $filters = [], ?int $page = null, int $perPage = 20): UserCollection

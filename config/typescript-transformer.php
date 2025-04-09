@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Values\TypescriptTransformer;
+use Bag\TypeScript\BagTransformer;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
@@ -41,7 +41,7 @@ return [
     'transformers' => [
         SpatieStateTransformer::class,
         EnumTransformer::class,
-        TypescriptTransformer::class,
+        BagTransformer::class,
     ],
 
     /*

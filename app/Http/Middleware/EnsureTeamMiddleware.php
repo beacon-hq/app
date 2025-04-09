@@ -20,7 +20,7 @@ class EnsureTeamMiddleware
             return $next($request);
         }
 
-        if (!Session::has('team')) {
+        if (!Session::has('team') || Session::get('team') === null) {
             if (Auth::user() instanceof Team) {
                 Session::put('team', Auth::user());
             } else {

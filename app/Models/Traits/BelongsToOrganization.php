@@ -30,22 +30,18 @@ trait BelongsToOrganization
 
         static::creating(
             function (Model $model) {
-                if (App::context()->organization !== null) {
-                    if (!\method_exists($model, 'organizations')) {
-                        /** @phpstan-ignore-next-line property.notFound */
-                        if ($model->organization_id === null) {
-                            $model->organization_id = App::context()->organization->id;
-                        }
+                if (App::context()->has('organization') && !\method_exists($model, 'organizations')) {
+                    /** @phpstan-ignore-next-line property.notFound */
+                    if ($model->organization_id === null) {
+                        $model->organization_id = App::context()->organization->id;
                     }
                 }
             }
         );
 
         static::created(function (Model $model) {
-            if (App::context()->organization !== null) {
-                if (\method_exists($model, 'organizations')) {
-                    $model->teams()->attach(App::context()->organization->id);
-                }
+            if (App::context()->has('organization') && \method_exists($model, 'organizations')) {
+                $model->teams()->attach(App::context()->organization->id);
             }
         });
     }

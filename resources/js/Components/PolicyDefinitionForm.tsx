@@ -69,7 +69,7 @@ export function PolicyDefinitionForm({
     }, [definitions]);
 
     const onSortEnd = (oldIndex: number, newIndex: number) => {
-        setDefinitions(arrayMove(data?.definition ?? [], oldIndex, newIndex));
+        setDefinitions(arrayMove(definitions, oldIndex, newIndex));
     };
 
     const handleAddNew = () => {
@@ -124,16 +124,13 @@ export function PolicyDefinitionForm({
                                     <Select
                                         value={definition.type}
                                         onValueChange={(value) => {
-                                            let definitions =
-                                                data.definition?.map((item: PolicyDefinition, index: number) => {
-                                                    if (index === id) {
-                                                        return { ...item, subject: '', type: value };
-                                                    }
-
-                                                    return item;
-                                                }) ?? [];
-
-                                            return setDefinitions(definitions as PolicyDefinitionCollection);
+                                            let updatedDefinitions = definitions.map((item: PolicyDefinition, index: number) => {
+                                                if (index === id) {
+                                                    return { ...item, subject: '', type: value };
+                                                }
+                                                return item;
+                                            });
+                                            return setDefinitions(updatedDefinitions as PolicyDefinitionCollection);
                                         }}
                                     >
                                         <SelectTrigger id={`type_${id}`}>
@@ -163,23 +160,18 @@ export function PolicyDefinitionForm({
                                                         autoComplete="off"
                                                         placeholder="Context property"
                                                         onChange={function (e) {
-                                                            let definitions =
-                                                                data.definition?.map(
-                                                                    (item: PolicyDefinition, index: number) => {
-                                                                        if (index === id) {
-                                                                            return {
-                                                                                ...item,
-                                                                                subject: e.target.value,
-                                                                            };
-                                                                        }
-
-                                                                        return item;
-                                                                    },
-                                                                ) ?? [];
-
-                                                            return setDefinitions(
-                                                                definitions as PolicyDefinitionCollection,
+                                                            let updatedDefinitions = definitions.map(
+                                                                (item: PolicyDefinition, index: number) => {
+                                                                    if (index === id) {
+                                                                        return {
+                                                                            ...item,
+                                                                            subject: e.target.value,
+                                                                        };
+                                                                    }
+                                                                    return item;
+                                                                }
                                                             );
+                                                            return setDefinitions(updatedDefinitions as PolicyDefinitionCollection);
                                                         }}
                                                     />
                                                 </div>
@@ -192,19 +184,15 @@ export function PolicyDefinitionForm({
                                                     name={`operator_${id}`}
                                                     value={definition.operator}
                                                     onValueChange={(value) => {
-                                                        let definitions = data.definition?.map(
+                                                        let updatedDefinitions = definitions.map(
                                                             (item: PolicyDefinition, index: number) => {
                                                                 if (index === id) {
                                                                     return { ...item, operator: value };
                                                                 }
-
                                                                 return item;
-                                                            },
+                                                            }
                                                         );
-
-                                                        return setDefinitions(
-                                                            definitions as PolicyDefinitionCollection,
-                                                        );
+                                                        return setDefinitions(updatedDefinitions as PolicyDefinitionCollection);
                                                     }}
                                                 >
                                                     <SelectTrigger id={`operator_${id}`}>
@@ -236,18 +224,15 @@ export function PolicyDefinitionForm({
                                                 name={`subject_${id}`}
                                                 value={definition.subject}
                                                 onValueChange={(value) => {
-                                                    let definitions =
-                                                        data.definition?.map(
-                                                            (item: PolicyDefinition, index: number) => {
-                                                                if (index === id) {
-                                                                    return { ...item, subject: value };
-                                                                }
-
-                                                                return item;
-                                                            },
-                                                        ) ?? [];
-
-                                                    return setDefinitions(definitions);
+                                                    let updatedDefinitions = definitions.map(
+                                                        (item: PolicyDefinition, index: number) => {
+                                                            if (index === id) {
+                                                                return { ...item, subject: value };
+                                                            }
+                                                            return item;
+                                                        }
+                                                    );
+                                                    return setDefinitions(updatedDefinitions);
                                                 }}
                                             >
                                                 <SelectTrigger>
@@ -294,18 +279,15 @@ export function PolicyDefinitionForm({
                                                 name={`subject_${id}`}
                                                 value={definition.subject}
                                                 onValueChange={(value) => {
-                                                    let definitions =
-                                                        data.definition?.map(
-                                                            (item: PolicyDefinition, index: number) => {
-                                                                if (index === id) {
-                                                                    return { ...item, subject: value };
-                                                                }
-
-                                                                return item;
-                                                            },
-                                                        ) ?? [];
-
-                                                    return setDefinitions(definitions as PolicyDefinitionCollection);
+                                                    let updatedDefinitions = definitions.map(
+                                                        (item: PolicyDefinition, index: number) => {
+                                                            if (index === id) {
+                                                                return { ...item, subject: value };
+                                                            }
+                                                            return item;
+                                                        }
+                                                    );
+                                                    return setDefinitions(updatedDefinitions as PolicyDefinitionCollection);
                                                 }}
                                             >
                                                 <SelectTrigger>
@@ -333,15 +315,13 @@ export function PolicyDefinitionForm({
                                             key={`policy_value_editor_${id}`}
                                             value={definition.values ?? null}
                                             setValue={(values) => {
-                                                let definitions =
-                                                    data.definition?.map((item: PolicyDefinition, index: number) => {
-                                                        if (index === id) {
-                                                            return { ...item, values };
-                                                        }
-                                                        return item;
-                                                    }) ?? [];
-
-                                                return setDefinitions(definitions as PolicyDefinitionCollection);
+                                                let updatedDefinitions = definitions.map((item: PolicyDefinition, index: number) => {
+                                                    if (index === id) {
+                                                        return { ...item, values };
+                                                    }
+                                                    return item;
+                                                });
+                                                return setDefinitions(updatedDefinitions as PolicyDefinitionCollection);
                                             }}
                                             allowMultiple={
                                                 !definition.operator
@@ -356,31 +336,30 @@ export function PolicyDefinitionForm({
                                     <SortableKnob>
                                         <SortableThumb
                                             className={cn({
-                                                'text-primary/20 cursor-not-allowed': data.definition?.length === 1,
-                                                'cursor-move': (data.definition?.length as number) > 1,
+                                                'text-primary/20 cursor-not-allowed': definitions.length === 1,
+                                                'cursor-move': definitions.length > 1,
                                             })}
                                         />
                                     </SortableKnob>
                                     <Trash
                                         className={cn({
-                                            'text-primary/20 cursor-not-allowed': data.definition?.length === 1,
-                                            'cursor-pointer': (data.definition?.length as number) > 1,
+                                            'text-primary/20 cursor-not-allowed': definitions.length === 1,
+                                            'cursor-pointer': definitions.length > 1,
                                         })}
                                         onClick={() => {
-                                            if (data.definition?.length === 1) {
+                                            if (definitions.length === 1) {
                                                 return;
                                             }
 
-                                            let definitions =
-                                                data.definition
-                                                    ?.filter((item: PolicyDefinition, index: number) => index !== id)
-                                                    .slice() ?? [];
-                                            return setDefinitions(definitions as PolicyDefinitionCollection);
+                                            let updatedDefinitions = definitions.filter(
+                                                (item: PolicyDefinition, index: number) => index !== id
+                                            );
+                                            return setDefinitions(updatedDefinitions as PolicyDefinitionCollection);
                                         }}
                                     />
                                 </div>
                             </div>
-                            {id < (data.definition?.length ?? 1) - 1 && <Separator className="mt-2" />}
+                            {id < definitions.length - 1 && <Separator className="mt-2" />}
                         </div>
                     </SortableItem>
                 ))}

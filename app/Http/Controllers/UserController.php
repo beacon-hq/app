@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\Role;
 use App\Enums\UserStatus;
+use App\Services\AppContextService;
 use App\Services\InviteService;
 use App\Services\TeamService;
 use App\Services\UserService;
@@ -16,6 +17,7 @@ use Bag\Attributes\WithoutValidation;
 use Gate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -26,6 +28,7 @@ class UserController extends Controller
         protected UserService $userService,
         protected TeamService $teamService,
         protected InviteService $inviteService,
+        protected AppContextService $appContextService,
     ) {
     }
 
@@ -40,6 +43,7 @@ class UserController extends Controller
                 $request->integer('page', 1),
                 $request->integer('perPage', 20),
             ),
+            'invites' => $this->inviteService->all(),
             'teams' => $this->teamService->all(),
             'filters' => $request->get('filters', []),
             'page' => $request->integer('page', 1),
@@ -47,15 +51,16 @@ class UserController extends Controller
         ]);
     }
 
-    public function store(Request $request, Team $team): RedirectResponse
+    public function store(Request $request): HttpResponse|RedirectResponse
     {
         Gate::authorize('create', User::class);
 
         $this->inviteService->create(
             User::from(Auth::user()),
-            $team,
+            Team::from(id: $request->string('team')),
+            $this->appContextService->getContext()->organization,
             $request->input('email'),
-            $request->input('role'),
+            Role::tryFrom($request->input('role')),
         );
 
         return redirect()->route('users.index')
