@@ -38,4 +38,9 @@ class FeatureFlagService
     {
         return $this->featureFlagRepository->find($id);
     }
+
+    public function touch(FeatureFlag $featureFlag)
+    {
+        return $this->featureFlagRepository->update($featureFlag->with(lastSeenAt: now()));
+    }
 }

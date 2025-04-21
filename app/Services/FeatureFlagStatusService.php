@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Events\FeatureFlagEvaluated;
 use App\Repositories\FeatureFlagRepository;
 use App\Repositories\FeatureFlagStatusRepository;
 use App\Values\FeatureFlag;
@@ -24,6 +25,15 @@ class FeatureFlagStatusService
             'environment' => $context->environment,
         ]);
 
-        return $this->featureFlagStatusRepository->first($featureFlag, $context);
+        $response = $this->featureFlagStatusRepository->first($featureFlag, $context);
+
+        // Dispatch the feature flag evaluation event
+        defer(fn () => FeatureFlagEvaluated::dispatch(
+            featureFlag: $featureFlag,
+            response: $response,
+            context: $context,
+        ));
+
+        return $response;
     }
 }

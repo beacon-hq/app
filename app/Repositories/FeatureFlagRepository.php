@@ -72,7 +72,8 @@ class FeatureFlagRepository
         $data = $featureFlag
             ->toCollection()
             ->put('feature_type_id', $featureFlag->featureType->id)
-            ->except('name', 'id', 'tags', 'feature_type', 'created_at', 'updated_at', 'last_seen_at')
+            ->except('name', 'id', 'tags', 'feature_type', 'created_at', 'updated_at')
+            ->filter(fn ($value, $key) => $key !== 'last_seen_at' || $value !== null)
             ->toArray();
 
         $flag->update($data);
@@ -98,7 +99,7 @@ class FeatureFlagRepository
 
             $flag->statuses()->sync($statuses->pluck('id'));
 
-            FeatureFlagStatus::where('feature_flag_id', $featureFlagId)->whereNotIn('id', $statuses->pluck('id'))->delete();
+            FeatureFlagStatus::where('feature_flag_id', $featureFlag->id)->whereNotIn('id', $statuses->pluck('id'))->delete();
         }
 
         return $featureFlag;

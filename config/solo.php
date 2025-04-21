@@ -55,7 +55,7 @@ return [
         // Lazy commands do no automatically start when Solo starts.
         // 'Dumps' => Command::from('./vendor/bin/sail artisan solo:dumps')->lazy(),
         'Pint' => Command::from('./vendor/bin/sail pint')->lazy(),
-        'Queue' => Command::from('./vendor/bin/sail artisan queue:work')->lazy(),
+        'Horizon' => Command::from('./vendor/bin/sail artisan horizon'),
         'Typescript' => Command::from('./vendor/bin/sail artisan typescript:transform')->lazy(),
     ],
 
