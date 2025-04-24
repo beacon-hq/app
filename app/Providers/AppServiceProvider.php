@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Events\OrganizationChangedEvent;
+use App\Events\TeamChangedEvent;
 use App\Models\AccessToken;
 use App\Models\Organization;
 use App\Models\Team;
@@ -35,7 +37,10 @@ class AppServiceProvider extends ServiceProvider
                     $organization = OrganizationValue::from($organization);
                 }
 
-                $context = $context->with(organization: $organization);
+                if ($context->has('organization') && $context->organization->id !== $organization->id) {
+                    $context = $context->with(organization: $organization);
+                    OrganizationChangedEvent::dispatch($organization);
+                }
             }
 
             if ($team !== null) {
@@ -43,7 +48,10 @@ class AppServiceProvider extends ServiceProvider
                     $team = TeamValue::from($team);
                 }
 
-                $context = $context->with(team: $team);
+                if ($context->has('team') && $context->team->id !== $team->id) {
+                    $context = $context->with(team: $team);
+                    TeamChangedEvent::dispatch($team);
+                }
             }
 
             app()->singleton(AppContext::class, fn () => $context);

@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Events\FeatureFlagEvaluated;
 use App\Http\Controllers\AccessTokenController;
 use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnvironmentController;
 use App\Http\Controllers\FeatureFlagController;
 use App\Http\Controllers\FeatureTypeController;
@@ -17,15 +19,29 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TeamMemberManageController;
 use App\Http\Controllers\UserController;
+use App\Models\Application;
+use App\Models\Environment;
+use App\Values\FeatureFlag;
+use App\Values\FeatureFlagContext;
+use App\Values\FeatureFlagResponse;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+use Illuminate\Support\Lottery;
+
+Route::get('/test', function () {
+    $flag = FeatureFlag::from(\App\Models\FeatureFlag::inRandomOrder()->first());
+    $c = FeatureFlagContext::from([
+        'appName' => Application::inRandomOrder()->first()->name,
+        'environment' => Environment::inRandomOrder()->first()->name,
+    ]);
+    $r = FeatureFlagResponse::from($flag->name, null, Lottery::odds(8, 10)->choose());
+
+    FeatureFlagEvaluated::dispatch($flag, $c, $r);
+})->name('test');
 
 Route::get('/', [IndexController::class, 'index'])->name('welcome');
 Route::post('/subscribe', [IndexController::class, 'store'])->name('subscribe');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

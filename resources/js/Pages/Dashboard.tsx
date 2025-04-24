@@ -1,4 +1,5 @@
-import { Alert, AlertDescription, AlertTitle } from '@/Components/ui/alert';
+import { Color } from '@/Application';
+import { IconColor } from '@/Components/IconColor';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/Components/ui/card';
 import {
     ChartConfig,
@@ -14,14 +15,69 @@ import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { DotFilledIcon } from '@radix-ui/react-icons';
 import { ColumnDef, ColumnSort, createColumnHelper } from '@tanstack/react-table';
-import { AlertCircle, ArrowDownLeft, ArrowRight, ArrowUpRight, TrendingDown, TrendingUp } from 'lucide-react';
-import { Area, AreaChart, CartesianGrid, Label, Line, LineChart, Pie, PieChart, XAxis, YAxis } from 'recharts';
+import { ArrowDownLeft, ArrowRight, ArrowUpRight, TrendingDown, TrendingUp } from 'lucide-react';
+import {
+    Area,
+    AreaChart,
+    CartesianGrid,
+    Label,
+    LabelList,
+    Line,
+    LineChart,
+    Pie,
+    PieChart,
+    XAxis,
+    YAxis,
+} from 'recharts';
 
-const flagStatusData = [
-    { state: 'active', flags: 275, fill: 'var(--color-active)' },
-    { state: 'stale', flags: 200, fill: 'var(--color-stale)' },
-    { state: 'inactive', flags: 35, fill: 'var(--color-inactive)' },
-];
+// Dashboard metrics interface
+interface DashboardMetricValue {
+    value: number;
+    previous: {
+        value: number;
+        type?: 'increase' | 'decrease';
+        difference?: number;
+        percentage?: number;
+    };
+}
+
+interface DashboardMetrics {
+    totalFlags: DashboardMetricValue;
+    changesMetrics: DashboardMetricValue;
+    createdMetrics: DashboardMetricValue;
+    archivedMetrics: DashboardMetricValue;
+    flagStatusData: Array<{
+        state: string;
+        flags: number;
+        fill: string;
+    }>;
+    flagTypeData: Array<{
+        type: string;
+        flags: number;
+        fill: string;
+    }>;
+    ageData: Array<{
+        month: string;
+        age: number;
+    }>;
+    usageOverTimeData: Array<{
+        month: string;
+        active: number;
+        inactive: number;
+    }>;
+    usageData: Array<{
+        color: string;
+        application: string;
+        name: string;
+        usages: number;
+    }>;
+    oldestData: Array<{
+        application: string;
+        name: string;
+        created_at: string;
+    }>;
+}
+
 const flagStatusChartConfig = {
     flags: {
         label: 'Known Flags',
@@ -40,34 +96,15 @@ const flagStatusChartConfig = {
     },
 } satisfies ChartConfig;
 
-const flagTypeData = [
-    { type: 'release', flags: 160, fill: 'var(--color-release)' },
-    { type: 'kill', flags: 30, fill: 'var(--color-kill)' },
-    { type: 'experiment', flags: 213, fill: 'var(--color-experiment)' },
-];
-const flagTypeChartConfig = {
-    release: {
-        label: 'Release',
-        color: 'var(--chart-1)',
+let flagTypeChartConfig: Record<string, { label: string }> = {
+    type: {
+        label: 'Flag Type',
     },
-    kill: {
-        label: 'Kill Switch',
-        color: 'var(--chart-2)',
+    operational: {
+        label: 'Operational',
     },
-    experiment: {
-        label: 'Experiment',
-        color: 'var(--chart-3)',
-    },
-} satisfies ChartConfig;
+};
 
-const ageData = [
-    { month: 'January', age: 186 },
-    { month: 'February', age: 305 },
-    { month: 'March', age: 237 },
-    { month: 'April', age: 73 },
-    { month: 'May', age: 209 },
-    { month: 'June', age: 214 },
-];
 const ageChartConfig = {
     age: {
         label: 'Days Old',
@@ -75,14 +112,6 @@ const ageChartConfig = {
     },
 } satisfies ChartConfig;
 
-const usageOverTimeData = [
-    { month: 'January', active: 186, inactive: 20 },
-    { month: 'February', active: 305, inactive: 10 },
-    { month: 'March', active: 237, inactive: 30 },
-    { month: 'April', active: 73, inactive: 40 },
-    { month: 'May', active: 209, inactive: 50 },
-    { month: 'June', active: 214, inactive: 60 },
-];
 const usageOverTimeChartConfig = {
     active: {
         label: 'Active',
@@ -100,12 +129,28 @@ const usageColumns: ColumnDef<any, any>[] = [
     columnHelper.display({
         id: 'flag',
         header: () => <div className="text-left">Flag</div>,
-        cell: function ({ row }) {
+        cell: function ({
+            row,
+        }: {
+            row: {
+                original: {
+                    name: string;
+                    application: { name: string; color: Color | string };
+                    feature_type: { icon: string; color: Color | string };
+                };
+            };
+        }) {
             return (
                 <div className="flex">
-                    {(row.original as any).application}
+                    <IconColor color={row.original.application.color} className="mr-2 h-4 w-4 rounded-full" />
+                    {row.original.application.name}
                     <ArrowRight className="h-4 w-4 pt-2 align-middle" />
-                    {(row.original as any).name}
+                    <IconColor
+                        color={row.original.feature_type.color}
+                        icon={row.original.feature_type.icon}
+                        className="mr-2 h-4 w-4 rounded-full"
+                    />
+                    {row.original.name}
                 </div>
             );
         },
@@ -120,48 +165,31 @@ const usageColumns: ColumnDef<any, any>[] = [
     }) as ColumnDef<any, any>,
 ];
 
-const usageData = [
-    {
-        application: 'Application A',
-        name: 'Feature A',
-        usages: 500,
-    },
-    {
-        application: 'Application A',
-        name: 'Feature F',
-        usages: 600,
-    },
-    {
-        application: 'Application B',
-        name: 'Feature C',
-        usages: 700,
-    },
-    {
-        application: 'Application B',
-        name: 'Feature H',
-        usages: 800,
-    },
-    {
-        application: 'Application C',
-        name: 'Feature D',
-        usages: 900,
-    },
-    {
-        application: 'Application C',
-        name: 'Feature J',
-        usages: 1000,
-    },
-];
-
 const oldestColumns: ColumnDef<any, any>[] = [
     columnHelper.display({
         id: 'flag',
         header: () => <div className="text-left">Flag</div>,
-        cell: function ({ row }) {
+        cell: function ({
+            row,
+        }: {
+            row: {
+                original: {
+                    name: string;
+                    application: { name: string; color: Color | string };
+                    feature_type: { icon: string; color: Color | string };
+                };
+            };
+        }) {
             return (
                 <div className="flex">
-                    {(row.original as any).application}
+                    <IconColor color={row.original.application.color} className="mr-2 h-4 w-4 rounded-full" />
+                    {row.original.application.name}
                     <ArrowRight className="h-4 w-4 pt-2 align-middle" />
+                    <IconColor
+                        color={row.original.feature_type.color}
+                        icon={row.original.feature_type.icon}
+                        className="mr-2 h-4 w-4 rounded-full"
+                    />
                     {(row.original as any).name}
                 </div>
             );
@@ -177,98 +205,117 @@ const oldestColumns: ColumnDef<any, any>[] = [
     }) as ColumnDef<any, any>,
 ];
 
-const oldestData = [
-    {
-        application: 'Application A',
-        name: 'Feature A',
-        created_at: '2021-01-01',
-    },
-    {
-        application: 'Application A',
-        name: 'Feature F',
-        created_at: '2023-04-18',
-    },
-    {
-        application: 'Application B',
-        name: 'Feature C',
-        created_at: '2024-12-24',
-    },
-    {
-        application: 'Application B',
-        name: 'Feature H',
-        created_at: '2023-01-16',
-    },
-    {
-        application: 'Application C',
-        name: 'Feature D',
-        created_at: '2022-07-04',
-    },
-    {
-        application: 'Application C',
-        name: 'Feature J',
-        created_at: '2021-01-01',
-    },
-];
+interface DashboardProps {
+    metrics: DashboardMetrics;
+}
 
-export default function Dashboard() {
+const defaultMetrics: DashboardMetrics = {
+    totalFlags: {
+        value: 0,
+        previous: {
+            value: 0,
+            type: 'increase',
+            difference: 0,
+            percentage: 0,
+        },
+    },
+    changesMetrics: {
+        value: 0,
+        previous: {
+            value: 0,
+            type: 'increase',
+            difference: 0,
+            percentage: 0,
+        },
+    },
+    createdMetrics: {
+        value: 0,
+        previous: {
+            value: 0,
+            type: 'increase',
+            difference: 0,
+            percentage: 0,
+        },
+    },
+    archivedMetrics: {
+        value: 0,
+        previous: {
+            value: 0,
+            type: 'increase',
+            difference: 0,
+            percentage: 0,
+        },
+    },
+    flagStatusData: [],
+    flagTypeData: [],
+    ageData: [],
+    usageOverTimeData: [],
+    usageData: [],
+    oldestData: [],
+};
+
+function chartKey(value: string): string {
+    return value.replace(' ', '_').toLowerCase();
+}
+
+function MetricCard({ title, metric }: { title: string; metric: DashboardMetricValue }) {
+    return (
+        <Card className="flex flex-col p-4">
+            <h2 className="mb-4 text-2xl font-bold">{title}</h2>
+            <div className="grid grid-cols-2">
+                <p className="text-4xl">{metric.value}</p>
+                <div>
+                    <p>
+                        {metric.previous.type === undefined && (
+                            <DotFilledIcon className="mr-4 inline-block h-6 w-6 text-neutral-400" />
+                        )}
+                        {metric.previous.type === 'increase' && (
+                            <ArrowUpRight className="mr-4 inline-block h-6 w-6 text-green-400" />
+                        )}
+                        {metric.previous.type === 'decrease' && (
+                            <ArrowDownLeft className="mr-4 inline-block h-6 w-6 text-red-400" />
+                        )}
+                        {metric.previous.type !== undefined && metric.previous.type === 'increase' ? '+' : '-'}
+                        {metric.previous.value}
+                    </p>
+                    <p>this month</p>
+                </div>
+            </div>
+        </Card>
+    );
+}
+
+export default function Dashboard({ metrics = defaultMetrics }: DashboardProps) {
+    // Use provided metrics or fallback to defaults
+    let dashboardMetrics = metrics || defaultMetrics;
+
+    dashboardMetrics.flagTypeData = dashboardMetrics.flagTypeData.map(function (item) {
+        return {
+            ...item,
+            fill:
+                item.fill.startsWith('#') || item.fill.startsWith('var(--color-')
+                    ? item.fill
+                    : `var(--color-${item.fill}-400)`,
+        };
+    });
+
+    dashboardMetrics.flagTypeData.forEach((item) => {
+        flagTypeChartConfig[chartKey(item.type)] = {
+            label: item.type,
+        };
+    });
+
     return (
         <Authenticated header="Dashboard" icon="Gauge">
             <Head title="Dashboard" />
 
-            <Alert variant="info" className="mt-6">
-                <AlertCircle />
-                <AlertTitle>For Demo Purposes Only</AlertTitle>
-                <AlertDescription>This page is currently for demo purposes only!</AlertDescription>
-            </Alert>
-
             <div className="mt-4">
                 <div className="overflow-hidden">
                     <div className="mx-auto grid grid-cols-2 justify-center gap-6 lg:grid-cols-4">
-                        <Card className="flex flex-col p-4">
-                            <h2 className="mb-4 text-2xl font-bold">Total Flags</h2>
-                            <div className="grid grid-cols-2">
-                                <p className="text-4xl">510</p>
-                            </div>
-                        </Card>
-                        <Card className="flex flex-col p-4">
-                            <h2 className="mb-4 text-2xl font-bold">Changes</h2>
-                            <div className="grid grid-cols-2">
-                                <p className="text-4xl">16</p>
-                                <div className="">
-                                    <p>
-                                        <ArrowUpRight className="mr-4 inline-block h-6 w-6 text-green-400" />
-                                        +4
-                                    </p>
-                                    <p>this month</p>
-                                </div>
-                            </div>
-                        </Card>
-                        <Card className="flex flex-col p-4">
-                            <h2 className="mb-4 text-2xl font-bold">Created</h2>
-                            <div className="grid grid-cols-2">
-                                <p className="text-4xl">12</p>
-                                <div className="">
-                                    <p>
-                                        <ArrowDownLeft className="mr-4 inline-block h-6 w-6 text-red-400" />
-                                        -2
-                                    </p>
-                                    <p>this month</p>
-                                </div>
-                            </div>
-                        </Card>
-                        <Card className="flex flex-col p-4">
-                            <h2 className="mb-4 text-2xl font-bold">Archived</h2>
-                            <div className="grid grid-cols-2">
-                                <p className="text-4xl">4</p>
-                                <div className="">
-                                    <p className="grid grid-cols-2">
-                                        <DotFilledIcon className="mr-4 inline-block h-6 w-6 text-neutral-400" />
-                                        +0
-                                    </p>
-                                    <p>this month</p>
-                                </div>
-                            </div>
-                        </Card>
+                        <MetricCard title="Total Flags" metric={dashboardMetrics.totalFlags} />
+                        <MetricCard title="Changes" metric={dashboardMetrics.changesMetrics} />
+                        <MetricCard title="Created" metric={dashboardMetrics.createdMetrics} />
+                        <MetricCard title="Archived" metric={dashboardMetrics.archivedMetrics} />
                     </div>
                     <div className="mt-4 grid grid-cols-1 justify-center gap-6 lg:grid-cols-3">
                         <Card className="flex h-80 flex-col">
@@ -284,7 +331,7 @@ export default function Dashboard() {
                                     <PieChart>
                                         <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
                                         <Pie
-                                            data={flagStatusData}
+                                            data={dashboardMetrics.flagStatusData}
                                             dataKey="flags"
                                             nameKey="state"
                                             innerRadius={60}
@@ -328,13 +375,13 @@ export default function Dashboard() {
                         <Card className="h-80 lg:col-span-2">
                             <CardHeader>
                                 <CardTitle>Average Flag Age</CardTitle>
-                                <CardDescription>January - June 2024</CardDescription>
+                                <CardDescription>Last 6 Months</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <ChartContainer config={ageChartConfig} className="h-36 w-full">
                                     <LineChart
                                         accessibilityLayer
-                                        data={ageData}
+                                        data={dashboardMetrics.ageData}
                                         margin={{
                                             left: 0,
                                             right: 0,
@@ -361,12 +408,25 @@ export default function Dashboard() {
                                 </ChartContainer>
                             </CardContent>
                             <CardFooter className="flex-col items-start gap-2 text-sm">
-                                <div className="flex gap-2 font-medium leading-none">
-                                    Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-                                </div>
-                                <div className="text-muted-foreground leading-none">
-                                    Showing total visitors for the last 6 months
-                                </div>
+                                {dashboardMetrics.ageData.length > 1 && (
+                                    <>
+                                        <div className="flex gap-2 font-medium leading-none">
+                                            {dashboardMetrics.ageData[dashboardMetrics.ageData.length - 1].age >
+                                            dashboardMetrics.ageData[dashboardMetrics.ageData.length - 2].age ? (
+                                                <>
+                                                    Trending up this month <TrendingUp className="h-4 w-4" />
+                                                </>
+                                            ) : (
+                                                <>
+                                                    Trending down this month <TrendingDown className="h-4 w-4" />
+                                                </>
+                                            )}
+                                        </div>
+                                        <div className="text-muted-foreground leading-none">
+                                            Showing average age for the last 6 months
+                                        </div>
+                                    </>
+                                )}
                             </CardFooter>
                         </Card>
                         <Card className="flex h-80 flex-col">
@@ -378,60 +438,35 @@ export default function Dashboard() {
                                     config={flagTypeChartConfig}
                                     className="mx-auto aspect-square max-h-[250px]"
                                 >
-                                    <PieChart>
+                                    <PieChart accessibilityLayer>
                                         <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-                                        <Pie data={flagTypeData} dataKey="flags" nameKey="type" strokeWidth={5}></Pie>
-                                        <ChartLegend content={<ChartLegendContent />} />
+                                        <Pie
+                                            data={dashboardMetrics.flagTypeData}
+                                            dataKey="flags"
+                                            nameKey="type"
+                                            strokeWidth={5}
+                                        >
+                                            <LabelList
+                                                dataKey="type"
+                                                className="fill-background"
+                                                stroke="none"
+                                                fontSize={12}
+                                            />
+                                        </Pie>
                                     </PieChart>
                                 </ChartContainer>
                             </CardContent>
                         </Card>
-                        <Card className="flex h-80 flex-col">
-                            <CardHeader className="items-center pb-0">
-                                <CardTitle>Top Usage</CardTitle>
-                            </CardHeader>
-                            <CardContent className="flex-1 overflow-x-scroll pb-0">
-                                <DataTable
-                                    columns={usageColumns}
-                                    data={usageData}
-                                    sortBy={[
-                                        {
-                                            id: 'usages',
-                                            desc: true,
-                                        } as ColumnSort,
-                                    ]}
-                                    pageSize={5}
-                                ></DataTable>
-                            </CardContent>
-                        </Card>
-                        <Card className="flex h-80 flex-col">
-                            <CardHeader className="items-center pb-0">
-                                <CardTitle>Oldest Flags</CardTitle>
-                            </CardHeader>
-                            <CardContent className="flex-1 overflow-x-scroll pb-0">
-                                <DataTable
-                                    columns={oldestColumns}
-                                    data={oldestData}
-                                    sortBy={[
-                                        {
-                                            id: 'created_at',
-                                            desc: false,
-                                        } as ColumnSort,
-                                    ]}
-                                    pageSize={5}
-                                ></DataTable>
-                            </CardContent>
-                        </Card>
-                        <Card className="h-80 lg:col-span-3">
+                        <Card className="h-80 lg:col-span-2">
                             <CardHeader>
                                 <CardTitle>Usage</CardTitle>
-                                <CardDescription>January - June 2024</CardDescription>
+                                <CardDescription>Last 6 Months</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <ChartContainer config={usageOverTimeChartConfig} className="h-36 w-full">
                                     <AreaChart
                                         accessibilityLayer
-                                        data={usageOverTimeData}
+                                        data={dashboardMetrics.usageOverTimeData}
                                         margin={{
                                             left: 12,
                                             right: 12,
@@ -481,13 +516,68 @@ export default function Dashboard() {
                                 </ChartContainer>
                             </CardContent>
                             <CardFooter className="flex-col items-start gap-2 text-sm">
-                                <div className="flex gap-2 font-medium leading-none">
-                                    Trending down by 18.9% this month <TrendingDown className="h-4 w-4" />
-                                </div>
-                                <div className="text-muted-foreground leading-none">
-                                    Showing all requests for the last 6 months
-                                </div>
+                                {dashboardMetrics.usageOverTimeData.length > 1 && (
+                                    <>
+                                        <div className="flex gap-2 font-medium leading-none">
+                                            {dashboardMetrics.usageOverTimeData[
+                                                dashboardMetrics.usageOverTimeData.length - 1
+                                            ].active >
+                                            dashboardMetrics.usageOverTimeData[
+                                                dashboardMetrics.usageOverTimeData.length - 2
+                                            ].active ? (
+                                                <>
+                                                    Trending up this month <TrendingUp className="h-4 w-4" />
+                                                </>
+                                            ) : (
+                                                <>
+                                                    Trending down this month <TrendingDown className="h-4 w-4" />
+                                                </>
+                                            )}
+                                        </div>
+                                        <div className="text-muted-foreground leading-none">
+                                            Showing all flags for the last 6 months
+                                        </div>
+                                    </>
+                                )}
                             </CardFooter>
+                        </Card>
+                    </div>
+                    <div className="mt-4 grid grid-cols-1 justify-center gap-6 lg:grid-cols-2">
+                        <Card className="flex h-fit flex-col">
+                            <CardHeader className="items-center pb-0">
+                                <CardTitle>Top Usage</CardTitle>
+                            </CardHeader>
+                            <CardContent className="flex-1 pb-0">
+                                <DataTable
+                                    columns={usageColumns}
+                                    data={dashboardMetrics.usageData}
+                                    sortBy={[
+                                        {
+                                            id: 'usages',
+                                            desc: true,
+                                        } as ColumnSort,
+                                    ]}
+                                    pageSize={5}
+                                ></DataTable>
+                            </CardContent>
+                        </Card>
+                        <Card className="flex h-fit flex-col">
+                            <CardHeader className="items-center pb-0">
+                                <CardTitle>Oldest Flags</CardTitle>
+                            </CardHeader>
+                            <CardContent className="flex-1 pb-0">
+                                <DataTable
+                                    columns={oldestColumns}
+                                    data={dashboardMetrics.oldestData}
+                                    sortBy={[
+                                        {
+                                            id: 'created_at',
+                                            desc: false,
+                                        } as ColumnSort,
+                                    ]}
+                                    pageSize={5}
+                                ></DataTable>
+                            </CardContent>
                         </Card>
                     </div>
                 </div>
