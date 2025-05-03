@@ -114,7 +114,7 @@ export function CentralizedControlAnimation({ className }: { className?: string 
 
     return (
         <div
-            className={cn('relative flex h-[425px] w-150 items-center justify-center overflow-hidden p-10', className)}
+            className={cn('relative flex h-[425px] w-full items-center justify-center overflow-hidden p-10', className)}
             ref={containerRef}
         >
             <div className="flex size-full max-w-lg flex-row items-stretch justify-between gap-10">
@@ -317,7 +317,7 @@ export default function Welcome({ auth }: PageProps) {
                     Feature Flag Management For Laravel
                 </h1>
                 <div className="mx-auto px-4 py-12 flex flex-col gap-12">
-                    <div className="items-center max-w-4xl mx-auto flex md:flex-row flex-col">
+                    <div className="items-center md:max-w-4xl max-w-full mx-auto flex md:flex-row flex-col">
                         <div className="prose">
                             <h2 className="">Centralized Control</h2>
                             <p className="text-gray-600 dark:text-gray-300">
@@ -325,7 +325,7 @@ export default function Welcome({ auth }: PageProps) {
                                 applications and environments with ease.
                             </p>
                         </div>
-                        <div>
+                        <div className="w-full">
                             <CentralizedControlAnimation />
                         </div>
                     </div>
