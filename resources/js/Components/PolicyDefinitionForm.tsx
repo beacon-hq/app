@@ -124,12 +124,14 @@ export function PolicyDefinitionForm({
                                     <Select
                                         value={definition.type}
                                         onValueChange={(value) => {
-                                            let updatedDefinitions = definitions.map((item: PolicyDefinition, index: number) => {
-                                                if (index === id) {
-                                                    return { ...item, subject: '', type: value };
-                                                }
-                                                return item;
-                                            });
+                                            let updatedDefinitions = definitions.map(
+                                                (item: PolicyDefinition, index: number) => {
+                                                    if (index === id) {
+                                                        return { ...item, subject: '', type: value };
+                                                    }
+                                                    return item;
+                                                },
+                                            );
                                             return setDefinitions(updatedDefinitions as PolicyDefinitionCollection);
                                         }}
                                     >
@@ -169,9 +171,11 @@ export function PolicyDefinitionForm({
                                                                         };
                                                                     }
                                                                     return item;
-                                                                }
+                                                                },
                                                             );
-                                                            return setDefinitions(updatedDefinitions as PolicyDefinitionCollection);
+                                                            return setDefinitions(
+                                                                updatedDefinitions as PolicyDefinitionCollection,
+                                                            );
                                                         }}
                                                     />
                                                 </div>
@@ -182,7 +186,7 @@ export function PolicyDefinitionForm({
                                                 </Label>
                                                 <Select
                                                     name={`operator_${id}`}
-                                                    value={definition.operator}
+                                                    value={definition.operator as string}
                                                     onValueChange={(value) => {
                                                         let updatedDefinitions = definitions.map(
                                                             (item: PolicyDefinition, index: number) => {
@@ -190,9 +194,11 @@ export function PolicyDefinitionForm({
                                                                     return { ...item, operator: value };
                                                                 }
                                                                 return item;
-                                                            }
+                                                            },
                                                         );
-                                                        return setDefinitions(updatedDefinitions as PolicyDefinitionCollection);
+                                                        return setDefinitions(
+                                                            updatedDefinitions as PolicyDefinitionCollection,
+                                                        );
                                                     }}
                                                 >
                                                     <SelectTrigger id={`operator_${id}`}>
@@ -230,7 +236,7 @@ export function PolicyDefinitionForm({
                                                                 return { ...item, subject: value };
                                                             }
                                                             return item;
-                                                        }
+                                                        },
                                                     );
                                                     return setDefinitions(updatedDefinitions);
                                                 }}
@@ -285,9 +291,11 @@ export function PolicyDefinitionForm({
                                                                 return { ...item, subject: value };
                                                             }
                                                             return item;
-                                                        }
+                                                        },
                                                     );
-                                                    return setDefinitions(updatedDefinitions as PolicyDefinitionCollection);
+                                                    return setDefinitions(
+                                                        updatedDefinitions as PolicyDefinitionCollection,
+                                                    );
                                                 }}
                                             >
                                                 <SelectTrigger>
@@ -315,12 +323,14 @@ export function PolicyDefinitionForm({
                                             key={`policy_value_editor_${id}`}
                                             value={definition.values ?? null}
                                             setValue={(values) => {
-                                                let updatedDefinitions = definitions.map((item: PolicyDefinition, index: number) => {
-                                                    if (index === id) {
-                                                        return { ...item, values };
-                                                    }
-                                                    return item;
-                                                });
+                                                let updatedDefinitions = definitions.map(
+                                                    (item: PolicyDefinition, index: number) => {
+                                                        if (index === id) {
+                                                            return { ...item, values };
+                                                        }
+                                                        return item;
+                                                    },
+                                                );
                                                 return setDefinitions(updatedDefinitions as PolicyDefinitionCollection);
                                             }}
                                             allowMultiple={
@@ -352,7 +362,7 @@ export function PolicyDefinitionForm({
                                             }
 
                                             let updatedDefinitions = definitions.filter(
-                                                (item: PolicyDefinition, index: number) => index !== id
+                                                (item: PolicyDefinition, index: number) => index !== id,
                                             );
                                             return setDefinitions(updatedDefinitions as PolicyDefinitionCollection);
                                         }}

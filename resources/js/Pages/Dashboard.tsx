@@ -1,4 +1,3 @@
-import { Color } from '@/Application';
 import { IconColor } from '@/Components/IconColor';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/Components/ui/card';
 import {
@@ -129,17 +128,8 @@ const usageColumns: ColumnDef<any, any>[] = [
     columnHelper.display({
         id: 'flag',
         header: () => <div className="text-left">Flag</div>,
-        cell: function ({
-            row,
-        }: {
-            row: {
-                original: {
-                    name: string;
-                    application: { name: string; color: Color | string };
-                    feature_type: { icon: string; color: Color | string };
-                };
-            };
-        }) {
+        cell: function (props) {
+            const row = props.row as any;
             return (
                 <div className="flex">
                     <IconColor color={row.original.application.color} className="mr-2 h-4 w-4 rounded-full" />
@@ -169,17 +159,8 @@ const oldestColumns: ColumnDef<any, any>[] = [
     columnHelper.display({
         id: 'flag',
         header: () => <div className="text-left">Flag</div>,
-        cell: function ({
-            row,
-        }: {
-            row: {
-                original: {
-                    name: string;
-                    application: { name: string; color: Color | string };
-                    feature_type: { icon: string; color: Color | string };
-                };
-            };
-        }) {
+        cell: function (props) {
+            const row = props.row as any;
             return (
                 <div className="flex">
                     <IconColor color={row.original.application.color} className="mr-2 h-4 w-4 rounded-full" />

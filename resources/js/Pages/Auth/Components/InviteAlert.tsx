@@ -10,10 +10,10 @@ const InviteAlert = ({ invite, variant }: { invite: Invite | false | null; varia
                     <PartyPopper />
                     <AlertTitle>Invitation Accepted</AlertTitle>
                     {variant === 'register' && (
-                        <AlertDescription>Register below to join the "{invite.team.name}" team.</AlertDescription>
+                        <AlertDescription>Register below to join the "{invite.team?.name}" team.</AlertDescription>
                     )}
                     {variant === 'login' && (
-                        <AlertDescription>Login below to join the "{invite.team.name}" team.</AlertDescription>
+                        <AlertDescription>Login below to join the "{invite.team?.name}" team.</AlertDescription>
                     )}
                 </Alert>
             )}

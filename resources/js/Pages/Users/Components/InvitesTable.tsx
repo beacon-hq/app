@@ -1,15 +1,5 @@
 import { Invite, TeamCollection } from '@/Application';
-import { Avatar, AvatarFallback, AvatarImage } from '@/Components/ui/avatar';
-import { Button } from '@/Components/ui/button';
-import { DataTable, TableOptions } from '@/Components/ui/data-table';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/Components/ui/tooltip';
-import AddUser from '@/Pages/Users/Components/AddUser';
-import { router } from '@inertiajs/react';
-import { ColumnDef } from '@tanstack/react-table';
-import { formatDistanceToNow } from 'date-fns';
-import { Send, Trash2 } from 'lucide-react';
-import { useMemo } from 'react';
-import { 
+import {
     AlertDialog,
     AlertDialogAction,
     AlertDialogCancel,
@@ -18,8 +8,16 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger 
+    AlertDialogTrigger,
 } from '@/Components/ui/alert-dialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@/Components/ui/avatar';
+import { DataTable, TableOptions } from '@/Components/ui/data-table';
+import AddUser from '@/Pages/Users/Components/AddUser';
+import { router } from '@inertiajs/react';
+import { ColumnDef } from '@tanstack/react-table';
+import { formatDistanceToNow } from 'date-fns';
+import { Send, Trash2 } from 'lucide-react';
+import { useMemo } from 'react';
 
 interface InvitesTableProps {
     invites: Invite[];
@@ -44,7 +42,7 @@ const InvitesTable = ({ invites, tableOptions, teams }: InvitesTableProps) => {
                 id: 'avatar',
                 header: '',
                 cell: ({ row }) => {
-                    const invite = row.original;
+                    const invite = row.original as any;
                     return (
                         <Avatar className="h-8 w-8">
                             <AvatarImage src={invite.avatar} alt={invite.email} />
@@ -70,7 +68,7 @@ const InvitesTable = ({ invites, tableOptions, teams }: InvitesTableProps) => {
                 id: 'invited_by',
                 header: 'Invited By',
                 cell: ({ row }) => {
-                    const invite = row.original;
+                    const invite = row.original as any;
                     return (
                         <div className="flex items-center gap-2">
                             <Avatar className="h-6 w-6">
@@ -90,7 +88,7 @@ const InvitesTable = ({ invites, tableOptions, teams }: InvitesTableProps) => {
             {
                 id: 'expires_at',
                 header: 'Expires',
-                cell: ({ row }) => formatDistanceToNow(new Date(row.original.expires_at), { addSuffix: true }),
+                cell: ({ row }) => formatDistanceToNow(new Date((row as any).original.expires_at), { addSuffix: true }),
             },
             {
                 id: 'actions',
@@ -99,9 +97,9 @@ const InvitesTable = ({ invites, tableOptions, teams }: InvitesTableProps) => {
                     const invite = row.original;
                     return (
                         <div className="flex flex-row gap-2 justify-end">
-                            <Send 
-                                className="h-6 w-6 cursor-pointer text-primary" 
-                                onClick={() => handleResend(invite)} 
+                            <Send
+                                className="h-6 w-6 cursor-pointer text-primary"
+                                onClick={() => handleResend(invite)}
                             />
                             <AlertDialog>
                                 <AlertDialogTrigger>
@@ -111,14 +109,13 @@ const InvitesTable = ({ invites, tableOptions, teams }: InvitesTableProps) => {
                                     <AlertDialogHeader>
                                         <AlertDialogTitle>Delete Invitation</AlertDialogTitle>
                                         <AlertDialogDescription>
-                                            Are you sure you want to delete the invitation for <strong>{invite.email}</strong>? This action cannot be undone.
+                                            Are you sure you want to delete the invitation for{' '}
+                                            <strong>{invite.email}</strong>? This action cannot be undone.
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
                                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <AlertDialogAction
-                                            onClick={() => handleDelete(invite)}
-                                        >
+                                        <AlertDialogAction onClick={() => handleDelete(invite)}>
                                             Delete
                                         </AlertDialogAction>
                                     </AlertDialogFooter>

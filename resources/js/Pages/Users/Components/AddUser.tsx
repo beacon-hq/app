@@ -20,7 +20,6 @@ type NewUserForm = {
     email: string;
     role: Role;
     team: string;
-    [key: string]: string | undefined;
 };
 
 const AddUser = ({ teams }: { teams: Team[] }) => {

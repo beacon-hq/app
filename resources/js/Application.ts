@@ -17,24 +17,24 @@ export type Application = {
 };
 export type ApplicationCollection = Application[];
 export enum Boolean {
-    'AND' = 'AND',
-    'OR' = 'OR',
-    'NOT' = 'AND NOT',
-    'XOR' = 'XOR',
+    AND = 'AND',
+    OR = 'OR',
+    NOT = 'AND NOT',
+    XOR = 'XOR',
 }
 export enum Color {
-    'RED' = 'red',
-    'ORANGE' = 'orange',
-    'YELLOW' = 'yellow',
-    'LIME' = 'lime',
-    'GREEN' = 'green',
-    'EMERALD' = 'emerald',
-    'CYAN' = 'cyan',
-    'SKY' = 'sky',
-    'BLUE' = 'blue',
-    'INDIGO' = 'indigo',
-    'PURPLE' = 'purple',
-    'FUCHSIA' = 'fuchsia',
+    RED = 'red',
+    ORANGE = 'orange',
+    YELLOW = 'yellow',
+    LIME = 'lime',
+    GREEN = 'green',
+    EMERALD = 'emerald',
+    CYAN = 'cyan',
+    SKY = 'sky',
+    BLUE = 'blue',
+    INDIGO = 'indigo',
+    PURPLE = 'purple',
+    FUCHSIA = 'fuchsia',
 }
 export type Environment = {
     id?: string;
@@ -97,12 +97,12 @@ export type FeatureTypeCollection = FeatureType[];
 export type Invite = {
     avatar?: string;
     id?: string;
-    email: string;
-    role: Role;
-    team: Team;
-    organization: Organization;
-    user: User;
-    expires_at: string;
+    email?: string;
+    role?: Role;
+    team?: Team;
+    organization?: Organization;
+    user?: User;
+    expires_at?: string;
 };
 export type InviteCollection = Invite[];
 export type Organization = {
@@ -112,61 +112,61 @@ export type Organization = {
 };
 export type OrganizationCollection = Organization[];
 export enum Permission {
-    'BILLING' = 'billing',
-    'BILLING_CREATE' = 'billing.create',
-    'BILLING_UPDATE' = 'billing.update',
-    'BILLING_VIEW' = 'billing.view',
-    'BILLING_DELETE' = 'billing.delete',
-    'FEATURE_FLAGS' = 'feature-flags',
-    'FEATURE_FLAGS_CREATE' = 'feature-flags.create',
-    'FEATURE_FLAGS_UPDATE' = 'feature-flags.update',
-    'FEATURE_FLAGS_VIEW' = 'feature-flags.view',
-    'FEATURE_FLAGS_DELETE' = 'feature-flags.delete',
-    'FEATURE_FLAG_STATUS' = 'feature-flag-status',
-    'FEATURE_FLAG_STATUS_CREATE' = 'feature-flag-status.create',
-    'FEATURE_FLAG_STATUS_UPDATE' = 'feature-flag-status.update',
-    'FEATURE_FLAG_STATUS_VIEW' = 'feature-flag-status.view',
-    'FEATURE_FLAG_STATUS_DELETE' = 'feature-flag-status.delete',
-    'FEATURE_TYPES' = 'feature-types',
-    'FEATURE_TYPES_CREATE' = 'feature-types.create',
-    'FEATURE_TYPES_UPDATE' = 'feature-types.update',
-    'FEATURE_TYPES_VIEW' = 'feature-types.view',
-    'FEATURE_TYPES_DELETE' = 'feature-types.delete',
-    'APPLICATIONS' = 'applications',
-    'APPLICATIONS_CREATE' = 'applications.create',
-    'APPLICATIONS_UPDATE' = 'applications.update',
-    'APPLICATIONS_VIEW' = 'applications.view',
-    'APPLICATIONS_DELETE' = 'applications.delete',
-    'ENVIRONMENTS' = 'environments',
-    'ENVIRONMENTS_CREATE' = 'environments.create',
-    'ENVIRONMENTS_UPDATE' = 'environments.update',
-    'ENVIRONMENTS_VIEW' = 'environments.view',
-    'ENVIRONMENTS_DELETE' = 'environments.delete',
-    'POLICIES' = 'policies',
-    'POLICIES_CREATE' = 'policies.create',
-    'POLICIES_UPDATE' = 'policies.update',
-    'POLICIES_VIEW' = 'policies.view',
-    'POLICIES_DELETE' = 'policies.delete',
-    'TAGS' = 'tags',
-    'TAGS_CREATE' = 'tags.create',
-    'TAGS_UPDATE' = 'tags.update',
-    'TAGS_VIEW' = 'tags.view',
-    'TAGS_DELETE' = 'tags.delete',
-    'USERS' = 'users',
-    'USERS_CREATE' = 'users.create',
-    'USERS_UPDATE' = 'users.update',
-    'USERS_VIEW' = 'users.view',
-    'USERS_DELETE' = 'users.delete',
-    'TEAMS' = 'teams',
-    'TEAMS_CREATE' = 'teams.create',
-    'TEAMS_UPDATE' = 'teams.update',
-    'TEAMS_VIEW' = 'teams.view',
-    'TEAMS_DELETE' = 'teams.delete',
-    'ACCESS_TOKENS' = 'access-tokens',
-    'ACCESS_TOKENS_CREATE' = 'access-tokens.create',
-    'ACCESS_TOKENS_UPDATE' = 'access-tokens.update',
-    'ACCESS_TOKENS_VIEW' = 'access-tokens.view',
-    'ACCESS_TOKENS_DELETE' = 'access-tokens.delete',
+    BILLING = 'billing',
+    BILLING_CREATE = 'billing.create',
+    BILLING_UPDATE = 'billing.update',
+    BILLING_VIEW = 'billing.view',
+    BILLING_DELETE = 'billing.delete',
+    FEATURE_FLAGS = 'feature-flags',
+    FEATURE_FLAGS_CREATE = 'feature-flags.create',
+    FEATURE_FLAGS_UPDATE = 'feature-flags.update',
+    FEATURE_FLAGS_VIEW = 'feature-flags.view',
+    FEATURE_FLAGS_DELETE = 'feature-flags.delete',
+    FEATURE_FLAG_STATUS = 'feature-flag-status',
+    FEATURE_FLAG_STATUS_CREATE = 'feature-flag-status.create',
+    FEATURE_FLAG_STATUS_UPDATE = 'feature-flag-status.update',
+    FEATURE_FLAG_STATUS_VIEW = 'feature-flag-status.view',
+    FEATURE_FLAG_STATUS_DELETE = 'feature-flag-status.delete',
+    FEATURE_TYPES = 'feature-types',
+    FEATURE_TYPES_CREATE = 'feature-types.create',
+    FEATURE_TYPES_UPDATE = 'feature-types.update',
+    FEATURE_TYPES_VIEW = 'feature-types.view',
+    FEATURE_TYPES_DELETE = 'feature-types.delete',
+    APPLICATIONS = 'applications',
+    APPLICATIONS_CREATE = 'applications.create',
+    APPLICATIONS_UPDATE = 'applications.update',
+    APPLICATIONS_VIEW = 'applications.view',
+    APPLICATIONS_DELETE = 'applications.delete',
+    ENVIRONMENTS = 'environments',
+    ENVIRONMENTS_CREATE = 'environments.create',
+    ENVIRONMENTS_UPDATE = 'environments.update',
+    ENVIRONMENTS_VIEW = 'environments.view',
+    ENVIRONMENTS_DELETE = 'environments.delete',
+    POLICIES = 'policies',
+    POLICIES_CREATE = 'policies.create',
+    POLICIES_UPDATE = 'policies.update',
+    POLICIES_VIEW = 'policies.view',
+    POLICIES_DELETE = 'policies.delete',
+    TAGS = 'tags',
+    TAGS_CREATE = 'tags.create',
+    TAGS_UPDATE = 'tags.update',
+    TAGS_VIEW = 'tags.view',
+    TAGS_DELETE = 'tags.delete',
+    USERS = 'users',
+    USERS_CREATE = 'users.create',
+    USERS_UPDATE = 'users.update',
+    USERS_VIEW = 'users.view',
+    USERS_DELETE = 'users.delete',
+    TEAMS = 'teams',
+    TEAMS_CREATE = 'teams.create',
+    TEAMS_UPDATE = 'teams.update',
+    TEAMS_VIEW = 'teams.view',
+    TEAMS_DELETE = 'teams.delete',
+    ACCESS_TOKENS = 'access-tokens',
+    ACCESS_TOKENS_CREATE = 'access-tokens.create',
+    ACCESS_TOKENS_UPDATE = 'access-tokens.update',
+    ACCESS_TOKENS_VIEW = 'access-tokens.view',
+    ACCESS_TOKENS_DELETE = 'access-tokens.delete',
 }
 export type Policy = {
     id?: string;
@@ -185,33 +185,33 @@ export type PolicyDefinition = {
 };
 export type PolicyDefinitionCollection = PolicyDefinition[];
 export enum PolicyDefinitionMatchOperator {
-    'EQUAL' = 'equals',
-    'NOT_EQUAL' = 'does not equal',
-    'CONTAINS_ALL' = 'contains exactly',
-    'NOT_CONTAINS_ALL' = 'does not contains exactly',
-    'CONTAINS_ANY' = 'contains any',
-    'NOT_CONTAINS_ANY' = 'does not contains any',
-    'MATCHES_ANY' = 'regex match any',
-    'NOT_MATCHES_ANY' = 'does not regex match any',
-    'MATCHES_ALL' = 'regex match exactly',
-    'NOT_MATCHES_ALL' = 'does not regex match exactly',
-    'ONE_OF' = 'is one of',
-    'NOT_ONE_OF' = 'is not one of',
-    'LESS_THAN' = 'less than',
-    'LESS_THAN_EQUAL' = 'less than or equal',
-    'GREATER_THAN' = 'greater than',
-    'GREATER_THAN_EQUAL' = 'greater than or equal',
+    EQUAL = 'equals',
+    NOT_EQUAL = 'does not equal',
+    CONTAINS_ALL = 'contains exactly',
+    NOT_CONTAINS_ALL = 'does not contains exactly',
+    CONTAINS_ANY = 'contains any',
+    NOT_CONTAINS_ANY = 'does not contains any',
+    MATCHES_ANY = 'regex match any',
+    NOT_MATCHES_ANY = 'does not regex match any',
+    MATCHES_ALL = 'regex match exactly',
+    NOT_MATCHES_ALL = 'does not regex match exactly',
+    ONE_OF = 'is one of',
+    NOT_ONE_OF = 'is not one of',
+    LESS_THAN = 'less than',
+    LESS_THAN_EQUAL = 'less than or equal',
+    GREATER_THAN = 'greater than',
+    GREATER_THAN_EQUAL = 'greater than or equal',
 }
 export enum PolicyDefinitionType {
-    'EXPRESSION' = 'expression',
-    'OPERATOR' = 'operator',
-    'POLICY' = 'policy',
+    EXPRESSION = 'expression',
+    OPERATOR = 'operator',
+    POLICY = 'policy',
 }
 export enum Role {
-    'OWNER' = 'Owner',
-    'ADMIN' = 'Admin',
-    'DEVELOPER' = 'Developer',
-    'BILLER' = 'Biller',
+    OWNER = 'Owner',
+    ADMIN = 'Admin',
+    DEVELOPER = 'Developer',
+    BILLER = 'Biller',
 }
 export type Tag = {
     id?: string;
@@ -248,7 +248,7 @@ export type User = {
 };
 export type UserCollection = User[];
 export enum UserStatus {
-    'ACTIVE' = 'active',
-    'INACTIVE' = 'inactive',
-    'PENDING' = 'pending',
+    ACTIVE = 'active',
+    INACTIVE = 'inactive',
+    PENDING = 'pending',
 }

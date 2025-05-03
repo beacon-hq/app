@@ -63,7 +63,7 @@ export default function Index({ organizations }: { organizations: OrganizationCo
             <Sheet open={showSheet} onOpenChange={setShowSheet}>
                 <SheetContent onOpenAutoFocus={(event) => event.preventDefault()}>
                     <SheetTitle className="mb-4">New Organization</SheetTitle>
-                    <Form onCancel={() => setShowSheet(false)} onSuccess={() => setShowSheet(false)} />
+                    <Form onCancel={() => setShowSheet(false)} />
                 </SheetContent>
             </Sheet>
         </AuthenticatedLayout>
