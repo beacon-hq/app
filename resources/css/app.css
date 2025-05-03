@@ -120,6 +120,12 @@ div.react-colorful {
     background: linear-gradient(90deg, #00e281 14%, #00e7a4 28%, #00ecc7 42%, #00f1ed 60%, #00d8f5 78%, #00b9fa 90%, #009aff 100%) !important;
 }
 
+@property --border-angle {
+    inherits: false;
+    initial-value: 0deg;
+    syntax: '<angle>';
+}
+
 @theme {
     --background-image-aurora: linear-gradient(90deg, #44ff9a -0.55%, #44b0ff 22.86%, #8b44ff 48.36%, #f47cf0 73.33%, #F47CF0FF 99.34%);
     --font-sans: "Source Sans 3", sans-serif;
@@ -1269,6 +1275,13 @@ div.react-colorful {
         }
     }
 
+    @keyframes border {
+        to {
+            --border-angle: 360deg;
+        }
+    }
+
+    --animate-border: border 4s linear infinite;
     --animate-text-slide: text-slide 5s cubic-bezier(0.83, 0, 0.17, 1) infinite;
     --animate-fadein: fade-in 1s ease-in-out 0.25s 1;
     --animate-fadeout: fade-out 1s ease-out 0.25s 1;
