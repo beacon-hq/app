@@ -28,7 +28,7 @@ class DashboardController extends Controller
 
         $metrics = $dashboardMetricsService->getMetrics($appContextService->getContext()->team, $dateRange);
 
-        return Inertia::render('Dashboard', [
+        return Inertia::render('Home/Dashboard', [
             'metrics' => $metrics,
         ]);
     }

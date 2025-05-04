@@ -1,175 +1,12 @@
-import { AnimatedBeam } from '@/Components/magicui/animated-beam';
+import { CentralizedControlAnimation } from '@/Pages/Home/Components/CentralizedControlAnimation';
 import Pricing from '@/Pages/Pricing';
-import { cn } from '@/lib/utils';
 import { PageProps } from '@/types';
 import { SiGithub, SiYoutube } from '@icons-pack/react-simple-icons';
 import { Head } from '@inertiajs/react';
-import { AppWindow, Code2, Radio, ShieldUser } from 'lucide-react';
-import React, { forwardRef, useEffect, useRef, useState } from 'react';
+import { Radio } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
-const BeaconIcon = () => (
-    <svg
-        width="100%"
-        height="100%"
-        viewBox="0 0 1763 1763"
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlSpace="preserve"
-        style={{
-            fillRule: 'evenodd',
-            clipRule: 'evenodd',
-            strokeLinecap: 'round',
-            strokeLinejoin: 'round',
-            strokeMiterlimit: '1.5',
-        }}
-    >
-        <rect x="0" y="0" width="1762.97" height="1762.66" style={{ fill: 'none' }} />
-        <g id="Artboard11">
-            <path
-                d="M1657.69,300.446l-0,1161.82c-0,108.703 -88.253,196.956 -196.956,196.956l-1158.51,0c-108.707,0 -196.959,-88.253 -196.959,-196.956l-0,-1161.82c-0,-108.703 88.252,-196.959 196.959,-196.959l1158.51,-0c108.703,-0 196.956,88.256 196.956,196.959Z"
-                style={{ fill: '#ebebeb' }}
-            />
-            <path
-                d="M1657.69,300.446l-0,1161.82c-0,108.703 -88.253,196.956 -196.956,196.956l-1158.51,0c-108.707,0 -196.959,-88.253 -196.959,-196.956l-0,-1161.82c-0,-108.703 88.252,-196.959 196.959,-196.959l1158.51,-0c108.703,-0 196.956,88.256 196.956,196.959Z"
-                style={{ fill: 'url(#_Linear1)' }}
-            />
-            <path
-                d="M317.23,187.716c-0.32,-66.325 34.835,-127.765 92.179,-161.095c57.343,-33.33 128.128,-33.468 185.599,-0.36c243.136,140.058 581.75,335.118 746.985,430.304c61.04,35.162 98.794,100.116 99.136,170.559c0.998,205.62 3.135,645.931 4.606,949.679c0.321,65.662 -34.484,126.489 -91.253,159.486c-56.773,32.998 -126.849,33.132 -183.747,0.358c-225.289,-129.78 -533.946,-307.583 -710.116,-409.066c-85.597,-49.309 -138.538,-140.392 -139.017,-239.173c-1.063,-219.101 -2.998,-618.075 -4.372,-900.692Z"
-                style={{ stroke: '#ebebeb', strokeWidth: '3.05px' }}
-            />
-            <path
-                d="M317.23,187.716c-0.32,-66.325 34.835,-127.765 92.179,-161.095c57.343,-33.33 128.128,-33.468 185.599,-0.36c243.136,140.058 581.75,335.118 746.985,430.304c61.04,35.162 98.794,100.116 99.136,170.559c0.998,205.62 3.135,645.931 4.606,949.679c0.321,65.662 -34.484,126.489 -91.253,159.486c-56.773,32.998 -126.849,33.132 -183.747,0.358c-225.289,-129.78 -533.946,-307.583 -710.116,-409.066c-85.597,-49.309 -138.538,-140.392 -139.017,-239.173c-1.063,-219.101 -2.998,-618.075 -4.372,-900.692Z"
-                style={{
-                    stroke: '#ebebeb',
-                    strokeWidth: '3.05px',
-                }}
-            />
-            <path
-                d="M1205.58,656.626l0,449.463c0,178.875 -145.223,324.098 -324.098,324.098c-178.877,0 -324.101,-145.223 -324.101,-324.098l-0,-449.463c-0,-178.878 145.224,-324.101 324.101,-324.101c178.875,-0 324.098,145.223 324.098,324.101Z"
-                style={{ fill: '#d2d2d2' }}
-            />
-            <path
-                d="M1205.58,656.626l0,449.463c0,178.875 -145.223,324.098 -324.098,324.098c-178.877,0 -324.101,-145.223 -324.101,-324.098l-0,-449.463c-0,-178.878 145.224,-324.101 324.101,-324.101c178.875,-0 324.098,145.223 324.098,324.101Z"
-                style={{ fill: '#e6e6e6' }}
-            />
-            <circle
-                cx="881.051"
-                cy="654.413"
-                r="284.156"
-                style={{ fill: '#646464', stroke: '#ebebeb', strokeWidth: '3.05px' }}
-            />
-        </g>
-        <defs>
-            <linearGradient
-                id="_Linear1"
-                x1="0"
-                y1="0"
-                x2="1"
-                y2="0"
-                gradientUnits="userSpaceOnUse"
-                gradientTransform="matrix(1552.42,0,0,1552.42,105.273,103.487)"
-            >
-                <stop offset="0" style={{ stopColor: '#dadada', stopOpacity: 1 }} />
-                <stop offset="1" style={{ stopColor: '#c0c0c0', stopOpacity: 1 }} />
-            </linearGradient>
-        </defs>
-    </svg>
-);
-
-const Circle = forwardRef<HTMLDivElement, { className?: string; children?: React.ReactNode }>(
-    ({ className, children }, ref) => {
-        return (
-            <div
-                ref={ref}
-                className={cn(
-                    'z-10 flex size-12 items-center justify-center rounded-full border-2 bg-white p-3 shadow-[0_0_20px_-12px_rgba(0,0,0,0.8)]',
-                    className,
-                )}
-            >
-                {children}
-            </div>
-        );
-    },
-);
-
-Circle.displayName = 'Circle';
-
-export function CentralizedControlAnimation({ className }: { className?: string }) {
-    const containerRef = useRef<HTMLDivElement>(null);
-
-    const beacon = useRef<HTMLDivElement>(null);
-
-    const userApp = useRef<HTMLDivElement>(null);
-    const userAppLocalEnv = useRef<HTMLDivElement>(null);
-    const userAppStagingEnv = useRef<HTMLDivElement>(null);
-    const userAppProdEnv = useRef<HTMLDivElement>(null);
-
-    const adminApp = useRef<HTMLDivElement>(null);
-    const adminAppLocalEnv = useRef<HTMLDivElement>(null);
-    const adminAppStagingEnv = useRef<HTMLDivElement>(null);
-
-    const apiApp = useRef<HTMLDivElement>(null);
-    const apiAppStagingEnv = useRef<HTMLDivElement>(null);
-    const apiAppProdEnv = useRef<HTMLDivElement>(null);
-
-    return (
-        <div
-            className={cn('relative flex h-[425px] w-full items-center justify-center overflow-hidden p-10', className)}
-            ref={containerRef}
-        >
-            <div className="flex size-full max-w-lg flex-row items-stretch justify-between gap-10">
-                <div className="flex flex-col justify-center">
-                    <Circle ref={beacon} className="size-20">
-                        <BeaconIcon />
-                    </Circle>
-                </div>
-                <div className="flex flex-col justify-center gap-10">
-                    <p>Application</p>
-                    <Circle ref={userApp} className="size-16">
-                        <AppWindow />
-                    </Circle>
-
-                    <Circle ref={adminApp} className="size-16">
-                        <ShieldUser />
-                    </Circle>
-
-                    <Circle ref={apiApp} className="size-16">
-                        <Code2 />
-                    </Circle>
-                </div>
-                <div className="flex flex-col justify-center gap-2">
-                    <div className="flex flex-col items-center justify-between gap-2">
-                        <p>Environment</p>
-                        <Circle ref={userAppLocalEnv} className="size-4 bg-green-400"></Circle>
-                        <Circle ref={userAppStagingEnv} className="size-4 bg-orange-400"></Circle>
-                        <Circle ref={userAppProdEnv} className="size-4 bg-red-400"></Circle>
-                        <Circle ref={adminAppLocalEnv} className="size-4 bg-pink-400"></Circle>
-                        <Circle ref={adminAppStagingEnv} className="size-4 bg-orange-400"></Circle>
-                        <Circle ref={apiAppStagingEnv} className="size-4 bg-purple-400"></Circle>
-                        <Circle ref={apiAppProdEnv} className="size-4 bg-red-400"></Circle>
-                    </div>
-                </div>
-            </div>
-
-            {/* AnimatedBeams */}
-            <AnimatedBeam containerRef={containerRef} fromRef={beacon} toRef={userApp} />
-            <AnimatedBeam containerRef={containerRef} fromRef={beacon} toRef={adminApp} />
-            <AnimatedBeam containerRef={containerRef} fromRef={beacon} toRef={apiApp} />
-
-            <AnimatedBeam containerRef={containerRef} fromRef={userAppLocalEnv} toRef={userApp} />
-            <AnimatedBeam containerRef={containerRef} fromRef={userAppStagingEnv} toRef={userApp} />
-            <AnimatedBeam containerRef={containerRef} fromRef={userAppProdEnv} toRef={userApp} />
-
-            <AnimatedBeam containerRef={containerRef} fromRef={adminAppLocalEnv} toRef={adminApp} />
-            <AnimatedBeam containerRef={containerRef} fromRef={adminAppStagingEnv} toRef={adminApp} />
-
-            <AnimatedBeam containerRef={containerRef} fromRef={apiAppStagingEnv} toRef={apiApp} />
-            <AnimatedBeam containerRef={containerRef} fromRef={apiAppProdEnv} toRef={apiApp} />
-        </div>
-    );
-}
-
-export default function Welcome({ auth }: PageProps) {
+export default function Index({ auth }: PageProps) {
     const [isDark, setIsDark] = useState(false);
 
     useEffect(() => {
@@ -191,7 +28,7 @@ export default function Welcome({ auth }: PageProps) {
     return (
         <>
             <Head title="Welcome" />
-            <header className="flex items-center">
+            <header className="flex flex-col items-center">
                 <div className="mx-auto px-4 py-8 text-center w-11/12 md:w-3/4">
                     <svg
                         viewBox="0 0 2173 742"
@@ -310,15 +147,16 @@ export default function Welcome({ auth }: PageProps) {
                         </g>
                     </svg>
                 </div>
-            </header>
 
-            <section className="dark:bg-neutral-900 w-full">
                 <h1 className="text-4xl text-center w-full font-bold mb-8 bg-linear-to-br text-transparent bg-clip-text inline-block from-green-400 via-blue-500 to-blue-600 dark:from-green-800 dark:via-blue-800 dark:to-blue-900">
                     Feature Flag Management For Laravel
                 </h1>
+            </header>
+
+            <section className="dark:bg-neutral-900 w-full">
                 <div className="mx-auto px-4 py-12 flex flex-col gap-12">
                     <div className="items-center md:max-w-4xl max-w-full mx-auto flex md:flex-row flex-col">
-                        <div className="prose">
+                        <div className="prose dark:prose-invert">
                             <h2 className="">Centralized Control</h2>
                             <p className="text-gray-600 dark:text-gray-300">
                                 Manage all your feature flags from a single dashboard. Control rollouts across multiple
@@ -335,7 +173,7 @@ export default function Welcome({ auth }: PageProps) {
                                 className="rounded-lg w-36 h-36 mx-auto flex items-center justify-center"
                                 style={{ backgroundColor: 'rgb(26 164 74)' }}
                             >
-                                <div className="block w-10/12 h-10/12 group-hover:animate-wiggle">
+                                <div className="block w-10/12 h-10/12 group-hover:motion-safe:animate-wiggle">
                                     <svg version="1.2" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
                                         <path
                                             fill="white"
@@ -352,7 +190,7 @@ export default function Welcome({ auth }: PageProps) {
                                 </div>
                             </div>
                         </div>
-                        <div className="prose">
+                        <div className="prose dark:prose-invert">
                             <h2 className="text-2xl font-bold mb-4 mt-4">Built for Laravel Pennant</h2>
                             <p className="mb-6">
                                 Seamlessly integrate Beacon with{' '}
@@ -363,7 +201,7 @@ export default function Welcome({ auth }: PageProps) {
                         </div>
                     </div>
                     <div className="items-center justify-between max-w-3xl mx-auto flex md:flex-row flex-col gap-20">
-                        <div className="prose">
+                        <div className="prose dark:prose-invert">
                             <h2 className="text-2xl font-bold mb-4 mt-4">Zero-Downtime Rollouts</h2>
                             <p className="mb-6">
                                 Change Feature Flag configurations without deploying code. Beacon allows you to manage
@@ -371,7 +209,10 @@ export default function Welcome({ auth }: PageProps) {
                             </p>
                         </div>
                         <div>
-                            <Radio size={120} className="animate-zoomIn animate-infinite duration-[15s]" />
+                            <Radio
+                                size={120}
+                                className="motion-safe:animate-zoomInOut text-primary motion-safe:animate-infinite motion-safe:[animation-duration:_3s]"
+                            />
                         </div>
                     </div>
                 </div>

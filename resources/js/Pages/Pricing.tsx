@@ -2,7 +2,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card';
 import { cn } from '@/lib/utils';
-import React, { useEffect, useRef, useState } from 'react';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import React, { useRef } from 'react';
 
 type RGBColor = {
     r: number;
@@ -11,178 +12,39 @@ type RGBColor = {
 };
 
 export default function Pricing() {
-    const bgCanvas = useRef<HTMLCanvasElement | null>(null);
     const pricingRef = useRef<HTMLDivElement | null>(null);
-    const [canvasHeight, setCanvasHeight] = useState(30);
-    const scrollTimeoutRef = useRef<number>();
-    const animationFrameRef = useRef<number>();
-    const lastScrollTime = useRef<number>(0);
+    const prefersReducedMotion = useReducedMotion();
+    const { scrollYProgress } = useScroll({
+        target: pricingRef,
+        offset: ['start end', 'end start'],
+    });
 
-    useEffect(() => {
-        // Handle scroll effect for canvas with variable speed
-        const handleScroll = () => {
-            const now = Date.now();
-
-            // Reduce scroll delay for upward movement
-            const pricingRect = pricingRef.current?.getBoundingClientRect();
-            const windowHeight = window.innerHeight;
-            const isMovingUp = window.scrollY < lastScrollY.current;
-            // Faster response when scrolling up
-            const scrollDelay = isMovingUp ? 8 : pricingRect && pricingRect.top <= windowHeight * 0.5 ? 16 : 12;
-
-            if (now - lastScrollTime.current < scrollDelay) {
-                return;
-            }
-            lastScrollTime.current = now;
-            lastScrollY.current = window.scrollY;
-
-            if (scrollTimeoutRef.current) {
-                cancelAnimationFrame(scrollTimeoutRef.current);
-            }
-
-            scrollTimeoutRef.current = requestAnimationFrame(() => {
-                if (pricingRef.current) {
-                    const pricingRect = pricingRef.current.getBoundingClientRect();
-                    const windowHeight = window.innerHeight;
-
-                    if (pricingRect.top <= windowHeight && pricingRect.top >= 0) {
-                        const scrollProgress = pricingRect.top / windowHeight;
-                        // Increase speed multiplier for upward movement
-                        const speedMultiplier = isMovingUp ? 2.5 : scrollProgress < 0.5 ? 1.5 : 1;
-                        const newHeight = 32 + scrollProgress * 35 * speedMultiplier; // Reduced from 55 to 35
-                        setCanvasHeight(Math.min(65, newHeight)); // Changed from 100 to 60
-                    } else if (pricingRect.top > windowHeight) {
-                        setCanvasHeight(65); // Changed from 100 to 60
-                    } else {
-                        setCanvasHeight(3);
-                    }
-                }
-            });
-        };
-
-        const lastScrollY = { current: window.scrollY };
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll();
-
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-            if (scrollTimeoutRef.current) {
-                cancelAnimationFrame(scrollTimeoutRef.current);
-            }
-        };
-    }, []);
-
-    useEffect(() => {
-        const c = bgCanvas.current;
-        if (c !== null) {
-            const $ = c.getContext('2d');
-            if (!$) return;
-
-            const pixelSize = 2; // Increase pixel size to reduce drawing operations
-            const width = Math.ceil(35 / pixelSize);
-            const height = Math.ceil(35 / pixelSize);
-
-            c.width = width;
-            c.height = height;
-
-            // Define gradient colors from the logo
-            const gradientColors: RGBColor[] = [
-                { r: 0, g: 226, b: 129 }, // #00e281
-                { r: 0, g: 231, b: 164 }, // #00e7a4
-                { r: 0, g: 236, b: 199 }, // #00ecc7
-                { r: 0, g: 241, b: 237 }, // #00f1ed
-                { r: 0, g: 216, b: 245 }, // #00d8f5
-                { r: 0, g: 185, b: 250 }, // #00b9fa
-                { r: 0, g: 154, b: 255 }, // #009aff
-            ];
-
-            // Function to interpolate between two colors
-            const interpolateColor = (color1: RGBColor, color2: RGBColor, factor: number) => {
-                return {
-                    r: Math.floor(color1.r + factor * (color2.r - color1.r)),
-                    g: Math.floor(color1.g + factor * (color2.g - color1.g)),
-                    b: Math.floor(color1.b + factor * (color2.b - color1.b)),
-                };
-            };
-
-            // Function to get a color from the gradient based on position
-            const getGradientColor = (position: number) => {
-                // Ensure position is between 0 and 1
-                position = Math.max(0, Math.min(1, position));
-
-                // Calculate which segment of the gradient we're in
-                const segment = position * (gradientColors.length - 1);
-                const index = Math.floor(segment);
-                const factor = segment - index;
-
-                // If we're at the last color, return it
-                if (index >= gradientColors.length - 1) {
-                    return gradientColors[gradientColors.length - 1];
-                }
-
-                // Otherwise interpolate between two adjacent colors
-                return interpolateColor(gradientColors[index], gradientColors[index + 1], factor);
-            };
-
-            const col = function (x: number, y: number, r: number, g: number, b: number) {
-                $.fillStyle = `rgb(${r},${g},${b})`;
-                $.fillRect(x, y, pixelSize, pixelSize);
-            };
-
-            let t = 0;
-            let lastDrawTime = 0;
-
-            const run = function (timestamp: number) {
-                // Limit animation to 30fps
-                if (timestamp - lastDrawTime < 33) {
-                    animationFrameRef.current = requestAnimationFrame(run);
-                    return;
-                }
-
-                lastDrawTime = timestamp;
-
-                // Only run animation if canvas is in viewport
-                const rect = c.getBoundingClientRect();
-                if (rect.bottom < 0 || rect.top > window.innerHeight) {
-                    animationFrameRef.current = requestAnimationFrame(run);
-                    return;
-                }
-
-                for (let x = 0; x <= width; x++) {
-                    for (let y = 0; y <= height; y++) {
-                        const distFromCenter = Math.sqrt(Math.pow(x - width / 2, 2) + Math.pow(y - height, 2));
-                        const val = (Math.sin(distFromCenter / 3 + t) + 1) / 2;
-                        const color = getGradientColor(val);
-                        col(x, y, color.r, color.g, color.b);
-                    }
-                }
-                t = t + 0.04;
-                animationFrameRef.current = requestAnimationFrame(run);
-            };
-
-            animationFrameRef.current = requestAnimationFrame(run);
-
-            return () => {
-                if (animationFrameRef.current) {
-                    cancelAnimationFrame(animationFrameRef.current);
-                }
-            };
-        }
-    }, []);
+    const height = useTransform(scrollYProgress, [0, 0.5, 1], ['65vh', '32vh', '3vh']);
 
     return (
         <>
-            <canvas
-                id="canv"
-                width="32"
-                height="32"
-                className="w-full fixed bottom-0 left-0 opacity-25 transition-all duration-300 ease-in-out pointer-events-none"
+            <motion.div
+                className="fixed bottom-0 left-0 w-full opacity-25 pointer-events-none"
                 style={{
+                    height,
+                    background: 'linear-gradient(45deg, #00e281, #00e7a4, #00ecc7, #00f1ed, #00d8f5, #00b9fa, #009aff)',
                     clipPath: 'ellipse(80% 60% at 50% 100%)',
-                    height: `${canvasHeight}vh`,
                 }}
-                ref={bgCanvas}
-            ></canvas>
+                {...(!prefersReducedMotion && {
+                    animate: {
+                        background: [
+                            'linear-gradient(45deg, #00e281, #00e7a4, #00ecc7, #00f1ed, #00d8f5, #00b9fa, #009aff)',
+                            'linear-gradient(225deg, #00e281, #00e7a4, #00ecc7, #00f1ed, #00d8f5, #00b9fa, #009aff)',
+                        ],
+                    },
+                    transition: {
+                        duration: 3,
+                        repeat: Infinity,
+                        repeatType: 'reverse',
+                        ease: 'linear',
+                    },
+                })}
+            />
             <div>
                 {/* Pricing Table */}
                 <section className="py-12" ref={pricingRef}>
@@ -193,9 +55,9 @@ export default function Pricing() {
                                     key={plan.name}
                                     className={cn(
                                         'text-center relative flex flex-col justify-between',
-                                        'hover:[background:linear-gradient(45deg,#fff,theme(colors.white)_50%,#fff)_padding-box,conic-gradient(from_var(--border-angle),#07e38f,#00e7aa,#13daf4,#07baf9,_theme(colors.sky.700/.48))_border-box] rounded-2xl border-4 border-transparent animate-border',
-                                        'hover:scale-110',
-                                        'transition-all duration-200',
+                                        'hover:[background:linear-gradient(45deg,#fff,theme(colors.white)_50%,#fff)_padding-box,conic-gradient(from_var(--border-angle),#07e38f,#00e7aa,#13daf4,#07baf9,_theme(colors.sky.700/.48))_border-box] rounded-2xl border-4 border-transparent motion-safe:animate-border',
+                                        'hover:motion-safe:scale-110',
+                                        'transition-all duration-500',
                                         'relative',
                                     )}
                                 >
@@ -229,7 +91,7 @@ export default function Pricing() {
 
                         <p className="mt-6 text-center text-primary">
                             Need more than 2 million evaluations?{' '}
-                            <a href="mailto:sales@beacon-hq.dev" className="text-blue-600 underline">
+                            <a href="mailto:sales@beacon-hq.dev" className="underline">
                                 Contact us
                             </a>{' '}
                             for a custom Enterprise plan.
@@ -299,15 +161,34 @@ export default function Pricing() {
                 </section>
 
                 {/* Final CTA */}
-                <section className="bg-teal-100 dark:bg-teal-800 w-full py-20 text-center text-primary">
-                    <h2 className="text-4xl font-bold mb-4">Get three months free, then just $5/month.</h2>
-                    <p className="text-lg mb-8">
+                <motion.section
+                    className="w-full py-20 text-center text-primary relative"
+                    style={{
+                        background:
+                            'linear-gradient(15deg, #00e281, #00e7a4, #00ecc7, #00f1ed, #00d8f5, #00b9fa, #009aff)',
+                    }}
+                    {...(!prefersReducedMotion && {
+                        animate: {
+                            background: [
+                                'linear-gradient(0deg, #00e281, #00e7a4, #00ecc7, #00f1ed, #00d8f5, #00b9fa, #009aff)',
+                                'linear-gradient(30deg, #00e281, #00e7a4, #00ecc7, #00f1ed, #00d8f5, #00b9fa, #009aff)',
+                            ],
+                        },
+                        transition: {
+                            duration: 30,
+                            repeat: Infinity,
+                            ease: 'linear',
+                        },
+                    })}
+                >
+                    <h2 className="text-4xl font-bold mb-4 text-white">Get three months free, then just $5/month.</h2>
+                    <p className="text-lg mb-8 text-white">
                         Unlimited flags, apps, environments, and users — for the price of a coffee.
                     </p>
                     <a href="/register">
                         <Button size="lg">Start Free Trial</Button>
                     </a>
-                </section>
+                </motion.section>
             </div>
         </>
     );
