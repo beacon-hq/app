@@ -175,28 +175,31 @@ export default function Index({ auth }: PageProps) {
                             <CentralizedControlAnimation />
                         </div>
                     </div>
-                    <div className="items-center justify-between max-w-3xl mx-auto flex md:flex-row flex-col gap-12">
-                        <div className="group">
-                            <div
-                                className="rounded-lg w-36 h-36 mx-auto flex items-center justify-center"
-                                style={{ backgroundColor: 'rgb(26 164 74)' }}
+                    <div className="items-center justify-between max-w-3xl mx-auto flex md:flex-row flex-col gap-12 group">
+                        <div>
+                            <svg
+                                width="60%"
+                                height="100%"
+                                viewBox="0 0 64 64"
+                                version="1.1"
+                                xmlns="http://www.w3.org/2000/svg"
+                                xmlSpace="preserve"
+                                style={{
+                                    fillRule: 'evenodd',
+                                    clipRule: 'evenodd',
+                                    strokeLinejoin: 'round',
+                                    strokeMiterlimit: 2,
+                                }}
+                                className="mx-auto"
                             >
-                                <div className="block w-10/12 h-10/12 group-hover:motion-safe:animate-wiggle">
-                                    <svg version="1.2" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            fill="white"
-                                            opacity=".4"
-                                            d="m51.7 29.9q0 0.6 0 1.3l-44 11.8c-4.1-6.3-5-14.2-2.5-21.3 2.6-7.1 8.4-12.6 15.7-14.7 7.2-2.2 15.1-0.8 21.1 3.7 6.1 4.5 9.7 11.6 9.7 19.2zm-28.7 23.5q-2.3-0.5-4.5-1.4-2.2-0.9-4.1-2.3-2-1.3-3.7-3l40.2-10.8c-0.7 2.5-1.7 5-3.2 7.2-1.4 2.2-3.2 4.1-5.3 5.7-2.1 1.6-4.4 2.9-6.9 3.7-2.5 0.9-5.1 1.3-7.8 1.3q-2.3 0-4.7-0.4z"
-                                            fillRule="evenodd"
-                                        />
-                                        <path fill="white" d="m3.8 44.8v-29.9l55.3 15-55.3 14.9z" />
-                                        <path
-                                            fill="#17542e"
-                                            d="m6.8 17.2v25.4l-3 2.2v-5.6h-2.2v-3.7h2.2v-11.2h-2.2v-3.8h2.2v-5.6z"
-                                        />
-                                    </svg>
-                                </div>
-                            </div>
+                                <rect x="0" y="0" width="64" height="64" style={{ fill: '#328c6b' }} />
+                                <path
+                                    id="flag"
+                                    d="M32,30.563L32,26.625L12,21L12,43.5L32,37.875L32,41.813L52,36.188L32,30.563Z"
+                                    style={{ fill: '#fdfdfc' }}
+                                    className="group-hover:motion-safe:animate-wiggle origin-center"
+                                />
+                            </svg>
                         </div>
                         <div className="prose dark:prose-invert">
                             <h2 className="text-2xl font-bold mb-4 mt-4">Built for Laravel Pennant</h2>
