@@ -11,6 +11,7 @@ use App\Values\User;
 use Auth;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Tighten\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -44,9 +45,30 @@ class HandleInertiaRequests extends Middleware
                 'teams' => fn () => $this->teamService->all(auth()->user()->id, limitToOrganization: false),
                 'organizations' => $this->organizationService->all(User::from(Auth::user())),
                 'theme' => fn () => $request->user()?->theme ?? 'system',
+                'ssr' => [
+                    'enabled' => true,
+                ],
+                'ziggy' => fn () => [
+                    ...(new Ziggy())->toArray(),
+                    'location' => $request->url(),
+                ],
             ];
         }
 
-        return parent::share($request);
+        return [
+            ...parent::share($request),
+            'ssr' => [
+                'enabled' => true,
+            ],
+            'ziggy' => fn () => [
+                ...(new Ziggy())->toArray(),
+                'location' => $request->url(),
+            ],
+        ];
+    }
+
+    public function version(Request $request): ?string
+    {
+        return parent::version($request);
     }
 }
