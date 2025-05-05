@@ -55,7 +55,7 @@ export function CentralizedControlAnimation({ className }: { className?: string 
                     </Circle>
                 </div>
                 <div className="flex flex-col justify-center gap-10">
-                    <p>Application</p>
+                    <p className="text-primary text-sm font-bold">Application</p>
                     <Circle ref={userApp} className="size-16">
                         <AppWindow />
                     </Circle>
@@ -70,7 +70,7 @@ export function CentralizedControlAnimation({ className }: { className?: string 
                 </div>
                 <div className="flex flex-col justify-center gap-2">
                     <div className="flex flex-col items-center justify-between gap-2">
-                        <p>Environment</p>
+                        <p className="text-primary text-sm font-bold">Environment</p>
                         <Circle ref={userAppLocalEnv} className="size-4 bg-green-400"></Circle>
                         <Circle ref={userAppStagingEnv} className="size-4 bg-orange-400"></Circle>
                         <Circle ref={userAppProdEnv} className="size-4 bg-red-400"></Circle>

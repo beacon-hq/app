@@ -28,7 +28,7 @@ export default function Pricing() {
                 style={{
                     height,
                     background: 'linear-gradient(45deg, #00e281, #00e7a4, #00ecc7, #00f1ed, #00d8f5, #00b9fa, #009aff)',
-                    clipPath: 'ellipse(80% 60% at 50% 100%)',
+                    clipPath: 'ellipse(80% 50% at 50% 100%)',
                 }}
                 {...(!prefersReducedMotion && {
                     animate: {

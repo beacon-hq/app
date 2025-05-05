@@ -1,6 +1,6 @@
 import React from 'react';
 
-const BeaconIcon = () => (
+const BeaconIcon = ({ className = '' }: { className?: string }) => (
     <svg
         width="100%"
         height="100%"
@@ -15,6 +15,7 @@ const BeaconIcon = () => (
             strokeLinejoin: 'round',
             strokeMiterlimit: '1.5',
         }}
+        className={className}
     >
         <rect x="0" y="0" width="1762.97" height="1762.66" style={{ fill: 'none' }} />
         <g id="Artboard11">

@@ -1,13 +1,19 @@
+import NavMenu from '@/Components/NavMenu';
 import { CentralizedControlAnimation } from '@/Pages/Home/Components/CentralizedControlAnimation';
 import Pricing from '@/Pages/Pricing';
+import useScrollToLocation from '@/hooks/use-scroll-to-location';
 import { PageProps } from '@/types';
 import { SiGithub, SiYoutube } from '@icons-pack/react-simple-icons';
 import { Head } from '@inertiajs/react';
 import { Radio } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export default function Index({ auth }: PageProps) {
+    useScrollToLocation();
+
     const [isDark, setIsDark] = useState(false);
+
+    const pricingRef = useRef(null);
 
     useEffect(() => {
         // Initialize dark mode based on localStorage or system preference
@@ -28,6 +34,8 @@ export default function Index({ auth }: PageProps) {
     return (
         <>
             <Head title="Welcome" />
+            <NavMenu />
+
             <header className="flex flex-col items-center">
                 <div className="mx-auto px-4 py-8 text-center w-11/12 md:w-3/4">
                     <svg
@@ -218,7 +226,9 @@ export default function Index({ auth }: PageProps) {
                 </div>
             </section>
 
-            <Pricing />
+            <section id="pricing" ref={pricingRef}>
+                <Pricing />
+            </section>
 
             <footer className="bg-gray-800 text-white py-6">
                 <div className="container mx-auto px-4 text-center">

@@ -1,10 +1,15 @@
 @import 'tailwindcss';
+/*noinspection CssInvalidAtRule*/
 @source "../../";
+/*noinspection CssInvalidAtRule*/
 @source inline('{bg,stroke,border}-{red,orange,yellow,lime,green,emerald,cyan,sky,blue,indigo,purple,fuchsia,info,success,warning,error}-400');
 
+/*noinspection CssInvalidAtRule*/
 @custom-variant dark (&:where(.dark, .dark *));
 
+/*noinspection CssInvalidAtRule*/
 @plugin '@tailwindcss/typography';
+/*noinspection CssInvalidAtRule*/
 @plugin '@tailwindcss/forms';
 
 @layer base {
@@ -20,6 +25,39 @@
 /*noinspection CssInvalidAtRule*/
 @utility animate-infinite {
     animation-iteration-count: infinite;
+}
+
+
+/* get started animation */
+svg#get-started.animate #map-path {
+    stroke-dasharray: 900; /* Set to the approximate length of the path */
+    stroke-dashoffset: 1000; /* Start with the entire path hidden */
+    animation: getStartedPath 5s linear forwards; /* Animate the line drawing */
+}
+
+svg#get-started.animate #pennant, .animate #laravel {
+    opacity: 0;
+    animation: getStartedFadeIn 1s ease-in forwards;
+}
+
+svg#get-started.animate #pennant {
+    animation-delay: 1s;
+}
+
+svg#get-started.animate #laravel {
+    animation-delay: 1.5s;
+}
+
+@keyframes getStartedPath {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes getStartedFadeIn {
+    to {
+        opacity: 1;
+    }
 }
 
 @layer base {
