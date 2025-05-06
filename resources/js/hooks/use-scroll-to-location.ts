@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-const useScrollToLocation = () => {
+const useScrollToLocation = (onScrollEnd?: () => void) => {
     const scrolledRef = useRef(false);
     const { hash } = window.location;
     const hashRef = useRef(hash);
@@ -26,6 +26,9 @@ const useScrollToLocation = () => {
                         behavior: 'smooth',
                     });
                     scrolledRef.current = true;
+                    if (typeof onScrollEnd === 'function') {
+                        onScrollEnd();
+                    }
                 }
             }
         }

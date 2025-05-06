@@ -1,5 +1,6 @@
 import BeaconIcon from '@/Components/BeaconIcon';
 import GetStarted from '@/Components/illustrations/get-started';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/Components/ui/accordion';
 import { Button } from '@/Components/ui/button';
 import {
     NavigationMenu,
@@ -8,14 +9,90 @@ import {
     NavigationMenuLink,
     NavigationMenuList,
     NavigationMenuTrigger,
-    navigationMenuTriggerStyle,
 } from '@/Components/ui/navigation-menu';
+import { Sheet, SheetContent, SheetTrigger } from '@/Components/ui/sheet';
+import useScrollToLocation from '@/hooks/use-scroll-to-location';
 import { cn } from '@/lib/utils';
-import { Link } from '@inertiajs/react';
-import { ArrowUp, ChevronRight } from 'lucide-react';
+import { ArrowUp, Menu } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
+interface MenuItem {
+    title: string;
+    url?: string;
+    onClick?: () => void;
+    description?: string;
+    icon?: React.ReactNode;
+    graphic?: React.ReactNode;
+    items?: MenuItem[];
+}
+
+interface NavbarData {
+    menu: MenuItem[];
+    auth: {
+        login: {
+            title: string;
+            url: string;
+        };
+        signup: {
+            title: string;
+            url: string;
+        };
+    };
+}
+
 export default function NavMenu({ showLogo = false }: { showLogo?: boolean }) {
+    const navbarData: NavbarData = {
+        menu: [
+            {
+                title: 'Get Started',
+                items: [
+                    {
+                        title: 'Features',
+                        url: '/features',
+                        description: 'Learn all about the features of Beacon.',
+                    },
+                    {
+                        title: 'Installation',
+                        url: '/docs/install',
+                        description: 'Integrate with your Laravel app via Laravel Pennant.',
+                    },
+                    {
+                        title: 'Create Your First Feature Flag',
+                        url: '/docs/get-started',
+                        description: 'Learn how to create your first feature flag in Beacon.',
+                    },
+                ],
+                graphic: <GetStarted />,
+            },
+            {
+                title: 'Documentation',
+                url: '/docs',
+            },
+            {
+                title: 'Pricing',
+                url: '/#pricing',
+                onClick: () => {
+                    setNavBarOpen(false);
+                },
+            },
+        ],
+        auth: {
+            login: {
+                title: 'Sign In',
+                url: '/login',
+            },
+            signup: {
+                title: 'Start Your Free Trial',
+                url: '/register',
+            },
+        },
+    };
+    const [navBarOpen, setNavBarOpen] = useState(false);
+
+    useScrollToLocation(function () {
+        setNavBarOpen(false);
+    });
+
     const [showScrollToTop, setShowScrollToTop] = useState(false);
 
     useEffect(() => {
@@ -27,144 +104,92 @@ export default function NavMenu({ showLogo = false }: { showLogo?: boolean }) {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const scrollToTop = () => {
+    const scrollToTop = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
         window.scrollTo({ top: 0, behavior: 'smooth' });
         history.pushState('', document.title, window.location.pathname);
     };
 
-    const ListItem = React.forwardRef<React.ElementRef<'a'>, React.ComponentPropsWithoutRef<'a'>>(
-        ({ className, title, children, ...props }, ref) => {
-            return (
-                <li>
-                    <NavigationMenuLink asChild>
-                        <a
-                            ref={ref}
-                            className={cn(
-                                'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
-                                className,
-                            )}
-                            {...props}
-                        >
-                            <div className="text-sm font-medium leading-none">{title}</div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">{children}</p>
-                        </a>
-                    </NavigationMenuLink>
-                </li>
-            );
-        },
-    );
-    ListItem.displayName = 'ListItem';
-
     return (
-        <div>
-            <div className="fixed w-full top-0 bg-secondary z-100 h-12">
-                <NavigationMenu className="mx-auto h-12">
-                    <NavigationMenuList className="flex flex-row h-12 items-center">
-                        {(showLogo || showScrollToTop) && (
-                            <div className="fixed left-0 top-0 flex flex-row h-12 items-center">
-                                <NavigationMenuItem>
-                                    <NavigationMenuLink
-                                        className={cn(navigationMenuTriggerStyle(), 'bg-secondary text-primary')}
-                                    >
-                                        {showLogo && (
-                                            <a href={route('welcome')}>
-                                                <BeaconIcon className="h-9" />
-                                            </a>
-                                        )}
-                                        {!showLogo && (
-                                            <div onClick={scrollToTop}>
-                                                <BeaconIcon className="h-9" />
-                                            </div>
-                                        )}
-                                    </NavigationMenuLink>
-                                </NavigationMenuItem>
-                            </div>
-                        )}
-                        <NavigationMenuItem>
-                            <NavigationMenuTrigger className="bg-secondary text-primary">
-                                Getting started
-                            </NavigationMenuTrigger>
-                            <NavigationMenuContent>
-                                <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                                    <li className="row-span-3">
-                                        <NavigationMenuLink asChild>
-                                            <div className="bg-secondary dark:bg-primary h-full">
-                                                <GetStarted />
-                                            </div>
-                                        </NavigationMenuLink>
-                                    </li>
-                                    <ListItem href="/docs/install" title="Features">
-                                        Learn all about the features of Beacon.
-                                    </ListItem>
-                                    <ListItem href="/docs/install" title="Installation">
-                                        Integrate with your Laravel app via Laravel Pennant.
-                                    </ListItem>
-                                    <ListItem href="/docs/get-started" title="Create Your First Feature Flag">
-                                        Learn how to create your first feature flag in Beacon and use it in your app.
-                                    </ListItem>
-                                </ul>
-                            </NavigationMenuContent>
-                        </NavigationMenuItem>
-                        <NavigationMenuItem>
-                            <a href="/docs">
-                                <NavigationMenuLink
-                                    className={cn(navigationMenuTriggerStyle(), 'bg-secondary text-primary')}
-                                >
-                                    Documentation
-                                </NavigationMenuLink>
+        <section className="py-4">
+            <div className="container">
+                <nav className="hidden justify-between bg-background z-100 px-12 py-2 items-center lg:flex fixed w-full top-0 text-primary">
+                    <div>
+                        {showLogo && (
+                            <a href={route('welcome')} className="">
+                                <BeaconIcon className="h-12" />
                             </a>
-                        </NavigationMenuItem>
-                        <NavigationMenuItem>
-                            <Link href={`${route('welcome')}#pricing`}>
-                                <NavigationMenuLink
-                                    className={cn(navigationMenuTriggerStyle(), 'bg-secondary text-primary')}
-                                >
-                                    Pricing
-                                </NavigationMenuLink>
-                            </Link>
-                        </NavigationMenuItem>
-                        <div className="fixed right-0 top-0 flex flex-row h-12 items-center">
-                            {!route().current('login') && (
-                                <NavigationMenuItem>
-                                    <NavigationMenuLink
-                                        className={cn(
-                                            navigationMenuTriggerStyle(),
-                                            'bg-secondary text-primary group/login',
-                                        )}
-                                    >
-                                        <Link href={route('login')} className="flex flex-row items-center">
-                                            <ChevronRight
-                                                size={12}
-                                                className="group-hover/login:motion-safe:translate-x-13 transition-all inline-block"
-                                            />
-                                            Sign in
-                                        </Link>
-                                    </NavigationMenuLink>
-                                </NavigationMenuItem>
-                            )}
-                            <NavigationMenuItem>
-                                <NavigationMenuLink
-                                    className={cn(navigationMenuTriggerStyle(), 'bg-secondary text-primary')}
-                                >
-                                    {!route().current('register') && (
-                                        <Link href={route('register')}>
-                                            <Button type="button" size="sm">
-                                                Start Your Free Trial
-                                            </Button>
-                                        </Link>
-                                    )}
-                                    {route().current('register') && (
-                                        <Button type="button" size="sm" disabled>
-                                            Start Your Free Trial
-                                        </Button>
-                                    )}
-                                </NavigationMenuLink>
-                            </NavigationMenuItem>
+                        )}
+                        {!showLogo && (
+                            <button
+                                onClick={scrollToTop}
+                                className={cn('cursor-pointer', { invisible: !showScrollToTop })}
+                            >
+                                <BeaconIcon className="h-12" />
+                            </button>
+                        )}
+                    </div>
+                    <div className="flex items-center gap-6">
+                        <div className="flex items-center justify-end mx-auto">
+                            <NavigationMenu>
+                                <NavigationMenuList>
+                                    {navbarData.menu.map((item) => renderMenuItem(item))}
+                                </NavigationMenuList>
+                            </NavigationMenu>
                         </div>
-                    </NavigationMenuList>
-                </NavigationMenu>
+                    </div>
+                    <div className="flex gap-2">
+                        <Button asChild variant="outline" size="sm">
+                            <a href={navbarData.auth.login.url}>{navbarData.auth.login.title}</a>
+                        </Button>
+                        <Button asChild size="sm">
+                            <a href={navbarData.auth.signup.url}>{navbarData.auth.signup.title}</a>
+                        </Button>
+                    </div>
+                </nav>
+                <div className="lg:hidden flex justify-end">
+                    <div className="flex items-center justify-between">
+                        <Sheet open={navBarOpen} onOpenChange={setNavBarOpen}>
+                            <nav className="bg-background z-50 px-4 py-2 w-screen text-primary h-12 fixed top-0 right-0 flex justify-between">
+                                {showLogo && (
+                                    <a href={route('welcome')} className="flex items-center gap-2">
+                                        <BeaconIcon />
+                                    </a>
+                                )}
+                                {!showLogo && showScrollToTop && (
+                                    <button onClick={scrollToTop} className="flex items-center gap-2">
+                                        <BeaconIcon />
+                                    </button>
+                                )}
+                                <div className="flex justify-end grow">
+                                    <SheetTrigger asChild>
+                                        <Button variant="outline" size="icon">
+                                            <Menu className="size-4" />
+                                        </Button>
+                                    </SheetTrigger>
+                                </div>
+                            </nav>
+                            <SheetContent className="overflow-y-auto text-primary">
+                                <div className="flex flex-col gap-6 p-4">
+                                    <Accordion type="single" collapsible className="flex w-full flex-col gap-4">
+                                        {navbarData.menu.map((item) => renderMobileMenuItem(item))}
+                                    </Accordion>
+
+                                    <div className="flex flex-col gap-3">
+                                        <Button asChild variant="outline">
+                                            <a href={navbarData.auth.login.url}>{navbarData.auth.login.title}</a>
+                                        </Button>
+                                        <Button asChild>
+                                            <a href={navbarData.auth.signup.url}>{navbarData.auth.signup.title}</a>
+                                        </Button>
+                                    </div>
+                                </div>
+                            </SheetContent>
+                        </Sheet>
+                    </div>
+                </div>
             </div>
-            <div
+            <button
                 id="scroll-to-top"
                 onClick={scrollToTop}
                 className={`fixed bottom-5 right-5 z-100 bg-primary w-16 h-16 rounded-full flex items-center text-secondary group/scroll-to-top cursor-pointer transition-opacity duration-300 ${
@@ -172,7 +197,85 @@ export default function NavMenu({ showLogo = false }: { showLogo?: boolean }) {
                 }`}
             >
                 <ArrowUp className="mx-auto group-hover/scroll-to-top:motion-safe:animate-bounce" />
-            </div>
-        </div>
+            </button>
+        </section>
     );
 }
+
+const renderMenuItem = (item: MenuItem) => {
+    if (item.items) {
+        return (
+            <NavigationMenuItem key={item.title}>
+                <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
+                <NavigationMenuContent className={cn('bg-popover text-popover-foreground')}>
+                    <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+                        {item.graphic && (
+                            <NavigationMenuLink asChild>
+                                <li className="row-span-3">
+                                    <div className="bg-secondary dark:bg-primary w-full h-full">{item.graphic}</div>
+                                </li>
+                            </NavigationMenuLink>
+                        )}
+                        {item.items.map((subItem) => (
+                            <li key={subItem.title}>
+                                <NavigationMenuLink asChild className="w-80">
+                                    <SubMenuLink item={subItem} />
+                                </NavigationMenuLink>
+                            </li>
+                        ))}
+                    </ul>
+                </NavigationMenuContent>
+            </NavigationMenuItem>
+        );
+    }
+
+    return (
+        <NavigationMenuItem key={item.title}>
+            <NavigationMenuLink
+                href={item.url}
+                onClick={item.onClick}
+                className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-accent-foreground"
+            >
+                {item.title}
+            </NavigationMenuLink>
+        </NavigationMenuItem>
+    );
+};
+
+const renderMobileMenuItem = (item: MenuItem) => {
+    if (item.items) {
+        return (
+            <AccordionItem key={item.title} value={item.title} className="border-b-0">
+                <AccordionTrigger className="text-md py-0 font-semibold hover:no-underline">
+                    {item.title}
+                </AccordionTrigger>
+                <AccordionContent className="mt-2">
+                    {item.items.map((subItem) => (
+                        <SubMenuLink key={subItem.title} item={subItem} />
+                    ))}
+                </AccordionContent>
+            </AccordionItem>
+        );
+    }
+
+    return (
+        <a key={item.title} href={item.url} className="text-md font-semibold" onClick={item.onClick}>
+            {item.title}
+        </a>
+    );
+};
+
+const SubMenuLink = ({ item }: { item: MenuItem }) => {
+    return (
+        <a
+            className="flex flex-row gap-4 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none hover:bg-muted hover:text-accent-foreground"
+            href={item.url}
+        >
+            <div className="text-foreground">{item.icon}</div>
+            <div>
+                <div className="text-sm font-semibold">{item.title}</div>
+                {item.description && <p className="text-sm leading-snug text-muted-foreground">{item.description}</p>}
+            </div>
+        </a>
+    );
+};

@@ -229,7 +229,7 @@ export default function Index({ auth }: PageProps) {
                 </div>
             </section>
 
-            <section id="pricing" ref={pricingRef}>
+            <section id="pricing" className="scroll-mt-8" ref={pricingRef}>
                 <Pricing />
             </section>
 
