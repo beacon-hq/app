@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App;
+use App\Features\BillingEnabled;
 use App\Services\OrganizationService;
 use App\Services\TeamService;
 use App\Values\User;
 use Auth;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Laravel\Pennant\Feature;
 use Tighten\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
@@ -52,6 +54,9 @@ class HandleInertiaRequests extends Middleware
                     ...(new Ziggy())->toArray(),
                     'location' => $request->url(),
                 ],
+                'features' => [
+                    'pricing.enabled' => Feature::active(BillingEnabled::class),
+                ]
             ];
         }
 
@@ -64,6 +69,9 @@ class HandleInertiaRequests extends Middleware
                 ...(new Ziggy())->toArray(),
                 'location' => $request->url(),
             ],
+            'features' => [
+                'pricing.enabled' => Feature::active(BillingEnabled::class),
+            ]
         ];
     }
 

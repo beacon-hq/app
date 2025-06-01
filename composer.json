@@ -15,6 +15,7 @@
         "creativeorange/gravatar": "^1.0",
         "dshafik/bag": "^2",
         "inertiajs/inertia-laravel": "^2.0",
+        "laravel/cashier": "^15.6",
         "laravel/fortify": "^1.25",
         "laravel/framework": "^11|^12.1.1",
         "laravel/horizon": "^5.31",
@@ -24,6 +25,7 @@
         "ramsey/conventional-commits": "^1.5",
         "resend/resend-laravel": "^0.17.0",
         "soloterm/solo": "^0.4.0",
+        "spatie/laravel-activitylog": "^4.10",
         "spatie/laravel-ignition": "^2.9",
         "spatie/laravel-permission": "^6.16",
         "spatie/laravel-typescript-transformer": "^2.5",
@@ -44,7 +46,8 @@
         "pestphp/pest-plugin-faker": "^2.0|^3.0",
         "pestphp/pest-plugin-laravel": "^3.0",
         "pestphp/pest-plugin-type-coverage": "^2.0|^3.0",
-        "phpstan/phpstan": "2.1.6"
+        "phpstan/phpstan": "2.1.6",
+        "spatie/laravel-ray": "^1.40"
     },
     "autoload": {
         "psr-4": {

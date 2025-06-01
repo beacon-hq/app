@@ -13,12 +13,16 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from '@/Components/ui/sheet';
 import useScrollToLocation from '@/hooks/use-scroll-to-location';
 import { cn } from '@/lib/utils';
+import { AuthProp } from '@/types';
+import { Method } from '@inertiajs/core';
+import { Link, usePage } from '@inertiajs/react';
 import { ArrowUp, Menu } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 interface MenuItem {
     title: string;
     url?: string;
+    method?: Method;
     onClick?: () => void;
     description?: string;
     icon?: React.ReactNode;
@@ -40,7 +44,9 @@ interface NavbarData {
     };
 }
 
-export default function NavMenu({ showLogo = false }: { showLogo?: boolean }) {
+export default function NavMenu({ auth, showLogo = false }: AuthProp & { showLogo?: boolean }) {
+    const pricingEnabled = usePage().props.features['pricing.enabled'];
+
     const navbarData: NavbarData = {
         menu: [
             {
@@ -68,13 +74,17 @@ export default function NavMenu({ showLogo = false }: { showLogo?: boolean }) {
                 title: 'Documentation',
                 url: '/docs',
             },
-            {
-                title: 'Pricing',
-                url: '/#pricing',
-                onClick: () => {
-                    setNavBarOpen(false);
-                },
-            },
+            ...(pricingEnabled
+                ? [
+                      {
+                          title: 'Pricing',
+                          url: route().current('checkout.index') ? '#pricing' : '/#pricing',
+                          onClick: () => {
+                              setNavBarOpen(false);
+                          },
+                      },
+                  ]
+                : []),
         ],
         auth: {
             login: {
@@ -82,7 +92,7 @@ export default function NavMenu({ showLogo = false }: { showLogo?: boolean }) {
                 url: '/login',
             },
             signup: {
-                title: 'Start Your Free Trial',
+                title: pricingEnabled ? 'Start Your Free Trial' : 'Sign Up',
                 url: '/register',
             },
         },
@@ -113,8 +123,8 @@ export default function NavMenu({ showLogo = false }: { showLogo?: boolean }) {
     return (
         <section className="py-4">
             <div className="container">
-                <nav className="hidden justify-between bg-background z-100 px-12 py-2 items-center lg:flex fixed w-full top-0 text-primary">
-                    <div>
+                <nav className="hidden bg-background z-100 px-12 py-2 items-center md:flex flex-row fixed w-full top-0 text-primary">
+                    <div className="w-12">
                         {showLogo && (
                             <a href={route('welcome')} className="">
                                 <BeaconIcon className="h-12" />
@@ -129,22 +139,52 @@ export default function NavMenu({ showLogo = false }: { showLogo?: boolean }) {
                             </button>
                         )}
                     </div>
-                    <div className="flex items-center gap-6">
-                        <div className="flex items-center justify-end mx-auto">
-                            <NavigationMenu>
-                                <NavigationMenuList>
-                                    {navbarData.menu.map((item) => renderMenuItem(item))}
-                                </NavigationMenuList>
-                            </NavigationMenu>
+                    <div className="flex grow justify-center items-center">
+                        <div
+                            className={cn('flex items-center gap-6 grow', {
+                                '-ml-18': auth?.user !== null && route().current('checkout.*'),
+                                'ml-24': auth?.user === null,
+                            })}
+                        >
+                            <div className="flex items-center justify-end mx-auto">
+                                <NavigationMenu>
+                                    <NavigationMenuList>
+                                        {navbarData.menu.map((item) => renderMenuItem(item))}
+                                    </NavigationMenuList>
+                                </NavigationMenu>
+                            </div>
                         </div>
-                    </div>
-                    <div className="flex gap-2">
-                        <Button asChild variant="outline" size="sm">
-                            <a href={navbarData.auth.login.url}>{navbarData.auth.login.title}</a>
-                        </Button>
-                        <Button asChild size="sm">
-                            <a href={navbarData.auth.signup.url}>{navbarData.auth.signup.title}</a>
-                        </Button>
+                        {!auth?.user && (
+                            <div className="flex gap-2">
+                                <Button asChild variant="outline" size="sm">
+                                    <Link href={navbarData.auth.login.url}>{navbarData.auth.login.title}</Link>
+                                </Button>
+                                <Button asChild size="sm">
+                                    <Link href={navbarData.auth.signup.url}>{navbarData.auth.signup.title}</Link>
+                                </Button>
+                            </div>
+                        )}
+                        {auth?.user && !route().current('checkout.*') && (
+                            <div className="flex gap-2">
+                                <Button asChild variant="outline" size="sm">
+                                    <Link href={route('dashboard')}>Dashboard</Link>
+                                </Button>
+                                <Button asChild variant="outline" size="sm">
+                                    <Link href={route('logout')} method="post">
+                                        Logout
+                                    </Link>
+                                </Button>
+                            </div>
+                        )}
+                        {auth?.user && route().current('checkout.*') && (
+                            <div className="flex gap-2">
+                                <Button asChild variant="outline" size="sm">
+                                    <Link href={route('logout')} method="post">
+                                        Logout
+                                    </Link>
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 </nav>
                 <div className="lg:hidden flex justify-end">
@@ -258,8 +298,17 @@ const renderMobileMenuItem = (item: MenuItem) => {
         );
     }
 
-    return (
-        <a key={item.title} href={item.url} className="text-md font-semibold" onClick={item.onClick}>
+    return item.method ? (
+        <Link
+            key={item.title}
+            href={item.url as string}
+            method={item.method as Method}
+            className="text-md font-semibold"
+        >
+            {item.title}
+        </Link>
+    ) : (
+        <a key={item.title} href={item.url as string} className="text-md font-semibold" onClick={item.onClick}>
             {item.title}
         </a>
     );

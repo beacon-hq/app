@@ -75,6 +75,7 @@ class FeatureFlagController extends Controller
             'policies' => $policyService->all(),
             'applications' => $applicationService->all(),
             'environments' => $environmentService->all(),
+            'log' => $featureFlagService->activityLog($featureFlag->id),
         ]);
     }
 

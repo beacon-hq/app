@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Carbon;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
  *
@@ -64,6 +66,7 @@ class FeatureFlag extends Model
     use BelongsToTeam;
     use HasFactory;
     use HasUlids;
+    use LogsActivity;
 
     protected $fillable = [
         'name',
@@ -153,6 +156,19 @@ class FeatureFlag extends Model
             'featureType',
             fn (Builder $query) => $query->whereIn('id', Arr::wrap($id))
         );
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('feature_flag')
+            ->logOnly([
+                'description',
+                'status',
+                'featureType.name',
+            ])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
 
     protected function casts(): array

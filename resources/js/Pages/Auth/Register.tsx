@@ -1,20 +1,23 @@
-import { Invite } from '@/Application';
+import { Invite, Product } from '@/Application';
 import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import GuestLayout from '@/Layouts/GuestLayout';
 import InviteAlert from '@/Pages/Auth/Components/InviteAlert';
+import PlanAlert from '@/Pages/Auth/Components/PlanAlert';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
-export default function Register({ invite }: { invite: Invite | false | null }) {
+export default function Register({ invite, plan }: { invite: Invite | false | null; plan: Product | null }) {
+    console.log(plan);
     const { data, setData, post, processing, errors, reset } = useForm({
         first_name: '',
         last_name: '',
         email: '',
         password: '',
         password_confirmation: '',
+        plan: plan?.id ?? null,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -30,6 +33,7 @@ export default function Register({ invite }: { invite: Invite | false | null }) 
             <Head title="Register" />
             <div className="mt-6 w-full overflow-hidden bg-white px-6 py-4 shadow-md sm:max-w-md sm:rounded-lg dark:bg-gray-800">
                 <InviteAlert invite={invite} variant="register" />
+                <PlanAlert plan={plan} />
                 <form onSubmit={submit}>
                     <div className="grid grid-cols-2 space-x-2">
                         <div>

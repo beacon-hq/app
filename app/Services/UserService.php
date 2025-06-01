@@ -104,18 +104,18 @@ class UserService
             return UserValue::from($user);
         }
 
-        $organization = $this->organizationService->create($user, Organization::from(name: $user->first_name . '\'s Organization'));
+        $organization = $this->organizationService->create($user, Organization::from(name: $user->firstName . '\'s Organization'));
 
         $this->userRepository->addOrganization($user, $organization);
 
         $this->appContextService->setOrganization($organization);
 
-        $team = Team::from(name: $user->first_name . '\'s Team', color: collect(Color::values())->random());
-        $user = $this->userRepository->addTeam(UserValue::from($user), $team);
+        $team = Team::from(name: $user->firstName . '\'s Team', color: collect(Color::values())->random());
+        $user = $this->userRepository->addTeam($user, $team);
 
         $user = $this->userRepository->assignRole($user, Role::OWNER);
 
-        return UserValue::from($user);
+        return $user;
     }
 
     public function sendEmailVerificationNotification(int $id): void

@@ -1,3 +1,4 @@
+import { ProductCollection } from '@/Application';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/Components/ui/accordion';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card';
@@ -11,7 +12,7 @@ type RGBColor = {
     b: number;
 };
 
-export default function Pricing() {
+export default function Pricing({ products }: { products: ProductCollection }) {
     const pricingRef = useRef<HTMLDivElement | null>(null);
     const prefersReducedMotion = useReducedMotion();
     const { scrollYProgress } = useScroll({
@@ -50,9 +51,9 @@ export default function Pricing() {
                 <section className="py-12" ref={pricingRef}>
                     <div className="max-w-7xl mx-auto px-6">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                            {plans.map((plan) => (
+                            {products.map((product) => (
                                 <Card
-                                    key={plan.name}
+                                    key={product.name}
                                     className={cn(
                                         'text-center relative flex flex-col justify-between',
                                         'hover:[background:linear-gradient(45deg,#fff,theme(colors.white)_50%,#fff)_padding-box,conic-gradient(from_var(--border-angle),#07e38f,#00e7aa,#13daf4,#07baf9,_theme(colors.sky.700/.48))_border-box] rounded-2xl border-4 border-transparent motion-safe:animate-border',
@@ -63,24 +64,37 @@ export default function Pricing() {
                                 >
                                     <CardContent className="rounded-xl shadow-lg bg-secondary">
                                         <CardHeader>
-                                            {plan.free && (
+                                            {product.entitlements.trial_length && (
                                                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#07e38f] text-white text-xs font-bold uppercase scale-120 px-3 py-1 rounded-full">
-                                                    3 Months Free
+                                                    {product.entitlements.trial_length} Free
                                                 </div>
                                             )}
                                             <CardTitle>
-                                                <h2 className="text-xl font-semibold text-primary">{plan.name}</h2>
+                                                <h2 className="text-xl font-semibold text-primary">{product.name}</h2>
                                             </CardTitle>
                                         </CardHeader>
                                         <CardDescription>
-                                            <p className="mt-2 text-3xl font-bold text-primary">{plan.price}</p>
-                                            <p className="mt-2 text-primary">{plan.description}</p>
-                                            <p className="mt-2 text-primary/60 text-sm">{plan.extra}</p>
-                                            <a href="/register">
+                                            <p className="mt-2 text-3xl font-bold text-primary">
+                                                {product.base_price}/mo
+                                            </p>
+                                            <p className="mt-2 text-primary">
+                                                {product.entitlements.evaluations < 1000000 &&
+                                                    product.entitlements.evaluations.toLocaleString()}
+                                                {product.entitlements.evaluations >= 1000000 &&
+                                                    (product.entitlements.evaluations / 1000000).toLocaleString() +
+                                                        'M'}{' '}
+                                                feature flag evaluations
+                                            </p>
+                                            <p className="mt-2 text-primary/60 text-sm">
+                                                {product.metered_price}/
+                                                {product.metadata.evaluation_tier_size.toLocaleString()} evaluations
+                                                after that
+                                            </p>
+                                            <a href={`/register?plan=${product.id}`}>
                                                 <span className="absolute inset-0"></span>
                                                 <Button className="mt-4 cursor-pointer">
-                                                    {plan.free && 'Start Free Trial'}
-                                                    {!plan.free && 'Choose Plan'}
+                                                    {product.entitlements.trial_length && 'Start Free Trial'}
+                                                    {!product.entitlements.trial_length && 'Choose Plan'}
                                                 </Button>
                                             </a>
                                         </CardDescription>
@@ -98,7 +112,8 @@ export default function Pricing() {
                         </p>
 
                         <div className="text-center text-sm text-gray-400 mt-8">
-                            After your three-month free trial, the Solo plan continues at $5/month. Cancel anytime.
+                            <em>Credit Card Required.</em> After your three-month free trial, the Solo plan continues at
+                            $5/month. Cancel anytime.
                         </div>
                     </div>
                 </section>
@@ -185,7 +200,7 @@ export default function Pricing() {
                     <p className="text-lg mb-8 text-white">
                         Unlimited flags, apps, environments, and users — for the price of a coffee.
                     </p>
-                    <a href="/register">
+                    <a href={`/register?plan=${products[0].id}`}>
                         <Button size="lg">Start Free Trial</Button>
                     </a>
                 </motion.section>
@@ -193,34 +208,6 @@ export default function Pricing() {
         </>
     );
 }
-
-const plans = [
-    {
-        name: 'Solo',
-        price: '$5/mo',
-        description: '10,000 feature flag evaluations',
-        extra: '$5/10,000 evaluations after that',
-        free: true,
-    },
-    {
-        name: 'Developer',
-        price: '$19/mo',
-        extra: '$4/10,000 evaluations after that',
-        description: '100,000 feature flag evaluations',
-    },
-    {
-        name: 'Growth',
-        price: '$79/mo',
-        extra: '$35/100,000 evaluations after that',
-        description: '500,000 feature flag evaluations',
-    },
-    {
-        name: 'Scale',
-        price: '$199/mo',
-        extra: '$25/100,000 evaluations after that',
-        description: '2M feature flag evaluations',
-    },
-];
 
 const features = [
     'Unlimited Feature Flags',

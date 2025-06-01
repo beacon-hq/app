@@ -1,15 +1,17 @@
+import { ProductCollection } from '@/Application';
 import NavMenu from '@/Components/NavMenu';
 import { CentralizedControlAnimation } from '@/Pages/Home/Components/CentralizedControlAnimation';
-import Pricing from '@/Pages/Pricing';
+import Pricing from '@/Pages/Home/Components/Pricing';
 import useScrollToLocation from '@/hooks/use-scroll-to-location';
 import { PageProps } from '@/types';
 import { SiGithub, SiYoutube } from '@icons-pack/react-simple-icons';
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { Radio } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 
-export default function Index({ auth }: PageProps) {
+export default function Index({ auth, products }: PageProps & { products: ProductCollection }) {
     useScrollToLocation();
+    const pricingEnabled = usePage().props.features['pricing.enabled'];
 
     const [isDark, setIsDark] = useState(false);
 
@@ -34,7 +36,7 @@ export default function Index({ auth }: PageProps) {
     return (
         <>
             <Head title="Welcome" />
-            <NavMenu />
+            <NavMenu auth={auth} />
 
             <header className="flex flex-col items-center">
                 <div className="mx-auto px-4 py-8 text-center w-11/12 md:w-3/4">
@@ -229,9 +231,11 @@ export default function Index({ auth }: PageProps) {
                 </div>
             </section>
 
-            <section id="pricing" className="scroll-mt-8" ref={pricingRef}>
-                <Pricing />
-            </section>
+            {pricingEnabled && (
+                <section id="pricing" className="scroll-mt-8" ref={pricingRef}>
+                    <Pricing products={products} />
+                </section>
+            )}
 
             <footer className="bg-gray-800 text-white py-6">
                 <div className="container mx-auto px-4 text-center">

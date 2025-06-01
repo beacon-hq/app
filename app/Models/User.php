@@ -15,12 +15,14 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use function Illuminate\Events\queueable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Spatie\Activitylog\Traits\CausesActivity;
 use Spatie\Permission\Traits\HasRoles;
 use Storage;
 
@@ -61,6 +63,7 @@ class User extends Authenticatable implements MustVerifyEmailContract
 {
     use BelongsToOrganization;
     use BelongsToTeam;
+    use CausesActivity;
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
     use HasRoles;
@@ -143,5 +146,20 @@ class User extends Authenticatable implements MustVerifyEmailContract
         return Attribute::make(function () {
             return $this->first_name . ' ' . $this->last_name;
         });
+    }
+
+    protected static function booted()
+    {
+        static::updated(queueable(function (User $customer) {
+            $customer
+                ->organizations()
+                ->where('owner_id', $customer->id)
+                ->whereNotNull('stripe_id')
+                ->get()
+                ->each(
+                    fn (Organization $organization) =>
+                        $organization->syncStripeCustomerDetails()
+                );
+        }));
     }
 }

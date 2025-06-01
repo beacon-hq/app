@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Middleware\EnsureOrganizationMiddleware;
+use App\Http\Middleware\EnsureSubscriptionMiddleware;
 use App\Http\Middleware\EnsureTeamMiddleware;
 use App\Http\Middleware\EnsureTwoFactorAuthMiddleware;
 use App\Http\Middleware\HandleInertiaRequests;
@@ -29,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
             EnsureTwoFactorAuthMiddleware::class,
             EnsureTeamMiddleware::class,
             EnsureOrganizationMiddleware::class,
+            EnsureSubscriptionMiddleware::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);
@@ -40,8 +42,12 @@ return Application::configure(basePath: dirname(__DIR__))
             EnsureTeamMiddleware::class,
         ]);
 
-        $middleware->prependToPriorityList(SubstituteBindings::class, EnsureOrganizationMiddleware::class);
         $middleware->prependToPriorityList(SubstituteBindings::class, EnsureTeamMiddleware::class);
+        $middleware->prependToPriorityList(SubstituteBindings::class, EnsureOrganizationMiddleware::class);
+
+        $middleware->validateCsrfTokens(except: [
+            'stripe/*',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

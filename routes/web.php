@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Events\FeatureFlagEvaluated;
 use App\Http\Controllers\AccessTokenController;
 use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnvironmentController;
 use App\Http\Controllers\FeatureFlagController;
@@ -53,6 +54,11 @@ Route::get('/teams/accept-invite', [TeamMemberManageController::class, 'show'])
     ->middleware('signed')
     ->name('teams.accept-invite');
 
+Route::middleware(['auth', 'auth:sanctum'])->group(function () {
+    Route::resource('checkout', CheckoutController::class)
+        ->only(['index', 'show']);
+});
+
 Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
     Route::resource(
         'applications',
@@ -68,6 +74,9 @@ Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
         'feature-flags',
         FeatureFlagController::class,
     )->except(['delete', 'create', 'show']);
+
+    Route::get('feature-flags/{featureFlag}/activity-log', [FeatureFlagController::class, 'activityLog'])
+        ->name('feature-flags.activity-log');
 
     Route::resource(
         'feature-types',
@@ -139,6 +148,7 @@ Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
     Route::prefix('feature-flags')->group(function () {
         Route::get('/feature-flags/{feature_flag}/overview', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.overview');
         Route::get('/feature-flags/{feature_flag}/policy', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.policy');
+        Route::get('/feature-flags/{feature_flag}/activity', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.activity');
     });
 });
 

@@ -6,6 +6,14 @@ export type AccessToken = {
     created_at: string | null;
 };
 export type AccessTokenCollection = AccessToken[];
+export type ActivityLog = {
+    id: number;
+    user: User;
+    event: string;
+    properties: any;
+    created_at: string;
+};
+export type ActivityLogCollection = ActivityLog[];
 export type Application = {
     id?: string;
     name?: string;
@@ -207,6 +215,18 @@ export enum PolicyDefinitionType {
     OPERATOR = 'operator',
     POLICY = 'policy',
 }
+export type Product = {
+    id: string;
+    stripe_id?: string;
+    name?: string;
+    description?: string;
+    active?: boolean;
+    entitlements?: any;
+    metadata?: any;
+    base_price: any | null;
+    metered_price: any | null;
+};
+export type ProductCollection = Product[];
 export enum Role {
     OWNER = 'Owner',
     ADMIN = 'Admin',

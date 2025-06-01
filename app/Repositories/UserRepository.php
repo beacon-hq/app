@@ -14,6 +14,7 @@ use App\Values\Collections\UserCollection;
 use App\Values\Organization;
 use App\Values\Team;
 use App\Values\User as UserValue;
+use Bag\Values\Optional;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -27,7 +28,7 @@ class UserRepository
 
     public function addTeam(UserValue $user, Team $team): UserValue
     {
-        if ($team->id !== null) {
+        if ($team->id !== null && !($team->id instanceof Optional)) {
             $team = $this->teamService->find($team->id, Organization::collect(Auth::user()->organizations));
         } else {
             $team = $this->teamService->create($team, $user);

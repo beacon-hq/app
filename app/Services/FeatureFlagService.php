@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Repositories\FeatureFlagRepository;
+use App\Values\Collections\ActivityLogCollection;
 use App\Values\Collections\FeatureFlagCollection;
 use App\Values\FeatureFlag;
 
@@ -42,5 +43,10 @@ class FeatureFlagService
     public function touch(FeatureFlag $featureFlag)
     {
         return $this->featureFlagRepository->update($featureFlag->with(lastSeenAt: now()));
+    }
+
+    public function activityLog(string $id): ActivityLogCollection
+    {
+        return $this->featureFlagRepository->activityLog($id);
     }
 }

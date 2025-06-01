@@ -10,6 +10,8 @@ use App\Services\ApplicationService;
 use App\Services\EnvironmentService;
 use App\Services\FeatureTypeService;
 use App\Services\TagService;
+use App\Values\ActivityLog;
+use App\Values\Collections\ActivityLogCollection;
 use App\Values\Collections\FeatureFlagCollection;
 use App\Values\FeatureFlag as FeatureFlagValue;
 use App\Values\FeatureFlagStatus as FeatureFlagStatusValue;
@@ -108,6 +110,16 @@ class FeatureFlagRepository
     public function count(array $filters = []): int
     {
         return $this->buildQuery(filters: $filters)->count();
+    }
+
+    public function activityLog(string $id): ActivityLogCollection
+    {
+        return ActivityLog::collect(
+            FeatureFlag::findOrFail($id)
+                ->activities()
+                ->orderBy('created_at', 'desc')
+                ->get()
+        );
     }
 
     /**

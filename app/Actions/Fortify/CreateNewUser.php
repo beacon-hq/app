@@ -41,13 +41,18 @@ class CreateNewUser implements CreatesNewUsers
                 Rule::unique(User::class),
             ],
             'password' => $this->passwordRules(),
+            'plan' => ['nullable', 'exists:stripe_products,id'],
         ])->validate();
 
         Session::put('auth.password_confirmed_at', time());
 
+        if (isset($input['plan'])) {
+            Session::put('billing.plan', $input['plan']);
+        }
+
         try {
             return DB::transaction(function () use ($input) {
-                return $this->userService->create(
+                return User::find($this->userService->create(
                     App\Values\User::from(
                         firstName: $input['first_name'],
                         lastName: $input['last_name'],
@@ -56,8 +61,7 @@ class CreateNewUser implements CreatesNewUsers
                         status: UserStatus::ACTIVE,
                     ),
                     Session::has('invite') ? Session::get('invite') : null,
-                );
-
+                )->id);
             });
         } catch (\Exception $e) {
             Auth::hasUser() && Auth::logout();

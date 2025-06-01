@@ -5,14 +5,17 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Services\MailService;
+use App\Services\ProductService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class IndexController extends Controller
 {
-    public function index()
+    public function index(ProductService $productService)
     {
-        return Inertia::render('Home/Index');
+        return Inertia::render('Home/Index', [
+            'products' => $productService->all(),
+        ]);
     }
 
     /**

@@ -51,8 +51,8 @@ class TeamRepository
     {
         return TeamValue::from(Team::create([
             'name' => $team->name,
-            'color' => $team->color,
-            'icon' => $team->icon,
+            'color' => $team->has('color') ? $team->color : null,
+            'icon' => $team->has('icon') ? $team->icon : null,
         ]));
     }
 

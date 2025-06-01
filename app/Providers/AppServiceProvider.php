@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Cashier\Cashier;
 use Laravel\Pennant\Middleware\EnsureFeaturesAreActive;
 use Laravel\Sanctum\Sanctum;
 
@@ -27,6 +28,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        // URL::forceScheme('https');
+
         app()->singleton(AppContext::class, fn () => AppContext::from(AppContext::empty()));
 
         App::macro('context', function (Organization|OrganizationValue|null $organization = null, Team|TeamValue|null $team = null): AppContext {
@@ -37,7 +40,7 @@ class AppServiceProvider extends ServiceProvider
                     $organization = OrganizationValue::from($organization);
                 }
 
-                if ($context->has('organization') && $context->organization->id !== $organization->id) {
+                if (!$context->has('organization') || $context->organization->id !== $organization->id) {
                     $context = $context->with(organization: $organization);
                     OrganizationChangedEvent::dispatch($organization);
                 }
@@ -48,7 +51,7 @@ class AppServiceProvider extends ServiceProvider
                     $team = TeamValue::from($team);
                 }
 
-                if ($context->has('team') && $context->team->id !== $team->id) {
+                if (!$context->has('team') || $context->team->id !== $team->id) {
                     $context = $context->with(team: $team);
                     TeamChangedEvent::dispatch($team);
                 }
@@ -85,5 +88,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Vite::prefetch(concurrency: 3);
+        Cashier::useCustomerModel(Organization::class);
     }
 }

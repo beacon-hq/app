@@ -1,4 +1,5 @@
 import {
+    ActivityLogCollection,
     ApplicationCollection,
     EnvironmentCollection,
     FeatureFlag,
@@ -17,6 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Switch } from '@/Components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
+import ActivityLog from '@/Pages/FeatureFlags/Components/ActivityLog';
 import { Form } from '@/Pages/FeatureFlags/Components/Form';
 import StatusEditor from '@/Pages/FeatureFlags/Components/StatusEditor';
 import { cn, localDateTime } from '@/lib/utils';
@@ -32,6 +34,7 @@ export default function Edit({
     applications,
     environments,
     policies,
+    log,
 }: {
     featureFlag: FeatureFlag;
     featureTypes: FeatureTypeCollection;
@@ -39,6 +42,7 @@ export default function Edit({
     applications: ApplicationCollection;
     environments: EnvironmentCollection;
     policies: PolicyCollection;
+    log: ActivityLogCollection;
 }) {
     function changeTab(routeName: string) {
         return () =>
@@ -105,6 +109,10 @@ export default function Edit({
         }
     }
 
+    if (route().current('feature-flags.edit.activity')) {
+        tab = 'activity';
+    }
+
     const onStatusChange = (status: FeatureFlagStatus) => {
         const statuses = [
             ...(data.statuses?.map(function (currentStatus) {
@@ -159,6 +167,13 @@ export default function Edit({
                                 onClick={changeTab('feature-flags.edit.policy')}
                             >
                                 Configuration
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="activity"
+                                className="rounded-lg grow px-6 cursor-pointer"
+                                onClick={changeTab('feature-flags.edit.activity')}
+                            >
+                                Activity Log
                             </TabsTrigger>
                         </TabsList>
                         {featureFlag.status && (
@@ -348,6 +363,9 @@ export default function Edit({
                                             Save
                                         </Button>
                                     </div>
+                                </TabsContent>
+                                <TabsContent value="activity" className="flex flex-col gap-4">
+                                    <ActivityLog log={log} />
                                 </TabsContent>
                             </div>
                         </div>

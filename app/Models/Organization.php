@@ -12,9 +12,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use function Illuminate\Events\queueable;
+use Laravel\Cashier\Billable;
 
 class Organization extends Model
 {
+    use Billable;
     use HasFactory;
     use HasUlids;
 
@@ -26,7 +29,7 @@ class Organization extends Model
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id')->withoutGlobalScopes([
-            CurrentOrganizationScope::class, CurrentTeamScope::class
+            CurrentOrganizationScope::class, CurrentTeamScope::class,
         ]);
     }
 
@@ -38,5 +41,24 @@ class Organization extends Model
     public function teams(): HasMany
     {
         return $this->hasMany(Team::class);
+    }
+
+    public function stripeName()
+    {
+        return $this->name;
+    }
+
+    public function stripeEmail(): string
+    {
+        return $this->owner->email;
+    }
+
+    protected static function booted()
+    {
+        static::updated(queueable(function (Organization $organization) {
+            if ($organization->hasStripeId()) {
+                $organization->syncStripeCustomerDetails();
+            }
+        }));
     }
 }
