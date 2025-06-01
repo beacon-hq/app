@@ -10,12 +10,12 @@ use App\Models\Scopes\CurrentTeamScope;
 use App\Models\User;
 use App\Services\TeamService;
 use App\Values\Collections\TeamCollection;
-use App\Values\Collections\UserCollection;
 use App\Values\Organization;
 use App\Values\Team;
 use App\Values\User as UserValue;
 use Bag\Values\Optional;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -26,7 +26,7 @@ class UserRepository
     {
     }
 
-    public function addTeam(UserValue $user, Team $team): UserValue
+    public function addTeam(UserValue $user, Team $team): User
     {
         if ($team->id !== null && !($team->id instanceof Optional)) {
             $team = $this->teamService->find($team->id, Organization::collect(Auth::user()->organizations));
@@ -37,77 +37,75 @@ class UserRepository
         $user = User::withoutGlobalScopes([CurrentTeamScope::class])->find($user->id);
         $user->teams()->syncWithoutDetaching($team->id);
 
-        return UserValue::from($user);
+        return $user;
     }
 
-    public function removeTeam(Team $team, UserValue $user): UserValue
+    public function removeTeam(Team $team, UserValue $user): User
     {
         $user = User::findOrFail($user->id);
         $user->teams()->detach($team->id);
 
-        return UserValue::from($user);
+        return $user;
     }
 
-    public function findByEmail(string $email): UserValue
+    public function findByEmail(string $email): User
     {
-        return UserValue::from(User::withoutGlobalScopes([CurrentTeamScope::class])->where('email', $email)->firstOrFail());
+        return User::withoutGlobalScopes([CurrentTeamScope::class])->where('email', $email)->firstOrFail();
     }
 
-    public function addOrganization(UserValue $user, Organization $organization): UserValue
+    public function addOrganization(UserValue $user, Organization $organization): User
     {
         $user = User::withoutGlobalScopes([CurrentOrganizationScope::class, CurrentTeamScope::class])->findOrFail($user->id);
         $user->organizations()->syncWithoutDetaching($organization->id);
 
-        return UserValue::from($user);
+        return $user;
     }
 
-    public function assignRole(UserValue $user, Role $role): UserValue
+    public function assignRole(UserValue $user, Role $role): User
     {
         $user = User::withoutGlobalScopes([CurrentTeamScope::class])->findOrFail($user->id);
         $user->syncRoles($role);
 
-        return UserValue::from($user);
+        return $user;
     }
 
-    public function teamMembers(Team $team, array|string $orderBy = ['name'], ?int $page = null, int $perPage = null, array $filters = []): UserCollection
+    public function teamMembers(Team $team, array|string $orderBy = ['name'], ?int $page = null, int $perPage = null, array $filters = []): Collection
     {
         $filters['teams'][] = $team->id;
 
-        return UserValue::collect($this->buildQuery(orderBy: $orderBy, filters: $filters, page: $page, perPage: $perPage)->get());
+        return $this->buildQuery(orderBy: $orderBy, filters: $filters, page: $page, perPage: $perPage)->get();
     }
 
-    public function nonTeamMembers(Team $team): UserCollection
+    public function nonTeamMembers(Team $team): Collection
     {
-        return UserValue::collect(User::withoutGlobalScopes([CurrentTeamScope::class])
+        return User::withoutGlobalScopes([CurrentTeamScope::class])
             ->whereDoesntHave('teams', fn (Builder $query) => $query->where('id', $team->id))
-            ->get());
+            ->get();
     }
 
-    public function create(UserValue $user): UserValue
+    public function create(UserValue $user): User
     {
         $user = User::create($user->toArray());
 
         Auth::login($user);
 
-        return UserValue::from($user);
+        return $user;
     }
 
-    public function all(array $orderBy = ['first_name', 'last_name'], array $filters = [], ?int $page = null, int $perPage = 20): UserCollection
+    public function all(array $orderBy = ['first_name', 'last_name'], array $filters = [], ?int $page = null, int $perPage = 20): Collection
     {
-        return UserValue::collect(
-            $this->buildQuery(orderBy: $orderBy, filters: $filters, page: $page, perPage: $perPage)
-                ->with('teams')
-                ->withoutGlobalScopes([CurrentTeamScope::class])
-                ->get()
-        );
+        return $this->buildQuery(orderBy: $orderBy, filters: $filters, page: $page, perPage: $perPage)
+            ->with('teams')
+            ->withoutGlobalScopes([CurrentTeamScope::class])
+            ->get();
     }
 
-    public function syncTeams(UserValue $user, TeamCollection $teams): UserValue
+    public function syncTeams(UserValue $user, TeamCollection $teams): User
     {
         $user = User::withoutGlobalScopes([CurrentTeamScope::class])->find($user->id);
         $user->teams()->sync($teams->pluck('id')->toArray());
 
-        return UserValue::from($user);
+        return $user;
     }
 
     public function delete(UserValue $user): void
@@ -121,17 +119,17 @@ class UserRepository
         $user->delete();
     }
 
-    public function update(UserValue $user)
+    public function update(UserValue $user): User
     {
         $userModel = User::withoutGlobalScopes([CurrentTeamScope::class])->findOrFail($user->id);
         $userModel->update($user->toCollection()->only('status')->toArray());
 
-        return UserValue::from($userModel);
+        return $userModel;
     }
 
-    public function find(int $id): UserValue
+    public function find(int $id): User
     {
-        return UserValue::from(User::withoutGlobalScopes([CurrentTeamScope::class])->findOrFail($id));
+        return User::withoutGlobalScopes([CurrentTeamScope::class])->findOrFail($id);
     }
 
     public function sendEmailVerificationNotification(int $id): void

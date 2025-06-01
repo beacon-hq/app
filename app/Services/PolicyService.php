@@ -17,21 +17,29 @@ class PolicyService
 
     public function all(array|string $orderBy = ['name']): PolicyCollection
     {
-        return $this->policyRepository->all($orderBy);
+        $policies = $this->policyRepository->all($orderBy);
+
+        return Policy::collect($policies);
     }
 
     public function create(Policy $policy): Policy
     {
-        return $this->policyRepository->create($policy);
+        $createdPolicy = $this->policyRepository->create($policy);
+
+        return Policy::from($createdPolicy);
     }
 
     public function update(Policy $policy): Policy
     {
-        return $this->policyRepository->update($policy);
+        $updatedPolicy = $this->policyRepository->update($policy);
+
+        return Policy::from($updatedPolicy);
     }
 
     public function find(string $id): Policy
     {
-        return $this->policyRepository->find($id);
+        $policy = $this->policyRepository->find($id);
+
+        return Policy::from($policy);
     }
 }

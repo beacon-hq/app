@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Models\Tag;
-use App\Values\Collections\TagCollection;
 use App\Values\Tag as TagValue;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Arr;
 
 class TagRepository
 {
-    public function all(array|string $orderBy = ['name']): TagCollection
+    public function all(array|string $orderBy = ['name']): Collection
     {
         $query = Tag::query();
 
@@ -20,27 +20,29 @@ class TagRepository
             $query = $query->orderBy($column);
         }
 
-        return TagValue::collect($query->get());
+        return $query->get();
     }
 
-    public function create(TagValue $tag): TagValue
+    public function create(TagValue $tag): Tag
     {
-        return TagValue::from(Tag::create($tag->toArray()));
+        return Tag::create($tag->toArray());
     }
 
-    public function update(TagValue $tag): TagValue
+    public function update(TagValue $tag): Tag
     {
-        Tag::firstOrFail($tag->id)->update(
+        $tagModel = Tag::findOrFail($tag->id);
+
+        $tagModel->update(
             $tag
                 ->toCollection()
                 ->except('id')
                 ->toArray()
         );
 
-        return $tag;
+        return $tagModel->fresh();
     }
 
-    public function find(string ...$id): TagCollection|TagValue
+    public function find(string ...$id): Collection|Tag
     {
         $tags = Tag::whereIn('id', Arr::wrap($id))->get();
 
@@ -49,9 +51,9 @@ class TagRepository
         }
 
         if (count($id) === 1) {
-            return TagValue::from($tags->first());
+            return $tags->first();
         }
 
-        return TagValue::collect($tags);
+        return $tags;
     }
 }

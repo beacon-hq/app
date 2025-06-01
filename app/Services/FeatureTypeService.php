@@ -16,21 +16,29 @@ class FeatureTypeService
 
     public function all(): FeatureTypeCollection
     {
-        return $this->featureTypeRepository->all();
+        $featureTypes = $this->featureTypeRepository->all();
+
+        return FeatureType::collect($featureTypes);
     }
 
     public function create(FeatureType $featureType): FeatureType
     {
-        return $this->featureTypeRepository->create($featureType);
+        $createdFeatureType = $this->featureTypeRepository->create($featureType);
+
+        return FeatureType::from($createdFeatureType);
     }
 
     public function update(FeatureType $featureType): FeatureType
     {
-        return $this->featureTypeRepository->update($featureType);
+        $updatedFeatureType = $this->featureTypeRepository->update($featureType);
+
+        return FeatureType::from($updatedFeatureType);
     }
 
     public function find(?string $id): FeatureType
     {
-        return $this->featureTypeRepository->find($id);
+        $featureType = $this->featureTypeRepository->find($id);
+
+        return FeatureType::from($featureType);
     }
 }

@@ -6,12 +6,12 @@ namespace App\Repositories;
 
 use App\Models\Application;
 use App\Values\Application as ApplicationValue;
-use App\Values\Collections\ApplicationCollection;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 
 class ApplicationRepository
 {
-    public function all(array|string $orderBy = ['display_name', 'name']): ApplicationCollection
+    public function all(array|string $orderBy = ['display_name', 'name']): Collection
     {
         $query = Application::query();
 
@@ -19,23 +19,25 @@ class ApplicationRepository
             $query = $query->orderBy($column);
         }
 
-        return ApplicationValue::collect($query->get()->append('environments'));
+        return $query->get()->append('environments');
     }
 
-    public function create(ApplicationValue $application): ApplicationValue
+    public function create(ApplicationValue $application): Application
     {
-        return ApplicationValue::from(Application::create(
+        return Application::create(
             $application
                 ->with(color: $application->color ?? '')
                 ->toCollection()
                 ->except('last_seen_at')
                 ->toArray()
-        ));
+        );
     }
 
-    public function update(ApplicationValue $application): ApplicationValue
+    public function update(ApplicationValue $application): Application
     {
-        Application::findOrFail($application->id)->update(
+        $app = Application::findOrFail($application->id);
+
+        $app->update(
             $application
                 ->with(color: $application->color ?? '')
                 ->toCollection()
@@ -43,11 +45,11 @@ class ApplicationRepository
                 ->toArray()
         );
 
-        return $application;
+        return $app->fresh();
     }
 
-    public function find(string $id): ApplicationValue
+    public function find(string $id): Application
     {
-        return ApplicationValue::from(Application::findOrFail($id));
+        return Application::findOrFail($id);
     }
 }

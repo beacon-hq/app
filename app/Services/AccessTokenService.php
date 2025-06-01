@@ -17,12 +17,16 @@ class AccessTokenService
 
     public function all(): AccessTokenCollection
     {
-        return $this->accessTokenRepository->all($this->appContext->team);
+        $accessTokens = $this->accessTokenRepository->all($this->appContext->team);
+
+        return AccessToken::collect($accessTokens);
     }
 
     public function create(AccessToken $accessToken): AccessToken
     {
-        return $this->accessTokenRepository->create($accessToken, $this->appContext->team);
+        $createdAccessToken = $this->accessTokenRepository->create($accessToken, $this->appContext->team);
+
+        return AccessToken::from($createdAccessToken);
     }
 
     public function delete(AccessToken $accessToken): bool
@@ -32,6 +36,8 @@ class AccessTokenService
 
     public function findById(string $id): AccessToken
     {
-        return $this->accessTokenRepository->findById($id);
+        $accessToken = $this->accessTokenRepository->findById($id);
+
+        return AccessToken::from($accessToken);
     }
 }

@@ -24,17 +24,23 @@ class UserService
 
     public function all(array $orderBy = ['first_name', 'last_name'], array $filters = [], ?int $page = null, int $perPage = 20): UserCollection
     {
-        return $this->userRepository->all(orderBy: $orderBy, filters: $filters, page: $page, perPage: $perPage);
+        $users = $this->userRepository->all(orderBy: $orderBy, filters: $filters, page: $page, perPage: $perPage);
+
+        return UserValue::collect($users);
     }
 
     public function find(int $id): UserValue
     {
-        return $this->userRepository->find($id);
+        $user = $this->userRepository->find($id);
+
+        return UserValue::from($user);
     }
 
-    public function update(UserValue $user, array $data): UserValue
+    public function update(UserValue $user): UserValue
     {
-        return $this->userRepository->update($user, $data);
+        $updatedUser = $this->userRepository->update($user);
+
+        return UserValue::from($updatedUser);
     }
 
     public function delete(UserValue $user): void
@@ -44,7 +50,9 @@ class UserService
 
     public function addTeam(UserValue $user, Team $team): UserValue
     {
-        return $this->userRepository->addTeam($user, $team);
+        $user = $this->userRepository->addTeam($user, $team);
+
+        return UserValue::from($user);
     }
 
     public function removeTeam(Team $team, UserValue $user): void
@@ -68,7 +76,9 @@ class UserService
 
     public function findByEmail(string $email): UserValue
     {
-        return $this->userRepository->findByEmail($email);
+        $user = $this->userRepository->findByEmail($email);
+
+        return UserValue::from($user);
     }
 
     public function assignRole(UserValue $user, ?Role $role): void
@@ -78,42 +88,55 @@ class UserService
 
     public function teamMembers(Team $team, array|string $orderBy = ['name'], ?int $page = null, int $perPage = 20, array $filters = []): UserCollection
     {
-        return $this->userRepository->teamMembers($team, $orderBy, $page, $perPage, $filters);
+        $users = $this->userRepository->teamMembers($team, $orderBy, $page, $perPage, $filters);
+
+        return UserValue::collect($users);
     }
 
     public function nonTeamMembers(Team $team): UserCollection
     {
-        return $this->userRepository->nonTeamMembers($team);
+        $users = $this->userRepository->nonTeamMembers($team);
+
+        return UserValue::collect($users);
     }
 
     public function create(UserValue $user, ?Invite $invite = null): UserValue
     {
-        $user = $this->userRepository->create($user);
+        $userModel = $this->userRepository->create($user);
+        $user = UserValue::from($userModel);
 
         if ($invite !== null) {
             $this->appContextService->setOrganization($invite->organization);
 
-            $user = $this->userRepository->addOrganization($user, $invite->organization);
-            $user = $this->userRepository->addTeam($user, $invite->team);
-            $user = $this->userRepository->assignRole($user, $invite->role);
+            $userModel = $this->userRepository->addOrganization($user, $invite->organization);
+            $user = UserValue::from($userModel);
+
+            $userModel = $this->userRepository->addTeam($user, $invite->team);
+            $user = UserValue::from($userModel);
+
+            $userModel = $this->userRepository->assignRole($user, $invite->role);
+            $user = UserValue::from($userModel);
 
             $this->inviteService->delete($invite);
 
             Session::forget('invite');
 
-            return UserValue::from($user);
+            return $user;
         }
 
         $organization = $this->organizationService->create($user, Organization::from(name: $user->firstName . '\'s Organization'));
 
-        $this->userRepository->addOrganization($user, $organization);
+        $userModel = $this->userRepository->addOrganization($user, $organization);
+        $user = UserValue::from($userModel);
 
         $this->appContextService->setOrganization($organization);
 
         $team = Team::from(name: $user->firstName . '\'s Team', color: collect(Color::values())->random());
-        $user = $this->userRepository->addTeam($user, $team);
+        $userModel = $this->userRepository->addTeam($user, $team);
+        $user = UserValue::from($userModel);
 
-        $user = $this->userRepository->assignRole($user, Role::OWNER);
+        $userModel = $this->userRepository->assignRole($user, Role::OWNER);
+        $user = UserValue::from($userModel);
 
         return $user;
     }

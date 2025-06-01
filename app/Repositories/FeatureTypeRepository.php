@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Models\FeatureType;
-use App\Values\Collections\FeatureTypeCollection;
 use App\Values\FeatureType as FeatureTypeValue;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 
 class FeatureTypeRepository
 {
-    public function all(array|string $orderBy = ['name']): FeatureTypeCollection
+    public function all(array|string $orderBy = ['name']): Collection
     {
         $query = FeatureType::query();
 
@@ -19,21 +19,23 @@ class FeatureTypeRepository
             $query = $query->orderBy($column);
         }
 
-        return FeatureTypeValue::collect($query->get());
+        return $query->get();
     }
 
-    public function create(FeatureTypeValue $featureType): FeatureTypeValue
+    public function create(FeatureTypeValue $featureType): FeatureType
     {
-        return FeatureTypeValue::from(FeatureType::create(
+        return FeatureType::create(
             $featureType
                 ->with(color: $featureType->color ?? '')
                 ->toArray()
-        ));
+        );
     }
 
-    public function update(FeatureTypeValue $featureType): FeatureTypeValue
+    public function update(FeatureTypeValue $featureType): FeatureType
     {
-        FeatureType::findOrFail($featureType->id)->update(
+        $featureTypeModel = FeatureType::findOrFail($featureType->id);
+
+        $featureTypeModel->update(
             $featureType
                 ->with(color: $featureType->color ?? '')
                 ->toCollection()
@@ -41,11 +43,11 @@ class FeatureTypeRepository
                 ->toArray()
         );
 
-        return $featureType;
+        return $featureTypeModel->fresh();
     }
 
-    public function find(?string $id): FeatureTypeValue
+    public function find(?string $id): FeatureType
     {
-        return FeatureTypeValue::from(FeatureType::findOrFail($id));
+        return FeatureType::findOrFail($id);
     }
 }

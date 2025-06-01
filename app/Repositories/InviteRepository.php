@@ -6,26 +6,24 @@ namespace App\Repositories;
 
 use App\Enums\Role;
 use App\Models\Invite;
-use App\Values\Collections\InviteCollection;
 use App\Values\Invite as InviteValue;
 use App\Values\Organization;
 use App\Values\Team;
 use App\Values\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class InviteRepository
 {
-    public function findByTeam(Team $team): InviteCollection
+    public function findByTeam(Team $team): Collection
     {
-        return InviteValue::collect(
-            Invite::query()
-                ->where('team_id', $team->id)
-                ->get()
-        );
+        return Invite::query()
+            ->where('team_id', $team->id)
+            ->get();
     }
 
-    public function create(User $user, Team $team, Organization $organization, Role $role, string $email): InviteValue
+    public function create(User $user, Team $team, Organization $organization, Role $role, string $email): Invite
     {
         Validator::validate([
             'email' => $email,
@@ -37,23 +35,19 @@ class InviteRepository
             'email.unique' => __('This email has already been invited to this organization.'),
         ]);
 
-        return InviteValue::from(
-            Invite::create([
-                'email' => $email,
-                'role' => $role,
-                'team_id' => $team->id,
-                'organization_id' => $organization->id,
-                'user_id' => $user->id,
-                'expires_at' => now()->add(config('beacon.teams.invitation_expiration')),
-            ])
-        );
+        return Invite::create([
+            'email' => $email,
+            'role' => $role,
+            'team_id' => $team->id,
+            'organization_id' => $organization->id,
+            'user_id' => $user->id,
+            'expires_at' => now()->add(config('beacon.teams.invitation_expiration')),
+        ]);
     }
 
-    public function findById(string $inviteId): InviteValue
+    public function findById(string $inviteId): Invite
     {
-        return InviteValue::from(
-            Invite::findOrFail($inviteId)
-        );
+        return Invite::findOrFail($inviteId);
     }
 
     public function delete(InviteValue $invite): void
@@ -61,27 +55,25 @@ class InviteRepository
         Invite::destroy($invite->id);
     }
 
-    public function findTeamInvite(Team $team, string $email): InviteValue
+    public function findTeamInvite(Team $team, string $email): Invite
     {
-        return InviteValue::from(
-            Invite::where('team_id', $team->id)
-                ->where('email', $email)
-                ->firstOrFail()
-        );
+        return Invite::where('team_id', $team->id)
+            ->where('email', $email)
+            ->firstOrFail();
     }
 
-    public function all(): InviteCollection
+    public function all(): Collection
     {
-        return InviteValue::collect(Invite::query()->get());
+        return Invite::query()->get();
     }
 
-    public function refreshExpiration(InviteValue $invite): InviteValue
+    public function refreshExpiration(InviteValue $invite): Invite
     {
         $model = Invite::findOrFail($invite->id);
         $model->update([
             'expires_at' => now()->add(config('beacon.teams.invitation_expiration')),
         ]);
 
-        return InviteValue::from($model->fresh());
+        return $model->fresh();
     }
 }

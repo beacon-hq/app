@@ -16,21 +16,29 @@ class ApplicationService
 
     public function all(): ApplicationCollection
     {
-        return $this->applicationRepository->all();
+        $applications = $this->applicationRepository->all();
+
+        return Application::collect($applications);
     }
 
     public function create(Application $application): Application
     {
-        return $this->applicationRepository->create($application);
+        $createdApplication = $this->applicationRepository->create($application);
+
+        return Application::from($createdApplication);
     }
 
     public function update(Application $application): Application
     {
-        return $this->applicationRepository->update($application);
+        $updatedApplication = $this->applicationRepository->update($application);
+
+        return Application::from($updatedApplication);
     }
 
     public function find(string $id): Application
     {
-        return $this->applicationRepository->find($id);
+        $application = $this->applicationRepository->find($id);
+
+        return Application::from($application);
     }
 }

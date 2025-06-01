@@ -7,9 +7,8 @@ namespace App\Repositories;
 use App\Models\AccessToken;
 use App\Models\Team;
 use App\Values\AccessToken as AccessTokenValue;
-use App\Values\Collections\AccessTokenCollection;
 use App\Values\Team as TeamValue;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Collection;
 
 class AccessTokenRepository
 {
@@ -17,26 +16,20 @@ class AccessTokenRepository
     {
     }
 
-    public function all(TeamValue $team): AccessTokenCollection
+    public function all(TeamValue $team): Collection
     {
-        /** @phpstan-ignore return.type */
-        return AccessTokenValue::collect(Team::findOrFail($team->id)->tokens);
+        return Team::findOrFail($team->id)->tokens;
     }
 
-    public function create(AccessTokenValue $accessToken, TeamValue $team): AccessTokenValue
+    public function create(AccessTokenValue $accessToken, TeamValue $team): AccessToken
     {
         /** @var Team $team */
         $team = Team::findOrFail($team->id);
 
         $token = $team->createToken($accessToken->name);
 
-        return AccessTokenValue::from(
-            id: (int) Str::before($token->plainTextToken, '|'),
-            name: $accessToken->name,
-            token: Str::after($token->plainTextToken, '|'),
-            lastUsedAt: null,
-            createdAt: $token->accessToken->created_at
-        );
+        // Return the access token model
+        return $token->accessToken;
     }
 
     public function delete(AccessTokenValue $accessToken, TeamValue $team): bool
@@ -48,8 +41,8 @@ class AccessTokenRepository
     }
 
 
-    public function findById(string $id): AccessTokenValue
+    public function findById(string $id): AccessToken
     {
-        return AccessTokenValue::from(AccessToken::findOrFail($id));
+        return AccessToken::findOrFail($id);
     }
 }

@@ -14,6 +14,7 @@ use App\Values\FeatureFlagContext;
 use App\Values\FeatureFlagResponse;
 use App\Values\Policy as PolicyValue;
 use App\Values\PolicyDefinition;
+use Carbon\Carbon;
 use Illuminate\Support\Collection as LaravelCollection;
 use Illuminate\Support\Str;
 
@@ -114,6 +115,19 @@ class FeatureFlagStatusRepository
         };
     }
 
+    protected function evaluateDateRange(PolicyDefinition $policyDefinition): bool
+    {
+        if ($policyDefinition->values === null || $policyDefinition->values->count() < 2) {
+            return false;
+        }
+
+        $now = now();
+        $startDate = Carbon::parse($policyDefinition->values->get(0));
+        $endDate = Carbon::parse($policyDefinition->values->get(1));
+
+        return $now->between($startDate, $endDate);
+    }
+
     protected function evaluatePolicy(FeatureFlagStatus|PolicyValue $policyContainer, FeatureFlagContext $context): bool
     {
         return $this->evaluateExpressionResults($policyContainer->definition->map(function (PolicyDefinition $policyDefinition) use ($context) {
@@ -123,6 +137,10 @@ class FeatureFlagStatusRepository
 
             if ($policyDefinition->type === PolicyDefinitionType::POLICY) {
                 return $this->evaluatePolicy($this->policyService->find($policyDefinition->subject), $context);
+            }
+
+            if ($policyDefinition->type === PolicyDefinitionType::DATE_RANGE) {
+                return $this->evaluateDateRange($policyDefinition);
             }
 
             return $policyDefinition;

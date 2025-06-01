@@ -8,29 +8,27 @@ use App\Models\Scopes\CurrentOrganizationScope;
 use App\Models\Team;
 use App\Services\UserService;
 use App\Values\Collections\OrganizationCollection;
-use App\Values\Collections\TeamCollection;
 use App\Values\Collections\UserCollection;
 use App\Values\Team as TeamValue;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TeamRepository
 {
-    public function find(string $id, OrganizationCollection $organizations): TeamValue
+    public function find(string $id, OrganizationCollection $organizations): Team
     {
-        return TeamValue::from(
-            Team::query()
-                ->withoutGlobalScopes([CurrentOrganizationScope::class])
-                ->with(
-                    'organization',
-                    fn (BelongsTo $query) => $query
-                        ->whereIn('id', $organizations->pluck('id'))
-                )
-                ->findOrFail($id)
-        );
+        return Team::query()
+            ->withoutGlobalScopes([CurrentOrganizationScope::class])
+            ->with(
+                'organization',
+                fn (BelongsTo $query) => $query
+                    ->whereIn('id', $organizations->pluck('id'))
+            )
+            ->findOrFail($id);
     }
 
-    public function all(?int $user = null, bool $includeMembers = false, bool $limitToOrganization = true): TeamCollection
+    public function all(?int $user = null, bool $includeMembers = false, bool $limitToOrganization = true): Collection
     {
         $query = Team::query()
             ->when(
@@ -42,21 +40,19 @@ class TeamRepository
             ->orderBy('organization_id')
             ->orderBy('name');
 
-        return TeamValue::collect(
-            $query->get()
-        );
+        return $query->get();
     }
 
-    public function create(TeamValue $team): TeamValue
+    public function create(TeamValue $team): Team
     {
-        return TeamValue::from(Team::create([
+        return Team::create([
             'name' => $team->name,
             'color' => $team->has('color') ? $team->color : null,
             'icon' => $team->has('icon') ? $team->icon : null,
-        ]));
+        ]);
     }
 
-    public function update(TeamValue $team): TeamValue
+    public function update(TeamValue $team): Team
     {
         $teamModel = Team::withoutGlobalScopes([CurrentOrganizationScope::class])->findOrFail($team->id);
         $teamModel->update(
@@ -66,7 +62,7 @@ class TeamRepository
                 ->toArray()
         );
 
-        return $team->with(id: $teamModel->id);
+        return $teamModel->fresh();
     }
 
     public function members(TeamValue $team, array|string $orderBy = ['name'], ?int $page = null, int $perPage = 20, array $filters = []): UserCollection

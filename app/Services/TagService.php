@@ -17,21 +17,33 @@ class TagService
 
     public function all(array|string $orderBy = ['name']): TagCollection
     {
-        return $this->tagRepository->all($orderBy);
+        $tags = $this->tagRepository->all($orderBy);
+
+        return Tag::collect($tags);
     }
 
-    public function create(Tag $policy): Tag
+    public function create(Tag $tag): Tag
     {
-        return $this->tagRepository->create($policy);
+        $createdTag = $this->tagRepository->create($tag);
+
+        return Tag::from($createdTag);
     }
 
-    public function update(Tag $policy): Tag
+    public function update(Tag $tag): Tag
     {
-        return $this->tagRepository->update($policy);
+        $updatedTag = $this->tagRepository->update($tag);
+
+        return Tag::from($updatedTag);
     }
 
     public function find(string ...$id): Tag|TagCollection
     {
-        return $this->tagRepository->find(...$id);
+        $result = $this->tagRepository->find(...$id);
+
+        if ($result instanceof \App\Models\Tag) {
+            return Tag::from($result);
+        }
+
+        return Tag::collect($result);
     }
 }

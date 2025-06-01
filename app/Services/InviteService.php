@@ -22,7 +22,8 @@ class InviteService
 
     public function create(User $user, Team $team, Organization $organization, string $email, Role $role): Invite
     {
-        $invite = $this->inviteRepository->create($user, $team, $organization, $role, $email);
+        $inviteModel = $this->inviteRepository->create($user, $team, $organization, $role, $email);
+        $invite = Invite::from($inviteModel);
         Notification::send($invite, new RegistrationInvite($invite));
 
         return $invite;
@@ -30,17 +31,23 @@ class InviteService
 
     public function findByTeam(Team $team): InviteCollection
     {
-        return $this->inviteRepository->findByTeam($team);
+        $invites = $this->inviteRepository->findByTeam($team);
+
+        return Invite::collect($invites);
     }
 
     public function findById(string $inviteId): Invite
     {
-        return $this->inviteRepository->findById($inviteId);
+        $invite = $this->inviteRepository->findById($inviteId);
+
+        return Invite::from($invite);
     }
 
     public function findTeamInvite(Team $team, string $email): Invite
     {
-        return $this->inviteRepository->findTeamInvite($team, $email);
+        $invite = $this->inviteRepository->findTeamInvite($team, $email);
+
+        return Invite::from($invite);
     }
 
     public function delete(Invite $invite): void
@@ -51,7 +58,8 @@ class InviteService
     public function resend(Invite $invite): void
     {
         // Refreshing the invitation expiration time
-        $invite = $this->inviteRepository->refreshExpiration($invite);
+        $inviteModel = $this->inviteRepository->refreshExpiration($invite);
+        $invite = Invite::from($inviteModel);
 
         // Resend the invitation email
         Notification::send($invite, new RegistrationInvite($invite));
@@ -59,6 +67,8 @@ class InviteService
 
     public function all(): InviteCollection
     {
-        return $this->inviteRepository->all();
+        $invites = $this->inviteRepository->all();
+
+        return Invite::collect($invites);
     }
 }

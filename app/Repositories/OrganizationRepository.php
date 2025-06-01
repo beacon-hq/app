@@ -6,14 +6,14 @@ namespace App\Repositories;
 
 use App\Models\Organization;
 use App\Models\Scopes\CurrentOrganizationScope;
-use App\Values\Collections\OrganizationCollection;
 use App\Values\Organization as OrganizationValue;
 use App\Values\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 class OrganizationRepository
 {
-    public function create(User $user, OrganizationValue $organization): OrganizationValue
+    public function create(User $user, OrganizationValue $organization): Organization
     {
         $organization = Organization::create([
             'owner_id' => $user->id,
@@ -22,20 +22,20 @@ class OrganizationRepository
 
         $organization->users()->attach($user->id);
 
-        return OrganizationValue::from($organization);
+        return $organization;
     }
 
-    public function update(OrganizationValue $organization): OrganizationValue
+    public function update(OrganizationValue $organization): Organization
     {
         $organizationModel = Organization::where('id', $organization->id)->firstOrFail();
         $organizationModel->update([
             'name' => $organization->name,
         ]);
 
-        return OrganizationValue::from($organizationModel);
+        return $organizationModel->fresh();
     }
 
-    public function all(User $user): OrganizationCollection
+    public function all(User $user): Collection
     {
         $query = Organization::whereHas(
             'teams',
@@ -49,14 +49,12 @@ class OrganizationRepository
                 )
         );
 
-        return OrganizationValue::collect(
-            $query->get()
-        );
+        return $query->get();
     }
 
-    public function findById(?string $id): OrganizationValue
+    public function findById(?string $id): Organization
     {
-        return OrganizationValue::from(Organization::findOrFail($id));
+        return Organization::findOrFail($id);
     }
 
     public function delete(OrganizationValue $organization): void

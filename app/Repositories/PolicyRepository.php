@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Models\Policy;
-use App\Values\Collections\PolicyCollection;
 use App\Values\Collections\PolicyDefinitionCollection;
 use App\Values\Policy as PolicyValue;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 
 class PolicyRepository
 {
-    public function all(array|string $orderBy = ['name']): PolicyCollection
+    public function all(array|string $orderBy = ['name']): Collection
     {
         $query = Policy::query();
 
@@ -20,31 +20,33 @@ class PolicyRepository
             $query = $query->orderBy($column);
         }
 
-        return PolicyValue::collect($query->get());
+        return $query->get();
     }
 
-    public function create(PolicyValue $policy): PolicyValue
+    public function create(PolicyValue $policy): Policy
     {
-        return PolicyValue::from(Policy::create(
+        return Policy::create(
             $policy
             ->with(definition: $policy->definition ?? PolicyDefinitionCollection::empty())
             ->toArray()
-        ));
+        );
     }
 
-    public function update(PolicyValue $policy): PolicyValue
+    public function update(PolicyValue $policy): Policy
     {
-        Policy::findOrFail($policy->id)->update(
+        $policyModel = Policy::findOrFail($policy->id);
+
+        $policyModel->update(
             $policy
                 ->with(definition: $policy->definition ?? PolicyDefinitionCollection::empty())
                 ->toArray()
         );
 
-        return $policy;
+        return $policyModel->fresh();
     }
 
-    public function find(string $id): PolicyValue
+    public function find(string $id): Policy
     {
-        return PolicyValue::from(Policy::findOrFail($id));
+        return Policy::findOrFail($id);
     }
 }

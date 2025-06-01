@@ -10,13 +10,11 @@ use App\Services\ApplicationService;
 use App\Services\EnvironmentService;
 use App\Services\FeatureTypeService;
 use App\Services\TagService;
-use App\Values\ActivityLog;
-use App\Values\Collections\ActivityLogCollection;
-use App\Values\Collections\FeatureFlagCollection;
 use App\Values\FeatureFlag as FeatureFlagValue;
 use App\Values\FeatureFlagStatus as FeatureFlagStatusValue;
 use App\Values\Tag;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 
 class FeatureFlagRepository
@@ -29,21 +27,21 @@ class FeatureFlagRepository
     ) {
     }
 
-    public function all(array|string $orderBy = ['name'], ?int $page = null, int $perPage = 20, array $filters = []): FeatureFlagCollection
+    public function all(array|string $orderBy = ['name'], ?int $page = null, int $perPage = 20, array $filters = []): Collection
     {
         $query = $this->buildQuery($orderBy, $filters, $page, $perPage);
 
-        return FeatureFlagValue::collect($query->get());
+        return $query->get();
     }
 
-    public function first(array $filters): FeatureFlagValue
+    public function first(array $filters): FeatureFlag
     {
         $query = $this->buildQuery(filters: $filters);
 
-        return FeatureFlagValue::from($query->firstOrFail());
+        return $query->firstOrFail();
     }
 
-    public function create(FeatureFlagValue $featureFlag): FeatureFlagValue
+    public function create(FeatureFlagValue $featureFlag): FeatureFlag
     {
         $data = $featureFlag
             ->toCollection()
@@ -59,15 +57,15 @@ class FeatureFlagRepository
             $flag->tags()->sync($tags instanceof Tag ? [$tags->id] : $tags->pluck('id'));
         }
 
-        return $featureFlag;
+        return $flag;
     }
 
-    public function find(string $id): FeatureFlagValue
+    public function find(string $id): FeatureFlag
     {
-        return FeatureFlagValue::from(FeatureFlag::with(['tags', 'statuses'])->where('id', $id)->firstOrFail());
+        return FeatureFlag::with(['tags', 'statuses'])->where('id', $id)->firstOrFail();
     }
 
-    public function update(FeatureFlagValue $featureFlag): FeatureFlagValue
+    public function update(FeatureFlagValue $featureFlag): FeatureFlag
     {
         $flag = FeatureFlag::where('id', $featureFlag->id)->firstOrFail();
 
@@ -104,7 +102,7 @@ class FeatureFlagRepository
             FeatureFlagStatus::where('feature_flag_id', $featureFlag->id)->whereNotIn('id', $statuses->pluck('id'))->delete();
         }
 
-        return $featureFlag;
+        return $flag->fresh(['tags', 'statuses', 'statuses.application', 'statuses.environment']);
     }
 
     public function count(array $filters = []): int
@@ -112,14 +110,12 @@ class FeatureFlagRepository
         return $this->buildQuery(filters: $filters)->count();
     }
 
-    public function activityLog(string $id): ActivityLogCollection
+    public function activityLog(string $id): Collection
     {
-        return ActivityLog::collect(
-            FeatureFlag::findOrFail($id)
-                ->activities()
-                ->orderBy('created_at', 'desc')
-                ->get()
-        );
+        return FeatureFlag::findOrFail($id)
+            ->activities()
+            ->orderBy('created_at', 'desc')
+            ->get();
     }
 
     /**

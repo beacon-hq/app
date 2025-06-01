@@ -16,21 +16,29 @@ class EnvironmentService
 
     public function all(): EnvironmentCollection
     {
-        return $this->environmentRepository->all();
+        $environments = $this->environmentRepository->all();
+
+        return Environment::collect($environments);
     }
 
     public function create(Environment $environment): Environment
     {
-        return $this->environmentRepository->create($environment);
+        $createdEnvironment = $this->environmentRepository->create($environment);
+
+        return Environment::from($createdEnvironment);
     }
 
     public function update(Environment $environment): Environment
     {
-        return $this->environmentRepository->update($environment);
+        $updatedEnvironment = $this->environmentRepository->update($environment);
+
+        return Environment::from($updatedEnvironment);
     }
 
-    public function find(string $id)
+    public function find(string $id): Environment
     {
-        return $this->environmentRepository->find($id);
+        $environment = $this->environmentRepository->find($id);
+
+        return Environment::from($environment);
     }
 }

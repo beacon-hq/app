@@ -19,26 +19,33 @@ class TeamService
 
     public function all(?int $userId = null, bool $includeMembers = false, bool $limitToOrganization = true): TeamCollection
     {
-        return $this->teamRepository->all($userId, $includeMembers, $limitToOrganization);
+        $teams = $this->teamRepository->all($userId, $includeMembers, $limitToOrganization);
+
+        return Team::collect($teams);
     }
 
     public function create(Team $team, User $owner): Team
     {
-        $team = $this->teamRepository->create($team);
+        $createdTeam = $this->teamRepository->create($team);
         $userService = resolve(UserService::class);
-        $userService->addTeam($owner, $team);
+        $teamValue = Team::from($createdTeam);
+        $userService->addTeam($owner, $teamValue);
 
-        return $team;
+        return $teamValue;
     }
 
     public function update(Team $team): Team
     {
-        return $this->teamRepository->update($team);
+        $updatedTeam = $this->teamRepository->update($team);
+
+        return Team::from($updatedTeam);
     }
 
     public function find(string $id, OrganizationCollection $organizations): Team
     {
-        return $this->teamRepository->find($id, $organizations);
+        $team = $this->teamRepository->find($id, $organizations);
+
+        return Team::from($team);
     }
 
     public function members(Team $team, array|string $orderBy = ['name'], ?int $page = null, int $perPage = 20, array $filters = []): UserCollection
