@@ -117,37 +117,75 @@ export function PolicyDefinitionForm({
                                         </TooltipContent>
                                     </Tooltip>
                                 )}
-                                <div className="flex flex-col grow-0 w-1/6">
-                                    <Label htmlFor={`type_${id}`} aria-required hidden>
-                                        Type
-                                    </Label>
-                                    <Select
-                                        value={definition.type}
-                                        onValueChange={(value) => {
-                                            let updatedDefinitions = definitions.map(
-                                                (item: PolicyDefinition, index: number) => {
-                                                    if (index === id) {
-                                                        return { ...item, subject: '', type: value };
-                                                    }
-                                                    return item;
-                                                },
-                                            );
-                                            return setDefinitions(updatedDefinitions as PolicyDefinitionCollection);
-                                        }}
-                                    >
-                                        <SelectTrigger id={`type_${id}`}>
-                                            <SelectValue placeholder="Select a type…" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectItem value="expression">Expression</SelectItem>
-                                                <SelectItem value="policy">Policy</SelectItem>
-                                                <SelectItem value="operator">Operator</SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
+                                <div className={cn("flex flex-row items-center gap-2", {
+                                    "w-1/6": definition.type !== PolicyDefinitionType.DATE_RANGE,
+                                    "w-1/2": definition.type === PolicyDefinitionType.DATE_RANGE
+                                })}>
+                                    <div className={cn("flex flex-col grow-0", {
+                                        "w-full": definition.type !== PolicyDefinitionType.DATE_RANGE,
+                                        "w-1/3": definition.type === PolicyDefinitionType.DATE_RANGE
+                                    })}>
+                                        <Label htmlFor={`type_${id}`} aria-required hidden>
+                                            Type
+                                        </Label>
+                                        <Select
+                                            value={definition.type}
+                                            onValueChange={(value) => {
+                                                let updatedDefinitions = definitions.map(
+                                                    (item: PolicyDefinition, index: number) => {
+                                                        if (index === id) {
+                                                            return { ...item, subject: '', type: value };
+                                                        }
+                                                        return item;
+                                                    },
+                                                );
+                                                return setDefinitions(updatedDefinitions as PolicyDefinitionCollection);
+                                            }}
+                                        >
+                                            <SelectTrigger id={`type_${id}`}>
+                                                <SelectValue placeholder="Select a type…" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectItem value="expression">Expression</SelectItem>
+                                                    <SelectItem value="policy">Policy</SelectItem>
+                                                    <SelectItem value="operator">Operator</SelectItem>
+                                                    <SelectItem value="date_range">Date Range</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    {definition.type === PolicyDefinitionType.DATE_RANGE && (
+                                        <div className="flex flex-col grow w-2/3">
+                                            <Label htmlFor={`date_range_${id}`} aria-required hidden>
+                                                Date Range
+                                            </Label>
+                                            <PolicyValueEditor
+                                                id={`date_range_${id}`}
+                                                key={`policy_value_editor_date_range_${id}`}
+                                                value={definition.values ?? null}
+                                                setValue={(values) => {
+                                                    let updatedDefinitions = definitions.map(
+                                                        (item: PolicyDefinition, index: number) => {
+                                                            if (index === id) {
+                                                                return { ...item, values };
+                                                            }
+                                                            return item;
+                                                        },
+                                                    );
+                                                    return setDefinitions(updatedDefinitions as PolicyDefinitionCollection);
+                                                }}
+                                                allowMultiple={false}
+                                                disabled={false}
+                                                isDateRange={true}
+                                            />
+                                        </div>
+                                    )}
                                 </div>
-                                <div className={cn('flex flex-col grow w-1/2')}>
+                                <div className={cn('flex flex-col grow', {
+                                    'w-1/2': definition.type !== PolicyDefinitionType.DATE_RANGE,
+                                    'w-1/3': definition.type === PolicyDefinitionType.DATE_RANGE
+                                })}>
                                     {definition.type === PolicyDefinitionType.EXPRESSION && (
                                         <div className="flex flex-row gap-2 items-end">
                                             <div className="w-1/2">
@@ -315,9 +353,19 @@ export function PolicyDefinitionForm({
                                             </Select>
                                         </>
                                     )}
+                                    {definition.type === PolicyDefinitionType.DATE_RANGE && (
+                                        <>
+                                            <Label htmlFor={`subject_${id}`} aria-required hidden>
+                                                Date Range
+                                            </Label>
+                                        </>
+                                    )}
                                 </div>
                                 {definition.type === PolicyDefinitionType.EXPRESSION && (
-                                    <div className="w-1/3">
+                                    <div className={cn({
+                                        'w-1/3': definition.type !== PolicyDefinitionType.DATE_RANGE,
+                                        'w-1/6': definition.type === PolicyDefinitionType.DATE_RANGE
+                                    })}>
                                         <PolicyValueEditor
                                             id={id}
                                             key={`policy_value_editor_${id}`}
