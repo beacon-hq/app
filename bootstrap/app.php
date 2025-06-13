@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
+use App\Http\Middleware\ApiRateLimitMiddleware;
 use App\Http\Middleware\EnsureOrganizationMiddleware;
 use App\Http\Middleware\EnsureSubscriptionMiddleware;
 use App\Http\Middleware\EnsureTeamMiddleware;
 use App\Http\Middleware\EnsureTwoFactorAuthMiddleware;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Providers\ApiRateLimitServiceProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,13 +16,16 @@ use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 
 return Application::configure(basePath: dirname(__DIR__))
+    ->withProviders([
+        ApiRateLimitServiceProvider::class,
+    ])
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
         then: function () {
             \Route::prefix('api')
-                ->middleware('api')
+                ->middleware(['api', 'api.rate.limit'])
                 ->name('api.')
                 ->group(base_path('routes/api.php'));
         }
@@ -40,6 +45,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->api(append: [
             'auth:sanctum',
             EnsureTeamMiddleware::class,
+        ]);
+
+        $middleware->alias([
+            'api.rate.limit' => ApiRateLimitMiddleware::class,
         ]);
 
         $middleware->prependToPriorityList(SubstituteBindings::class, EnsureTeamMiddleware::class);
