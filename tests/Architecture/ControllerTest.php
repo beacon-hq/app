@@ -7,6 +7,7 @@ declare(strict_types=1);
 use App\Http\Controllers\ProfileController;
 use Bag\Attributes\WithoutValidation;
 use Illuminate\Support\Facades\Session;
+use Laravel\Cashier\Checkout;
 
 arch()->expect('App\Http\Controllers')
     ->toOnlyUse([
@@ -15,6 +16,7 @@ arch()->expect('App\Http\Controllers')
         'App\Enums',
         WithoutValidation::class,
         Session::class,
+        Checkout::class,
     ])
     ->ignoringGlobalFunctions()
     ->ignoring([

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App;
 use App\Services\ProductService;
 use App\Values\Product;
+use Illuminate\Support\Facades\App;
 use Inertia\Inertia;
 use Laravel\Cashier\Checkout;
 
@@ -19,8 +19,8 @@ class CheckoutController
         ]);
     }
 
-    public function show(Product $product, App\Services\OrganizationService $organizationService): Checkout
+    public function show(Product $product, ProductService $productService): Checkout
     {
-        return $organizationService->createSubscription(App::context()->organization, $product);
+        return $productService->createSubscription(App::context()->organization, $product);
     }
 }

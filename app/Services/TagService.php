@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Repositories\TagRepository;
 use App\Values\Collections\TagCollection;
 use App\Values\Tag;
+use Illuminate\Support\Collection;
 
 class TagService
 {
@@ -40,10 +41,10 @@ class TagService
     {
         $result = $this->tagRepository->find(...$id);
 
-        if ($result instanceof \App\Models\Tag) {
-            return Tag::from($result);
+        if ($result instanceof Collection) {
+            return Tag::collect($result);
         }
 
-        return Tag::collect($result);
+        return Tag::from($result);
     }
 }

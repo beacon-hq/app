@@ -69,7 +69,7 @@ class UserRepository
         return $user;
     }
 
-    public function teamMembers(Team $team, array|string $orderBy = ['name'], ?int $page = null, int $perPage = null, array $filters = []): Collection
+    public function teamMembers(Team $team, array|string $orderBy = ['name'], ?int $page = null, ?int $perPage = null, array $filters = []): Collection
     {
         $filters['teams'][] = $team->id;
 

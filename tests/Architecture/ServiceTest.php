@@ -7,6 +7,7 @@ use App\Models\Team;
 use App\Services\AppContextService;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
+use Laravel\Cashier\Checkout;
 
 arch()
     ->expect('App\Services')
@@ -16,8 +17,10 @@ arch()
         'App\Enums',
         'App\Repositories',
         'App\Notifications',
+        'App\Events',
         App::class,
         Session::class,
+        Checkout::class,
     ])
     ->ignoring(AppContextService::class)
     ->ignoringGlobalFunctions()
