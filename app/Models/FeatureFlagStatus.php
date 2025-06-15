@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Values\FeatureFlag as FeatureFlagValue;
 use App\Values\PolicyDefinition;
 use Bag\Bag;
 use Illuminate\Database\Eloquent\Builder;
@@ -84,7 +83,7 @@ class FeatureFlagStatus extends Model
         return $query->whereHas('environment', fn (Builder $query) => $query->where('name', $environment));
     }
 
-    public function scopeWhereFeatureFlag(Builder $query, FeatureFlagValue $featureFlag): Builder
+    public function scopeWhereFeatureFlag(Builder $query, FeatureFlag $featureFlag): Builder
     {
         if ($featureFlag->id !== null) {
             return $query->where('feature_flag_id', $featureFlag->id);

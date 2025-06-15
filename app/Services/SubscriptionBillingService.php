@@ -4,26 +4,83 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Models\StripeProduct;
+use App\Repositories\OrganizationRepository;
 use App\Repositories\ProductRepository;
+use App\Repositories\SubscriptionBillingRepository;
+use App\Values\Organization;
 use App\Values\Product;
 use Brick\Money\Money;
+use Illuminate\Support\Facades\Log;
 use Laravel\Cashier\Cashier;
+use Laravel\Cashier\Checkout;
 use Stripe\StripeClient;
 
 class SubscriptionBillingService
 {
     public function __construct(
         protected ProductRepository $productRepository,
+        protected OrganizationRepository $organizationRepository,
+        protected SubscriptionBillingRepository $subscriptionBillingRepository,
     ) {
     }
 
-    /**
-     * Set billing thresholds for a subscription based on its plan.
-     *
-     * @param string $subscriptionId The Stripe subscription ID
-     * @param string|null $productId The product/plan ID
-     * @param bool $isTrial Whether the subscription is in trial mode
-     */
+    public function hasActiveSubscription(Organization $organization): bool
+    {
+        return $this->subscriptionBillingRepository->hasActiveSubscription($organization);
+    }
+
+    public function isTrialSubscription(Organization $organization): bool
+    {
+        return $this->subscriptionBillingRepository->isTrialSubscription($organization);
+    }
+
+    public function getSubscription(Organization $organization): StripeProduct
+    {
+        return $this->subscriptionBillingRepository->currentSubscription($organization);
+    }
+
+    public function changeSubscription(Organization $organization, Product $product): bool
+    {
+        return $this->subscriptionBillingRepository->changeSubscription($organization, $product->id);
+    }
+
+    public function reportUsage(string $id, Organization $organization, int $quantity = 1, \DateTimeInterface $timestamp = null): bool
+    {
+        try {
+            // Skip if billing is not enabled
+            if (!config('beacon.billing.enabled', false)) {
+                return false;
+            }
+
+            // Get the organization
+            $organization = $this->organizationRepository->findById($organization->id);
+            if (!$organization) {
+                return false;
+            }
+
+            // Report usage to Stripe
+            $this->getStripeClient()->billing->meterEvents->create([
+                'event_name' => 'flag_evaluations',
+                'payload' => [
+                    'evaluations' => $quantity,
+                    'stripe_customer_id' => $organization->stripe_id,
+                ],
+                'identifier' => $id,
+            ]);
+
+            return true;
+        } catch (\Throwable $e) {
+            Log::error('Failed to report usage to Stripe: ' . $e->getMessage(), [
+                'exception' => $e,
+                'organization_id' => $organization->id,
+                'quantity' => $quantity,
+            ]);
+
+            return false;
+        }
+    }
+
     public function setFraudThreshold(string $subscriptionId, ?string $productId = null, bool $isTrial = false): void
     {
         $thresholdAmount = $this->getThresholdAmount($productId);
@@ -35,21 +92,16 @@ class SubscriptionBillingService
         ]);
     }
 
-    /**
-     * Get the Stripe client to use for API calls.
-     *
-     */
-    protected function getStripeClient(): StripeClient
+    public function createSubscription(Organization $organization, Product $product): Checkout
     {
-        return app(StripeClient::class) ?? Cashier::stripe();
+        return $this->subscriptionBillingRepository->createSubscription($organization, $product->id);
     }
 
-    /**
-     * Get the appropriate threshold amount based on the product/plan.
-     *
-     * @param string|null $productId The product/plan ID
-     * @return Money The threshold amount
-     */
+    protected function getStripeClient(): StripeClient
+    {
+        return app()->has(StripeClient::class) ? app(StripeClient::class) : Cashier::stripe();
+    }
+
     protected function getThresholdAmount(?string $productId = null): Money
     {
         // Default threshold from config

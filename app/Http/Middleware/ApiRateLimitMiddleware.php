@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App\Services\OrganizationService;
+use App\Services\SubscriptionBillingService;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -13,6 +13,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ApiRateLimitMiddleware
 {
+    public function __construct(protected SubscriptionBillingService $subscriptionBillingService)
+    {
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -39,18 +43,15 @@ class ApiRateLimitMiddleware
             // Get the organization to include in the error message
             $organization = App::context()->organization;
 
-            // Get the organization service from the container
-            $organizationService = app(OrganizationService::class);
-
             // Check if the organization has an active subscription
-            $hasActiveSubscription = $organizationService->hasActiveSubscription($organization);
+            $hasActiveSubscription = $this->subscriptionBillingService->hasActiveSubscription($organization);
 
             // Customize the error message based on subscription status
             $message = 'Too many requests. Please try again later.';
 
             if (!$hasActiveSubscription) {
                 $message .= ' Consider upgrading to a paid plan for higher rate limits.';
-            } elseif ($organizationService->isTrialSubscription($organization)) {
+            } elseif ($this->subscriptionBillingService->isTrialSubscription($organization)) {
                 $message .= ' Your account is currently on a trial plan with limited API access. Upgrade to a paid plan for higher rate limits.';
             }
 

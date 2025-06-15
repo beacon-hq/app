@@ -7,9 +7,7 @@ namespace App\Services;
 use App\Repositories\OrganizationRepository;
 use App\Repositories\ProductRepository;
 use App\Values\Collections\ProductCollection;
-use App\Values\Organization;
 use App\Values\Product;
-use Laravel\Cashier\Checkout;
 
 class ProductService
 {
@@ -29,10 +27,5 @@ class ProductService
         $product = $this->productRepository->find($id);
 
         return Product::from($product);
-    }
-
-    public function createSubscription(Organization $organization, Product $product): Checkout
-    {
-        return $this->organizationRepository->createSubscription($organization, $product->id);
     }
 }

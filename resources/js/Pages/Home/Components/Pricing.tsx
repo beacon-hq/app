@@ -1,18 +1,18 @@
-import { ProductCollection } from '@/Application';
+import { Product, ProductCollection } from '@/Application';
+import ProductCard from '@/Components/ProductCard';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/Components/ui/accordion';
 import { Button } from '@/Components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card';
-import { cn } from '@/lib/utils';
+import { router } from '@inertiajs/react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import React, { useRef } from 'react';
 
-type RGBColor = {
-    r: number;
-    g: number;
-    b: number;
-};
-
-export default function Pricing({ products }: { products: ProductCollection }) {
+export default function Pricing({
+    products,
+    activeSubscription,
+}: {
+    products: ProductCollection;
+    activeSubscription?: Product;
+}) {
     const pricingRef = useRef<HTMLDivElement | null>(null);
     const prefersReducedMotion = useReducedMotion();
     const { scrollYProgress } = useScroll({
@@ -52,54 +52,14 @@ export default function Pricing({ products }: { products: ProductCollection }) {
                     <div className="max-w-7xl mx-auto px-6">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                             {products.map((product) => (
-                                <Card
+                                <ProductCard
                                     key={product.name}
-                                    className={cn(
-                                        'text-center relative flex flex-col justify-between',
-                                        'hover:[background:linear-gradient(45deg,#fff,theme(colors.white)_50%,#fff)_padding-box,conic-gradient(from_var(--border-angle),#07e38f,#00e7aa,#13daf4,#07baf9,_theme(colors.sky.700/.48))_border-box] rounded-2xl border-4 border-transparent motion-safe:animate-border',
-                                        'hover:motion-safe:scale-110',
-                                        'transition-all duration-500',
-                                        'relative',
-                                    )}
-                                >
-                                    <CardContent className="rounded-xl shadow-lg bg-secondary">
-                                        <CardHeader>
-                                            {product.entitlements.trial_length && (
-                                                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#07e38f] text-white text-xs font-bold uppercase scale-120 px-3 py-1 rounded-full">
-                                                    {product.entitlements.trial_length} Free
-                                                </div>
-                                            )}
-                                            <CardTitle>
-                                                <h2 className="text-xl font-semibold text-primary">{product.name}</h2>
-                                            </CardTitle>
-                                        </CardHeader>
-                                        <CardDescription>
-                                            <p className="mt-2 text-3xl font-bold text-primary">
-                                                {product.base_price}/mo
-                                            </p>
-                                            <p className="mt-2 text-primary">
-                                                {product.entitlements.evaluations < 1000000 &&
-                                                    product.entitlements.evaluations.toLocaleString()}
-                                                {product.entitlements.evaluations >= 1000000 &&
-                                                    (product.entitlements.evaluations / 1000000).toLocaleString() +
-                                                        'M'}{' '}
-                                                feature flag evaluations
-                                            </p>
-                                            <p className="mt-2 text-primary/60 text-sm">
-                                                {product.metered_price}/
-                                                {product.metadata.evaluation_tier_size.toLocaleString()} evaluations
-                                                after that
-                                            </p>
-                                            <a href={`/register?plan=${product.id}`}>
-                                                <span className="absolute inset-0"></span>
-                                                <Button className="mt-4 cursor-pointer">
-                                                    {product.entitlements.trial_length && 'Start Free Trial'}
-                                                    {!product.entitlements.trial_length && 'Choose Plan'}
-                                                </Button>
-                                            </a>
-                                        </CardDescription>
-                                    </CardContent>
-                                </Card>
+                                    product={product}
+                                    activeSubscription={activeSubscription}
+                                    onClick={() => {
+                                        router.post(route('checkout.change', product.id));
+                                    }}
+                                />
                             ))}
                         </div>
 

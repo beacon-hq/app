@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Middleware\ApiRateLimitMiddleware;
-use App\Services\OrganizationService;
+use App\Services\SubscriptionBillingService;
 use App\Values\Organization as OrganizationValue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -14,7 +14,7 @@ test('middleware allows requests when billing is disabled', function () {
     // Arrange
     Config::set('beacon.billing.enabled', false);
 
-    $middleware = new ApiRateLimitMiddleware();
+    $middleware = app()->make(ApiRateLimitMiddleware::class);
     $request = new Request();
 
     $called = false;
@@ -36,7 +36,7 @@ test('middleware allows requests when rate limiting is disabled', function () {
     Config::set('beacon.billing.enabled', true);
     Config::set('beacon.api.rate_limiting.enabled', false);
 
-    $middleware = new ApiRateLimitMiddleware();
+    $middleware = app()->make(ApiRateLimitMiddleware::class);
     $request = new Request();
 
     $called = false;
@@ -61,11 +61,11 @@ test('middleware rate limits requests for trial accounts', function () {
     // Create organization value object and mock organization service
     $organization = OrganizationValue::from('org-123', null, 'Test Organization');
 
-    $organizationService = mock(OrganizationService::class);
-    $organizationService->shouldReceive('hasActiveSubscription')->andReturn(true);
-    $organizationService->shouldReceive('isTrialSubscription')->andReturn(true);
+    $subscriptionBillingService = mock(SubscriptionBillingService::class);
+    $subscriptionBillingService->shouldReceive('hasActiveSubscription')->andReturn(true);
+    $subscriptionBillingService->shouldReceive('isTrialSubscription')->andReturn(true);
 
-    app()->instance(OrganizationService::class, $organizationService);
+    app()->instance(SubscriptionBillingService::class, $subscriptionBillingService);
 
     // Mock App::context()
     $context = (object) ['organization' => $organization];
@@ -76,7 +76,7 @@ test('middleware rate limits requests for trial accounts', function () {
         ->times(3)
         ->andReturnValues([true, true, false]);
 
-    $middleware = new ApiRateLimitMiddleware();
+    $middleware = app()->make(ApiRateLimitMiddleware::class);
     $request = new Request();
 
     $next = function ($req) {
@@ -106,11 +106,11 @@ test('middleware rate limits requests for paid accounts', function () {
     // Create organization value object and mock organization service
     $organization = OrganizationValue::from('org-456', null, 'Paid Organization');
 
-    $organizationService = mock(OrganizationService::class);
-    $organizationService->shouldReceive('hasActiveSubscription')->andReturn(true);
-    $organizationService->shouldReceive('isTrialSubscription')->andReturn(false);
+    $subscriptionBillingService = mock(SubscriptionBillingService::class);
+    $subscriptionBillingService->shouldReceive('hasActiveSubscription')->andReturn(true);
+    $subscriptionBillingService->shouldReceive('isTrialSubscription')->andReturn(false);
 
-    app()->instance(OrganizationService::class, $organizationService);
+    app()->instance(SubscriptionBillingService::class, $subscriptionBillingService);
 
     // Mock App::context()
     $context = (object) ['organization' => $organization];
@@ -121,7 +121,7 @@ test('middleware rate limits requests for paid accounts', function () {
         ->times(4)
         ->andReturnValues([true, true, true, false]);
 
-    $middleware = new ApiRateLimitMiddleware();
+    $middleware = app()->make(ApiRateLimitMiddleware::class);
     $request = new Request();
 
     $next = function ($req) {

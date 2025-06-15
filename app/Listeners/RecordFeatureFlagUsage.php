@@ -9,6 +9,7 @@ use App\Models\Application;
 use App\Models\Environment;
 use App\Models\FeatureFlagUsage;
 use App\Services\FeatureFlagService;
+use App\Services\SubscriptionBillingService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Carbon;
@@ -19,7 +20,7 @@ class RecordFeatureFlagUsage implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(protected FeatureFlagService $featureFlagService)
+    public function __construct(protected FeatureFlagService $featureFlagService, protected SubscriptionBillingService $subscriptionBillingService)
     {
     }
 
@@ -33,7 +34,7 @@ class RecordFeatureFlagUsage implements ShouldQueue
             $environment = Environment::firstOrCreate(['name' => $event->context->environment]);
 
             // Create a record of this feature flag evaluation
-            FeatureFlagUsage::create([
+            $usage = FeatureFlagUsage::create([
                 'feature_flag_id' => $event->featureFlag->id,
                 'application_id' => $application->id,
                 'environment_id' => $environment->id,
@@ -43,6 +44,8 @@ class RecordFeatureFlagUsage implements ShouldQueue
             ]);
 
             $this->featureFlagService->touch($event->featureFlag);
+
+            $this->subscriptionBillingService->reportUsage($usage->id, $event->appContext->organization);
         } catch (\Exception $e) {
             // Log the exception but don't fail the application
             Log::error('Failed to record feature flag usage: ' . $e->getMessage(), [

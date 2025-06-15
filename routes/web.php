@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Events\FeatureFlagEvaluated;
 use App\Http\Controllers\AccessTokenController;
 use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnvironmentController;
@@ -56,7 +57,7 @@ Route::get('/teams/accept-invite', [TeamMemberManageController::class, 'show'])
 
 Route::middleware(['auth', 'auth:sanctum'])->group(function () {
     Route::resource('checkout', CheckoutController::class)
-        ->only(['index', 'show']);
+        ->only(['index', 'show', 'update']);
 });
 
 Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
@@ -119,6 +120,9 @@ Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
 
         Route::get('/api', [AccessTokenController::class, 'index'])
             ->name('access-tokens.index');
+
+        Route::resource('billing', BillingController::class)
+            ->only(['index']);
     });
 
     Route::resource(

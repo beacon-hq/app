@@ -59,15 +59,4 @@ class OrganizationService
     {
         $this->organizationRepository->delete($organization);
     }
-
-
-    public function hasActiveSubscription(Organization $organization): bool
-    {
-        return $this->organizationRepository->hasActiveSubscription($organization);
-    }
-
-    public function isTrialSubscription(Organization $organization): bool
-    {
-        return $this->organizationRepository->isTrialSubscription($organization);
-    }
 }

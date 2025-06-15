@@ -28,11 +28,11 @@ class FeatureFlagStatusService
         $response = $this->featureFlagStatusRepository->first($featureFlag, $context);
 
         // Dispatch the feature flag evaluation event
-        defer(fn () => FeatureFlagEvaluated::dispatch(
-            featureFlag: $featureFlag,
-            response: $response,
-            context: $context,
-        ));
+        FeatureFlagEvaluated::dispatch(
+            FeatureFlag::from($featureFlag),
+            $context,
+            $response,
+        );
 
         return $response;
     }

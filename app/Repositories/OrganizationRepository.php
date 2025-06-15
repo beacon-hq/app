@@ -69,20 +69,6 @@ class OrganizationRepository
         $organizationModel->delete();
     }
 
-    public function hasActiveSubscription(OrganizationValue $organization): bool
-    {
-        $organization = Organization::findOrFail($organization->id);
-
-        return $organization->subscriptions()->whereIn('stripe_status', ['active', 'trialing'])->exists();
-    }
-
-    public function isTrialSubscription(OrganizationValue $organization): bool
-    {
-        $organization = Organization::findOrFail($organization->id);
-
-        return $organization->subscriptions()->where('stripe_status', 'trialing')->exists();
-    }
-
     public function createSubscription(OrganizationValue $organization, string $productId): Checkout
     {
         $organization = Organization::findOrFail($organization->id);

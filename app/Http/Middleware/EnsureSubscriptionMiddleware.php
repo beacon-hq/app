@@ -11,7 +11,7 @@ use Session;
 
 class EnsureSubscriptionMiddleware
 {
-    public function __construct(protected App\Services\OrganizationService $organizationService)
+    public function __construct(protected App\Services\SubscriptionBillingService $subscriptionBillingService)
     {
     }
 
@@ -30,7 +30,7 @@ class EnsureSubscriptionMiddleware
                 Session::put('checkout.plan', $request->string('plan'));
             }
 
-            if ($this->organizationService->hasActiveSubscription(App::context()->organization)) {
+            if ($this->subscriptionBillingService->hasActiveSubscription(App::context()->organization)) {
                 return $next($request);
             } else {
                 if (Session::has('checkout.plan')) {

@@ -20,9 +20,9 @@ class TeamRepository
     {
         return Team::query()
             ->withoutGlobalScopes([CurrentOrganizationScope::class])
-            ->with(
+            ->withWhereHas(
                 'organization',
-                fn (BelongsTo $query) => $query
+                fn (BelongsTo|Builder $query) => $query
                     ->whereIn('id', $organizations->pluck('id'))
             )
             ->findOrFail($id);

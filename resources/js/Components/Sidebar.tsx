@@ -28,6 +28,7 @@ import {
     AppWindowMac,
     CircleUser,
     Component,
+    CreditCard,
     Flag,
     Gauge,
     Globe,
@@ -155,10 +156,10 @@ const Sidebar = function (props: { expanded: boolean } & AuthProp) {
                                     size="lg"
                                     className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                                 >
-                                    <UserAvatar user={props.auth.user} />
+                                    {props.auth?.user && <UserAvatar user={props.auth?.user} />}
                                     <div className="grid grow text-left text-sm leading-tight">
-                                        <span className="truncate font-semibold">{`${props.auth.user.first_name} ${props.auth.user.last_name}`}</span>
-                                        <span className="truncate text-xs">{props.auth.user.email}</span>
+                                        <span className="truncate font-semibold">{`${props.auth?.user.first_name} ${props.auth?.user.last_name}`}</span>
+                                        <span className="truncate text-xs">{props.auth?.user.email}</span>
                                     </div>
                                 </SidebarMenuButton>
                             </DropdownMenuTrigger>
@@ -171,8 +172,8 @@ const Sidebar = function (props: { expanded: boolean } & AuthProp) {
                                 <DropdownMenuGroup>
                                     <DropdownMenuLabel asChild>
                                         <div className="grid flex-1 text-left text-sm leading-tight">
-                                            <span className="truncate font-semibold">{`${props.auth.user.first_name} ${props.auth.user.last_name}`}</span>
-                                            <span className="truncate text-xs">{props.auth.user.email}</span>
+                                            <span className="truncate font-semibold">{`${props.auth?.user.first_name} ${props.auth?.user.last_name}`}</span>
+                                            <span className="truncate text-xs">{props.auth?.user.email}</span>
                                         </div>
                                     </DropdownMenuLabel>
                                     {Gate.can(Permission.USERS_CREATE) && (
@@ -189,6 +190,14 @@ const Sidebar = function (props: { expanded: boolean } & AuthProp) {
                                             My Account
                                         </Link>
                                     </DropdownMenuItem>
+                                    {Gate.can(Permission.BILLING_UPDATE) && (
+                                        <DropdownMenuItem asChild>
+                                            <Link href={route('billing.index')} className="w-full">
+                                                <CreditCard />
+                                                Billing
+                                            </Link>
+                                        </DropdownMenuItem>
+                                    )}
                                     {/*<DropdownMenuItem>*/}
                                     {/*    <Bell />*/}
                                     {/*    Notifications*/}
