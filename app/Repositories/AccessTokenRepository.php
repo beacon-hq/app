@@ -9,6 +9,7 @@ use App\Models\Team;
 use App\Values\AccessToken as AccessTokenValue;
 use App\Values\Team as TeamValue;
 use Illuminate\Database\Eloquent\Collection;
+use Laravel\Sanctum\NewAccessToken;
 
 class AccessTokenRepository
 {
@@ -21,15 +22,14 @@ class AccessTokenRepository
         return Team::findOrFail($team->id)->tokens;
     }
 
-    public function create(AccessTokenValue $accessToken, TeamValue $team): AccessToken
+    public function create(AccessTokenValue $accessToken, TeamValue $team): NewAccessToken
     {
         /** @var Team $team */
         $team = Team::findOrFail($team->id);
 
         $token = $team->createToken($accessToken->name);
 
-        // Return the access token model
-        return $token->accessToken;
+        return $token;
     }
 
     public function delete(AccessTokenValue $accessToken, TeamValue $team): bool

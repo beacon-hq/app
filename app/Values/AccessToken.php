@@ -18,6 +18,7 @@ use Bag\Traits\HasFactory;
 use Bag\Validation\Rules\OptionalOr;
 use Bag\Values\Optional;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\NewAccessToken;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
@@ -52,6 +53,18 @@ readonly class AccessToken extends Bag
             'token' => Str::of($personalAccessToken->plain_text_suffix)->prepend('************************************'),
             'last_used_at' => $personalAccessToken->last_used_at,
             'created_at' => $personalAccessToken->created_at,
+        ];
+    }
+
+    #[Transforms(NewAccessToken::class)]
+    public static function fromNewAccessToken(NewAccessToken $newAccessToken): array
+    {
+        return [
+            'id' => $newAccessToken->accessToken->id,
+            'name' => $newAccessToken->accessToken->name,
+            'token' => Str::after($newAccessToken->plainTextToken, '|'),
+            'last_used_at' => null,
+            'created_at' => $newAccessToken->accessToken->created_at,
         ];
     }
 

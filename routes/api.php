@@ -11,4 +11,4 @@ Route::prefix('/features')->name('feature-flags.')->group(function () {
     Route::post('/{feature_flag}', [FeatureFlagController::class, 'show'])->name('show');
 });
 
-Route::resource('access-tokens', AccessTokenController::class)->except(['create', 'update', 'index', 'edit']);
+Route::resource('access-tokens', AccessTokenController::class)->except(['create', 'update', 'index', 'edit'])->withoutMiddleware('throttle:api');
