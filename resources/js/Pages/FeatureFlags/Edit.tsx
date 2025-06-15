@@ -6,9 +6,11 @@ import {
     FeatureFlagStatus,
     FeatureTypeCollection,
     PolicyCollection,
+    PolicyDefinitionCollection,
     TagCollection,
 } from '@/Application';
 import DefinitionList, { Definition, DefinitionDescription, DefinitionTerm } from '@/Components/DefinitionList';
+import HttpRequestBuilder from '@/Components/HttpRequestBuilder';
 import { IconColor } from '@/Components/IconColor';
 import Tag from '@/Components/Tag';
 import { Alert, AlertDescription, AlertTitle } from '@/Components/ui/alert';
@@ -26,6 +28,40 @@ import { Head, Link, router, useForm } from '@inertiajs/react';
 import { ChevronRight, CircleCheckBig, Info, PlusCircle, TriangleAlert } from 'lucide-react';
 import React, { FormEvent } from 'react';
 import { ulid } from 'ulidx';
+
+function StatusCard({ status, policies }: { status: FeatureFlagStatus; policies: PolicyCollection }) {
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle className="flex flex-row justify-between">
+                    <div className="flex flex-row gap-2 items-center">
+                        <IconColor color={status.application?.color as string} />
+                        {status.application?.display_name}
+                        <ChevronRight />
+                        <IconColor color={status.environment?.color as string} />
+                        {status.environment?.name}
+                    </div>
+                    <div className="flex flex-row items-center gap-4">
+                        <Badge
+                            className={cn('w-16 text-center', {
+                                'bg-green-600 hover:bg-green-600': status,
+                                'bg-neutral-500 hover:bg-neutral-500': !status,
+                            })}
+                        >
+                            {status ? 'Enabled' : 'Disabled'}
+                        </Badge>
+                        <HttpRequestBuilder
+                            status={status}
+                            featureFlagName={status.feature_flag?.name}
+                            definition={status.definition as PolicyDefinitionCollection}
+                            policies={policies}
+                        />
+                    </div>
+                </CardTitle>
+            </CardHeader>
+        </Card>
+    );
+}
 
 export default function Edit({
     featureFlag,
@@ -249,29 +285,7 @@ export default function Edit({
                             <div className="mt-2 grow">
                                 <TabsContent value="overview" className="flex flex-col gap-4">
                                     {featureFlag.statuses?.map((status, index) => (
-                                        <Card key={index}>
-                                            <CardHeader>
-                                                <CardTitle className="flex flex-row justify-between">
-                                                    <div className="flex flex-row gap-2 items-center">
-                                                        <IconColor color={status.application?.color as string} />
-                                                        {status.application?.display_name}
-                                                        <ChevronRight />
-                                                        <IconColor color={status.environment?.color as string} />
-                                                        {status.environment?.name}
-                                                    </div>
-                                                    <div>
-                                                        <Badge
-                                                            className={cn('w-16 text-center', {
-                                                                'bg-green-600 hover:bg-green-600': status.status,
-                                                                'bg-neutral-500 hover:bg-neutral-500': !status.status,
-                                                            })}
-                                                        >
-                                                            {status.status ? 'Enabled' : 'Disabled'}
-                                                        </Badge>
-                                                    </div>
-                                                </CardTitle>
-                                            </CardHeader>
-                                        </Card>
+                                        <StatusCard key={index} status={status} policies={policies} />
                                     ))}
                                     {featureFlag.statuses?.length === 0 && (
                                         <>
@@ -331,6 +345,7 @@ export default function Edit({
                                 <TabsContent value="policy" className="flex flex-col gap-4">
                                     {data.statuses?.length === 0 && (
                                         <StatusEditor
+                                            featureFlag={featureFlag}
                                             applications={applications}
                                             environments={environments}
                                             policies={policies}
@@ -341,6 +356,7 @@ export default function Edit({
                                     {data.statuses?.map((status, index) => (
                                         <StatusEditor
                                             key={status.id}
+                                            featureFlag={featureFlag}
                                             status={status}
                                             applications={applications}
                                             environments={environments}

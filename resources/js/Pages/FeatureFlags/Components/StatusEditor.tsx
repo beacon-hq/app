@@ -1,11 +1,11 @@
 import {
-    Application,
     ApplicationCollection,
-    Environment,
     EnvironmentCollection,
+    FeatureFlag,
     FeatureFlagStatus,
     PolicyCollection,
 } from '@/Application';
+import HttpRequestBuilder from '@/Components/HttpRequestBuilder';
 import { IconColor } from '@/Components/IconColor';
 import { PolicyDefinitionForm } from '@/Components/PolicyDefinitionForm';
 import {
@@ -36,14 +36,8 @@ const StatusEditor: React.FC<{
     policies: PolicyCollection;
     onStatusChange?: (status: FeatureFlagStatus) => void;
     onDelete?: (status: FeatureFlagStatus) => void;
-}> = function ({
-    status,
-    applications,
-    environments,
-    policies,
-    onStatusChange,
-    onDelete,
-}) {
+    featureFlag: FeatureFlag;
+}> = function ({ status, applications, environments, policies, onStatusChange, onDelete, featureFlag }) {
     const [applicationsOpen, setApplicationsOpen] = useState(false);
     const [environmentsOpen, setEnvironmentsOpen] = useState(false);
     const [showPolicy, setShowPolicy] = useState<boolean>(false);
@@ -61,7 +55,7 @@ const StatusEditor: React.FC<{
         if (onStatusChange) {
             onStatusChange(data);
         }
-    }, [data, onStatusChange]);
+    }, [data]);
 
     const handleDelete = (status: FeatureFlagStatus | undefined) => {
         if (onDelete && status) {
@@ -70,109 +64,103 @@ const StatusEditor: React.FC<{
     };
 
     return (
-        <>
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex flex-row justify-between">
-                        <div className="flex flex-row items-center">
-                            <div className="flex items-center">
-                                <Popover open={applicationsOpen} onOpenChange={setApplicationsOpen}>
-                                    <PopoverTrigger asChild>
-                                        <Button
-                                            variant="outline"
-                                            role="combobox"
-                                            aria-expanded={applicationsOpen}
-                                            className="w-fit justify-between"
-                                        >
-                                            {data.application ? (
-                                                <div className="flex flex-row items-center">
-                                                    <IconColor color={data.application.color} className="mr-2" />{' '}
-                                                    {data.application.display_name}
-                                                </div>
-                                            ) : (
-                                                'Select application...'
-                                            )}
-                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                        </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-[200px] p-0">
-                                        <Command>
-                                            <CommandInput placeholder="Search application..." />
-                                            <CommandList>
-                                                <CommandEmpty>No application found.</CommandEmpty>
-                                                <CommandGroup>
-                                                    {applications.map((application) => (
-                                                        <CommandItem
-                                                            key={application.id}
-                                                            value={application.id as string}
-                                                            onSelect={() => {
-                                                                setData(
-                                                                    'application',
-                                                                    application
-                                                                );
-                                                                setApplicationsOpen(false);
-                                                            }}
-                                                        >
-                                                            <IconColor color={application.color} className="mr-2" />
-                                                            <p>{application.display_name}</p>
-                                                        </CommandItem>
-                                                    ))}
-                                                </CommandGroup>
-                                            </CommandList>
-                                        </Command>
-                                    </PopoverContent>
-                                </Popover>
-                            </div>
-                            <ChevronRight className="inline-block" />
-                            <div className="flex items-center">
-                                <Popover open={environmentsOpen} onOpenChange={setEnvironmentsOpen}>
-                                    <PopoverTrigger asChild disabled={data.application === null}>
-                                        <Button
-                                            variant="outline"
-                                            role="combobox"
-                                            aria-expanded={environmentsOpen}
-                                            className="w-fit justify-between"
-                                        >
-                                            {data.environment ? (
-                                                <div className="flex flex-row items-center">
-                                                    <IconColor color={data.environment.color} className="mr-2" />{' '}
-                                                    {data.environment.name}
-                                                </div>
-                                            ) : (
-                                                'Select environment...'
-                                            )}
-                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                        </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-[200px] p-0">
-                                        <Command>
-                                            <CommandInput placeholder="Search environment..." />
-                                            <CommandList>
-                                                <CommandEmpty>No environment found.</CommandEmpty>
-                                                <CommandGroup>
-                                                    {environments.map((environment) => (
-                                                        <CommandItem
-                                                            key={environment.id}
-                                                            value={environment.id as string}
-                                                            onSelect={() => {
-                                                                setData(
-                                                                    'environment',
-                                                                    environment
-                                                                );
-                                                                setEnvironmentsOpen(false);
-                                                            }}
-                                                        >
-                                                            <IconColor color={environment.color} className="mr-2" />
-                                                            <p>{environment.name}</p>
-                                                        </CommandItem>
-                                                    ))}
-                                                </CommandGroup>
-                                            </CommandList>
-                                        </Command>
-                                    </PopoverContent>
-                                </Popover>
-                            </div>
+        <Card>
+            <CardHeader>
+                <CardTitle className="flex flex-row justify-between">
+                    <div className="flex flex-row items-center">
+                        <div className="flex items-center">
+                            <Popover open={applicationsOpen} onOpenChange={setApplicationsOpen}>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        role="combobox"
+                                        aria-expanded={applicationsOpen}
+                                        className="w-fit justify-between"
+                                    >
+                                        {data.application ? (
+                                            <div className="flex flex-row items-center">
+                                                <IconColor color={data.application.color} className="mr-2" />{' '}
+                                                {data.application.display_name}
+                                            </div>
+                                        ) : (
+                                            'Select application...'
+                                        )}
+                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-[200px] p-0">
+                                    <Command>
+                                        <CommandInput placeholder="Search application..." />
+                                        <CommandList>
+                                            <CommandEmpty>No application found.</CommandEmpty>
+                                            <CommandGroup>
+                                                {applications.map((application) => (
+                                                    <CommandItem
+                                                        key={application.id}
+                                                        value={application.id as string}
+                                                        onSelect={() => {
+                                                            setData('application', application);
+                                                            setApplicationsOpen(false);
+                                                        }}
+                                                    >
+                                                        <IconColor color={application.color} className="mr-2" />
+                                                        <p>{application.display_name}</p>
+                                                    </CommandItem>
+                                                ))}
+                                            </CommandGroup>
+                                        </CommandList>
+                                    </Command>
+                                </PopoverContent>
+                            </Popover>
                         </div>
+                        <ChevronRight className="inline-block" />
+                        <div className="flex items-center">
+                            <Popover open={environmentsOpen} onOpenChange={setEnvironmentsOpen}>
+                                <PopoverTrigger asChild disabled={data.application === null}>
+                                    <Button
+                                        variant="outline"
+                                        role="combobox"
+                                        aria-expanded={environmentsOpen}
+                                        className="w-fit justify-between"
+                                    >
+                                        {data.environment ? (
+                                            <div className="flex flex-row items-center">
+                                                <IconColor color={data.environment.color} className="mr-2" />{' '}
+                                                {data.environment.name}
+                                            </div>
+                                        ) : (
+                                            'Select environment...'
+                                        )}
+                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-[200px] p-0">
+                                    <Command>
+                                        <CommandInput placeholder="Search environment..." />
+                                        <CommandList>
+                                            <CommandEmpty>No environment found.</CommandEmpty>
+                                            <CommandGroup>
+                                                {environments.map((environment) => (
+                                                    <CommandItem
+                                                        key={environment.id}
+                                                        value={environment.id as string}
+                                                        onSelect={() => {
+                                                            setData('environment', environment);
+                                                            setEnvironmentsOpen(false);
+                                                        }}
+                                                    >
+                                                        <IconColor color={environment.color} className="mr-2" />
+                                                        <p>{environment.name}</p>
+                                                    </CommandItem>
+                                                ))}
+                                            </CommandGroup>
+                                        </CommandList>
+                                    </Command>
+                                </PopoverContent>
+                            </Popover>
+                        </div>
+                    </div>
+                    <div className="flex flex-row items-center gap-4">
                         <div className="flex flex-row items-center gap-2">
                             <Switch
                                 id="enabled"
@@ -181,59 +169,65 @@ const StatusEditor: React.FC<{
                             />
                             <Label htmlFor="enabled">Enabled</Label>
                         </div>
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="w-full">
-                    <div className="w-full justify-center items-center">
-                        {!showPolicy && (status === undefined || (status.definition?.length ?? 0) === 0) && (
-                            <Button
-                                variant="outline"
-                                className="mx-auto block"
-                                type="button"
-                                onClick={() => setShowPolicy(true)}
-                            >
-                                <PlusCircle className="inline-block mr-2" /> Add Conditions
-                            </Button>
-                        )}
-
-                        {(status !== undefined && (status.definition?.length ?? 0) > 0) || showPolicy ? (
-                            <PolicyDefinitionForm
-                                data={data}
-                                setData={setData}
-                                errors={errors}
-                                processing={processing}
-                                policies={policies}
-                            />
-                        ) : null}
+                        <HttpRequestBuilder
+                            status={data}
+                            featureFlagName={featureFlag.name}
+                            policies={policies}
+                            definition={data.definition ?? []}
+                        />
                     </div>
-                    <CardFooter className="p-0 mt-4">
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Button type="button" variant="ghost" className="ml-auto text-primary/40">
-                                    <Trash className="mr-2" /> Delete
-                                </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Delete status</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        Are you sure you want to delete this status?
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction asChild>
-                                        <Button variant="destructive" onClick={() => handleDelete(status)}>
-                                            Delete
-                                        </Button>
-                                    </AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                    </CardFooter>
-                </CardContent>
-            </Card>
-        </>
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="w-full">
+                <div className="w-full justify-center items-center">
+                    {!showPolicy && (status === undefined || (status.definition?.length ?? 0) === 0) && (
+                        <Button
+                            variant="outline"
+                            className="mx-auto block"
+                            type="button"
+                            onClick={() => setShowPolicy(true)}
+                        >
+                            <PlusCircle className="inline-block mr-2" /> Add Conditions
+                        </Button>
+                    )}
+
+                    {(status !== undefined && (status.definition?.length ?? 0) > 0) || showPolicy ? (
+                        <PolicyDefinitionForm
+                            data={data}
+                            setData={setData}
+                            errors={errors}
+                            processing={processing}
+                            policies={policies}
+                        />
+                    ) : null}
+                </div>
+                <CardFooter className="p-0 mt-4">
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button type="button" variant="ghost" className="ml-auto text-primary/40">
+                                <Trash className="mr-2" /> Delete
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Delete status</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    Are you sure you want to delete this status?
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction asChild>
+                                    <Button variant="destructive" onClick={() => handleDelete(status)}>
+                                        Delete
+                                    </Button>
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                </CardFooter>
+            </CardContent>
+        </Card>
     );
 };
 

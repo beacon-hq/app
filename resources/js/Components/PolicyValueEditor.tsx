@@ -54,10 +54,12 @@ export const PolicyValueEditor = function ({
                 onChange={function (e) {
                     setCurrentValue(e.target.value);
                     setValues([e.target.value]);
+                    setValue([e.target.value]);
                 }}
                 onBlur={(e) => {
                     setCurrentValue(e.target.value);
                     setValues([e.target.value]);
+                    setValue([e.target.value]);
                 }}
                 disabled={disabled}
             />
