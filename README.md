@@ -18,61 +18,34 @@ Beacon is an open-source feature management platform built specifically for Lara
 
 - [ ] Policies
     - [x] CRUD
-    - [x] Active/Inactive per Application per Enviroment
+    - [ ] Active/Inactive per Application per Enviroment
     - [ ] Limited Availability 
-      - [x] Date Range
-      - [x] Context & Scope
+      - [ ] Date Range
+      - [ ] Context & Scope
     - [ ] Gradual Rollout (sticky)
       - [ ] Percentage
       - [ ] Context & Scope
 - [ ] API
   - [x] Prototype
-  - [ ] Rate Limiting for Trial accounts
-  - [ ] Rate Limiting for Paid accounts (based on tier?)
-  - [ ] Disable when subscription not active (with rate limited grace period + notification for failed payments)
 - [ ] Feature Flags
   - [ ] Lifetime Configuration
-  - [x] Editing UI
-  - [x] Table UI
-    - [x] Filter by Tag
-    - [x] Filter by Type
-    - [x] Filter by Environment
-    - [x] Filter by Application
-    - [x] Filter by Status
+  - [ ] Editing UI
+  - [ ] Table UI
+    - [ ] Filter by Tag
+    - [ ] Filter by Type
+    - [ ] Filter by Environment
+    - [ ] Filter by Application
+    - [ ] Filter by Status
   - [ ] Lifecycle Tracking
-- [x] TOTP Two-Factor Authentication
-- [x] Teams
-  - [x] Invitations
-  - [x] Roles/Permissions
-- [x] Settings
-- [x] Dashboard
+- [ ] TOTP Two-Factor Authentication
+- [ ] Teams
+  - [ ] Invitations
+  - [ ] Roles/Permissions
+- [ ] Settings
+- [ ] Dashboard
 - [ ] Audit Log
 - [ ] Notifications
-- [x] Refactor
-  - [x] Value Objects
-  - [x] Services Pattern
-  - [x] Repository Pattern
-- [ ] Billing
-  - [ ] Stripe Configuration
-    - [x] Products
-    - [x] Pricing
-    - [x] Migrate to Production
-  - [ ] Stripe Subscription Integration (Cashier)
-    - [x] Create Subscription
-      - [x] Free Trial
-        - [x] Don't allow multiple free trials (e.g. when Downgrading)
-        - [x] Allow resuming free trial if they still have time left after cancelling
-      - [x] Fraud Limit
-      - [x] Webhooks (dev)
-      - [ ] Webhooks (prod)
-    - [ ] UI should be locked down until they create a subscription
-    - [ ] UI should be locked down if their subscription lapses until they update payment (API has grace period)
-  - [ ] Fraud limits
-  - [ ] Meter Reporting
-  - [ ] Plan Management
-    -  [ ] Upgrade/Downgrade (pro-rated)
-    -  [ ] Cancellation
-  - [ ] Quota Usage Reporting
-    - [ ] Warning when reaching end of free quota
-    - [ ] Upsell when reaching price of next tier
-  - [ ] Current Bill/Invoicing
+- [ ] Refactor
+  - [ ] Value Objects
+  - [ ] Services Pattern
+  - [ ] Repository Pattern

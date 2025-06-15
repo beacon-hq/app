@@ -1,5 +1,4 @@
 import MultiValueInput from '@/Components/MultiValueInput';
-import DateRangeInput from '@/Components/DateRangeInput';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import React, { useState } from 'react';
@@ -10,14 +9,12 @@ export const PolicyValueEditor = function ({
     setValue,
     allowMultiple = false,
     disabled = false,
-    isDateRange = false,
 }: {
     id: string | number;
     value: string | string[] | null;
     setValue: (value: string | string[]) => void;
     allowMultiple: boolean;
     disabled: boolean;
-    isDateRange?: boolean;
 }) {
     const [values, setValues] = useState<string[]>(typeof value === 'string' ? [value] : (value ?? []));
     const [currentValue, setCurrentValue] = useState<string>(() => {
@@ -31,17 +28,6 @@ export const PolicyValueEditor = function ({
 
         return '';
     });
-
-    if (isDateRange) {
-        return (
-            <>
-                <Label htmlFor={`value_${id}`} aria-required hidden>
-                    Date Range
-                </Label>
-                <DateRangeInput id={`value_${id}`} values={values} setValues={setValue as any} disabled={disabled} />
-            </>
-        );
-    }
 
     if (allowMultiple) {
         return (

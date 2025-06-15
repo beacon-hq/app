@@ -15,5 +15,4 @@ enum PolicyDefinitionType: string
     case EXPRESSION = 'expression';
     case OPERATOR = 'operator';
     case POLICY = 'policy';
-    case DATE_RANGE = 'date_range';
 }
