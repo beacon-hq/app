@@ -29,7 +29,15 @@ import { ChevronRight, CircleCheckBig, Info, PlusCircle, TriangleAlert } from 'l
 import React, { FormEvent } from 'react';
 import { ulid } from 'ulidx';
 
-function StatusCard({ status, policies }: { status: FeatureFlagStatus; policies: PolicyCollection }) {
+function StatusCard({
+    status,
+    policies,
+    featureFlag,
+}: {
+    status: FeatureFlagStatus;
+    policies: PolicyCollection;
+    featureFlag: FeatureFlag;
+}) {
     return (
         <Card>
             <CardHeader>
@@ -52,7 +60,7 @@ function StatusCard({ status, policies }: { status: FeatureFlagStatus; policies:
                         </Badge>
                         <HttpRequestBuilder
                             status={status}
-                            featureFlagName={status.feature_flag?.name}
+                            featureFlagName={featureFlag?.name}
                             definition={status.definition as PolicyDefinitionCollection}
                             policies={policies}
                         />
@@ -285,7 +293,12 @@ export default function Edit({
                             <div className="mt-2 grow">
                                 <TabsContent value="overview" className="flex flex-col gap-4">
                                     {featureFlag.statuses?.map((status, index) => (
-                                        <StatusCard key={index} status={status} policies={policies} />
+                                        <StatusCard
+                                            key={index}
+                                            status={status}
+                                            policies={policies}
+                                            featureFlag={featureFlag}
+                                        />
                                     ))}
                                     {featureFlag.statuses?.length === 0 && (
                                         <>
