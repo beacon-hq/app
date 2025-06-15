@@ -214,6 +214,7 @@ export enum PolicyDefinitionType {
     EXPRESSION = 'expression',
     OPERATOR = 'operator',
     POLICY = 'policy',
+    DATETIME = 'datetime',
 }
 export type Product = {
     id: string;

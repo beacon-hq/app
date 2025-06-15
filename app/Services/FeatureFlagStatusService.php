@@ -25,7 +25,7 @@ class FeatureFlagStatusService
             'environment' => $context->environment,
         ]);
 
-        $response = $this->featureFlagStatusRepository->first($featureFlag, $context);
+        $response = $this->featureFlagStatusRepository->evaluate($featureFlag, $context);
 
         // Dispatch the feature flag evaluation event
         FeatureFlagEvaluated::dispatch(

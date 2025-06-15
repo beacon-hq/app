@@ -24,7 +24,7 @@ class FeatureFlagStatusRepository
     {
     }
 
-    public function first(FeatureFlag $featureFlag, FeatureFlagContext $context): FeatureFlagResponse
+    public function evaluate(FeatureFlag $featureFlag, FeatureFlagContext $context): FeatureFlagResponse
     {
         $status = FeatureFlagStatus::query()
             ->whereApplication($context->appName)
@@ -117,15 +117,14 @@ class FeatureFlagStatusRepository
 
     protected function evaluateDateRange(PolicyDefinition $policyDefinition): bool
     {
-        if ($policyDefinition->values === null || $policyDefinition->values->count() < 2) {
-            return false;
+        $now = now();
+        $comparisonDate = Carbon::parse($policyDefinition->subject, 'UTC');
+
+        if ($policyDefinition->operator === PolicyDefinitionMatchOperator::LESS_THAN_EQUAL) {
+            return $now->isBefore($comparisonDate) || $now->equalTo($comparisonDate);
         }
 
-        $now = now();
-        $startDate = Carbon::parse($policyDefinition->values->get(0));
-        $endDate = Carbon::parse($policyDefinition->values->get(1));
-
-        return $now->between($startDate, $endDate);
+        return $now->isAfter($comparisonDate) || $now->equalTo($comparisonDate);
     }
 
     protected function evaluatePolicy(FeatureFlagStatus|PolicyValue $policyContainer, FeatureFlagContext $context): bool
@@ -139,7 +138,7 @@ class FeatureFlagStatusRepository
                 return $this->evaluatePolicy($this->policyService->find($policyDefinition->subject), $context);
             }
 
-            if ($policyDefinition->type === PolicyDefinitionType::DATE_RANGE) {
+            if ($policyDefinition->type === PolicyDefinitionType::DATETIME) {
                 return $this->evaluateDateRange($policyDefinition);
             }
 

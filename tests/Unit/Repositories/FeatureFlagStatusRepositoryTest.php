@@ -44,7 +44,7 @@ it('evaluates scalar value policies', function (array $policyDefinition, array $
     $context = FeatureFlagContext::from($context);
 
     $featureFlagStatusRepository = resolve(FeatureFlagStatusRepository::class);
-    $result = $featureFlagStatusRepository->first(FeatureFlagValue::from($this->featureFlag), $context);
+    $result = $featureFlagStatusRepository->evaluate(FeatureFlagValue::from($this->featureFlag), $context);
 
     expect($result)
         ->toBeInstanceOf(FeatureFlagResponse::class)
@@ -66,7 +66,7 @@ it('evaluates array value policies', function (array $policyDefinition, array $c
     $context = FeatureFlagContext::from($context);
 
     $featureFlagStatusRepository = resolve(FeatureFlagStatusRepository::class);
-    $result = $featureFlagStatusRepository->first(FeatureFlagValue::from($this->featureFlag), $context);
+    $result = $featureFlagStatusRepository->evaluate(FeatureFlagValue::from($this->featureFlag), $context);
 
     expect($result)
         ->toBeInstanceOf(FeatureFlagResponse::class)
@@ -96,7 +96,7 @@ it('does not evaluate invalid policies', function () {
     $context = FeatureFlagContext::from($context);
 
     $featureFlagStatusRepository = resolve(FeatureFlagStatusRepository::class);
-    $result = $featureFlagStatusRepository->first(FeatureFlagValue::from($this->featureFlag), $context);
+    $result = $featureFlagStatusRepository->evaluate(FeatureFlagValue::from($this->featureFlag), $context);
 
     expect($result)
         ->toBeInstanceOf(FeatureFlagResponse::class)

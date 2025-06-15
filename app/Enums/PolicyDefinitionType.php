@@ -15,4 +15,5 @@ enum PolicyDefinitionType: string
     case EXPRESSION = 'expression';
     case OPERATOR = 'operator';
     case POLICY = 'policy';
+    case DATETIME = 'datetime';
 }

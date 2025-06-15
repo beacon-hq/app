@@ -52,7 +52,7 @@ const processDefinitionsRecursively = (
 
     for (const definition of definitions) {
         // Skip operator type definitions
-        if (definition.type === PolicyDefinitionType.OPERATOR) {
+        if (definition.type === PolicyDefinitionType.OPERATOR || definition.type === PolicyDefinitionType.DATETIME) {
             continue;
         }
 
@@ -121,7 +121,7 @@ const HttpRequestBuilder = ({ status, featureFlagName, policies, definition }: H
                     referrer: '',
                     url: '',
                     method: '',
-                }
+                },
             };
         }
 
@@ -160,7 +160,7 @@ const HttpRequestBuilder = ({ status, featureFlagName, policies, definition }: H
                     // Always ensure app_name and environment from status take precedence
                     app_name: status?.application?.name || parsedContextValues.app_name || '',
                     environment: status?.environment?.name || parsedContextValues.environment || '',
-                }
+                },
             };
         } catch (error) {
             console.error('Error loading from localStorage:', error);
@@ -178,7 +178,7 @@ const HttpRequestBuilder = ({ status, featureFlagName, policies, definition }: H
                     referrer: '',
                     url: '',
                     method: '',
-                }
+                },
             };
         }
     };

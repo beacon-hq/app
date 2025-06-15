@@ -10,16 +10,28 @@ import {
 } from '@/Application';
 import { PolicyValueEditor } from '@/Components/PolicyValueEditor';
 import { Button } from '@/Components/ui/button';
+import { Calendar } from '@/Components/ui/calendar';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/Components/ui/hover-card';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@/Components/ui/popover';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select';
 import { Separator } from '@/Components/ui/separator';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/Components/ui/tooltip';
 import { cn, containsPolicy } from '@/lib/utils';
 import { FormErrors } from '@/types/global';
 import { arrayMove } from '@dnd-kit/sortable';
-import { CircleHelp, GripVertical, Infinity, PlusCircle, Trash, TriangleAlert } from 'lucide-react';
+import {
+    ChevronDownIcon,
+    CircleHelp,
+    CircleX,
+    GripVertical,
+    Infinity,
+    PlusCircle,
+    Trash,
+    TriangleAlert,
+} from 'lucide-react';
+import { DateTime } from 'luxon';
 import React, { forwardRef, useEffect, useState } from 'react';
 import SortableList, { SortableItem, SortableKnob } from 'react-easy-sort';
 
@@ -44,6 +56,47 @@ const multiValueOperators = [
     PolicyDefinitionMatchOperator.ONE_OF,
     PolicyDefinitionMatchOperator.NOT_ONE_OF,
 ];
+
+const dateTimeOperators = [
+    PolicyDefinitionMatchOperator.LESS_THAN_EQUAL,
+    PolicyDefinitionMatchOperator.GREATER_THAN_EQUAL,
+];
+
+function DateTimePicker(props: {
+    definition: PolicyDefinition;
+    onSelect: (date: Date | undefined) => void;
+    onClear: () => void;
+}) {
+    const [open, setOpen] = useState(false);
+
+    return (
+        <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+                <Button variant="outline" id="date" className="w-48 justify-between font-normal">
+                    {props.definition.subject &&
+                    (props.definition.subject.includes('T') || !props.definition.subject.includes(':'))
+                        ? DateTime.fromISO(props.definition.subject).toJSDate().toLocaleDateString()
+                        : 'Any date'}
+                    <ChevronDownIcon />
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                <Calendar
+                    mode="single"
+                    selected={DateTime.fromISO(props.definition.subject).toJSDate()}
+                    captionLayout="dropdown"
+                    onSelect={(value) => {
+                        setOpen(false);
+                        props.onSelect(value);
+                    }}
+                />
+                <Button variant="secondary" className="w-full" onClick={props.onClear}>
+                    Clear
+                </Button>
+            </PopoverContent>
+        </Popover>
+    );
+}
 
 export function PolicyDefinitionForm({
     data,
@@ -142,6 +195,7 @@ export function PolicyDefinitionForm({
                                             <SelectGroup>
                                                 <SelectItem value="expression">Expression</SelectItem>
                                                 <SelectItem value="policy">Policy</SelectItem>
+                                                <SelectItem value="datetime">Date/Time</SelectItem>
                                                 <SelectItem value="operator">Operator</SelectItem>
                                             </SelectGroup>
                                         </SelectContent>
@@ -275,6 +329,185 @@ export function PolicyDefinitionForm({
                                                 </SelectContent>
                                             </Select>
                                         </>
+                                    )}
+                                    {definition.type === PolicyDefinitionType.DATETIME && (
+                                        <div className="flex flex-row gap-2 items-end">
+                                            <div className="flex flex-col w-1/3">
+                                                <Label htmlFor={`operator_${id}`} aria-required hidden>
+                                                    Operator
+                                                </Label>
+                                                <Select
+                                                    name={`operator_${id}`}
+                                                    value={definition.operator as string}
+                                                    onValueChange={(value) => {
+                                                        let updatedDefinitions = definitions.map(
+                                                            (item: PolicyDefinition, index: number) => {
+                                                                if (index === id) {
+                                                                    return { ...item, operator: value };
+                                                                }
+                                                                return item;
+                                                            },
+                                                        );
+                                                        return setDefinitions(
+                                                            updatedDefinitions as PolicyDefinitionCollection,
+                                                        );
+                                                    }}
+                                                >
+                                                    <SelectTrigger id={`operator_${id}`}>
+                                                        <SelectValue placeholder="Select an operator…" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectGroup>
+                                                            {Object.entries(PolicyDefinitionMatchOperator)
+                                                                .filter(([, operator]) => {
+                                                                    return dateTimeOperators.includes(operator);
+                                                                })
+                                                                .map(([, operator]) => {
+                                                                    return (
+                                                                        <SelectItem key={operator} value={operator}>
+                                                                            {operator ===
+                                                                            PolicyDefinitionMatchOperator.LESS_THAN_EQUAL
+                                                                                ? 'before'
+                                                                                : 'after'}
+                                                                        </SelectItem>
+                                                                    );
+                                                                })}
+                                                        </SelectGroup>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                            <div className="w-1/3">
+                                                <DateTimePicker
+                                                    definition={definition}
+                                                    onSelect={(date: Date | undefined) => {
+                                                        let updatedDefinitions = definitions.map(
+                                                            (item: PolicyDefinition, index: number) => {
+                                                                let dateTime = date?.toISOString().split('T')[0];
+
+                                                                if (
+                                                                    item.subject.includes(':') &&
+                                                                    !item.subject.includes('T')
+                                                                ) {
+                                                                    dateTime += 'T' + item.subject;
+                                                                } else if (item.subject.includes('T')) {
+                                                                    dateTime += 'T' + item.subject.split('T')[1];
+                                                                }
+
+                                                                if (index === id) {
+                                                                    return {
+                                                                        ...item,
+                                                                        subject: dateTime as string,
+                                                                    };
+                                                                }
+                                                                return item;
+                                                            },
+                                                        );
+                                                        setDefinitions(updatedDefinitions);
+                                                    }}
+                                                    onClear={function () {
+                                                        let updatedDefinitions = definitions.map(
+                                                            (item: PolicyDefinition, index: number) => {
+                                                                let dateTime = item.subject;
+                                                                if (dateTime.includes('T')) {
+                                                                    dateTime = dateTime.split('T')[1];
+                                                                } else if (!dateTime.includes(':')) {
+                                                                    dateTime = '';
+                                                                }
+
+                                                                if (index === id) {
+                                                                    return {
+                                                                        ...item,
+                                                                        subject: dateTime,
+                                                                    };
+                                                                }
+                                                                return item;
+                                                            },
+                                                        );
+                                                        setDefinitions(updatedDefinitions);
+                                                    }}
+                                                />
+                                            </div>
+                                            <div className="w-1/3">
+                                                <input
+                                                    aria-label="Time"
+                                                    type="time"
+                                                    step={3}
+                                                    value={
+                                                        definition.subject.includes('T')
+                                                            ? definition.subject
+                                                                  .split('T')[1]
+                                                                  .split('-')[0]
+                                                                  .split('+')[0]
+                                                                  .split('Z')[0]
+                                                            : definition.subject.includes(':')
+                                                              ? definition.subject
+                                                                    .split('-')[0]
+                                                                    .split('+')[0]
+                                                                    .split('Z')[0]
+                                                              : ''
+                                                    }
+                                                    className="h-9 w-fit rounded-md border border-input bg-transparent px-3 py-1 text-primary shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-0 focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50 md:text-sm pr-16"
+                                                    onChange={(e) => {
+                                                        let updatedDefinitions = definitions.map(
+                                                            (item: PolicyDefinition, index: number) => {
+                                                                let dateTime = item.subject;
+                                                                if (dateTime.includes('T')) {
+                                                                    dateTime =
+                                                                        dateTime.split('T')[0] + 'T' + e.target.value;
+                                                                } else if (
+                                                                    dateTime.length > 0 &&
+                                                                    !dateTime.includes(':')
+                                                                ) {
+                                                                    dateTime += 'T' + e.target.value;
+                                                                } else {
+                                                                    dateTime = e.target.value;
+                                                                }
+
+                                                                dateTime += 'Z';
+
+                                                                if (index === id) {
+                                                                    return {
+                                                                        ...item,
+                                                                        subject: dateTime,
+                                                                    };
+                                                                }
+                                                                return item;
+                                                            },
+                                                        );
+                                                        setDefinitions(updatedDefinitions);
+                                                        setOpenDatePicker(false);
+                                                    }}
+                                                />
+                                                <div className="inline-block -ml-16">
+                                                    <p className="inline-block mr-1 text-sm">UTC</p>
+                                                    <CircleX
+                                                        className="inline-block"
+                                                        onClick={function () {
+                                                            let updatedDefinitions = definitions.map(
+                                                                (item: PolicyDefinition, index: number) => {
+                                                                    let dateTime = item.subject;
+                                                                    if (dateTime.includes('T')) {
+                                                                        dateTime = dateTime.split('T')[0];
+                                                                    } else if (dateTime.includes(':')) {
+                                                                        dateTime = '';
+                                                                    }
+
+                                                                    if (index === id) {
+                                                                        return {
+                                                                            ...item,
+                                                                            subject: dateTime,
+                                                                        };
+                                                                    }
+                                                                    return item;
+                                                                },
+                                                            );
+                                                            setDefinitions(updatedDefinitions);
+                                                            setOpenDatePicker(false);
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
                                     )}
                                     {definition.type === PolicyDefinitionType.OPERATOR && (
                                         <>
