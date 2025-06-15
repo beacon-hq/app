@@ -65,6 +65,11 @@ class FeatureFlagRepository
         return FeatureFlag::with(['tags', 'statuses'])->where('id', $id)->firstOrFail();
     }
 
+    public function findByName(string $name): FeatureFlag
+    {
+        return FeatureFlag::with(['tags', 'statuses'])->where('name', $name)->firstOrFail();
+    }
+
     public function update(FeatureFlagValue $featureFlag): FeatureFlag
     {
         $flag = FeatureFlag::where('id', $featureFlag->id)->firstOrFail();
@@ -124,11 +129,13 @@ class FeatureFlagRepository
     protected function filter(Builder $query, array $filters = []): Builder
     {
         $query
+            ->when(isset($filters['id']), fn (Builder $query) => $query->where('id', $filters['id']))
             ->when(isset($filters['name'][0]), fn (Builder $query) => $query->whereName($filters['name'][0]))
             ->when(isset($filters['tag']), fn (Builder $query) => $query->whereTags($filters['tag']))
             ->when(isset($filters['application']), fn (Builder $query) => $query->whereApplication($filters['application']))
             ->when(isset($filters['environment']), fn (Builder $query) => $query->whereEnvironment($filters['environment']))
-            ->when(isset($filters['featureType']), fn (Builder $query) => $query->whereFeatureType($filters['featureType']));
+            ->when(isset($filters['featureType']), fn (Builder $query) => $query->whereFeatureType($filters['featureType']))
+            ->when(isset($filters['status']), fn (Builder $query) => $query->whereStatus($filters['status']));
 
         return $query;
     }

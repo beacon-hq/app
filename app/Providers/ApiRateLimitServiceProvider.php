@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Models\Organization;
-use App\Services\OrganizationService;
+use App\Models\StripeProduct;
+use App\Services\SubscriptionBillingService;
+use App\Values\Organization as OrganizationValue;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -38,13 +40,13 @@ class ApiRateLimitServiceProvider extends ServiceProvider
 
         // Define rate limiter for API requests
         RateLimiter::for('api', function (Request $request) {
-            $organization = App::context()->organization;
+            $organization = App::context()->has('organization') ? App::context()->organization : OrganizationValue::from(auth()->user()->organization);
 
             // Get the organization service from the container
-            $organizationService = $this->app->make(OrganizationService::class);
+            $subscriptionBillingService = $this->app->make(SubscriptionBillingService::class);
 
             // Check if the organization has an active subscription
-            $hasActiveSubscription = $organizationService->hasActiveSubscription($organization);
+            $hasActiveSubscription = $subscriptionBillingService->hasActiveSubscription($organization);
 
             // Get the organization model to check subscription status
             $organizationModel = Organization::findOrFail($organization->id);
@@ -55,39 +57,37 @@ class ApiRateLimitServiceProvider extends ServiceProvider
                 ->exists();
 
             // Define rate limits based on subscription status
-            if (!$hasActiveSubscription) {
-                // No active subscription - very limited access
-                return Limit::perSecond(5)->by($organization->id);
-            } elseif ($isTrialSubscription) {
-                // Solo during trial: 5/sec
+            if (!$hasActiveSubscription || $isTrialSubscription) {
                 return Limit::perSecond(5)->by($organization->id);
             } else {
                 // Paid subscription - get the subscription to determine tier
-                $subscription = $organizationModel->subscriptions()
+                $subscription = $organizationModel
+                    ->subscriptions()
                     ->where('stripe_status', 'active')
                     ->first();
 
+
                 if ($subscription) {
                     // Get the product to determine the tier
-                    $product = $subscription->items->first()?->product;
+                    $product = StripeProduct::query()
+                        ->whereIn(
+                            'stripe_id',
+                            $subscription
+                                ->items()
+                                ->pluck('stripe_product')
+                        )
+                        ->whereNotNull('stripe_base_price_id')
+                        ->first();
 
                     if ($product) {
-                        // Determine the tier based on the product name
-                        $productName = strtolower($product->name);
+                        $evaluations = $product->entitlements['evaluations'] ?? null;
 
-                        if (str_contains($productName, 'scale')) {
-                            // Scale tier: 100/sec
-                            return Limit::perSecond(100)->by($organization->id);
-                        } elseif (str_contains($productName, 'growth')) {
-                            // Growth tier: 50/sec
-                            return Limit::perSecond(50)->by($organization->id);
-                        } elseif (str_contains($productName, 'team')) {
-                            // Team tier: 20/sec
-                            return Limit::perSecond(20)->by($organization->id);
-                        } else {
-                            // Solo post-trial: 10/sec (default for any other product)
-                            return Limit::perSecond(10)->by($organization->id);
-                        }
+                        return match (true) {
+                            $evaluations >= 2000000 => Limit::perSecond(100)->by($organization->id), // Enterprise
+                            $evaluations >= 500000 => Limit::perSecond(50)->by($organization->id), // Scale
+                            $evaluations >= 100000 => Limit::perSecond(20)->by($organization->id), // Growth
+                            default => Limit::perSecond(10)->by($organization->id),
+                        };
                     }
                 }
 

@@ -9,6 +9,7 @@ use App\Models\FeatureType;
 use App\Models\Team;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class FeatureFlagFactory extends Factory
 {
@@ -17,7 +18,7 @@ class FeatureFlagFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->words(3, true),
+            'name' => Str::slug($this->faker->words(3, true)),
             'description' => $this->faker->sentence(),
             'last_seen_at' => Carbon::now()->subDays($this->faker->numberBetween(1, 7)),
             'feature_type_id' => FeatureType::factory(),

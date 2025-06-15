@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Http\Middleware\ApiRateLimitMiddleware;
 use App\Http\Middleware\EnsureOrganizationMiddleware;
 use App\Http\Middleware\EnsureSubscriptionMiddleware;
 use App\Http\Middleware\EnsureTeamMiddleware;
@@ -25,7 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
         then: function () {
             \Route::prefix('api')
-                ->middleware(['api', 'api.rate.limit'])
+                ->middleware(['api'])
                 ->name('api.')
                 ->group(base_path('routes/api.php'));
         }
@@ -45,10 +44,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->api(append: [
             'auth:sanctum',
             EnsureTeamMiddleware::class,
-        ]);
-
-        $middleware->alias([
-            'api.rate.limit' => ApiRateLimitMiddleware::class,
+            EnsureOrganizationMiddleware::class,
+            EnsureSubscriptionMiddleware::class,
+            'throttle:api',
         ]);
 
         $middleware->prependToPriorityList(SubstituteBindings::class, EnsureTeamMiddleware::class);

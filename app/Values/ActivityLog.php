@@ -16,6 +16,7 @@ use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection as LaravelCollection;
+use Illuminate\Support\Facades\URL;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 #[Collection(ActivityLogCollection::class)]
@@ -38,9 +39,10 @@ readonly class ActivityLog extends Bag
     #[Transforms(Activity::class)]
     public static function fromModel(Activity $model): array
     {
+
         return [
             'id' => $model->id,
-            'user' => User::from($model->causer),
+            'user' => $model->causer !== null ? User::from($model->causer) : dump(User::from(name: 'System', email: 'system@beacon-hq.dev', avatar: URL::asset('/images/system-avatar.svg'))),
             'event' => $model->event,
             'properties' => LaravelCollection::make($model->properties),
             'createdAt' => CarbonImmutable::parse($model->created_at),

@@ -23,6 +23,7 @@ use Bag\Validation\Rules\OptionalOr;
 use Bag\Values\Optional;
 use Illuminate\Support\Facades\Gate;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
+use TypeError;
 
 /**
  * @method static static from(Optional|string $id, Optional|Organization $organization, Optional|string $name, Optional|string $icon, Optional|UserCollection $members, Color|string|null $color = null)
@@ -53,14 +54,25 @@ readonly class Team extends Bag
     #[Transforms(TeamModel::class)]
     public static function fromModel(TeamModel $team): array
     {
-        return [
-            'id' => $team->id,
-            'organization' => $team->organization,
-            'name' => $team->name,
-            'color' => $team->color,
-            'icon' => $team->icon,
-            'members' => Gate::check('update', $team) && $team->relationLoaded('users') ? User::collect($team->users) : null,
-        ];
+        try {
+            return [
+                'id' => $team->id,
+                'organization' => $team->organization,
+                'name' => $team->name,
+                'color' => $team->color,
+                'icon' => $team->icon,
+                'members' => Gate::check('update', $team) && $team->relationLoaded('users') ? User::collect($team->users) : null,
+            ];
+        } catch (TypeError) {
+            return [
+                'id' => $team->id,
+                'organization' => $team->organization,
+                'name' => $team->name,
+                'color' => $team->color,
+                'icon' => $team->icon,
+                'members' => null,
+            ];
+        }
     }
 
     public static function rules(): array

@@ -49,6 +49,13 @@ class FeatureFlagService
         return FeatureFlag::from($featureFlag);
     }
 
+    public function findByName(string $name): FeatureFlag
+    {
+        $featureFlag = $this->featureFlagRepository->findByName($name);
+
+        return FeatureFlag::from($featureFlag);
+    }
+
     public function touch(FeatureFlag $featureFlag): FeatureFlag
     {
         $updatedFeatureFlag = $this->featureFlagRepository->update($featureFlag->with(lastSeenAt: now()));

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App;
+use App\Models\Team;
 use Auth;
 use Closure;
 use Illuminate\Http\Request;
@@ -23,6 +24,11 @@ class EnsureOrganizationMiddleware
             $organization = Session::get('team')->organization;
 
             App::context(organization: $organization);
+        }
+
+        $team = Auth::user();
+        if ($team instanceof Team) {
+            App::context(team: $team, organization: $team->organization);
         }
 
         return $next($request);

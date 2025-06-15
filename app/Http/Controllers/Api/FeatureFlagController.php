@@ -19,7 +19,6 @@ class FeatureFlagController extends Controller
 {
     public function index(Request $request, FeatureFlagService $featureFlagService): FeatureFlagCollection
     {
-        // TODO: implement per-scope filtering
         return $featureFlagService->all();
     }
 
@@ -33,8 +32,7 @@ class FeatureFlagController extends Controller
         $context = FeatureFlagContext::from(... $request->all());
 
         try {
-
-            $featureFlag = $featureFlagService->find($featureFlag->id);
+            $featureFlag = $featureFlagService->findByName($featureFlag->id);
 
             return $featureFlagStatusService->getStatus($featureFlag, $context);
         } catch (ModelNotFoundException $e) {
