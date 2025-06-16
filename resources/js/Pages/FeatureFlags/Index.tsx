@@ -14,7 +14,7 @@ import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Form } from '@/Pages/FeatureFlags/Components/Form';
 import Table from '@/Pages/FeatureFlags/Components/Table';
 import { PageProps } from '@/types';
-import { Deferred, Head, useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { PlusCircle } from 'lucide-react';
 import React, { FormEvent, useState } from 'react';
 
@@ -24,6 +24,7 @@ export default function Index({
     page,
     perPage,
     filters,
+    sort,
     featureTypes,
     tags,
     applications,
@@ -34,6 +35,7 @@ export default function Index({
     page: number;
     perPage: number;
     filters: { [key: string]: string[] };
+    sort: { [key: string]: string };
     featureTypes: FeatureTypeCollection;
     tags: TagCollection;
     applications: ApplicationCollection;
@@ -56,6 +58,7 @@ export default function Index({
         page,
         perPage,
         filters: Object.fromEntries(Object.entries(filters).map(([key, value]) => [key, new Set(value)])),
+        sort,
     });
 
     const submit = (e: FormEvent<Element>) => {
@@ -89,17 +92,15 @@ export default function Index({
                     <div className="overflow-hidden">
                         <Card className="mt-8">
                             <CardContent className="px-12 py-4">
-                                <Deferred data="featureFlags" fallback={<div>Loading</div>}>
-                                    <Table
-                                        featureFlags={featureFlags}
-                                        featureFlagCount={featureFlagsCount}
-                                        featureTypes={featureTypes}
-                                        tags={tags}
-                                        applications={applications}
-                                        environments={environments}
-                                        tableOptions={tableOptions}
-                                    />
-                                </Deferred>
+                                <Table
+                                    featureFlags={featureFlags}
+                                    featureFlagCount={featureFlagsCount}
+                                    featureTypes={featureTypes}
+                                    tags={tags}
+                                    applications={applications}
+                                    environments={environments}
+                                    tableOptions={tableOptions}
+                                />
                             </CardContent>
                         </Card>
                     </div>

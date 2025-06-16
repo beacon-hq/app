@@ -16,9 +16,18 @@ class FeatureFlagService
     {
     }
 
-    public function all(?int $page = null, int $perPage = 20, array $filters = []): FeatureFlagCollection
+    public function all(?int $page = null, int $perPage = 20, array $filters = [], array $sort = []): FeatureFlagCollection
     {
-        $featureFlags = $this->featureFlagRepository->all(page: $page, perPage: $perPage, filters: $filters);
+        $orderBy = ['name']; // Default ordering
+
+        if (!empty($sort)) {
+            $orderBy = [];
+            foreach ($sort as $column => $direction) {
+                $orderBy[] = $direction === 'desc' ? "-{$column}" : $column;
+            }
+        }
+
+        $featureFlags = $this->featureFlagRepository->all(orderBy: $orderBy, page: $page, perPage: $perPage, filters: $filters);
 
         return FeatureFlag::collect($featureFlags);
     }

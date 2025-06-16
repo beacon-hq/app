@@ -8,13 +8,15 @@ import {
 } from '@/Application';
 import { IconColor } from '@/Components/IconColor';
 import ItemList from '@/Components/ItemList';
+import { Badge } from '@/Components/ui/badge';
 import { DataTable, TableOptions } from '@/Components/ui/data-table';
 import { DataTableColumnHeader } from '@/Components/ui/data-table-column-header';
-import { localDateTime } from '@/lib/utils';
+import { cn, localDateTime } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import * as _ from 'lodash';
 import { Pencil } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export type TableFilters = { [key: string]: Set<string> };
 
@@ -36,7 +38,13 @@ export default function Table({
     tableOptions: TableOptions;
 }) {
     const columnHelper = createColumnHelper<FeatureFlag>();
-    const [currentTableOptions] = useState<TableOptions>(tableOptions);
+    const [currentTableOptions, setCurrentTableOptions] = useState<TableOptions>(tableOptions);
+
+    useEffect(() => {
+        if (!_.isEqual(tableOptions, currentTableOptions)) {
+            setCurrentTableOptions(tableOptions);
+        }
+    }, [tableOptions]);
 
     const columns: ColumnDef<FeatureFlag, any>[] = [
         columnHelper.accessor('feature_type', {
@@ -59,9 +67,12 @@ export default function Table({
             enableSorting: true,
             enableHiding: false,
             cell: ({ row, cell }) => (
-                <div className="ml-2 w-64">
-                    <p className="font-semibold">{cell.getValue()}</p>
-                    <p className="truncate text-xs text-gray-500">{row.original.description}</p>
+                <div className="w-64 -ml-1">
+                    <p className="font-semibold flex flex-row items-center gap-2">
+                        <IconColor color={row.original.status ? 'green' : 'red'} className="w-3 h-3 inline-block" />
+                        {cell.getValue()}
+                    </p>
+                    <p className="truncate text-xs text-gray-500 pl-5">{row.original.description}</p>
                 </div>
             ),
         }) as ColumnDef<FeatureFlag>,
@@ -113,19 +124,19 @@ export default function Table({
             enableHiding: false,
         }) as ColumnDef<FeatureFlag>,
         columnHelper.accessor('last_seen_at', {
-            id: 'Last Seen',
+            id: 'last_seen_at',
             header: ({ column }) => <DataTableColumnHeader column={column} title="Last Seen" />,
             enableSorting: true,
             cell: ({ cell }) => (cell.getValue() === null ? 'never' : localDateTime(cell.getValue())),
         }) as ColumnDef<FeatureFlag>,
         columnHelper.accessor('created_at', {
-            id: 'Created',
+            id: 'created_at',
             header: ({ column }) => <DataTableColumnHeader column={column} title="Created" />,
             enableSorting: true,
             cell: ({ cell }) => localDateTime(cell.getValue()),
         }) as ColumnDef<FeatureFlag>,
         columnHelper.accessor('updated_at', {
-            id: 'Updated',
+            id: 'updated_at',
             header: ({ column }) => <DataTableColumnHeader column={column} title="Updated" />,
             enableSorting: true,
             cell: ({ cell }) => localDateTime(cell.getValue()),
@@ -139,6 +150,21 @@ export default function Table({
                             <Pencil className="h-6 w-6" />
                         </Link>
                     </div>
+                );
+            },
+        }) as ColumnDef<FeatureFlag>,
+        columnHelper.display({
+            id: 'status',
+            cell: function ({ row }) {
+                return (
+                    <Badge
+                        className={cn('w-16 text-center', {
+                            'bg-green-600 hover:bg-green-600': row.original.status,
+                            'bg-neutral-500 hover:bg-neutral-500': !row.original.status,
+                        })}
+                    >
+                        {row.original.status ? 'Enabled' : 'Disabled'}
+                    </Badge>
                 );
             },
         }) as ColumnDef<FeatureFlag>,
@@ -158,7 +184,7 @@ export default function Table({
                     label: 'Application',
                     values: applications.map((application) => {
                         return {
-                            value: application.id,
+                            value: application.name,
                             label: application.name,
                             icon: (<IconColor color={application.color} className="aspect-square" />) as unknown,
                         };
@@ -168,7 +194,7 @@ export default function Table({
                     label: 'Environments',
                     values: environments.map((environment) => {
                         return {
-                            value: environment.id,
+                            value: environment.name,
                             label: environment.name,
                             icon: (<IconColor color={environment.color} className="aspect-square" />) as unknown,
                         };
@@ -199,8 +225,15 @@ export default function Table({
             }}
             pageSize={currentTableOptions.perPage}
             page={currentTableOptions.page}
-            columnVisibility={{ Updated: false }}
-            sortBy={[{ id: 'name', desc: false }]}
+            columnVisibility={{ updated_at: false, created_at: false }}
+            sortBy={
+                tableOptions.sort && Object.keys(tableOptions.sort).length > 0
+                    ? Object.entries(tableOptions.sort).map(([id, direction]) => ({
+                          id,
+                          desc: direction === 'desc',
+                      }))
+                    : [{ id: 'name', desc: false }]
+            }
             currentFilters={currentTableOptions.filters}
             tableOptions={tableOptions}
         />

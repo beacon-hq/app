@@ -45,6 +45,17 @@ export function DataTableFacetedFilter<TData, TValue>({
             : new Set(column?.getFilterValue() as string[]),
     );
 
+    React.useEffect(() => {
+        const newValues =
+            currentFilters && currentFilters[column.id] && currentFilters[column.id].size > 0
+                ? currentFilters[column.id]
+                : new Set(column?.getFilterValue() as string[]);
+
+        if (!_.isEqual(newValues, selectedValues)) {
+            setSelectedValues(newValues);
+        }
+    }, [currentFilters, column.id]);
+
     const debounce = useDebounceCallback((values) => {
         if (currentFilters && !_.isEqual(currentFilters[column?.id as string], values)) {
             onFilterChange

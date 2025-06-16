@@ -2,6 +2,7 @@
 
 import { DataTablePagination } from './data-table-pagination';
 import { DataTableFacets, DataTableToolbar, FilterProps } from './data-table-toolbar';
+import { Skeleton } from '@/Components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import { TableFilters } from '@/Pages/FeatureFlags/Components/Table';
 import { router } from '@inertiajs/react';
@@ -32,6 +33,7 @@ export type TableOptions = {
     page: number;
     perPage: number;
     filters: TableFilters;
+    sort?: Record<string, string>;
 };
 
 interface DataTableProps<TData, TValue> {
@@ -73,8 +75,15 @@ export function DataTable<TData, TValue>({
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [sorting, setSorting] = useState<SortingState>(sortBy ?? []);
     const [pagination, setPagination] = useState<PaginationState>({ pageIndex: page - 1, pageSize });
-    const [currentTableOptions] = useState(tableOptions);
-    const [newFilters, setNewFilters] = useState<TableFilters>({});
+    const [currentTableOptions, setCurrentTableOptions] = useState(tableOptions);
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        if (!_.isEqual(tableOptions, currentTableOptions)) {
+            setCurrentTableOptions(tableOptions);
+        }
+    }, [tableOptions]);
+    const [newFilters, setNewFilters] = useState<TableFilters>(currentFilters ?? {});
 
     const debounceFilterChange = useDebounceCallback((filters: TableFilters) => {
         if (!_.isEqual(filters, newFilters)) {
@@ -90,6 +99,37 @@ export function DataTable<TData, TValue>({
         }
 
         setSorting(updater);
+
+        if (newSortingValue.length > 0) {
+            let filterQuery = {};
+
+            if (currentTableOptions?.filters && Object.keys(currentTableOptions.filters).length > 0) {
+                filterQuery = Object.fromEntries(
+                    Object.entries(currentTableOptions.filters).map(([key, value]) => {
+                        return [key, Array.from(value as Set<string>)];
+                    }),
+                );
+            }
+
+            const sortParams: Record<string, string> = {};
+            newSortingValue.forEach((sort) => {
+                sortParams[sort.id] = sort.desc ? 'desc' : 'asc';
+            });
+
+            router.get(
+                route(route().current() as string, route().routeParams),
+                {
+                    page: currentTableOptions?.page || 1,
+                    perPage: currentTableOptions?.perPage || 10,
+                    filters: filterQuery,
+                    sort: sortParams,
+                },
+                {
+                    onStart: () => setIsLoading(true),
+                    onFinish: () => setIsLoading(false),
+                },
+            );
+        }
     };
 
     const handleFilterChange = (filters?: TableFilters) => {
@@ -98,7 +138,10 @@ export function DataTable<TData, TValue>({
         }
 
         if (!filters) {
-            router.get(route(route().current() as string, route().routeParams));
+            router.get(route(route().current() as string, route().routeParams), undefined, {
+                onStart: () => setIsLoading(true),
+                onFinish: () => setIsLoading(false),
+            });
             return;
         }
 
@@ -112,7 +155,11 @@ export function DataTable<TData, TValue>({
             return;
         }
 
-        if (Object.entries(filters).length === 0) {
+        if (Object.keys(nonEmptyFilters).length === 0) {
+            router.get(route(route().current() as string, route().routeParams), undefined, {
+                onStart: () => setIsLoading(true),
+                onFinish: () => setIsLoading(false),
+            });
             return;
         }
 
@@ -122,12 +169,33 @@ export function DataTable<TData, TValue>({
             }),
         );
 
-        router.get(route(route().current() as string, route().routeParams), {
-            page: 1,
-            perPage: currentTableOptions?.perPage,
-            filters: filterQuery as any,
-        });
+        const sortParams: Record<string, string> = {};
+        if (sorting.length > 0) {
+            sorting.forEach((sort) => {
+                sortParams[sort.id] = sort.desc ? 'desc' : 'asc';
+            });
+        }
+
+        router.get(
+            route(route().current() as string, route().routeParams),
+            {
+                page: 1,
+                perPage: currentTableOptions?.perPage,
+                filters: filterQuery as any,
+                sort: Object.keys(sortParams).length > 0 ? sortParams : undefined,
+            },
+            {
+                onStart: () => setIsLoading(true),
+                onFinish: () => setIsLoading(false),
+            },
+        );
     };
+
+    useEffect(() => {
+        if (!_.isEqual(currentFilters, newFilters)) {
+            setNewFilters(currentFilters ?? {});
+        }
+    }, [currentFilters]);
 
     useEffect(() => {
         handleFilterChange(newFilters);
@@ -135,18 +203,32 @@ export function DataTable<TData, TValue>({
 
     const handlePaginationChange = (pagination: { pageIndex: number; pageSize: number }) => {
         if (
-            pagination.pageIndex + 1 !== currentTableOptions?.page ||
-            pagination.pageSize !== currentTableOptions?.perPage
+            !currentTableOptions ||
+            pagination.pageIndex + 1 !== currentTableOptions.page ||
+            pagination.pageSize !== currentTableOptions.perPage
         ) {
+            let filterQuery = {};
+
+            if (currentTableOptions?.filters && Object.keys(currentTableOptions.filters).length > 0) {
+                filterQuery = Object.fromEntries(
+                    Object.entries(currentTableOptions.filters).map(([key, value]) => {
+                        return [key, Array.from(value as Set<string>)];
+                    }),
+                );
+            }
+
+            const sortParams: Record<string, string> = {};
+            if (sorting.length > 0) {
+                sorting.forEach((sort) => {
+                    sortParams[sort.id] = sort.desc ? 'desc' : 'asc';
+                });
+            }
+
             router.get(route(route().current() as string, route().routeParams), {
                 page: pagination.pageIndex + 1,
                 perPage: pagination.pageSize,
-                filters:
-                    Object.entries(currentTableOptions?.filters ?? {}).length > 0
-                        ? Object.entries(currentTableOptions?.filters ?? {}).map(([values]) => {
-                              return Array.from(values);
-                          })
-                        : {},
+                filters: filterQuery,
+                sort: Object.keys(sortParams).length > 0 ? sortParams : undefined,
             });
         }
     };
@@ -185,11 +267,17 @@ export function DataTable<TData, TValue>({
         manualPagination: totalRows !== undefined,
     });
 
+    const isInitialMount = React.useRef(true);
     useEffect(() => {
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+            return;
+        }
+
         if (page && pageSize && totalRows) {
             handlePaginationChange(pagination);
         }
-    }, [pagination]);
+    }, [pagination.pageIndex, pagination.pageSize]);
 
     return (
         <div className="space-y-4">
@@ -198,7 +286,16 @@ export function DataTable<TData, TValue>({
                 filter={filter}
                 facets={facets}
                 onFilterChange={(filters) => debounceFilterChange(filters)}
-                onFilterReset={() => setNewFilters({})}
+                onFilterReset={() => {
+                    setNewFilters({});
+                    table.resetColumnFilters();
+                    if (tableOptions?.filters) {
+                        router.get(route(route().current() as string, route().routeParams), undefined, {
+                            onStart: () => setIsLoading(true),
+                            onFinish: () => setIsLoading(false),
+                        });
+                    }
+                }}
                 currentFilters={currentFilters}
             />
             <div className="rounded-md border">
@@ -223,7 +320,17 @@ export function DataTable<TData, TValue>({
                         ))}
                     </TableHeader>
                     <TableBody>
-                        {table.getRowModel().rows?.length ? (
+                        {isLoading ? (
+                            Array.from({ length: pageSize }).map((_, index) => (
+                                <TableRow key={`skeleton-${index}`}>
+                                    {columns.map((column, cellIndex) => (
+                                        <TableCell key={`skeleton-cell-${cellIndex}`}>
+                                            <Skeleton className="h-8 w-full" />
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
+                        ) : table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
                                 <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
                                     {row.getVisibleCells().map((cell) => (

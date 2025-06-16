@@ -28,12 +28,20 @@ class FeatureFlagController extends Controller
         EnvironmentService $environmentService,
         Request $request
     ): Response {
+        $sort = $request->get('sort', []);
+
         return Inertia::render('FeatureFlags/Index', [
-            'featureFlags' => $featureFlagService->all(filters: $request->get('filters', []), page: (int) $request->get('page', 1), perPage: (int) $request->get('perPage', 10))->toBase(),
+            'featureFlags' => $featureFlagService->all(
+                filters: $request->get('filters', []),
+                page: (int) $request->get('page', 1),
+                perPage: (int) $request->get('perPage', 10),
+                sort: $sort
+            )->toBase(),
             'featureFlagsCount' => $featureFlagService->count(filters: $request->get('filters', [])),
             'page' => (int) $request->get('page', 1),
             'perPage' => (int) $request->get('perPage', 10),
             'filters' => $request->get('filters', []),
+            'sort' => $sort,
             'featureTypes' => $featureTypeService->all(),
             'tags' => $tagService->all(),
             'applications' => $applicationService->all(),

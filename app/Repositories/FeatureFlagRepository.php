@@ -146,7 +146,11 @@ class FeatureFlagRepository
             ->with(['featureType', 'tags', 'statuses', 'statuses.application', 'statuses.environment']);
 
         foreach (Arr::wrap($orderBy) as $column) {
-            $query = $query->orderBy($column);
+            if (str_starts_with($column, '-')) {
+                $query = $query->orderBy(substr($column, 1), 'desc');
+            } else {
+                $query = $query->orderBy($column);
+            }
         }
 
         if (!empty($filters)) {

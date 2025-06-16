@@ -11,8 +11,6 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import { useDebounce } from 'use-debounce';
 
-// import { DataTableFacetedFilter } from '@/Components/ui/data-table-faceted-filter';
-
 export interface FilterProps {
     placeholder: string;
     column: string;
@@ -28,10 +26,12 @@ interface DataTableToolbarProps<TData> {
     onFilterReset?: () => void;
 }
 
-// Create a type for manual filters that is an object of arrays of objects with a value: string, a label: string, and icon?: React.ComponentType<{ className?: string }> keyed on the filter name, e.g. {status: [{filterValue: 'active', displayValue: 'Active'}, {filterValue: 'inactive', displayValue: 'Inactive'}]} that can be mapped over
 export type DataTableFacets = Record<
     string,
-    { label: string; values: { value: string; label: string; icon?: React.ComponentType<{ className?: string }> }[] }
+    {
+        label: string;
+        values: { value: string; label: string; icon?: React.ComponentType<{ className?: string }> }[];
+    }
 >;
 
 export function DataTableToolbar<TData>({

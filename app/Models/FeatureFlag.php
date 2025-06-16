@@ -141,7 +141,7 @@ class FeatureFlag extends Model
         $query->whereHas(
             'tags',
             fn (Builder $query) =>
-            $query->whereIn('id', \iterator_to_array($tags))
+            $query->whereIn('tag_id', \iterator_to_array($tags))
         );
     }
 
