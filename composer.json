@@ -13,6 +13,7 @@
         "captainhook/captainhook-phar": "^5.24",
         "captainhook/hook-installer": "^1.0",
         "creativeorange/gravatar": "^1.0",
+        "dompdf/dompdf": "^3.1",
         "dshafik/bag": "^2",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/cashier": "^15.6",

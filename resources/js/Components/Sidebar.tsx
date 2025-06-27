@@ -192,10 +192,10 @@ const Sidebar = function (props: { expanded: boolean } & AuthProp) {
                                     </DropdownMenuItem>
                                     {Gate.can(Permission.BILLING_UPDATE) && (
                                         <DropdownMenuItem asChild>
-                                            <Link href={route('billing.index')} className="w-full">
+                                            <a href={route('billing.index')} className="w-full">
                                                 <CreditCard />
                                                 Billing
-                                            </Link>
+                                            </a>
                                         </DropdownMenuItem>
                                     )}
                                     {/*<DropdownMenuItem>*/}

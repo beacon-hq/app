@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Models\StripeProduct;
 use App\Repositories\OrganizationRepository;
 use App\Repositories\ProductRepository;
 use App\Repositories\SubscriptionBillingRepository;
 use App\Values\Organization;
 use App\Values\Product;
+use App\Values\Subscription;
 use Brick\Money\Money;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Log;
 use Laravel\Cashier\Cashier;
 use Laravel\Cashier\Checkout;
@@ -25,6 +26,11 @@ class SubscriptionBillingService
     ) {
     }
 
+    public function getSubscription(Organization $organization): Subscription
+    {
+        return Subscription::from($this->subscriptionBillingRepository->getSubscription($organization));
+    }
+
     public function hasActiveSubscription(Organization $organization): bool
     {
         return $this->subscriptionBillingRepository->hasActiveSubscription($organization);
@@ -35,9 +41,14 @@ class SubscriptionBillingService
         return $this->subscriptionBillingRepository->isTrialSubscription($organization);
     }
 
-    public function getSubscription(Organization $organization): StripeProduct
+    public function getTrialEndDate(Organization $organization): ?\DateTimeInterface
     {
-        return $this->subscriptionBillingRepository->currentSubscription($organization);
+        return $this->isTrialSubscription($organization) ? $this->subscriptionBillingRepository->getTrialEndDate($organization) : null;
+    }
+
+    public function getPlan(Organization $organization): Product
+    {
+        return Product::from($this->subscriptionBillingRepository->getPlan($organization));
     }
 
     public function changeSubscription(Organization $organization, Product $product): bool
@@ -95,6 +106,41 @@ class SubscriptionBillingService
     public function createSubscription(Organization $organization, Product $product): Checkout
     {
         return $this->subscriptionBillingRepository->createSubscription($organization, $product->id);
+    }
+
+    public function getPeriodStartDate(Organization $organization): CarbonImmutable
+    {
+        return $this->subscriptionBillingRepository->getPeriodStartDate($organization);
+    }
+
+    public function getPeriodEndDate(Organization $organization): CarbonImmutable
+    {
+        return $this->subscriptionBillingRepository->getPeriodEndDate($organization);
+    }
+
+    public function predictNextBill(array $planMetrics, Product $product): array
+    {
+        return $this->subscriptionBillingRepository->predictNextBill($planMetrics, $product);
+    }
+
+    public function getInvoices(Organization $organization)
+    {
+        return $this->subscriptionBillingRepository->getInvoices($organization);
+    }
+
+    public function cancelSubscription(Organization $organization): bool
+    {
+        return $this->subscriptionBillingRepository->cancelSubscription($organization);
+    }
+
+    public function getSubscriptionStatus(Organization $organization): array
+    {
+        return $this->subscriptionBillingRepository->getSubscriptionStatus($organization);
+    }
+
+    public function resumeSubscription(Organization $organization, string $billing): bool
+    {
+        return $this->subscriptionBillingRepository->resumeSubscription($organization, $billing);
     }
 
     protected function getStripeClient(): StripeClient

@@ -234,6 +234,16 @@ export enum Role {
     DEVELOPER = 'Developer',
     BILLER = 'Biller',
 }
+export type Subscription = {
+    id: string;
+    stripe_id: string;
+    status: string;
+    plan: Product;
+    trial_ends_at: string | null;
+    trial_days_remaining: number | null;
+    ends_at: string | null;
+    created_at: string | null;
+};
 export type Tag = {
     id?: string;
     name?: string;

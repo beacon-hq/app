@@ -5,17 +5,23 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Models\FeatureFlag;
+use App\Models\FeatureFlagUsage;
+use App\Services\SubscriptionBillingService;
 use Beacon\Metrics\Metrics;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use stdClass;
 
-class DashboardMetricsRepository
+class MetricsRepository
 {
-    /**
-     * Get total number of feature flags
-     */
+    public function __construct(protected SubscriptionBillingService $subscriptionBillingService)
+    {
+    }
+
     public function getTotalFlags(): array
     {
         return [
@@ -31,9 +37,6 @@ class DashboardMetricsRepository
         ];
     }
 
-    /**
-     * Get metrics for changes to feature flags
-     */
     public function getChangesMetrics(): array
     {
         $query = FeatureFlag::query()->where('updated_at', '>', DB::raw('created_at'));
@@ -50,9 +53,6 @@ class DashboardMetricsRepository
             ->toArray();
     }
 
-    /**
-     * Get metrics for created feature flags
-     */
     public function getCreatedMetrics(): array
     {
         return Metrics::query(FeatureFlag::query())
@@ -66,9 +66,6 @@ class DashboardMetricsRepository
             ->toArray();
     }
 
-    /**
-     * Get metrics for archived feature flags
-     */
     public function getArchivedMetrics(): array
     {
         $query = FeatureFlag::where('status', false);
@@ -85,9 +82,6 @@ class DashboardMetricsRepository
             ->value()->toArray();
     }
 
-    /**
-     * Get flag status data (active, stale, inactive)
-     */
     public function getFlagStatusData(): array
     {
         // Active flags (last seen in the last 30 days)
@@ -121,9 +115,6 @@ class DashboardMetricsRepository
         ];
     }
 
-    /**
-     * Get flag type data (release, kill, experiment)
-     */
     public function getFlagTypeData(): array
     {
         $query = FeatureFlag::select([DB::raw('COUNT(feature_flags.id) as flags'), 'feature_types.id', 'feature_types.name as type', 'feature_types.color as fill'])
@@ -134,9 +125,6 @@ class DashboardMetricsRepository
             ->get()->toArray();
     }
 
-    /**
-     * Get average age data by month
-     */
     public function getAgeData(): array
     {
         $months = $this->getLastSixMonths();
@@ -166,9 +154,6 @@ class DashboardMetricsRepository
         return $result;
     }
 
-    /**
-     * Get usage over time data
-     */
     public function getUsageOverTimeData(): array
     {
         $result = [];
@@ -302,6 +287,41 @@ class DashboardMetricsRepository
                 'created_at' => $flag->created_at,
             ];
         })->toArray();
+    }
+
+    public function getPlanUsage(): Collection
+    {
+        $currentPeriodEnd = $this->subscriptionBillingService->getPeriodEndDate(App::context()->organization);
+
+        $query = FeatureFlagUsage::query();
+
+        $metrics = Metrics::query($query)
+            ->countByDay()
+            ->dateColumn('evaluated_at')
+            ->projectForDate($currentPeriodEnd)
+            ->projectWhen($this->subscriptionBillingService->getPlan(App::context()->organization)->entitlements['evaluations'])
+            ->between($this->subscriptionBillingService->getPeriodStartDate(App::context()->organization), now())
+            ->trends();
+
+        $data = collect([
+            'data' => collect($metrics['labels'])->map(function (string $label, int $index) use ($metrics) {
+                return [
+                    'date' => $label,
+                    'value' => $metrics['data'][$index],
+                ];
+            }),
+            'total' => $metrics['total'],
+            'projections' => $metrics['projections'] ?? [],
+        ]);
+
+
+        if (CarbonImmutable::parse($data['projections']['when']['projected_date'])->greaterThan($currentPeriodEnd)) {
+            $data['projections'] = [ 'date' => $data['projections']['date'] ];
+        }
+
+        dump($data);
+
+        return $data;
     }
 
     /**

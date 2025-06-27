@@ -29,7 +29,6 @@ import {
     YAxis,
 } from 'recharts';
 
-// Dashboard metrics interface
 interface DashboardMetricValue {
     value: number;
     previous: {
@@ -267,7 +266,6 @@ function MetricCard({ title, metric }: { title: string; metric: DashboardMetricV
 }
 
 export default function Dashboard({ metrics = defaultMetrics }: DashboardProps) {
-    // Use provided metrics or fallback to defaults
     let dashboardMetrics = metrics || defaultMetrics;
 
     dashboardMetrics.flagTypeData = dashboardMetrics.flagTypeData.map(function (item) {
@@ -451,6 +449,7 @@ export default function Dashboard({ metrics = defaultMetrics }: DashboardProps) 
                                         margin={{
                                             left: 12,
                                             right: 12,
+                                            top: 12,
                                         }}
                                     >
                                         <CartesianGrid vertical={false} />

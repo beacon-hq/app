@@ -1,4 +1,4 @@
-import { Product } from '@/Application';
+import { Product, Subscription } from '@/Application';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -15,7 +15,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Com
 import { cn } from '@/lib/utils';
 import React from 'react';
 
-function ProductCard(props: { product: Product; activeSubscription?: Product; onClick: () => void }) {
+function ProductCard(props: { product: Product; activeSubscription?: Subscription; onClick: () => void }) {
+    console.log(props.activeSubscription);
     return (
         <Card
             className={cn(
@@ -29,12 +30,13 @@ function ProductCard(props: { product: Product; activeSubscription?: Product; on
             <CardContent className="rounded-xl shadow-lg bg-secondary">
                 <CardHeader>
                     {props.product.entitlements.trial_length &&
-                        (!props.activeSubscription || props.activeSubscription.id !== props.product.id) && (
+                        !props.activeSubscription &&
+                        !props.activeSubscription && (
                             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#07e38f] text-white text-xs font-bold uppercase scale-120 px-3 py-1 rounded-full">
                                 {props.product.entitlements.trial_length} Free
                             </div>
                         )}
-                    {props.activeSubscription && props.activeSubscription.id === props.product.id && (
+                    {props.activeSubscription && props.activeSubscription.plan.id === props.product.id && (
                         <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#07e38f] text-white text-xs font-bold uppercase scale-120 px-3 py-1 rounded-full">
                             Current Plan
                         </div>
@@ -62,7 +64,8 @@ function ProductCard(props: { product: Product; activeSubscription?: Product; on
                                 <Button
                                     className="mt-4 cursor-pointer"
                                     disabled={
-                                        props.activeSubscription && props.activeSubscription.id === props.product.id
+                                        props.activeSubscription &&
+                                        props.activeSubscription.plan.id === props.product.id
                                     }
                                 >
                                     Change Plan

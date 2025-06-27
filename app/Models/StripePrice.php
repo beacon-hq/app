@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,5 +33,14 @@ class StripePrice extends Model
             'id' => 'string',
             'active' => 'boolean',
         ];
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(function (Builder $query) {
+            return $query->where('active', true);
+        });
     }
 }

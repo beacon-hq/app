@@ -122,7 +122,7 @@ Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
             ->name('access-tokens.index');
 
         Route::resource('billing', BillingController::class)
-            ->only(['index']);
+            ->only(['index', 'show', 'destroy', 'update']);
     });
 
     Route::resource(

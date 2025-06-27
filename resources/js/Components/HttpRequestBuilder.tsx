@@ -17,7 +17,6 @@ interface HttpRequestBuilderProps {
     definition: PolicyDefinitionCollection;
 }
 
-// Helper function to create nested objects from dot-notation strings
 const createNestedObject = (subject: string, value: string): any => {
     const parts = subject.split('.');
     if (parts.length === 1) {
@@ -27,19 +26,16 @@ const createNestedObject = (subject: string, value: string): any => {
     const nestedObj: any = {};
     let current = nestedObj;
 
-    // Create nested structure for all parts except the last one
     for (let i = 0; i < parts.length - 1; i++) {
         current[parts[i]] = {};
         current = current[parts[i]];
     }
 
-    // Set the value at the deepest level
     current[parts[parts.length - 1]] = value;
 
     return nestedObj;
 };
 
-// Helper function to recursively process policy definitions
 const processDefinitionsRecursively = (
     definitions: PolicyDefinitionCollection,
     policies: PolicyCollection,
@@ -51,28 +47,22 @@ const processDefinitionsRecursively = (
     const result: PolicyDefinitionCollection = [];
 
     for (const definition of definitions) {
-        // Skip operator type definitions
         if (definition.type === PolicyDefinitionType.OPERATOR || definition.type === PolicyDefinitionType.DATETIME) {
             continue;
         }
 
-        // If it's a policy type, find the referenced policy and process its definitions
         if (definition.type === PolicyDefinitionType.POLICY) {
             const policyId = definition.subject;
 
-            // Skip if we've already processed this policy to prevent infinite recursion
             if (processedPolicyIds.has(policyId)) {
                 continue;
             }
 
-            // Find the referenced policy
             const referencedPolicy = policies.find((policy) => policy.id === policyId);
 
             if (referencedPolicy && referencedPolicy.definition) {
-                // Mark this policy as processed
                 processedPolicyIds.add(policyId);
 
-                // Recursively process the referenced policy's definitions
                 const nestedDefinitions = processDefinitionsRecursively(
                     referencedPolicy.definition,
                     policies,
@@ -80,18 +70,13 @@ const processDefinitionsRecursively = (
                     seenSubjects,
                 );
 
-                // Add the nested definitions to the result
                 result.push(...nestedDefinitions);
 
-                // Remove this policy from processed set after we're done with it
                 processedPolicyIds.delete(policyId);
             }
         } else {
-            // For non-policy definitions, check if we've already seen this subject
             if (!seenSubjects.has(definition.subject)) {
-                // Add the subject to the set of seen subjects
                 seenSubjects.add(definition.subject);
-                // Add the definition to the result
                 result.push(definition);
             }
         }
@@ -103,9 +88,7 @@ const processDefinitionsRecursively = (
 const HttpRequestBuilder = ({ status, featureFlagName, policies, definition }: HttpRequestBuilderProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
-    // Load saved values from localStorage
     const loadFromLocalStorage = () => {
-        // Check if localStorage is available (prevents SSR issues)
         if (typeof window === 'undefined' || !window.localStorage) {
             return {
                 apiKey: '',
@@ -126,11 +109,9 @@ const HttpRequestBuilder = ({ status, featureFlagName, policies, definition }: H
         }
 
         try {
-            // Load global settings (API key and output format)
             const savedApiKey = localStorage.getItem('httpRequestBuilder_apiKey') || '';
             const savedTab = localStorage.getItem('httpRequestBuilder_selectedTab') || 'curl';
 
-            // Default context values
             const defaultContextValues = {
                 app_name: status?.application?.name || '',
                 environment: status?.environment?.name || '',
@@ -144,20 +125,16 @@ const HttpRequestBuilder = ({ status, featureFlagName, policies, definition }: H
                 method: '',
             };
 
-            // Create an instance-specific key for context values
-            // This ensures each feature flag has its own saved context
             const instanceKey = `httpRequestBuilder_contextValues_${featureFlagName || 'default'}`;
             const savedContextValues = localStorage.getItem(instanceKey);
             const parsedContextValues = savedContextValues ? JSON.parse(savedContextValues) : {};
 
-            // Merge saved values with defaults
             return {
                 apiKey: savedApiKey,
                 selectedTab: savedTab,
                 contextValues: {
                     ...defaultContextValues,
                     ...parsedContextValues,
-                    // Always ensure app_name and environment from status take precedence
                     app_name: status?.application?.name || parsedContextValues.app_name || '',
                     environment: status?.environment?.name || parsedContextValues.environment || '',
                 },
@@ -210,11 +187,7 @@ const HttpRequestBuilder = ({ status, featureFlagName, policies, definition }: H
         }
     }, [status]);
 
-    // Save values to localStorage when they change
-    // Note: API key and output format are saved globally (shared across all instances)
-    // while context values are saved per feature flag (instance-specific)
     const saveToLocalStorage = (key: string, value: any) => {
-        // Check if localStorage is available (prevents SSR issues)
         if (typeof window === 'undefined' || !window.localStorage) {
             return;
         }
@@ -239,7 +212,6 @@ const HttpRequestBuilder = ({ status, featureFlagName, policies, definition }: H
     }, [selectedTab]);
 
     useEffect(() => {
-        // Create an instance-specific key for context values
         const instanceKey = `httpRequestBuilder_contextValues_${featureFlagName || 'default'}`;
         saveToLocalStorage(instanceKey, contextValues);
     }, [contextValues, featureFlagName]);
@@ -258,18 +230,14 @@ const HttpRequestBuilder = ({ status, featureFlagName, policies, definition }: H
     const generateCommands = () => {
         if (!featureFlagName) return;
 
-        // Prepare context values
         const preparedContext = { ...contextValues };
 
-        // Always set scope_type to "array"
         preparedContext.scope_type = 'array';
 
-        // Filter out empty values except for scope
         const filteredContext = Object.entries(preparedContext)
             .filter(([key, value]) => value !== '' || key === 'scope')
             .reduce(
                 (acc, [key, value]) => {
-                    // Handle scope specially to ensure it's either an empty array or an object
                     if (key === 'scope') {
                         if (!value) {
                             acc[key] = [];
@@ -281,12 +249,9 @@ const HttpRequestBuilder = ({ status, featureFlagName, policies, definition }: H
                                 const [subject, itemValue] = item.split(':');
 
                                 if (subject.includes('.')) {
-                                    // Handle nested object for subjects with periods
                                     const nestedObj = createNestedObject(subject, itemValue);
-                                    // Merge the nested object with the scope object
                                     Object.assign(scopeObj, nestedObj);
                                 } else {
-                                    // Handle regular subjects
                                     scopeObj[subject] = itemValue as any;
                                 }
                             }
@@ -301,7 +266,6 @@ const HttpRequestBuilder = ({ status, featureFlagName, policies, definition }: H
                 {} as Record<string, any>,
             );
 
-        // Generate curl command
         let curlCmd = `curl -X POST "${window.location.origin}/api/features/${featureFlagName}"`;
 
         curlCmd += ` -H "Authorization: Bearer ${apiKey !== '' ? apiKey : '<api key>'}"`;
@@ -314,13 +278,8 @@ const HttpRequestBuilder = ({ status, featureFlagName, policies, definition }: H
 
         setCurlCommand(curlCmd);
 
-        // Generate httpie command
-        // Format the JSON exactly as shown in the example
-        // The example shows: {"scope_type":"array","scope":{"email": "test@example.net", "user": {"id": 7}},...}
-        // Note that property names don't have quotes but values do
         let jsonPayload = JSON.stringify(filteredContext);
 
-        // Don't modify the JSON structure for httpie - it expects valid JSON
         let httpieCmd = `echo '${jsonPayload}' | http POST "${window.location.origin}/api/features/${featureFlagName}"`;
 
         httpieCmd += ` Authorization:"Bearer ${apiKey ?? '<api key>'}"`;
@@ -336,11 +295,9 @@ const HttpRequestBuilder = ({ status, featureFlagName, policies, definition }: H
         setTimeout(() => setCopied(false), 2000);
     };
 
-    // Function to handle sheet open/close
     const handleSheetOpenChange = (open: boolean) => {
         setIsOpen(open);
 
-        // If the sheet is being opened, reload values from localStorage
         if (open) {
             const savedValues = loadFromLocalStorage();
             setApiKey(savedValues.apiKey);

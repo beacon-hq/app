@@ -18,7 +18,6 @@ export default function Index({ auth, products }: PageProps & { products: Produc
     const pricingRef = useRef(null);
 
     useEffect(() => {
-        // Initialize dark mode based on localStorage or system preference
         const isDarkMode =
             localStorage.theme === 'dark' ||
             (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
