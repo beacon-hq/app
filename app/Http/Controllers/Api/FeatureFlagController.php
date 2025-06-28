@@ -12,7 +12,6 @@ use App\Values\FeatureFlag;
 use App\Values\FeatureFlagContext;
 use App\Values\FeatureFlagResponse;
 use Bag\Attributes\WithoutValidation;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class FeatureFlagController extends Controller
@@ -29,15 +28,15 @@ class FeatureFlagController extends Controller
         FeatureFlagStatusService $featureFlagStatusService,
         Request $request
     ): FeatureFlagResponse {
-        $context = FeatureFlagContext::from(... $request->all());
-
         try {
+            $context = FeatureFlagContext::from(... $request->json()->all());
+
             $featureFlag = $featureFlagService->findByName($featureFlag->id);
 
             return $featureFlagStatusService->getStatus($featureFlag, $context);
-        } catch (ModelNotFoundException $e) {
+        } catch (\Throwable) {
             return FeatureFlagResponse::from(
-                featureFlag:  $featureFlag->name,
+                featureFlag:  $featureFlag->has('name') ? $featureFlag->name : $featureFlag->id,
                 value: null,
                 active: false,
             );
