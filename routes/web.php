@@ -135,20 +135,6 @@ Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
     Route::delete('invites/{invite}', [InviteController::class, 'destroy'])->name('invites.destroy');
     Route::post('invites/{invite}/resend', [InviteController::class, 'update'])->name('invites.resend');
 
-    Route::prefix('policies')->group(function () {
-        Route::get('/', [PolicyController::class, 'index'])
-            ->name('policies.index');
-
-        Route::get('/{policy}/edit', [PolicyController::class, 'edit'])
-            ->name('policies.edit');
-
-        Route::patch('/{policy}', [PolicyController::class, 'update'])
-            ->name('policies.update');
-
-        Route::put('/{policy}', [PolicyController::class, 'update'])
-            ->name('policies.update');
-    });
-
     Route::prefix('feature-flags')->group(function () {
         Route::get('/feature-flags/{feature_flag}/overview', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.overview');
         Route::get('/feature-flags/{feature_flag}/policy', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.policy');

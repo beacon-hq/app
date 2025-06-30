@@ -23,6 +23,7 @@ class HandleInertiaRequests extends Middleware
      * @var string
      */
     protected $rootView = 'app';
+
     public function __construct(protected TeamService $teamService, protected OrganizationService $organizationService)
     {
     }
@@ -37,7 +38,7 @@ class HandleInertiaRequests extends Middleware
         if (Auth::hasUser()) {
             return [
                 ...parent::share($request),
-                'alert' => fn () => $request->session()->get('alert'),
+                'alert' => fn () => $request->session()->pull('alert'),
                 'notifications' => fn () => $request->session()->get('notifications') ?? [],
                 'auth' => [
                     'user' => $request->user(),

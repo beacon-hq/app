@@ -1,5 +1,6 @@
 import { ActivityLogCollection, Color } from '@/Application';
 import { Avatar, AvatarFallback, AvatarImage } from '@/Components/ui/avatar';
+import { ObjectDiff } from '@/Components/ui/object-diff';
 import { TimelineLayout } from '@/Components/ui/timeline-layout';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/Components/ui/tooltip';
 import { localDate } from '@/lib/utils';
@@ -15,58 +16,29 @@ export default function ActivityLog({ log }: { log: ActivityLogCollection }) {
             color: entry.event === 'created' ? Color.GREEN : entry.event === 'updated' ? Color.BLUE : Color.RED,
             date: localDate(entry.created_at),
             description: entry.properties && (
-                <pre className="mt-2 bg-muted p-2 rounded text-xs overflow-x-auto">
-                    {Object.entries(entry.properties.attributes).map(function ([key, value]) {
+                <div
+                    key={entry.id}
+                    className="font-mono mt-2 bg-muted p-2 rounded text-xs overflow-x-auto whitespace-pre"
+                >
+                    {Object.entries(entry.properties.attributes).map(([key, value]) => {
                         if (key === 'old') {
-                            return;
+                            return null;
                         }
 
-                        if (
-                            entry.properties.old &&
-                            entry.properties.old[key] !== undefined &&
-                            entry.properties.old[key] === value
-                        ) {
-                            return;
+                        const oldValue = entry.properties.old?.[key];
+
+                        if (oldValue !== undefined && JSON.stringify(oldValue) === JSON.stringify(value)) {
+                            return null;
                         }
 
-                        let diff = (
-                            <span key={key} className="block text-green-600">
-                                ++ {key}: {typeof value === 'object' && JSON.stringify(value)}
-                                {typeof value === 'boolean' && value && 'true'}
-                                {typeof value === 'boolean' && !value && 'false'}
-                                {typeof value === 'string' && `${value}`}
-                            </span>
-                        );
-
-                        if (entry.properties.old && entry.properties.old[key] !== undefined) {
-                            diff = (
-                                <>
-                                    <span key={`old-${key}`} className="block text-red-600">
-                                        -- {key}:{' '}
-                                        {typeof entry.properties.old[key] === 'object' &&
-                                            JSON.stringify(entry.properties.old[key])}
-                                        {typeof entry.properties.old[key] === 'boolean' &&
-                                            entry.properties.old[key] &&
-                                            'true'}
-                                        {typeof entry.properties.old[key] === 'boolean' &&
-                                            !entry.properties.old[key] &&
-                                            'false'}
-                                        {typeof entry.properties.old[key] === 'string' &&
-                                            `${entry.properties.old[key]}`}
-                                    </span>
-                                    {diff}
-                                </>
-                            );
-                        }
-
-                        return diff;
+                        return <ObjectDiff key={key} keyName={key} oldValue={oldValue} newValue={value} />;
                     })}
-                </pre>
+                </div>
             ),
             id: entry.id,
-            title: entry.event,
+            title: entry.event + (entry.subject !== '' ? ' > ' + entry.subject : ''),
             icon: (
-                <TooltipProvider>
+                <TooltipProvider key={entry.id}>
                     <Tooltip delayDuration={0}>
                         <TooltipTrigger asChild>
                             <Avatar className="w-8 h-8">

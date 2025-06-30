@@ -1,4 +1,5 @@
 import { Badge } from '@/Components/ui/badge';
+import { Input } from '@/Components/ui/input';
 import { Textarea } from '@/Components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/Components/ui/tooltip';
 import { cn } from '@/lib/utils';
@@ -10,20 +11,34 @@ const MultiValueInput = ({
     id,
     setValues,
     values,
+    placeholder = 'Enter a new value',
     type = 'textarea',
+    className = '',
 }: {
     id: string;
     values: string[];
     setValues: (value: ((prevState: string[]) => string[]) | string[]) => void;
+    placeholder?: string;
     disabled?: boolean;
     type?: string;
+    className?: string;
 }) => {
     const [currentValue, setCurrentValue] = useState<string>('');
     const [currentValues, setCurrentValues] = useState<string[]>(values);
 
+    // Sync local state when the values prop changes from parent
     useEffect(() => {
-        setValues(currentValues);
-    }, [currentValues, setValues]);
+        if (JSON.stringify(values) !== JSON.stringify(currentValues)) {
+            setCurrentValues(values);
+        }
+    }, [values]);
+
+    useEffect(() => {
+        // Only call setValues if the values have actually changed
+        if (JSON.stringify(values) !== JSON.stringify(currentValues)) {
+            setValues(currentValues);
+        }
+    }, [currentValues, setValues, values]);
 
     const handleInput = (e: React.FormEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         e.preventDefault();
@@ -44,8 +59,8 @@ const MultiValueInput = ({
 
     const handleKeyUp = (e: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         e.preventDefault();
-        if (e.key === 'Enter' && e.shiftKey) {
-            let value = currentValue.substring(0, currentValue.length - 1);
+        if (e.key === 'Enter' && (e.shiftKey || type !== 'textarea')) {
+            let value = type === 'textarea' ? currentValue.substring(0, currentValue.length - 1) : currentValue;
             if (!currentValues.includes(value) && value !== '') {
                 setCurrentValues([...currentValues, value]);
                 setCurrentValue('');
@@ -62,7 +77,7 @@ const MultiValueInput = ({
     };
 
     const removeValue = (valueToRemove: string) => {
-        setCurrentValues(currentValues.filter(v => v !== valueToRemove));
+        setCurrentValues(currentValues.filter((v) => v !== valueToRemove));
     };
 
     return (
@@ -71,9 +86,9 @@ const MultiValueInput = ({
                 {type === 'textarea' && (
                     <Textarea
                         id={`value_${id}`}
-                        placeholder="Enter a new value"
+                        placeholder={placeholder}
                         autoComplete="off"
-                        className={cn('pr-10 min-h-0 h-9', {})}
+                        className={cn('pr-10 min-h-0 h-9', className)}
                         onInput={handleInput}
                         value={currentValue}
                         onChange={handleChange}
@@ -82,11 +97,11 @@ const MultiValueInput = ({
                     />
                 )}
                 {type !== 'textarea' && (
-                    <input
+                    <Input
                         id={`value_${id}`}
                         type={type}
-                        placeholder="Enter a new value"
-                        className={cn('pr-10 min-h-0 h-9', {})}
+                        placeholder={placeholder}
+                        className={cn('pr-10 min-h-0 h-9', className)}
                         onInput={handleInput}
                         value={currentValue}
                         onChange={handleChange}
@@ -97,10 +112,7 @@ const MultiValueInput = ({
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger>
-                            <PlusCircle
-                                className="-ml-8"
-                                onClick={addValue}
-                            />
+                            <PlusCircle className="-ml-8" onClick={addValue} />
                         </TooltipTrigger>
                         <TooltipContent>
                             <Info className="inline-block" /> Press <kbd>Shift</kbd> + <kbd>Enter</kbd> to add a new
@@ -112,11 +124,7 @@ const MultiValueInput = ({
             {currentValues.map((value) => (
                 <div key={value}>
                     {value.length <= 25 && (
-                        <Badge
-                            variant="default"
-                            className="cursor-pointer"
-                            onClick={() => removeValue(value)}
-                        >
+                        <Badge variant="default" className="cursor-pointer" onClick={() => removeValue(value)}>
                             <span className="truncate max-w-40">{value}</span>
                         </Badge>
                     )}

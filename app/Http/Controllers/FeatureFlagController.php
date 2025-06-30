@@ -11,10 +11,13 @@ use App\Services\FeatureTypeService;
 use App\Services\PolicyService;
 use App\Services\TagService;
 use App\Values\FeatureFlag;
+use App\Values\FeatureFlagStatus;
 use Bag\Attributes\WithoutValidation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -93,15 +96,24 @@ class FeatureFlagController extends Controller
     ): RedirectResponse {
         Gate::authorize('update', $featureFlag);
 
+        $statusAppEnv = $featureFlag->statuses->map(
+            fn (FeatureFlagStatus $status) =>
+            $status->application->id . '-' . $status->environment->id
+        );
+
+        try {
+            Validator::make(['statuses' => $statusAppEnv->toArray()], [
+                'statuses.*' => 'distinct',
+            ])->validate();
+        } catch (ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->validator)
+                ->withAlert('error', 'All statuses must have a unique combination of application and environment.');
+        }
+
         $featureFlagService->update($featureFlag);
 
         return redirect()->route('feature-flags.edit.overview', ['feature_flag' => $featureFlag->id])
-            ->with(
-                'alert',
-                [
-                    'message' => 'Feature flag updated successfully.',
-                    'status' => 'success',
-                ]
-            );
+            ->withAlert('success', 'Feature flag updated successfully.');
     }
 }

@@ -319,8 +319,6 @@ class MetricsRepository
             $data['projections'] = [ 'date' => $data['projections']['date'] ];
         }
 
-        dump($data);
-
         return $data;
     }
 

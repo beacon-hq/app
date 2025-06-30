@@ -6,6 +6,7 @@ import { Label } from '@/Components/ui/label';
 import { Tabs, TabsList, TabsTrigger } from '@/Components/ui/tabs';
 import { cn } from '@/lib/utils';
 import { Theme, useTheme } from '@/theme-provider';
+import { Auth } from '@/types';
 import { Link, router, useForm, usePage } from '@inertiajs/react';
 import { Monitor, Moon, Sun } from 'lucide-react';
 import { FormEventHandler, useRef } from 'react';
@@ -19,7 +20,7 @@ export default function UpdateProfileInformation({
     status?: string;
     className?: string;
 }) {
-    const user = usePage().props.auth.user;
+    const user = (usePage().props.auth as Auth).user;
 
     const file = useRef<HTMLInputElement>(null);
 

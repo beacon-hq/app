@@ -7,12 +7,13 @@ import {
     DropdownMenuTrigger,
 } from '@/Components/ui/dropdown-menu';
 import { chooseOrganization } from '@/lib/utils';
+import { Auth } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import React, { useState } from 'react';
 
 const OrganizationSelect = ({ organizations }: { organizations: OrganizationCollection }) => {
-    const auth = usePage().props.auth;
+    const auth = usePage().props.auth as Auth;
     const [selectedOrganization] = useState<Organization>(auth.currentTeam?.organization as Organization);
 
     if (organizations.length === 1) {
@@ -20,7 +21,8 @@ const OrganizationSelect = ({ organizations }: { organizations: OrganizationColl
     }
 
     const selectableOrganizations = organizations.filter(
-        (organization: Organization) => organization.id != selectedOrganization.id && organization.id != auth.currentTeam.organization?.id,
+        (organization: Organization) =>
+            organization.id != selectedOrganization.id && organization.id != auth.currentTeam.organization?.id,
     );
 
     if (selectableOrganizations.length === 0) {

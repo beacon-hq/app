@@ -86,7 +86,7 @@ interface TimelineItemProps extends Omit<HTMLMotionProps<'li'>, 'ref'> {
     /** Title of the timeline item */
     title?: string;
     /** Description text */
-    description?: string;
+    description?: string | React.ReactNode;
     /** Custom icon element */
     icon?: React.ReactNode;
     /** Color theme for the icon */

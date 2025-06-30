@@ -278,13 +278,21 @@ const HttpRequestBuilder = ({ status, featureFlagName, policies, definition }: H
 
         setCurlCommand(curlCmd);
 
-        let jsonPayload = JSON.stringify(filteredContext);
-
-        let httpieCmd = `echo '${jsonPayload}' | http POST "${window.location.origin}/api/features/${featureFlagName}"`;
+        let httpieCmd = `http POST "${window.location.origin}/api/features/${featureFlagName}"`;
 
         httpieCmd += ` Authorization:"Bearer ${apiKey ?? '<api key>'}"`;
 
         httpieCmd += ` Accept:application/json`;
+
+        if (Object.keys(filteredContext).length > 0) {
+            for (const [key, value] of Object.entries(filteredContext)) {
+                if (typeof value === 'object' && value !== null) {
+                    httpieCmd += ` ${key}:='${JSON.stringify(value)}'`;
+                } else {
+                    httpieCmd += ` ${key}="${value}"`;
+                }
+            }
+        }
 
         setHttpieCommand(httpieCmd);
     };

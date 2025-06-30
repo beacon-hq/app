@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Values;
 
+use App\Enums\RolloutStrategy;
+use App\Enums\VariantStrategy;
 use App\Models\FeatureFlagStatus as FeatureFlagStatusModel;
 use App\Values\Collections\FeatureFlagStatusCollection;
 use App\Values\Collections\PolicyDefinitionCollection;
@@ -20,6 +22,7 @@ use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
 use Bag\Values\Optional;
 use Cache;
+use Illuminate\Support\Collection as LaravelCollection;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
@@ -44,6 +47,12 @@ readonly class FeatureFlagStatus extends Bag
         public bool $status,
         #[Cast(CollectionOf::class, PolicyDefinition::class)]
         public Optional|PolicyDefinitionCollection $definition,
+        public ?RolloutStrategy $rolloutStrategy = null,
+        public ?int $rolloutPercentage = null,
+        public ?LaravelCollection $rolloutContext = null,
+        public ?LaravelCollection $variants = null,
+        public ?VariantStrategy $variantStrategy = null,
+        public ?LaravelCollection $variantContext = null,
     ) {
     }
 
@@ -56,6 +65,12 @@ readonly class FeatureFlagStatus extends Bag
             'environment' => Cache::driver('array')->rememberForever('environment:' . $featureFlagStatus->environment_id, fn () => $featureFlagStatus->environment),
             'status' => $featureFlagStatus->status,
             'definition' => $featureFlagStatus->definition,
+            'rolloutStrategy' => $featureFlagStatus->rollout_strategy,
+            'rolloutPercentage' => $featureFlagStatus->rollout_percentage,
+            'rolloutContext' => $featureFlagStatus->rollout_context,
+            'variants' => $featureFlagStatus->variants,
+            'variantStrategy' => $featureFlagStatus->variant_strategy,
+            'variantContext' => $featureFlagStatus->variant_context,
         ];
     }
 }

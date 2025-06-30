@@ -37,7 +37,7 @@ export default function Index({ tags }: PageProps & { tags: TagCollection }) {
     };
 
     return (
-        <Authenticated 
+        <Authenticated
             breadcrumbs={[{ name: 'Tags', icon: 'Tag' }]}
             headerAction={
                 <Button onClick={() => setShowSheet(true)}>

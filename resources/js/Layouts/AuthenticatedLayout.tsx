@@ -14,8 +14,8 @@ import { SidebarTrigger, SidebarWrapper, useSidebar } from '@/Components/ui/side
 import { Toaster } from '@/Components/ui/sonner';
 import { Gate } from '@/lib/permissions';
 import { usePage } from '@inertiajs/react';
-import React, { PropsWithChildren, useEffect, useState } from 'react';
-import { toast } from 'sonner';
+import React, { PropsWithChildren, useState } from 'react';
+import { useAlertHandler } from '@/hooks/use-alert-handler';
 
 export default function Authenticated({
     breadcrumbs,
@@ -30,20 +30,15 @@ export default function Authenticated({
     headerAction?: React.ReactNode;
 }>) {
     const auth = usePage().props.auth;
-    const alert = usePage<any>().props.alert;
-    usePage<any>().props.alert = null; // clear the alert after it's been handled
     // const notifications = usePage().props.notifications;
     const teams = usePage().props.teams;
     const organizations = usePage().props.organizations;
 
+    useAlertHandler();
+
     const { open } = useSidebar();
 
     const [createTeamOpen, setCreateTeamOpen] = useState<boolean>(false);
-
-    useEffect(() => {
-        // @ts-ignore
-        alert?.message ? toast(alert.message, { type: alert.status ?? 'info' }) : null;
-    }, [alert]);
 
     if (!breadcrumbs && header) {
         breadcrumbs = [{ name: header }];
@@ -57,7 +52,7 @@ export default function Authenticated({
             <Sidebar expanded={open} auth={auth} />
             <div className="flex flex-col w-full">
                 {(header || breadcrumbs) && (
-                    <div className="bg-background w-full sticky top-0 z-50 flex flex-row justify-between items-center pt-6 px-12">
+                    <div className="bg-background w-full sticky top-0 z-50 flex flex-row justify-between items-center py-4 px-12">
                         <div className="">
                             <SidebarTrigger />
                         </div>
@@ -75,7 +70,7 @@ export default function Authenticated({
                     </div>
                 )}
 
-                <header className="bg-background w-full px-12 pt-6 flex justify-between">
+                <header className="bg-background w-full px-12 pt-4 flex justify-between">
                     {breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} />}
                     {!breadcrumbs && (
                         <h1 className="inline-block text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
@@ -107,7 +102,7 @@ export default function Authenticated({
                 </DialogContent>
             </Dialog>
 
-            {alert && <Toaster richColors closeButton />}
+            <Toaster richColors closeButton />
         </SidebarWrapper>
     );
 }

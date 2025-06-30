@@ -7,6 +7,8 @@ namespace App\Repositories;
 use App\Enums\Boolean;
 use App\Enums\PolicyDefinitionMatchOperator;
 use App\Enums\PolicyDefinitionType;
+use App\Enums\RolloutStrategy;
+use App\Enums\VariantStrategy;
 use App\Models\FeatureFlag;
 use App\Models\FeatureFlagStatus;
 use App\Services\PolicyService;
@@ -17,6 +19,7 @@ use App\Values\PolicyDefinition;
 use Carbon\Carbon;
 use Illuminate\Support\Collection as LaravelCollection;
 use Illuminate\Support\Str;
+use lastguest\Murmur;
 
 class FeatureFlagStatusRepository
 {
@@ -32,12 +35,23 @@ class FeatureFlagStatusRepository
             ->whereFeatureFlag($featureFlag)
             ->firstOrFail();
 
-        // No application/environment policy
         if ($featureFlag->status === false || $status->status === false || ($status->definition?->count() ?? 0) === 0) {
             return FeatureFlagResponse::from(featureFlag: $featureFlag->name, value: null, active: $featureFlag->status && $status->status);
         }
 
-        return FeatureFlagResponse::from(featureFlag: $featureFlag->name, value: null, active: $this->evaluatePolicy($status, $context));
+        $active = $this->evaluatePolicy($status, $context);
+
+        if ($active && ($status->rollout_percentage ?? 100) < 100) {
+            $active = $this->evaluateRollout($status, $context);
+        }
+
+        if ($active) {
+            $value = $this->selectVariantValue($status, $context);
+
+            return FeatureFlagResponse::from(featureFlag: $featureFlag->name, value: $value, active: $active);
+        }
+
+        return FeatureFlagResponse::from(featureFlag: $featureFlag->name, value: null, active: $active);
     }
 
     protected function evaluateExpression(PolicyDefinition $policyDefinition, FeatureFlagContext $context): bool
@@ -181,9 +195,158 @@ class FeatureFlagStatusRepository
                 break;
             }
 
-            $result = $this->applyOperator($result, $nextValue, $operator->subject);
+            if ($nextValue !== null && \is_bool($nextValue)) {
+                $result = $this->applyOperator($result, $nextValue, $operator->subject);
+            }
         }
 
         return $result;
+    }
+
+    protected function evaluateRollout(FeatureFlagStatus $status, FeatureFlagContext $context): bool
+    {
+        $rolloutPercentage = $status->rollout_percentage ?? 100;
+
+        if ($rolloutPercentage >= 100) {
+            return true;
+        }
+
+        if ($rolloutPercentage <= 0) {
+            return false;
+        }
+
+        $rolloutStrategy = $status->rollout_strategy ?? RolloutStrategy::RANDOM;
+
+        if ($rolloutStrategy === RolloutStrategy::RANDOM) {
+            return $this->evaluateRandomRollout($rolloutPercentage);
+        }
+
+        if ($rolloutStrategy === RolloutStrategy::CONTEXT) {
+            return $this->evaluateStickyRollout($status, $context, $rolloutPercentage);
+        }
+
+        return false;
+    }
+
+    protected function evaluateRandomRollout(int $rolloutPercentage): bool
+    {
+        return \random_int(1, 100) <= $rolloutPercentage;
+    }
+
+    protected function evaluateStickyRollout(FeatureFlagStatus $status, FeatureFlagContext $context, int $rolloutPercentage): bool
+    {
+        $rolloutContext = $status->rollout_context ?? [];
+
+        if (empty($rolloutContext)) {
+            return $this->evaluateRandomRollout($rolloutPercentage);
+        }
+
+        $contextValues = [];
+
+        foreach ($rolloutContext as $contextKey) {
+            $value = \data_get($context, $contextKey) ?? \data_get($context->scope, $contextKey);
+            if ($value !== null) {
+                $contextValues[] = (string) $value;
+            }
+        }
+
+        if (empty($contextValues)) {
+            return $this->evaluateRandomRollout($rolloutPercentage);
+        }
+
+        $concatenatedValues = \implode('|', $contextValues);
+        $normalizedHash = Murmur::hash3_int($concatenatedValues) % 100 + 1;
+
+        return $normalizedHash <= $rolloutPercentage;
+    }
+
+    protected function selectVariantValue(FeatureFlagStatus $status, FeatureFlagContext $context): mixed
+    {
+        $variants = $status->variants ?? [];
+
+        if (empty($variants)) {
+            return null;
+        }
+
+        $variantStrategy = $status->variant_strategy ?? VariantStrategy::RANDOM;
+
+        if ($variantStrategy === VariantStrategy::CONTEXT) {
+            return $this->selectStickyVariantValue($status, $context, $variants);
+        }
+
+        return $this->selectRandomVariantValue($variants);
+    }
+
+    protected function selectStickyVariantValue(FeatureFlagStatus $status, FeatureFlagContext $context, array $variants): mixed
+    {
+        $variantContext = $status->variant_context ?? [];
+
+        if (empty($variantContext)) {
+            return $this->selectRandomVariantValue($variants);
+        }
+
+        $contextValues = [];
+        foreach ($variantContext as $contextKey) {
+            $value = \data_get($context, $contextKey) ?? \data_get($context->scope, $contextKey);
+            if ($value !== null) {
+                $contextValues[] = (string) $value;
+            }
+        }
+
+        if (empty($contextValues)) {
+            return $this->selectRandomVariantValue($variants);
+        }
+
+        $totalPercentage = array_sum(array_column($variants, 'percentage'));
+        if ($totalPercentage <= 0) {
+            return null;
+        }
+
+        $concatenatedValues = \implode('|', $contextValues);
+        $hash = Murmur::hash3_int($concatenatedValues);
+
+        $normalizedHash = ($hash % $totalPercentage) + 1;
+
+        $cumulativePercentage = 0;
+        foreach ($variants as $variant) {
+            $cumulativePercentage += $variant['percentage'];
+            if ($normalizedHash <= $cumulativePercentage) {
+                return $this->convertVariantValue($variant['value'], $variant['type']);
+            }
+        }
+
+        return $this->convertVariantValue($variants[0]['value'], $variants[0]['type']);
+    }
+
+    protected function selectRandomVariantValue(array $variants): mixed
+    {
+        $totalPercentage = array_sum(array_column($variants, 'percentage'));
+
+        if ($totalPercentage <= 0) {
+            return null;
+        }
+
+        $random = random_int(1, max(100, $totalPercentage));
+
+        $cumulativePercentage = 0;
+        foreach ($variants as $variant) {
+            $cumulativePercentage += $variant['percentage'];
+            if ($random <= $cumulativePercentage) {
+                return $this->convertVariantValue($variant['value'], $variant['type']);
+            }
+        }
+
+        return $this->convertVariantValue($variants[0]['value'], $variants[0]['type']);
+    }
+
+    protected function convertVariantValue(string $value, string $type): mixed
+    {
+        return match ($type) {
+            'integer' => (int) $value,
+            'float' => (float) $value,
+            'json' => json_decode($value, true),
+            'string' => $value,
+            default => $value,
+        };
     }
 }

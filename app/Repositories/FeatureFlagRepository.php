@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Models\Activity;
 use App\Models\FeatureFlag;
 use App\Models\FeatureFlagStatus;
 use App\Services\ApplicationService;
@@ -62,12 +63,34 @@ class FeatureFlagRepository
 
     public function find(string $id): FeatureFlag
     {
-        return FeatureFlag::with(['tags', 'statuses'])->where('id', $id)->firstOrFail();
+        return FeatureFlag::with([
+            'tags',
+            'statuses' => function ($query) {
+                $query->join('applications', 'feature_flag_statuses.application_id', '=', 'applications.id')
+                    ->join('environments', 'feature_flag_statuses.environment_id', '=', 'environments.id')
+                    ->orderBy('applications.name')
+                    ->orderBy('environments.name')
+                    ->select('feature_flag_statuses.*');
+            },
+            'statuses.application',
+            'statuses.environment'
+        ])->where('id', $id)->firstOrFail();
     }
 
     public function findByName(string $name): FeatureFlag
     {
-        return FeatureFlag::with(['tags', 'statuses'])->where('name', $name)->firstOrFail();
+        return FeatureFlag::with([
+            'tags',
+            'statuses' => function ($query) {
+                $query->join('applications', 'feature_flag_statuses.application_id', '=', 'applications.id')
+                    ->join('environments', 'feature_flag_statuses.environment_id', '=', 'environments.id')
+                    ->orderBy('applications.name')
+                    ->orderBy('environments.name')
+                    ->select('feature_flag_statuses.*');
+            },
+            'statuses.application',
+            'statuses.environment'
+        ])->where('name', $name)->firstOrFail();
     }
 
     public function update(FeatureFlagValue $featureFlag): FeatureFlag
@@ -99,6 +122,12 @@ class FeatureFlagRepository
                     'feature_flag_id' => $featureFlag->id,
                     'status' => $status->status,
                     'definition' => $status->definition,
+                    'rollout_percentage' => $status->rolloutPercentage,
+                    'rollout_context' => $status->rolloutContext,
+                    'rollout_strategy' => $status->rolloutStrategy,
+                    'variants' => $status->variants,
+                    'variant_strategy' => $status->variantStrategy,
+                    'variant_context' => $status->variantContext,
                 ]);
             });
 
@@ -117,10 +146,23 @@ class FeatureFlagRepository
 
     public function activityLog(string $id): Collection
     {
-        return FeatureFlag::findOrFail($id)
+        $featureFlag = FeatureFlag::findOrFail($id);
+
+        $featureFlagActivities = $featureFlag
             ->activities()
-            ->orderBy('created_at', 'desc')
             ->get();
+
+        $featureFlagStatusActivities = Activity::query()
+            ->where('log_name', 'feature_flag_status')
+            ->whereHasMorph('subject', [FeatureFlagStatus::class], function ($query) use ($id) {
+                $query->where('feature_flag_id', $id);
+            })
+            ->get();
+
+        return $featureFlagActivities
+            ->merge($featureFlagStatusActivities)
+            ->sortByDesc('created_at')
+            ->values();
     }
 
     /**

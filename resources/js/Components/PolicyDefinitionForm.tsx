@@ -475,7 +475,6 @@ export function PolicyDefinitionForm({
                                                             },
                                                         );
                                                         setDefinitions(updatedDefinitions);
-                                                        setOpenDatePicker(false);
                                                     }}
                                                 />
                                                 <div className="inline-block -ml-16">
@@ -502,7 +501,6 @@ export function PolicyDefinitionForm({
                                                                 },
                                                             );
                                                             setDefinitions(updatedDefinitions);
-                                                            setOpenDatePicker(false);
                                                         }}
                                                     />
                                                 </div>

@@ -16,6 +16,7 @@ import { Badge } from '@/Components/ui/badge';
 import { DataTable, TableOptions } from '@/Components/ui/data-table';
 import { DataTableColumnHeader } from '@/Components/ui/data-table-column-header';
 import { cn } from '@/lib/utils';
+import { Auth } from '@/types';
 import { router, usePage } from '@inertiajs/react';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { Send, Trash, UserCog } from 'lucide-react';
@@ -36,7 +37,7 @@ export default function Table({
     onManage: (user: User) => void;
     tableOptions: TableOptions;
 }) {
-    const currentUser = usePage().props.auth.user;
+    const currentUser = (usePage().props.auth as Auth).user;
 
     const roleColors = {
         [Role.OWNER]: 'border-red-400 bg-red-200 hover:bg-red-300',

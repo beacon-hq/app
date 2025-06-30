@@ -21,6 +21,7 @@ use Bag\Mappers\SnakeCase;
 use Bag\Values\Optional;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection as Collection1;
+use Illuminate\Support\Facades\Auth;
 use Spatie\TypeScriptTransformer\Attributes\Hidden as HiddenFromTypeScript;
 use Spatie\TypeScriptTransformer\Attributes\LiteralTypeScriptType;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
@@ -72,7 +73,7 @@ readonly class User extends Bag
             'gravatar' => $user->gravatar,
             'theme' => $user->theme ?? 'system',
             'teams' => $user->relationLoaded('teams') ? $user->teams : null,
-            'roles' => collect($user->roles->pluck('name')->map(fn (string $role) => Role::tryFrom($role)?->value)),
+            'roles' => Auth::user() instanceof UserModel ? collect($user->roles->pluck('name')->map(fn (string $role) => Role::tryFrom($role)?->value)) : null,
             'emailVerifiedAt' => $user->email_verified_at,
             'status' => $user->status,
         ];

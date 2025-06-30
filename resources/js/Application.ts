@@ -12,6 +12,7 @@ export type ActivityLog = {
     event: string;
     properties: any;
     created_at: string;
+    subject: string;
 };
 export type ActivityLogCollection = ActivityLog[];
 export type Application = {
@@ -89,6 +90,12 @@ export type FeatureFlagStatus = {
     feature_flag: FeatureFlag | null;
     status: boolean;
     definition?: PolicyDefinitionCollection;
+    rollout_strategy: RolloutStrategy | null;
+    rollout_percentage: number | null;
+    rollout_context: any | null;
+    variants: any | null;
+    variant_strategy: VariantStrategy | null;
+    variant_context: any | null;
 };
 export type FeatureFlagStatusCollection = FeatureFlagStatus[];
 export type FeatureType = {
@@ -234,13 +241,16 @@ export enum Role {
     DEVELOPER = 'Developer',
     BILLER = 'Biller',
 }
+export enum RolloutStrategy {
+    CONTEXT = 'context',
+    RANDOM = 'random',
+}
 export type Subscription = {
     id: string;
     stripe_id: string;
     status: string;
     plan: Product;
     trial_ends_at: string | null;
-    trial_days_remaining: number | null;
     ends_at: string | null;
     created_at: string | null;
 };
@@ -282,4 +292,8 @@ export enum UserStatus {
     ACTIVE = 'active',
     INACTIVE = 'inactive',
     PENDING = 'pending',
+}
+export enum VariantStrategy {
+    RANDOM = 'random',
+    CONTEXT = 'context',
 }

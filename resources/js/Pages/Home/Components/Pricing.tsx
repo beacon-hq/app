@@ -1,4 +1,4 @@
-import { Product, ProductCollection } from '@/Application';
+import { ProductCollection, Subscription } from '@/Application';
 import ProductCard from '@/Components/ProductCard';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/Components/ui/accordion';
 import { Button } from '@/Components/ui/button';
@@ -11,7 +11,7 @@ export default function Pricing({
     activeSubscription,
 }: {
     products: ProductCollection;
-    activeSubscription?: Product;
+    activeSubscription?: Subscription;
 }) {
     const pricingRef = useRef<HTMLDivElement | null>(null);
     const prefersReducedMotion = useReducedMotion();

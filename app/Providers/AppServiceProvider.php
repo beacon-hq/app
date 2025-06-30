@@ -72,6 +72,7 @@ class AppServiceProvider extends ServiceProvider
             return $this->with('alert', [
                 'status' => $status,
                 'message' => $message,
+                'timestamp' => now()->getPreciseTimestamp(),
             ]);
         });
 

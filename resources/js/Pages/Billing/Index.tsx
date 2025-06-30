@@ -14,13 +14,14 @@ import {
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/Components/ui/chart';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/Components/ui/tooltip';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 import { PageProps } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import * as ProgressPrimitive from '@radix-ui/react-progress';
+import { Download } from 'lucide-react';
 import { DateTime } from 'luxon';
 import React from 'react';
 import { CartesianGrid, Label, Line, LineChart, ReferenceLine, XAxis, YAxis } from 'recharts';
@@ -142,7 +143,7 @@ export default function Index({
                         <Card className="w-1/3">
                             {subscriptionStatus.trialing && !subscriptionStatus.grace_period && (
                                 <div className="bg-green-600 text-secondary rounded-t-md text-sm text-center">
-                                    Trial Ends on {new Date(trialEnd).toLocaleDateString()}
+                                    Trial Ends on {new Date(trialEnd as string).toLocaleDateString()}
                                 </div>
                             )}
                             {subscriptionStatus.grace_period && (
@@ -370,16 +371,22 @@ export default function Index({
                                 <TableHead className="w-[200px]">Invoice</TableHead>
                                 <TableHead>Date</TableHead>
                                 <TableHead>Amount</TableHead>
-                                <TableHead className="text-right">Status</TableHead>
+                                <TableHead>Status</TableHead>
+                                <TableHead className="text-right"></TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {invoices.map((invoice: any) => (
-                                <TableRow>
+                                <TableRow key={invoice.id}>
                                     <TableCell className="font-medium">{invoice.number}</TableCell>
                                     <TableCell>{new Date(invoice.date).toLocaleDateString()}</TableCell>
                                     <TableCell>{invoice.total}</TableCell>
-                                    <TableCell className="text-right">{invoice.status}</TableCell>
+                                    <TableCell>{invoice.status}</TableCell>
+                                    <TableCell className="text-right">
+                                        <a href={route('billing.show', { billing: invoice.id })}>
+                                            <Download />
+                                        </a>
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

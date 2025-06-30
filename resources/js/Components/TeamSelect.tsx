@@ -8,12 +8,13 @@ import {
     DropdownMenuTrigger,
 } from '@/Components/ui/dropdown-menu';
 import { chooseTeam } from '@/lib/utils';
+import { Auth } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { Check, ChevronRight, ChevronsUpDown } from 'lucide-react';
 import React, { useState } from 'react';
 
 const TeamSelect = ({ teams }: { teams: TeamCollection }) => {
-    const auth = usePage().props.auth;
+    const auth = usePage().props.auth as Auth;
     const [selectedTeam] = useState<Team>(auth.currentTeam);
 
     const uniqueOrganizationCount = teams.reduce((acc, team) => {

@@ -1,9 +1,10 @@
 import { Permission } from '@/Application';
+import { Auth } from '@/types';
 import { usePage } from '@inertiajs/react';
 
 export class Gate {
     public static can(permission: Permission | string): boolean {
-        const auth = usePage().props.auth;
+        const auth = usePage().props.auth as Auth;
 
         if (!auth.user || !auth.permissions) {
             return false;
@@ -13,7 +14,7 @@ export class Gate {
     }
 
     public static canAny(permissions: Array<Permission | string>): boolean {
-        const auth = usePage().props.auth;
+        const auth = usePage().props.auth as Auth;
 
         if (!auth.user || !auth.permissions) {
             return false;
@@ -23,7 +24,7 @@ export class Gate {
     }
 
     public static canOnly(permissions: Array<Permission | string>): boolean {
-        const auth = usePage().props.auth;
+        const auth = usePage().props.auth as Auth;
 
         if (!auth.user || !auth.permissions) {
             return false;
@@ -33,7 +34,7 @@ export class Gate {
     }
 
     public static canAll(permissions: Array<Permission | string>): boolean {
-        const auth = usePage().props.auth;
+        const auth = usePage().props.auth as Auth;
 
         if (!auth.user || !auth.permissions) {
             return false;

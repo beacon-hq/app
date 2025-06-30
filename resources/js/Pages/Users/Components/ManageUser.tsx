@@ -8,6 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/Components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select';
 import { Switch } from '@/Components/ui/switch';
 import { cn } from '@/lib/utils';
+import { Auth } from '@/types';
 import { useForm, usePage } from '@inertiajs/react';
 import { Check, ChevronsUpDown, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
@@ -23,7 +24,7 @@ const ManageUser = ({
     open: boolean;
     onOpenChange: (open: boolean) => void;
 }) => {
-    const currentUser = usePage().props.auth.user;
+    const currentUser = (usePage().props.auth as Auth).user;
 
     const { data, setData, patch, post, processing, errors, reset } = useForm({
         role: user.roles?.[0] ?? Role.DEVELOPER,

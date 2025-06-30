@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\RolloutStrategy;
+use App\Enums\VariantStrategy;
 use App\Values\PolicyDefinition;
 use Bag\Bag;
 use Illuminate\Database\Eloquent\Builder;
@@ -13,10 +15,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
- *
- *
  * @property string $id
  * @property string $application_id
  * @property string $environment_id
@@ -49,6 +51,7 @@ class FeatureFlagStatus extends Model
 {
     use HasFactory;
     use HasUlids;
+    use LogsActivity;
 
     protected $fillable = [
         'application_id',
@@ -56,6 +59,12 @@ class FeatureFlagStatus extends Model
         'feature_flag_id',
         'definition',
         'status',
+        'rollout_percentage',
+        'rollout_strategy',
+        'rollout_context',
+        'variants',
+        'variant_strategy',
+        'variant_context',
     ];
 
     public function application(): BelongsTo
@@ -92,12 +101,37 @@ class FeatureFlagStatus extends Model
         return $query->whereHas('featureFlag', fn (Builder $query) => $query->where('id', $featureFlag->id));
     }
 
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('feature_flag_status')
+            ->logOnly([
+                'status',
+                'definition',
+                'rollout_percentage',
+                'rollout_strategy',
+                'rollout_context',
+                'variants',
+                'variant_strategy',
+                'variant_context',
+                'application.name',
+                'environment.name',
+            ])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
+
     protected function casts(): array
     {
         return [
             'id' => 'string',
             'status' => 'boolean',
             'definition' => PolicyDefinition::castAsCollection(),
+            'rollout_strategy' => RolloutStrategy::class,
+            'rollout_context' => 'array',
+            'variants' => 'array',
+            'variant_strategy' => VariantStrategy::class,
+            'variant_context' => 'array',
         ];
     }
 }

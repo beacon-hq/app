@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Values;
 
 use App\Models\Activity;
+use App\Models\FeatureFlag;
+use App\Models\FeatureFlagStatus;
 use App\Values\Collections\ActivityLogCollection;
 use App\Values\Factories\ActivityLogFactory;
 use Bag\Attributes\Collection;
@@ -33,6 +35,7 @@ readonly class ActivityLog extends Bag
         public string $event,
         public LaravelCollection $properties,
         public CarbonImmutable $createdAt,
+        public string $subject,
     ) {
     }
 
@@ -42,10 +45,20 @@ readonly class ActivityLog extends Bag
 
         return [
             'id' => $model->id,
-            'user' => $model->causer !== null ? User::from($model->causer) : dump(User::from(name: 'System', email: 'system@beacon-hq.dev', avatar: URL::asset('/images/system-avatar.svg'))),
+            'user' => $model->causer !== null ? User::from($model->causer) : User::from(name: 'System', email: 'system@beacon-hq.dev', avatar: URL::asset('/images/system-avatar.svg')),
             'event' => $model->event,
             'properties' => LaravelCollection::make($model->properties),
             'createdAt' => CarbonImmutable::parse($model->created_at),
+            'subject' => self::getSubject($model),
         ];
+    }
+
+    protected static function getSubject(Activity $model): string
+    {
+        return match ($model->subject_type) {
+            FeatureFlag::class => '',
+            FeatureFlagStatus::class => $model->subject->application->name . ' > ' . $model->subject->environment->name,
+            default => \class_basename($model->subject_type) . ': ' . ($model->subject->name ?? $model->subject->id),
+        };
     }
 }

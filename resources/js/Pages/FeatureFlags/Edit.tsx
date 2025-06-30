@@ -24,10 +24,10 @@ import ActivityLog from '@/Pages/FeatureFlags/Components/ActivityLog';
 import { Form } from '@/Pages/FeatureFlags/Components/Form';
 import StatusEditor from '@/Pages/FeatureFlags/Components/StatusEditor';
 import { cn, localDateTime } from '@/lib/utils';
+import { useFeatureFlagStore } from '@/stores/featureFlagStore';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { ChevronRight, CircleCheckBig, Info, PlusCircle, TriangleAlert } from 'lucide-react';
-import React, { FormEvent } from 'react';
-import { ulid } from 'ulidx';
+import React, { FormEvent, useEffect } from 'react';
 
 function StatusCard({
     status,
@@ -52,11 +52,11 @@ function StatusCard({
                     <div className="flex flex-row items-center gap-4">
                         <Badge
                             className={cn('w-16 text-center', {
-                                'bg-green-600 hover:bg-green-600': status,
-                                'bg-neutral-500 hover:bg-neutral-500': !status,
+                                'bg-green-600 hover:bg-green-600': status.status,
+                                'bg-neutral-500 hover:bg-neutral-500': !status.status,
                             })}
                         >
-                            {status ? 'Enabled' : 'Disabled'}
+                            {status.status ? 'Enabled' : 'Disabled'}
                         </Badge>
                         <HttpRequestBuilder
                             status={status}
@@ -88,11 +88,31 @@ export default function Edit({
     policies: PolicyCollection;
     log: ActivityLogCollection;
 }) {
+    // Initialize the feature flag store
+    const {
+        featureFlag: storeFeatureFlag,
+        setFeatureFlag,
+        addStatus: storeAddStatus,
+        updateStatus,
+        deleteStatus,
+    } = useFeatureFlagStore();
+
+    // Initialize store with data from props
+    useEffect(() => {
+        setFeatureFlag(featureFlag);
+    }, []);
+
+    // Sync form data with store changes
+    useEffect(() => {
+        setData(storeFeatureFlag as FeatureFlag);
+    }, [storeFeatureFlag]);
+
     function changeTab(routeName: string) {
-        return () =>
+        return function () {
             router.push({
                 url: route(routeName, { feature_flag: featureFlag.id }),
             });
+        };
     }
 
     const { data, setData, put, errors, processing } = useForm<FeatureFlag>({
@@ -110,73 +130,55 @@ export default function Edit({
 
     const submitFeatureFlag = (e: FormEvent) => {
         e.preventDefault();
-        put(route('feature-flags.update', { feature_flag: featureFlag.id as string }));
-        changeTab('feature-flags.edit.overview')();
-    };
-
-    const submitPolicy = (e: FormEvent) => {
-        e.preventDefault();
-
-        put(route('feature-flags.update', { feature_flag: featureFlag.id as string }));
-        changeTab('feature-flags.edit.overview')();
+        put(route('feature-flags.update', { feature_flag: featureFlag.id as string }), {
+            onSuccess: () => {
+                changeTab('feature-flags.edit.overview')();
+            },
+            onError: () => {
+                // router.get(route('feature-flags.edit.policy', { feature_flag: featureFlag.id as string }) as string);
+            },
+            preserveState: true,
+        });
     };
 
     const handleCancel = () => {
         router.get(route('applications.index'));
     };
 
+    // Use the store's addStatus action
     const addStatus = () => {
-        setData('statuses', [
-            ...(data.statuses ?? []),
-            {
-                definition: [],
-                application: null,
-                environment: null,
-                feature_flag: null,
-                status: false,
-                id: ulid(),
-            },
-        ]);
+        storeAddStatus();
     };
 
     let tab = 'overview';
 
-    if (route().current('feature-flags.edit')) {
-        tab = 'edit';
+    switch (true) {
+        case route().current('feature-flags.edit'):
+            tab = 'edit';
+            break;
+        case route().current('feature-flags.edit.policy'):
+            tab = 'policy';
+            if (!data.statuses?.length) {
+                addStatus();
+            }
+            break;
+        case route().current('feature-flags.edit.activity'):
+            tab = 'activity';
+            break;
     }
 
-    if (route().current('feature-flags.edit.policy')) {
-        tab = 'policy';
-
-        if (!data.statuses?.length) {
-            addStatus();
-        }
-    }
-
-    if (route().current('feature-flags.edit.activity')) {
-        tab = 'activity';
-    }
-
+    // Use the store's updateStatus action
     const onStatusChange = (status: FeatureFlagStatus) => {
-        const statuses = [
-            ...(data.statuses?.map(function (currentStatus) {
-                if (status?.id == currentStatus.id) {
-                    return status;
-                } else {
-                    return currentStatus;
-                }
-            }) ?? []),
-        ];
+        updateStatus(status);
 
-        if (statuses.length === 0) {
+        if ((storeFeatureFlag?.statuses?.length || 0) === 0) {
             addStatus();
         }
-
-        setData('statuses', statuses);
     };
 
+    // Use the store's deleteStatus action
     const onDelete = (status: FeatureFlagStatus) => {
-        setData('statuses', [...(data.statuses?.filter((currentStatus) => status?.id != currentStatus.id) ?? [])]);
+        deleteStatus(status.id as string);
     };
 
     return (
@@ -189,7 +191,7 @@ export default function Edit({
             <Head title="Feature Flag | Edit" />
             <div className="mt-6 w-full">
                 <div className="flex gap-4">
-                    <Tabs defaultValue={tab} className="w-full mx-auto rounded-lg">
+                    <Tabs value={tab} className="w-full mx-auto rounded-lg">
                         <TabsList className="flex w-full mx-auto">
                             <TabsTrigger
                                 value="overview"
@@ -356,7 +358,8 @@ export default function Edit({
                                     </Card>
                                 </TabsContent>
                                 <TabsContent value="policy" className="flex flex-col gap-4">
-                                    {data.statuses?.length === 0 && (
+                                    {/* Use the store's statuses instead of form data */}
+                                    {(storeFeatureFlag?.statuses?.length || 0) === 0 && (
                                         <StatusEditor
                                             featureFlag={featureFlag}
                                             applications={applications}
@@ -366,7 +369,7 @@ export default function Edit({
                                             onDelete={onDelete}
                                         />
                                     )}
-                                    {data.statuses?.map((status, index) => (
+                                    {(storeFeatureFlag?.statuses || []).map((status, index) => (
                                         <StatusEditor
                                             key={status.id}
                                             featureFlag={featureFlag}
@@ -388,7 +391,7 @@ export default function Edit({
                                             <PlusCircle className="inline-block" />
                                             Add Application
                                         </Button>
-                                        <Button type="button" onClick={submitPolicy} className="w-fit block">
+                                        <Button type="button" onClick={submitFeatureFlag} className="w-fit block">
                                             Save
                                         </Button>
                                     </div>

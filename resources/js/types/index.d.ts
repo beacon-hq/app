@@ -1,11 +1,13 @@
 import { OrganizationCollection, Permission, Team, TeamCollection, User } from '@/Application';
 
+type Auth = {
+    user: User;
+    currentTeam: Team;
+    permissions: Permission[];
+};
+
 export interface AuthProp {
-    auth?: {
-        user: User;
-        currentTeam: Team;
-        permissions: Permission[];
-    };
+    auth?: Auth;
 }
 
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T &
@@ -16,4 +18,8 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
         features: {
             'pricing.enabled': boolean;
         };
+        alert?: {
+            message: string;
+            status?: 'success' | 'error' | 'info' | 'warning';
+        } | null;
     };

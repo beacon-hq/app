@@ -56,7 +56,7 @@ class SubscriptionBillingService
         return $this->subscriptionBillingRepository->changeSubscription($organization, $product->id);
     }
 
-    public function reportUsage(string $id, Organization $organization, int $quantity = 1, \DateTimeInterface $timestamp = null): bool
+    public function reportUsage(string $id, Organization $organization, int $quantity = 1, ?\DateTimeInterface $timestamp = null): bool
     {
         try {
             // Skip if billing is not enabled

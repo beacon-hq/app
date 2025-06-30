@@ -21,7 +21,6 @@ use Bag\Casts\CollectionOf;
 use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
 use Bag\Values\Optional;
-use Cache;
 use Illuminate\Support\Carbon;
 use Spatie\TypeScriptTransformer\Attributes\Hidden as HiddenFromTypeScript;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
@@ -68,7 +67,7 @@ readonly class FeatureFlag extends Bag
             'last_seen_at' => $featureFlag->last_seen_at,
             'feature_type' => FeatureType::from($featureFlag->featureType),
             'tags' => Tag::collect($featureFlag->tags),
-            'statuses' => Cache::driver('array')->rememberForever('feature-flag-statuses:' . $featureFlag->id, fn () => FeatureFlagStatus::collect($featureFlag->statuses)),
+            'statuses' => FeatureFlagStatus::collect($featureFlag->statuses),
             'created_at' => $featureFlag->created_at,
             'updated_at' => $featureFlag->updated_at,
             'status' => $featureFlag->status ?? false,

@@ -16,7 +16,6 @@ import { cn } from '@/lib/utils';
 import React from 'react';
 
 function ProductCard(props: { product: Product; activeSubscription?: Subscription; onClick: () => void }) {
-    console.log(props.activeSubscription);
     return (
         <Card
             className={cn(
