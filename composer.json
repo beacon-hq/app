@@ -39,7 +39,7 @@
         "pestphp/pest-plugin-faker": "^2.0|^3.0",
         "pestphp/pest-plugin-laravel": "^3.0",
         "pestphp/pest-plugin-type-coverage": "^2.0|^3.0",
-        "phpstan/phpstan": "2.1.6"
+        "phpstan/phpstan": "2.1.18"
     },
     "autoload": {
         "psr-4": {
