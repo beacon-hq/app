@@ -19,7 +19,8 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Separator } from '@/Components/ui/separator';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/Components/ui/tooltip';
 import { cn, containsPolicy } from '@/lib/utils';
-import { FormErrors } from '@/types/global';
+import { useFeatureFlagStore } from '@/stores/featureFlagStore';
+import { usePolicyStore } from '@/stores/policyStore';
 import { arrayMove } from '@dnd-kit/sortable';
 import {
     ChevronDownIcon,
@@ -32,7 +33,7 @@ import {
     TriangleAlert,
 } from 'lucide-react';
 import { DateTime } from 'luxon';
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { forwardRef, useState } from 'react';
 import SortableList, { SortableItem, SortableKnob } from 'react-easy-sort';
 
 const singleValueOperators = [
@@ -99,37 +100,64 @@ function DateTimePicker(props: {
 }
 
 export function PolicyDefinitionForm({
-    data,
-    setData,
-    errors,
-    processing,
+    status,
     policies,
+    ...props
 }: {
-    data: Policy | FeatureFlagStatus;
-    setData: (key: keyof Policy, value: any) => void;
-    errors: FormErrors;
-    processing: any;
+    status?: FeatureFlagStatus;
+    policy?: Policy;
     policies?: PolicyCollection;
 }) {
-    const [definitions, setDefinitions] = useState<PolicyDefinitionCollection>([
-        ...(data.definition === undefined || data.definition.length === 0
-            ? [{ type: 'expression', subject: '', operator: '', values: [] }]
-            : data.definition),
-    ] as PolicyDefinitionCollection);
+    const { updateStatus, addStatusPolicyDefinition } = useFeatureFlagStore();
+    const { policy, updatePolicy, addPolicyDefinition } = usePolicyStore();
 
-    useEffect(() => {
-        setData('definition', definitions);
-    }, [definitions]);
+    function getDefinitions() {
+        return status?.definition ?? policy?.definition ?? [];
+    }
 
     const onSortEnd = (oldIndex: number, newIndex: number) => {
-        setDefinitions(arrayMove(definitions, oldIndex, newIndex));
+        const definitions = getDefinitions();
+        const newOrder = arrayMove(definitions, oldIndex, newIndex);
+
+        if (status !== null) {
+            updateStatus({
+                ...status,
+                definition: newOrder as PolicyDefinitionCollection,
+            } as FeatureFlagStatus);
+        }
+
+        if (policy !== null) {
+            updatePolicy({
+                ...policy,
+                definition: newOrder as PolicyDefinitionCollection,
+            });
+        }
     };
 
-    const handleAddNew = () => {
-        return setDefinitions([
-            ...definitions,
-            { type: 'expression', subject: '', operator: '', values: [] },
-        ] as PolicyDefinitionCollection);
+    const addNewPolicyDefinition = () => {
+        if (status !== null) {
+            addStatusPolicyDefinition(status?.id as string);
+        }
+
+        if (policy !== null) {
+            addPolicyDefinition();
+        }
+    };
+
+    const updatePolicyDefinitions = (definitions: PolicyDefinitionCollection) => {
+        if (status !== null) {
+            updateStatus({
+                ...status,
+                definition: definitions,
+            } as FeatureFlagStatus);
+        }
+
+        if (policy !== null) {
+            updatePolicy({
+                ...policy,
+                definition: definitions,
+            });
+        }
     };
 
     return (
@@ -148,7 +176,7 @@ export function PolicyDefinitionForm({
                 </HoverCardContent>
             </HoverCard>
             <SortableList onSortEnd={onSortEnd} className="list" draggedItemClassName="dragged" lockAxis="y">
-                {definitions.map((definition: PolicyDefinition, id: number) => (
+                {getDefinitions().map((definition: PolicyDefinition, id: number) => (
                     <SortableItem key={id}>
                         <div
                             className={cn('bg-background w-full mb-2 pt-2', {
@@ -177,7 +205,7 @@ export function PolicyDefinitionForm({
                                     <Select
                                         value={definition.type}
                                         onValueChange={(value) => {
-                                            let updatedDefinitions = definitions.map(
+                                            let updatedDefinitions = getDefinitions().map(
                                                 (item: PolicyDefinition, index: number) => {
                                                     if (index === id) {
                                                         return { ...item, subject: '', type: value };
@@ -185,7 +213,9 @@ export function PolicyDefinitionForm({
                                                     return item;
                                                 },
                                             );
-                                            return setDefinitions(updatedDefinitions as PolicyDefinitionCollection);
+                                            return updatePolicyDefinitions(
+                                                updatedDefinitions as PolicyDefinitionCollection,
+                                            );
                                         }}
                                     >
                                         <SelectTrigger id={`type_${id}`}>
@@ -193,10 +223,12 @@ export function PolicyDefinitionForm({
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectGroup>
-                                                <SelectItem value="expression">Expression</SelectItem>
-                                                <SelectItem value="policy">Policy</SelectItem>
-                                                <SelectItem value="datetime">Date/Time</SelectItem>
-                                                <SelectItem value="operator">Operator</SelectItem>
+                                                <SelectItem value={PolicyDefinitionType.EXPRESSION}>
+                                                    Expression
+                                                </SelectItem>
+                                                <SelectItem value={PolicyDefinitionType.POLICY}>Policy</SelectItem>
+                                                <SelectItem value={PolicyDefinitionType.DATETIME}>Date/Time</SelectItem>
+                                                <SelectItem value={PolicyDefinitionType.OPERATOR}>Operator</SelectItem>
                                             </SelectGroup>
                                         </SelectContent>
                                     </Select>
@@ -216,7 +248,7 @@ export function PolicyDefinitionForm({
                                                         autoComplete="off"
                                                         placeholder="Context property"
                                                         onChange={function (e) {
-                                                            let updatedDefinitions = definitions.map(
+                                                            let updatedDefinitions = getDefinitions().map(
                                                                 (item: PolicyDefinition, index: number) => {
                                                                     if (index === id) {
                                                                         return {
@@ -227,7 +259,7 @@ export function PolicyDefinitionForm({
                                                                     return item;
                                                                 },
                                                             );
-                                                            return setDefinitions(
+                                                            return updatePolicyDefinitions(
                                                                 updatedDefinitions as PolicyDefinitionCollection,
                                                             );
                                                         }}
@@ -242,7 +274,7 @@ export function PolicyDefinitionForm({
                                                     name={`operator_${id}`}
                                                     value={definition.operator as string}
                                                     onValueChange={(value) => {
-                                                        let updatedDefinitions = definitions.map(
+                                                        let updatedDefinitions = getDefinitions().map(
                                                             (item: PolicyDefinition, index: number) => {
                                                                 if (index === id) {
                                                                     return { ...item, operator: value };
@@ -250,7 +282,7 @@ export function PolicyDefinitionForm({
                                                                 return item;
                                                             },
                                                         );
-                                                        return setDefinitions(
+                                                        return updatePolicyDefinitions(
                                                             updatedDefinitions as PolicyDefinitionCollection,
                                                         );
                                                     }}
@@ -284,7 +316,7 @@ export function PolicyDefinitionForm({
                                                 name={`subject_${id}`}
                                                 value={definition.subject}
                                                 onValueChange={(value) => {
-                                                    let updatedDefinitions = definitions.map(
+                                                    let updatedDefinitions = getDefinitions().map(
                                                         (item: PolicyDefinition, index: number) => {
                                                             if (index === id) {
                                                                 return { ...item, subject: value };
@@ -292,7 +324,7 @@ export function PolicyDefinitionForm({
                                                             return item;
                                                         },
                                                     );
-                                                    return setDefinitions(updatedDefinitions);
+                                                    return updatePolicyDefinitions(updatedDefinitions);
                                                 }}
                                             >
                                                 <SelectTrigger>
@@ -301,26 +333,37 @@ export function PolicyDefinitionForm({
                                                 <SelectContent>
                                                     <SelectGroup>
                                                         {policies
-                                                            ?.filter((policy: Policy) => policy.id != data.id)
-                                                            .map(function (policy: Policy) {
-                                                                const disabled = containsPolicy(policy, data, policies);
+                                                            ?.filter(function (p: Policy) {
+                                                                return (
+                                                                    policy === null ||
+                                                                    ('id' in policy && p.id != policy.id)
+                                                                );
+                                                            })
+                                                            .map(function (p: Policy) {
+                                                                const disabled =
+                                                                    policy !== null && 'id' in policy
+                                                                        ? containsPolicy(p, policy as Policy, policies)
+                                                                        : false;
                                                                 return (
                                                                     <SelectItem
-                                                                        key={`${id}-${policy.id}`}
-                                                                        value={policy.id as string}
+                                                                        key={`${id}-${p.id}`}
+                                                                        value={p.id as string}
                                                                         disabled={disabled}
                                                                     >
                                                                         <div className="w-full flex flex-row items-center justify-between">
                                                                             {disabled ? (
                                                                                 <Infinity className="inline-block text-red-700 mr-2" />
                                                                             ) : null}
-                                                                            {policy.name}
+                                                                            {p.name}
                                                                         </div>
                                                                     </SelectItem>
                                                                 );
                                                             })}
-                                                        {policies?.filter((policy: Policy) => policy.id != data.id)
-                                                            .length === 0 && (
+                                                        {policies?.filter(
+                                                            (p: Policy) =>
+                                                                policy === null ||
+                                                                ('id' in policy && p.id != policy.id),
+                                                        ).length === 0 && (
                                                             <SelectItem value="none" disabled>
                                                                 No policies found.
                                                             </SelectItem>
@@ -340,7 +383,7 @@ export function PolicyDefinitionForm({
                                                     name={`operator_${id}`}
                                                     value={definition.operator as string}
                                                     onValueChange={(value) => {
-                                                        let updatedDefinitions = definitions.map(
+                                                        let updatedDefinitions = getDefinitions().map(
                                                             (item: PolicyDefinition, index: number) => {
                                                                 if (index === id) {
                                                                     return { ...item, operator: value };
@@ -348,7 +391,7 @@ export function PolicyDefinitionForm({
                                                                 return item;
                                                             },
                                                         );
-                                                        return setDefinitions(
+                                                        return updatePolicyDefinitions(
                                                             updatedDefinitions as PolicyDefinitionCollection,
                                                         );
                                                     }}
@@ -380,7 +423,7 @@ export function PolicyDefinitionForm({
                                                 <DateTimePicker
                                                     definition={definition}
                                                     onSelect={(date: Date | undefined) => {
-                                                        let updatedDefinitions = definitions.map(
+                                                        let updatedDefinitions = getDefinitions().map(
                                                             (item: PolicyDefinition, index: number) => {
                                                                 let dateTime = date?.toISOString().split('T')[0];
 
@@ -402,10 +445,10 @@ export function PolicyDefinitionForm({
                                                                 return item;
                                                             },
                                                         );
-                                                        setDefinitions(updatedDefinitions);
+                                                        updatePolicyDefinitions(updatedDefinitions);
                                                     }}
                                                     onClear={function () {
-                                                        let updatedDefinitions = definitions.map(
+                                                        let updatedDefinitions = getDefinitions().map(
                                                             (item: PolicyDefinition, index: number) => {
                                                                 let dateTime = item.subject;
                                                                 if (dateTime.includes('T')) {
@@ -423,7 +466,7 @@ export function PolicyDefinitionForm({
                                                                 return item;
                                                             },
                                                         );
-                                                        setDefinitions(updatedDefinitions);
+                                                        updatePolicyDefinitions(updatedDefinitions);
                                                     }}
                                                 />
                                             </div>
@@ -448,7 +491,7 @@ export function PolicyDefinitionForm({
                                                     }
                                                     className="h-9 w-fit rounded-md border border-input bg-transparent px-3 py-1 text-primary shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-0 focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50 md:text-sm pr-16"
                                                     onChange={(e) => {
-                                                        let updatedDefinitions = definitions.map(
+                                                        let updatedDefinitions = getDefinitions().map(
                                                             (item: PolicyDefinition, index: number) => {
                                                                 let dateTime = item.subject;
                                                                 if (dateTime.includes('T')) {
@@ -474,7 +517,7 @@ export function PolicyDefinitionForm({
                                                                 return item;
                                                             },
                                                         );
-                                                        setDefinitions(updatedDefinitions);
+                                                        updatePolicyDefinitions(updatedDefinitions);
                                                     }}
                                                 />
                                                 <div className="inline-block -ml-16">
@@ -482,7 +525,7 @@ export function PolicyDefinitionForm({
                                                     <CircleX
                                                         className="inline-block"
                                                         onClick={function () {
-                                                            let updatedDefinitions = definitions.map(
+                                                            let updatedDefinitions = getDefinitions().map(
                                                                 (item: PolicyDefinition, index: number) => {
                                                                     let dateTime = item.subject;
                                                                     if (dateTime.includes('T')) {
@@ -500,7 +543,7 @@ export function PolicyDefinitionForm({
                                                                     return item;
                                                                 },
                                                             );
-                                                            setDefinitions(updatedDefinitions);
+                                                            updatePolicyDefinitions(updatedDefinitions);
                                                         }}
                                                     />
                                                 </div>
@@ -516,7 +559,7 @@ export function PolicyDefinitionForm({
                                                 name={`subject_${id}`}
                                                 value={definition.subject}
                                                 onValueChange={(value) => {
-                                                    let updatedDefinitions = definitions.map(
+                                                    let updatedDefinitions = getDefinitions().map(
                                                         (item: PolicyDefinition, index: number) => {
                                                             if (index === id) {
                                                                 return { ...item, subject: value };
@@ -524,7 +567,7 @@ export function PolicyDefinitionForm({
                                                             return item;
                                                         },
                                                     );
-                                                    return setDefinitions(
+                                                    return updatePolicyDefinitions(
                                                         updatedDefinitions as PolicyDefinitionCollection,
                                                     );
                                                 }}
@@ -554,7 +597,7 @@ export function PolicyDefinitionForm({
                                             key={`policy_value_editor_${id}`}
                                             value={definition.values ?? null}
                                             setValue={(values) => {
-                                                let updatedDefinitions = definitions.map(
+                                                let updatedDefinitions = getDefinitions().map(
                                                     (item: PolicyDefinition, index: number) => {
                                                         if (index === id) {
                                                             return { ...item, values };
@@ -562,7 +605,9 @@ export function PolicyDefinitionForm({
                                                         return item;
                                                     },
                                                 );
-                                                return setDefinitions(updatedDefinitions as PolicyDefinitionCollection);
+                                                return updatePolicyDefinitions(
+                                                    updatedDefinitions as PolicyDefinitionCollection,
+                                                );
                                             }}
                                             allowMultiple={
                                                 !definition.operator
@@ -577,36 +622,38 @@ export function PolicyDefinitionForm({
                                     <SortableKnob>
                                         <SortableThumb
                                             className={cn({
-                                                'text-primary/20 cursor-not-allowed': definitions.length === 1,
-                                                'cursor-move': definitions.length > 1,
+                                                'text-primary/20 cursor-not-allowed': getDefinitions().length === 1,
+                                                'cursor-move': getDefinitions().length > 1,
                                             })}
                                         />
                                     </SortableKnob>
                                     <Trash
                                         className={cn({
-                                            'text-primary/20 cursor-not-allowed': definitions.length === 1,
-                                            'cursor-pointer': definitions.length > 1,
+                                            'text-primary/20 cursor-not-allowed': getDefinitions().length === 1,
+                                            'cursor-pointer': getDefinitions().length > 1,
                                         })}
                                         onClick={() => {
-                                            if (definitions.length === 1) {
+                                            if (getDefinitions().length === 1) {
                                                 return;
                                             }
 
-                                            let updatedDefinitions = definitions.filter(
+                                            let updatedDefinitions = getDefinitions().filter(
                                                 (item: PolicyDefinition, index: number) => index !== id,
                                             );
-                                            return setDefinitions(updatedDefinitions as PolicyDefinitionCollection);
+                                            return updatePolicyDefinitions(
+                                                updatedDefinitions as PolicyDefinitionCollection,
+                                            );
                                         }}
                                     />
                                 </div>
                             </div>
-                            {id < definitions.length - 1 && <Separator className="mt-2" />}
+                            {id < getDefinitions().length - 1 && <Separator className="mt-2" />}
                         </div>
                     </SortableItem>
                 ))}
             </SortableList>
             <div className="flex justify-center">
-                <Button type="button" onClick={handleAddNew} variant="outline">
+                <Button type="button" onClick={addNewPolicyDefinition} variant="outline">
                     <PlusCircle /> Add
                 </Button>
             </div>

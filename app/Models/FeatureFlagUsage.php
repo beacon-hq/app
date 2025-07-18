@@ -6,12 +6,14 @@ namespace App\Models;
 
 use App\Models\Traits\BelongsToTeam;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class FeatureFlagUsage extends Model
 {
     use BelongsToTeam;
+    use HasFactory;
     use HasUlids;
 
     /**
@@ -24,8 +26,11 @@ class FeatureFlagUsage extends Model
      */
     protected $fillable = [
         'feature_flag_id',
+        'feature_flag_name',
         'application_id',
+        'application_name',
         'environment_id',
+        'environment_name',
         'active',
         'value',
         'context',

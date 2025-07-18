@@ -28,6 +28,34 @@ export default function Table({ featureTypes }: { featureTypes: FeatureTypeColle
                 );
             },
         }) as ColumnDef<FeatureType>,
+        columnHelper.accessor('is_default', {
+            id: 'default',
+            header: ({ column }) => <DataTableColumnHeader column={column} title="Default" />,
+            enableSorting: false,
+            cell: ({ cell }) => (
+                <div className="flex items-center">
+                    {cell.getValue() ? (
+                        <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+                            Default
+                        </span>
+                    ) : null}
+                </div>
+            ),
+        }) as ColumnDef<FeatureType>,
+        columnHelper.accessor('temporary', {
+            id: 'temporary',
+            header: ({ column }) => <DataTableColumnHeader column={column} title="Temporary" />,
+            enableSorting: false,
+            cell: ({ cell }) => (
+                <div className="flex items-center">
+                    {cell.getValue() ? (
+                        <span className="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">
+                            Temporary
+                        </span>
+                    ) : null}
+                </div>
+            ),
+        }) as ColumnDef<FeatureType>,
         columnHelper.accessor('created_at', {
             id: 'Created',
             header: ({ column }) => <DataTableColumnHeader column={column} title="Created" />,
@@ -44,10 +72,20 @@ export default function Table({ featureTypes }: { featureTypes: FeatureTypeColle
             id: 'tools',
             cell: function ({ row }) {
                 return (
-                    <div className="flex">
+                    <div className="flex space-x-2">
                         <Link href={route('feature-types.edit', { feature_type: row.original.id as string })}>
-                            <Pencil className="h-6 w-6" />
+                            <Pencil className="h-4 w-4" />
                         </Link>
+                        {!row.original.is_default && (
+                            <Link
+                                href={route('feature-types.set-default', { feature_type: row.original.id as string })}
+                                method="patch"
+                                as="button"
+                                className="text-blue-600 hover:text-blue-800 text-sm"
+                            >
+                                Set Default
+                            </Link>
+                        )}
                     </div>
                 );
             },

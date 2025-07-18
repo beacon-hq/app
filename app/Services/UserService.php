@@ -58,7 +58,7 @@ class UserService
     public function removeTeam(Team $team, UserValue $user): void
     {
         try {
-            if ($user->email !== null && $invite = $this->inviteService->findTeamInvite($team, $user->email)) {
+            if ($user->has('email') && $invite = $this->inviteService->findTeamInvite($team, $user->email)) {
                 $this->inviteService->delete($invite);
             }
         } catch (ModelNotFoundException) {

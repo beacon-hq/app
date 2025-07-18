@@ -2,14 +2,21 @@
 
 declare(strict_types=1);
 
+use App\Enums\Role;
+use App\Models\Team;
+use App\Models\User;
+use App\Services\UserService;
 use Bag\Internal\Cache;
 use Carbon\CarbonInterval;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Sleep;
 use Pest\Arch\Support\Composer;
 use function Pest\Laravel\freezeTime;
 use Pest\TestSuite;
+use Tests\DuskTestCase;
 use Tests\TestCase;
 
 /*
@@ -38,7 +45,14 @@ pest()->extend(TestCase::class)
 
         Cache::reset();
     })
-    ->in('Feature', 'Unit');
+    ->in('Unit', 'Feature');
+
+pest()->extend(DuskTestCase::class)
+    ->in('Browser')
+    ->beforeAll(function () {
+        Artisan::call('migrate:fresh');
+    })
+    ->afterEach(fn () => User::truncate());
 
 /*
 |--------------------------------------------------------------------------
@@ -102,4 +116,32 @@ function vendorPackages(): array
     }
 
     return $namespaces;
+}
+
+function createBrowserUser(): User
+{
+    $user = app(UserService::class)->create(
+        \App\Values\User::from(...User::factory(['first_name' => 'Beacon Demo'])->make()->toArray(), password: 'testing'),
+    )->id;
+
+    $userModel = User::find($user);
+    $userModel->forceFill([
+        'email_verified_at' => now(),
+        'two_factor_confirmed_at' => now(),
+        'two_factor_secret' => 'testing',
+        'two_factor_recovery_codes' => 'testing',
+    ])->save();
+
+    DB::commit();
+
+    return $userModel;
+}
+
+function createOwner(): array
+{
+    $team = Team::factory()->create();
+    $user = User::factory()->hasAttached($team)->create();
+    $user->assignRole(Role::OWNER);
+
+    return [$team, $user];
 }

@@ -21,8 +21,10 @@ class ApplicationController extends Controller
         ]);
     }
 
-    public function store(Application $application, ApplicationService $applicationService): RedirectResponse
-    {
+    public function store(
+        Application $application,
+        ApplicationService $applicationService
+    ): RedirectResponse {
         Gate::authorize('create', $application);
 
         $applicationService->create($application->with(display_name: $application->display_name ?? $application->name));
@@ -47,8 +49,10 @@ class ApplicationController extends Controller
         ]);
     }
 
-    public function update(Application $application, ApplicationService $applicationService): RedirectResponse
-    {
+    public function update(
+        Application $application,
+        ApplicationService $applicationService
+    ): RedirectResponse {
         Gate::authorize('update', $application);
 
         $applicationService->update($application);

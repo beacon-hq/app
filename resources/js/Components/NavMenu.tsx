@@ -124,22 +124,22 @@ export default function NavMenu({ auth, showLogo = false }: AuthProp & { showLog
         <section className="py-4">
             <div className="container">
                 <nav className="hidden bg-background z-100 px-12 py-2 items-center md:flex flex-row fixed w-full top-0 text-primary">
-                    <div className="w-12">
-                        {showLogo && (
-                            <a href={route('welcome')} className="">
-                                <BeaconIcon className="h-12" />
-                            </a>
-                        )}
-                        {!showLogo && (
-                            <button
-                                onClick={scrollToTop}
-                                className={cn('cursor-pointer', { invisible: !showScrollToTop })}
-                            >
-                                <BeaconIcon className="h-12" />
-                            </button>
-                        )}
-                    </div>
-                    <div className="flex grow justify-center items-center">
+                    <div className="flex grow justify-between items-center">
+                        <div className="w-48">
+                            {showLogo && (
+                                <a href={route('welcome')}>
+                                    <BeaconIcon className="h-12" />
+                                </a>
+                            )}
+                            {!showLogo && (
+                                <button
+                                    onClick={scrollToTop}
+                                    className={cn('cursor-pointer', { invisible: !showScrollToTop })}
+                                >
+                                    <BeaconIcon className="h-12" />
+                                </button>
+                            )}
+                        </div>
                         <div
                             className={cn('flex items-center gap-6 grow', {
                                 '-ml-18': auth?.user !== null && route().current('checkout.*'),
@@ -155,7 +155,7 @@ export default function NavMenu({ auth, showLogo = false }: AuthProp & { showLog
                             </div>
                         </div>
                         {!auth?.user && (
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 w-48">
                                 <Button asChild variant="outline" size="sm">
                                     <Link href={navbarData.auth.login.url}>{navbarData.auth.login.title}</Link>
                                 </Button>
@@ -165,7 +165,7 @@ export default function NavMenu({ auth, showLogo = false }: AuthProp & { showLog
                             </div>
                         )}
                         {auth?.user && !route().current('checkout.*') && (
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 w-48 justify-end">
                                 <Button asChild variant="outline" size="sm">
                                     <Link href={route('dashboard')}>Dashboard</Link>
                                 </Button>
@@ -177,7 +177,7 @@ export default function NavMenu({ auth, showLogo = false }: AuthProp & { showLog
                             </div>
                         )}
                         {auth?.user && route().current('checkout.*') && (
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 w-48 justify-end">
                                 <Button asChild variant="outline" size="sm">
                                     <Link href={route('logout')} method="post">
                                         Logout

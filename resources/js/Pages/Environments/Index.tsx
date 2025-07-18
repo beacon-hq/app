@@ -50,7 +50,7 @@ export default function Index({ environments }: PageProps & { environments: Envi
             <Head title="Environments" />
             <div className="grid grid-cols-3 gap-6 mt-6">
                 {environments.map((environment: Environment) => (
-                    <Card className="w-full relative" key={environment.id}>
+                    <Card className="w-full relative" key={environment.id} data-dusk="card-environment">
                         <CardHeader className="flex flex-row justify-between items-center">
                             <CardTitle>
                                 <h2 className="text-xl truncate">
@@ -91,7 +91,7 @@ export default function Index({ environments }: PageProps & { environments: Envi
                         </CardHeader>
                         <CardContent className="flex flex-col gap-6">
                             <p className="text-sm text-neutral-500">You have not created any environments yet.</p>
-                            <Button onClick={() => setShowSheet(true)}>
+                            <Button onClick={() => setShowSheet(true)} data-dusk="button-create-environment">
                                 <PlusCircle className="mr-2 inline-block h-6 w-6" />
                                 New Environment
                             </Button>

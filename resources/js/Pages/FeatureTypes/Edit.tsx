@@ -11,6 +11,7 @@ export default function Edit({ featureType }: { featureType: FeatureType }) {
         name: featureType.name,
         description: featureType.description,
         temporary: featureType.temporary,
+        is_default: featureType.is_default,
         color: featureType.color,
         icon: featureType.icon,
         created_at: featureType.created_at,

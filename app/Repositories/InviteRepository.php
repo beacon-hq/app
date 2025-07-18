@@ -6,11 +6,13 @@ namespace App\Repositories;
 
 use App\Enums\Role;
 use App\Models\Invite;
+use App\Models\Scopes\CurrentTeamScope;
 use App\Values\Invite as InviteValue;
 use App\Values\Organization;
 use App\Values\Team;
 use App\Values\User;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -52,7 +54,7 @@ class InviteRepository
 
     public function delete(InviteValue $invite): void
     {
-        Invite::destroy($invite->id);
+        Invite::query()->withoutGlobalScope(CurrentTeamScope::class)->find($invite->id)->forceDelete();
     }
 
     public function findTeamInvite(Team $team, string $email): Invite
@@ -64,12 +66,15 @@ class InviteRepository
 
     public function all(): Collection
     {
-        return Invite::query()->get();
+        return Invite::query()
+            ->withoutGlobalScope(CurrentTeamScope::class)
+            ->whereBelongsTo(Auth::user())
+            ->get();
     }
 
     public function refreshExpiration(InviteValue $invite): Invite
     {
-        $model = Invite::findOrFail($invite->id);
+        $model = Invite::withoutGlobalScope(CurrentTeamScope::class)->findOrFail($invite->id);
         $model->update([
             'expires_at' => now()->add(config('beacon.teams.invitation_expiration')),
         ]);

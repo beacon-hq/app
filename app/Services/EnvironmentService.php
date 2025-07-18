@@ -41,4 +41,15 @@ class EnvironmentService
 
         return Environment::from($environment);
     }
+
+    public function findByName(string $environment): ?Environment
+    {
+        $environment = $this->environmentRepository->findByName($environment);
+
+        if (!$environment) {
+            return null;
+        }
+
+        return Environment::from($environment);
+    }
 }

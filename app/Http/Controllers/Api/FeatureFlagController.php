@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\FeatureFlagMissedEvent;
 use App\Http\Controllers\Controller;
 use App\Services\FeatureFlagService;
 use App\Services\FeatureFlagStatusService;
@@ -34,12 +35,23 @@ class FeatureFlagController extends Controller
             $featureFlag = $featureFlagService->findByName($featureFlag->id);
 
             return $featureFlagStatusService->getStatus($featureFlag, $context);
-        } catch (\Throwable) {
-            return FeatureFlagResponse::from(
-                featureFlag:  $featureFlag->has('name') ? $featureFlag->name : $featureFlag->id,
+        } catch (\Throwable $e) {
+            $response = FeatureFlagResponse::from(
+                featureFlag: $featureFlag->has('name') ? $featureFlag->name : $featureFlag->id,
                 value: null,
                 active: false,
             );
+
+            if (!$featureFlag->has('name')) {
+                $featureFlag = FeatureFlag::withoutValidation([
+                    ...$featureFlag->toArray(),
+                    'name' => $featureFlag->id
+                ]);
+            }
+
+            FeatureFlagMissedEvent::dispatch($featureFlag, $context, $response);
+
+            return $response;
         }
     }
 }

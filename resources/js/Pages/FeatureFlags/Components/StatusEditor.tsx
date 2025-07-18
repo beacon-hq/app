@@ -1,9 +1,9 @@
 import {
     ApplicationCollection,
     EnvironmentCollection,
-    FeatureFlag,
     FeatureFlagStatus,
     PolicyCollection,
+    PolicyDefinitionType,
     RolloutStrategy,
     VariantStrategy,
 } from '@/Application';
@@ -34,7 +34,6 @@ import { Switch } from '@/Components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs';
 import { useFeatureFlagStore, Variant } from '@/stores/featureFlagStore';
 import { useTheme } from '@/theme-provider';
-import { useForm } from '@inertiajs/react';
 import Editor from '@monaco-editor/react';
 import { AlignHorizontalSpaceAround, ChevronRight, ChevronsUpDown, PlusCircle, Trash } from 'lucide-react';
 import React, { useCallback, useRef, useState } from 'react';
@@ -57,14 +56,11 @@ const VariantValueInput: React.FC<{
 };
 
 const StatusEditor: React.FC<{
-    status?: FeatureFlagStatus;
+    status: FeatureFlagStatus;
     applications: ApplicationCollection;
     environments: EnvironmentCollection;
     policies: PolicyCollection;
-    onStatusChange?: (status: FeatureFlagStatus) => void;
-    onDelete?: (status: FeatureFlagStatus) => void;
-    featureFlag: FeatureFlag;
-}> = function ({ status, applications, environments, policies, onStatusChange, onDelete, featureFlag }) {
+}> = function ({ status, applications, environments, policies }) {
     const { theme } = useTheme();
     const editorTheme =
         theme === 'system'
@@ -77,7 +73,6 @@ const StatusEditor: React.FC<{
 
     const [applicationsOpen, setApplicationsOpen] = useState(false);
     const [environmentsOpen, setEnvironmentsOpen] = useState(false);
-    const [showPolicy, setShowPolicy] = useState<boolean>(false);
 
     // Add state for active tab to prevent infinite loops when switching tabs
     const [activeTab, setActiveTab] = useState<string>('conditions');
@@ -97,6 +92,7 @@ const StatusEditor: React.FC<{
 
     // Use the merged feature flag store
     const {
+        featureFlag,
         updateStatusRollout,
         updateStatusVariant,
         removeStatusVariant,
@@ -105,10 +101,8 @@ const StatusEditor: React.FC<{
         updateStatusVariantStickiness,
         updateStatus,
         deleteStatus,
-        addStatus,
+        addStatusPolicyDefinition,
     } = useFeatureFlagStore();
-
-    const [variantError, setVariantError] = useState<string>('');
 
     // Get current rollout and variants from status
     const currentRollout = {
@@ -116,37 +110,14 @@ const StatusEditor: React.FC<{
         strategy: status?.rollout_strategy ?? RolloutStrategy.RANDOM,
         context: status?.rollout_context ?? [],
     };
-    const currentVariants = (status?.variants as Variant[]) ?? [];
 
-    const { data, setData, errors, processing } = useForm<FeatureFlagStatus>({
-        id: status?.id ?? undefined,
-        application: status?.application ?? null,
-        environment: status?.environment ?? null,
-        feature_flag: status?.feature_flag ?? null,
-        status: status?.status ?? false,
-        definition: status?.definition ?? [],
-        variants: currentVariants,
-        rollout_context: currentRollout.context,
-        rollout_percentage: currentRollout.percentage,
-        rollout_strategy: currentRollout.strategy,
-        variant_strategy: status?.variant_strategy ?? VariantStrategy.RANDOM,
-        variant_context: status?.variant_context ?? [],
-    });
+    const currentVariants = (status?.variants as Variant[]) ?? [];
 
     const calculateTotalPercentage = useCallback(
         (variantsList: Variant[] = currentVariants): number => {
             return variantsList.reduce((total, variant) => total + variant.percentage, 0);
         },
         [currentVariants],
-    );
-
-    const handleDelete = useCallback(
-        (status: FeatureFlagStatus | undefined) => {
-            if (onDelete && status) {
-                onDelete(status);
-            }
-        },
-        [onDelete],
     );
 
     return (
@@ -163,10 +134,10 @@ const StatusEditor: React.FC<{
                                         aria-expanded={applicationsOpen}
                                         className="w-fit justify-between"
                                     >
-                                        {status.application ? (
+                                        {status?.application ? (
                                             <div className="flex flex-row items-center">
-                                                <IconColor color={status.application.color} className="mr-2" />{' '}
-                                                {status.application.display_name}
+                                                <IconColor color={status?.application.color} className="mr-2" />{' '}
+                                                {status?.application.display_name}
                                             </div>
                                         ) : (
                                             'Select application...'
@@ -266,12 +237,14 @@ const StatusEditor: React.FC<{
                             />
                             <Label htmlFor="enabled">Enabled</Label>
                         </div>
-                        <HttpRequestBuilder
-                            status={status}
-                            featureFlagName={featureFlag.name}
-                            policies={policies}
-                            definition={status.definition ?? []}
-                        />
+                        {status !== null && (
+                            <HttpRequestBuilder
+                                status={status}
+                                featureFlagName={featureFlag?.name}
+                                policies={policies}
+                                definition={status?.definition ?? []}
+                            />
+                        )}
                     </div>
                 </CardTitle>
             </CardHeader>
@@ -285,25 +258,32 @@ const StatusEditor: React.FC<{
                     </TabsList>
                     <TabsContent value="conditions">
                         <div className="w-full justify-center items-center">
-                            {!showPolicy && (status === undefined || (status.definition?.length ?? 0) === 0) && (
+                            {(status === undefined || (status?.definition?.length ?? 0) === 0) && (
                                 <Button
                                     variant="outline"
                                     className="mx-auto block"
                                     type="button"
-                                    onClick={() => setShowPolicy(true)}
+                                    onClick={() => {
+                                        updateStatus({
+                                            ...status,
+                                            definition: [
+                                                ...(status.definition || []),
+                                                {
+                                                    type: PolicyDefinitionType.EXPRESSION,
+                                                    subject: '',
+                                                    operator: null,
+                                                    values: [],
+                                                },
+                                            ],
+                                        });
+                                    }}
                                 >
                                     <PlusCircle className="inline-block mr-2" /> Add Conditions
                                 </Button>
                             )}
 
-                            {(status !== undefined && (status.definition?.length ?? 0) > 0) || showPolicy ? (
-                                <PolicyDefinitionForm
-                                    data={data}
-                                    setData={setData}
-                                    errors={errors}
-                                    processing={processing}
-                                    policies={policies}
-                                />
+                            {status !== undefined && (status?.definition?.length ?? 0) > 0 ? (
+                                <PolicyDefinitionForm status={status} policies={policies} />
                             ) : null}
                         </div>
                     </TabsContent>
@@ -318,7 +298,6 @@ const StatusEditor: React.FC<{
                                     onValueChange={(value) => {
                                         if (status?.id) {
                                             updateStatusRollout(status.id, { percentage: value[0] });
-                                            setData('rollout_percentage', value[0]);
                                         }
                                     }}
                                 />
@@ -337,7 +316,6 @@ const StatusEditor: React.FC<{
                                     onValueChange={(value) => {
                                         if (status?.id) {
                                             updateStatusRollout(status.id, { strategy: value as RolloutStrategy });
-                                            setData('rollout_strategy', value as RolloutStrategy);
                                         }
                                     }}
                                     disabled={currentRollout.percentage === 100}
@@ -386,7 +364,6 @@ const StatusEditor: React.FC<{
                                     setValues={(values) => {
                                         if (status?.id) {
                                             updateStatusRollout(status.id, { context: values as string[] });
-                                            setData('rollout_context', values as string[]);
                                         }
                                     }}
                                     type="text"
@@ -757,7 +734,10 @@ const StatusEditor: React.FC<{
                             <AlertDialogFooter>
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                                 <AlertDialogAction asChild>
-                                    <Button variant="destructive" onClick={() => handleDelete(status)}>
+                                    <Button
+                                        variant="destructive"
+                                        onClick={() => status?.id && deleteStatus(status?.id as string)}
+                                    >
                                         Delete
                                     </Button>
                                 </AlertDialogAction>

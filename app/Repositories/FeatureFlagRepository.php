@@ -93,14 +93,24 @@ class FeatureFlagRepository
         ])->where('name', $name)->firstOrFail();
     }
 
+    public function touch(FeatureFlagValue $featureFlag): FeatureFlag
+    {
+        $flag = FeatureFlag::where('id', $featureFlag->id)->firstOrFail();
+
+        $flag->update(['last_seen_at' => now()]);
+
+        return $flag->fresh(['tags', 'statuses', 'statuses.application', 'statuses.environment']);
+    }
+
     public function update(FeatureFlagValue $featureFlag): FeatureFlag
     {
         $flag = FeatureFlag::where('id', $featureFlag->id)->firstOrFail();
 
         $data = $featureFlag
             ->toCollection()
-            ->put('feature_type_id', $featureFlag->featureType->id)
-            ->except('name', 'id', 'tags', 'feature_type', 'created_at', 'updated_at')
+            ->when($featureFlag->has('featureType') && $featureFlag->featureType !== null, fn ($collection) => $collection->put('feature_type_id', $featureFlag->featureType->id))
+            ->when(!$featureFlag->has('featureType') || $featureFlag->featureType === null, fn ($collection) => $collection->put('feature_type_id', $flag->feature_type_id))
+            ->except('name', 'id', 'tags', 'feature_type', 'created_at', 'updated_at', 'statuses')
             ->filter(fn ($value, $key) => $key !== 'last_seen_at' || $value !== null)
             ->toArray();
 
@@ -112,10 +122,15 @@ class FeatureFlagRepository
             $flag->tags()->sync($tags instanceof Tag ? [$tags->id] : $tags->pluck('id'));
         }
 
-        if ($featureFlag->statuses?->count() > 0) {
-            $statuses = $featureFlag->statuses->map(function (FeatureFlagStatusValue $status) use ($featureFlag) {
+        $filteredStatuses = $featureFlag->statuses?->filter(function (FeatureFlagStatusValue $status) {
+            return $status->application !== null && $status->environment !== null;
+        });
+
+        if ($filteredStatuses?->isNotEmpty()) {
+            /** @var Collection $statuses */
+            $statuses = $filteredStatuses->map(function (FeatureFlagStatusValue $status) use ($featureFlag) {
                 return FeatureFlagStatus::updateOrCreate([
-                    'id' => $status->id,
+                    'id' => $status->has('id') ? $status->id : null,
                 ], [
                     'application_id' => $status->application->id,
                     'environment_id' => $status->environment->id,
@@ -134,6 +149,8 @@ class FeatureFlagRepository
             $flag->statuses()->sync($statuses->pluck('id'));
 
             FeatureFlagStatus::where('feature_flag_id', $featureFlag->id)->whereNotIn('id', $statuses->pluck('id'))->delete();
+        } else {
+            $flag->statuses()->delete();
         }
 
         return $flag->fresh(['tags', 'statuses', 'statuses.application', 'statuses.environment']);

@@ -20,6 +20,7 @@ use Bag\Bag;
 use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
 use Bag\Values\Optional;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Carbon;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
@@ -44,8 +45,8 @@ readonly class Tag extends Bag
         public Optional|string $description,
         #[Cast(ColorCast::class)]
         public Color|string $color = '#e3e3e3',
-        public ?Carbon $createdAt = null,
-        public ?Carbon $updatedAt = null,
+        public ?CarbonImmutable $createdAt = null,
+        public ?CarbonImmutable $updatedAt = null,
     ) {
     }
 

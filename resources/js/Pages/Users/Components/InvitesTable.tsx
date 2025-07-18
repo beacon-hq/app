@@ -1,4 +1,5 @@
 import { Invite, TeamCollection } from '@/Application';
+import { IconColor } from '@/Components/IconColor';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -17,7 +18,7 @@ import { router } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { formatDistanceToNow } from 'date-fns';
 import { Send, Trash2 } from 'lucide-react';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 interface InvitesTableProps {
     invites: Invite[];
@@ -42,11 +43,11 @@ const InvitesTable = ({ invites, tableOptions, teams }: InvitesTableProps) => {
                 id: 'avatar',
                 header: '',
                 cell: ({ row }) => {
-                    const invite = row.original as any;
+                    const invite = row.original;
                     return (
                         <Avatar className="h-8 w-8">
                             <AvatarImage src={invite.avatar} alt={invite.email} />
-                            <AvatarFallback>{invite.email.charAt(0).toUpperCase()}</AvatarFallback>
+                            <AvatarFallback>{invite.email?.charAt(0).toUpperCase()}</AvatarFallback>
                         </Avatar>
                     );
                 },
@@ -59,6 +60,15 @@ const InvitesTable = ({ invites, tableOptions, teams }: InvitesTableProps) => {
             {
                 id: 'team',
                 header: 'Team',
+                cell: ({ row }) => {
+                    const invite = row.original;
+                    return (
+                        <div className="flex items-center gap-1 rounded-md bg-secondary px-2 py-1 w-fit">
+                            <IconColor color={invite.team?.color as string} icon={invite.team?.icon} />
+                            <span>{invite.team?.name}</span>
+                        </div>
+                    );
+                },
             },
             {
                 accessorKey: 'role',
@@ -110,7 +120,8 @@ const InvitesTable = ({ invites, tableOptions, teams }: InvitesTableProps) => {
                                         <AlertDialogTitle>Delete Invitation</AlertDialogTitle>
                                         <AlertDialogDescription>
                                             Are you sure you want to delete the invitation for{' '}
-                                            <strong>{invite.email}</strong>? This action cannot be undone.
+                                            <strong>{invite.email}</strong>? You will need to send a new invite if you
+                                            want to invite them again.
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>

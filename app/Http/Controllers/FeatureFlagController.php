@@ -8,6 +8,7 @@ use App\Services\ApplicationService;
 use App\Services\EnvironmentService;
 use App\Services\FeatureFlagService;
 use App\Services\FeatureTypeService;
+use App\Services\MetricsService;
 use App\Services\PolicyService;
 use App\Services\TagService;
 use App\Values\FeatureFlag;
@@ -52,8 +53,10 @@ class FeatureFlagController extends Controller
         ]);
     }
 
-    public function store(FeatureFlag $featureFlag, FeatureFlagService $featureFlagService): RedirectResponse
-    {
+    public function store(
+        FeatureFlag $featureFlag,
+        FeatureFlagService $featureFlagService
+    ): RedirectResponse {
         Gate::authorize('create', $featureFlag);
 
         $featureFlagService->create($featureFlag);
@@ -76,6 +79,7 @@ class FeatureFlagController extends Controller
         PolicyService $policyService,
         ApplicationService $applicationService,
         EnvironmentService $environmentService,
+        MetricsService $metricsService,
     ): Response {
         Gate::authorize('update', $featureFlag);
 
@@ -87,12 +91,13 @@ class FeatureFlagController extends Controller
             'applications' => $applicationService->all(),
             'environments' => $environmentService->all(),
             'log' => $featureFlagService->activityLog($featureFlag->id),
+            'metrics' => $metricsService->getFlagMetrics($featureFlag->id),
         ]);
     }
 
     public function update(
         FeatureFlag $featureFlag,
-        FeatureFlagService $featureFlagService
+        FeatureFlagService $featureFlagService,
     ): RedirectResponse {
         Gate::authorize('update', $featureFlag);
 
@@ -113,7 +118,7 @@ class FeatureFlagController extends Controller
 
         $featureFlagService->update($featureFlag);
 
-        return redirect()->route('feature-flags.edit.overview', ['feature_flag' => $featureFlag->id])
-            ->withAlert('success', 'Feature flag updated successfully.');
+        return redirect()->back()->withAlert('success', 'Feature flag updated successfully.');
     }
+
 }

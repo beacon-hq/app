@@ -19,8 +19,9 @@ use Bag\Attributes\Transforms;
 use Bag\Bag;
 use Bag\Mappers\SnakeCase;
 use Bag\Values\Optional;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection as Collection1;
+use Illuminate\Support\Collection as LaravelCollection;
 use Illuminate\Support\Facades\Auth;
 use Spatie\TypeScriptTransformer\Attributes\Hidden as HiddenFromTypeScript;
 use Spatie\TypeScriptTransformer\Attributes\LiteralTypeScriptType;
@@ -37,7 +38,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 readonly class User extends Bag
 {
     public function __construct(
-        #[FromRouteParameter]
+        #[FromRouteParameter('user')]
         public Optional|int $id,
         public Optional|Team $team,
         public Optional|string $name,
@@ -52,10 +53,10 @@ readonly class User extends Bag
         #[Cast(Collection::class, Team::class)]
         public Optional|TeamCollection $teams,
         #[LiteralTypeScriptType('Role[]')]
-        public Collection1|Optional $roles,
+        public LaravelCollection|Optional $roles,
         public Optional|UserStatus $status,
         public string $theme = 'system',
-        public ?Carbon $emailVerifiedAt = null,
+        public ?CarbonImmutable $emailVerifiedAt = null,
     ) {
     }
 

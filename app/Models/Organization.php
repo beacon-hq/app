@@ -24,6 +24,11 @@ class Organization extends Model
     protected $fillable = [
         'owner_id',
         'name',
+        'onboarded_at',
+    ];
+
+    protected $casts = [
+        'onboarded_at' => 'datetime',
     ];
 
     public function owner(): BelongsTo

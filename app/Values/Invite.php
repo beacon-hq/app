@@ -15,6 +15,7 @@ use Bag\Attributes\Transforms;
 use Bag\Bag;
 use Bag\Mappers\SnakeCase;
 use Bag\Values\Optional;
+use Carbon\CarbonImmutable;
 use Creativeorange\Gravatar\Facades\Gravatar;
 use Illuminate\Notifications\RoutesNotifications;
 use Illuminate\Support\Carbon;
@@ -45,7 +46,7 @@ readonly class Invite extends Bag
         public Optional|Team $team,
         public Optional|Organization $organization,
         public Optional|User $user,
-        public Carbon|Optional $expires_at,
+        public CarbonImmutable|Optional $expires_at,
     ) {
         $this->avatar = $this->has('email') ? Gravatar::get($this->email) : null;
     }

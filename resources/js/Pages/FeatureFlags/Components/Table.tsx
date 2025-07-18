@@ -11,11 +11,12 @@ import ItemList from '@/Components/ItemList';
 import { Badge } from '@/Components/ui/badge';
 import { DataTable, TableOptions } from '@/Components/ui/data-table';
 import { DataTableColumnHeader } from '@/Components/ui/data-table-column-header';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/Components/ui/tooltip';
 import { cn, localDateTime } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import * as _ from 'lodash';
-import { Pencil } from 'lucide-react';
+import { Check, Pencil, RotateCcw } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 export type TableFilters = { [key: string]: Set<string> };
@@ -141,30 +142,86 @@ export default function Table({
             enableSorting: true,
             cell: ({ cell }) => localDateTime(cell.getValue()),
         }) as ColumnDef<FeatureFlag>,
-        columnHelper.display({
-            id: 'tools',
+        columnHelper.accessor('status', {
+            id: 'status',
+            header: ({ column }) => <DataTableColumnHeader column={column} title={'Status'} />,
+            enableSorting: false,
+            enableHiding: false,
             cell: function ({ row }) {
+                const isCompleted = row.original.completed_at !== null;
                 return (
-                    <div className="flex">
-                        <Link href={route('feature-flags.edit.overview', { feature_flag: row.original.id as string })}>
-                            <Pencil className="h-6 w-6" />
-                        </Link>
+                    <div>
+                        <Badge
+                            className={cn('w-20 text-center mx-auto mr-2', {
+                                'bg-green-600 hover:bg-green-600': isCompleted,
+                                'bg-blue-600 hover:bg-blue-600': !isCompleted,
+                            })}
+                        >
+                            {isCompleted ? 'Complete' : 'Open'}
+                        </Badge>
+                        <Badge
+                            className={cn('w-16 text-center', {
+                                'bg-green-600 hover:bg-green-600': row.original.status,
+                                'bg-neutral-500 hover:bg-neutral-500': !row.original.status,
+                            })}
+                        >
+                            {row.original.status ? 'Enabled' : 'Disabled'}
+                        </Badge>
                     </div>
                 );
             },
         }) as ColumnDef<FeatureFlag>,
         columnHelper.display({
-            id: 'status',
+            id: 'tools',
             cell: function ({ row }) {
+                const isCompleted = row.original.completed_at !== null;
                 return (
-                    <Badge
-                        className={cn('w-16 text-center', {
-                            'bg-green-600 hover:bg-green-600': row.original.status,
-                            'bg-neutral-500 hover:bg-neutral-500': !row.original.status,
-                        })}
-                    >
-                        {row.original.status ? 'Enabled' : 'Disabled'}
-                    </Badge>
+                    <div className="flex space-x-2">
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Link
+                                    href={route('feature-flags.edit.overview', {
+                                        feature_flag: row.original.id as string,
+                                    })}
+                                    className="text-center"
+                                >
+                                    <Pencil className="h-5 w-5 inline-block text-gray-600 hover:text-gray-800" />
+                                </Link>
+                            </TooltipTrigger>
+                            <TooltipContent>Edit</TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                {isCompleted ? (
+                                    <Link
+                                        href={route('feature-flags.update', {
+                                            feature_flag: row.original.id as string,
+                                        })}
+                                        method="patch"
+                                        as="button"
+                                        data={{ completed_at: null }}
+                                        className="text-blue-600 hover:text-blue-800"
+                                    >
+                                        <RotateCcw className="h-5 w-5 inline-block" />
+                                    </Link>
+                                ) : (
+                                    <Link
+                                        href={route('feature-flags.update', {
+                                            feature_flag: row.original.id as string,
+                                        })}
+                                        method="patch"
+                                        as="button"
+                                        data={{ completed_at: new Date().toISOString() }}
+                                        className="text-green-600 hover:text-green-800 text-center"
+                                    >
+                                        <Check className="h-5 w-5 inline-block" />
+                                    </Link>
+                                )}
+                            </TooltipTrigger>
+                            <TooltipContent>{isCompleted ? 'Reopen' : 'Mark as Complete'}</TooltipContent>
+                        </Tooltip>
+                    </div>
                 );
             },
         }) as ColumnDef<FeatureFlag>,
@@ -221,6 +278,21 @@ export default function Table({
                             ) : undefined,
                         };
                     }) as { value: string; label: string; icon?: React.ComponentType<{ className?: string }> }[],
+                },
+                status: {
+                    label: 'Status',
+                    values: [
+                        {
+                            value: 'active',
+                            label: 'Active',
+                            icon: (<IconColor color="blue" className="aspect-square" />) as unknown,
+                        },
+                        {
+                            value: 'completed',
+                            label: 'Completed',
+                            icon: (<IconColor color="orange" className="aspect-square" />) as unknown,
+                        },
+                    ] as { value: string; label: string; icon: React.ComponentType<{ className?: string }> }[],
                 },
             }}
             pageSize={currentTableOptions.perPage}

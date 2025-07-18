@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 use App\Enums\Color;
 use App\Models\Environment;
-use App\Models\Team;
-use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 
 it('lists environments', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user] = createOwner();
     Environment::factory(5)->for($team)->create();
 
-    $this->actingAs($user)->get('/environments')
+    $this
+        ->actingAs($user)
+        ->get(route('environments.index'))
         ->assertInertia(
             fn (Assert $page) => $page
                 ->component('Environments/Index')
@@ -22,35 +21,34 @@ it('lists environments', function () {
 });
 
 it('creates an environment', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user] = createOwner();
 
-    $this->actingAs($user)->post('/environments', [
+    $this->actingAs($user)->post(route('environments.store'), [
         'name' => 'Test Environment',
         'color' => Color::EMERALD->value,
-    ])->assertRedirect('/environments');
+    ])->assertRedirectToRoute('environments.index');
 
     $this->assertDatabaseHas('environments', [
         'name' => 'Test Environment',
-        'slug' => 'test-environment',
         'color' => Color::EMERALD->value,
         'team_id' => $team->id,
     ]);
 });
 
 it('fails validation with missing required fields on create', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user] = createOwner();
 
-    $this->actingAs($user)->post('/environments', [])->assertInvalid(['name', 'color']);
+    $this
+        ->actingAs($user)
+        ->post(route('environments.store'), [])
+        ->assertInvalid(['name']);
 });
 
 it('shows the edit form', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user] = createOwner();
     $environment = Environment::factory()->for($team)->create();
 
-    $this->actingAs($user)->get("/environments/{$environment->slug}/edit")
+    $this->actingAs($user)->get(route('environments.edit', ['environment' => $environment->id]))
         ->assertInertia(
             fn (Assert $page) => $page
                 ->component('Environments/Edit')
@@ -60,34 +58,31 @@ it('shows the edit form', function () {
                     'description' => $environment->description,
                     'id' => $environment->id,
                     'name' => $environment->name,
-                    'slug' => $environment->slug,
+                    'last_seen_at' => null,
                 ])
         );
 });
 
 it('updates an environment', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user] = createOwner();
     $environment = Environment::factory()->for($team)->create();
 
-    $this->actingAs($user)->put("/environments/{$environment->slug}", [
+    $this->actingAs($user)->put(route('environments.update', ['environment' => $environment->id]), [
         'color' => Color::RED->value,
         'description' => 'updated description',
-    ])->assertRedirect('/environments');
+    ])->assertRedirectToRoute('environments.index');
 
     $this->assertDatabaseHas('environments', [
         'name' => $environment->name,
-        'slug' => $environment->slug,
         'color' => Color::RED->value,
         'description' => 'updated description',
     ]);
 });
 
 it('fails validation with passing in name on update', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user] = createOwner();
     $environment = Environment::factory()->for($team)->create();
 
-    $this->actingAs($user)->put("/environments/{$environment->slug}", [])
+    $this->actingAs($user)->put(route('environments.update', ['environment' => $environment->id]), [])
         ->assertInvalid(['color']);
 });

@@ -7,6 +7,8 @@ namespace App\Models\Scopes;
 use App;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Scope;
 
 class CurrentTeamScope implements Scope
@@ -19,12 +21,27 @@ class CurrentTeamScope implements Scope
 
         $currentTeam = App::context()->team;
         if (method_exists($model, 'teams')) {
-            $builder->whereHas('teams', function (Builder $query) use ($currentTeam) {
-                $query->where('id', $currentTeam->id);
-            });
+            $teams = $model->teams();
+            $builder
+                ->when(
+                    $teams instanceof MorphTo,
+                    function (Builder $builder) use ($teams, $currentTeam) {
+                        return $builder
+                            ->where($teams->getMorphType(), App\Models\Team::class)
+                            ->where($teams->getForeignKeyName(), $currentTeam->id);
+                    }
+                )
+                ->when(
+                    $teams instanceof HasMany,
+                    function (Builder $builder) use ($currentTeam) {
+                        return $builder
+                            ->whereHas('teams', fn (Builder $query) => $query->where('id', $currentTeam->id));
+                    }
+                );
 
             return;
         }
+
 
         $builder->where($builder->qualifyColumn('team_id'), $currentTeam->id);
     }

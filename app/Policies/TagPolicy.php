@@ -32,7 +32,7 @@ class TagPolicy
      */
     public function create(User $user): bool
     {
-        $user->hasPermissionTo(Permission::TAGS_CREATE());
+        return $user->hasPermissionTo(Permission::TAGS_CREATE());
     }
 
     /**

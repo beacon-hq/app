@@ -98,7 +98,7 @@ export function Form({
                 <Button variant="link" className="mr-2" type="button" onClick={onCancel}>
                     Cancel
                 </Button>
-                <Button type="submit" className="w-24" disabled={processing}>
+                <Button type="submit" className="w-24" disabled={processing} data-dusk="button-application-submit">
                     {data.id ? 'Update' : 'Create'}
                 </Button>
             </div>

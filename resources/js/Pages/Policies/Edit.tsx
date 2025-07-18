@@ -2,23 +2,36 @@ import { Policy, PolicyCollection } from '@/Application';
 import { Card, CardContent, CardTitle } from '@/Components/ui/card';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Form } from '@/Pages/Policies/Components/Form';
+import { usePolicyStore } from '@/stores/policyStore';
 import { Head, router, useForm } from '@inertiajs/react';
-import React, { FormEvent } from 'react';
+import React, { FormEvent, useEffect } from 'react';
 
-export default function Edit({ policy, policies }: { policy: Policy; policies: PolicyCollection }) {
-    const subjects: string[] = [];
-    const { data, setData, put, errors, processing } = useForm<Policy>({
-        id: policy.id,
-        name: policy.name,
-        description: policy.description,
-        definition: policy.definition,
-        created_at: policy.created_at,
-        updated_at: policy.updated_at,
-    });
+export default function Edit({ policies, ...props }: { policy: Policy; policies: PolicyCollection }) {
+    const { policy, setPolicy } = usePolicyStore();
+
+    useEffect(
+        function () {
+            if (props.policy) {
+                setPolicy(props.policy);
+            }
+        },
+        [props.policy],
+    );
+
+    useEffect(
+        function () {
+            if (policy) {
+                setData(policy);
+            }
+        },
+        [policy],
+    );
+
+    const { setData, put, errors, processing } = useForm<Policy>(props.policy);
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
-        put(route('policies.update', { policy: policy.id as string }), { preserveScroll: true });
+        put(route('policies.update', { policy: policy?.id as string }), { preserveScroll: true });
     };
 
     const handleCancel = () => {
@@ -29,7 +42,7 @@ export default function Edit({ policy, policies }: { policy: Policy; policies: P
         <Authenticated
             breadcrumbs={[
                 { name: 'Policies', href: route('policies.index'), icon: 'SlidersHorizontal' },
-                { name: policy.name as string },
+                { name: (policy?.name as string) ?? 'Edit Policy' },
             ]}
         >
             <Head title="Policies | Edit" />
@@ -41,13 +54,10 @@ export default function Edit({ policy, policies }: { policy: Policy; policies: P
                             <CardContent className="py-4">
                                 <Form
                                     submit={submit}
-                                    data={data}
-                                    setData={setData}
                                     errors={errors}
                                     processing={processing}
                                     onCancel={handleCancel}
                                     policies={policies}
-                                    subjects={subjects}
                                 />
                             </CardContent>
                         </Card>

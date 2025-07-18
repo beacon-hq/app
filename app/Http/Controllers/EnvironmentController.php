@@ -23,8 +23,10 @@ class EnvironmentController extends Controller
         ]);
     }
 
-    public function store(Environment $environment, EnvironmentService $environmentService): RedirectResponse
-    {
+    public function store(
+        Environment $environment,
+        EnvironmentService $environmentService
+    ): RedirectResponse {
         Gate::authorize('create', $environment);
 
         $environmentService->create($environment);
@@ -49,8 +51,10 @@ class EnvironmentController extends Controller
         ]);
     }
 
-    public function update(Environment $environment, EnvironmentService $environmentService): RedirectResponse
-    {
+    public function update(
+        Environment $environment,
+        EnvironmentService $environmentService
+    ): RedirectResponse {
         Gate::authorize('update', $environment);
 
         $environmentService->update($environment);

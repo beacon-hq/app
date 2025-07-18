@@ -9,10 +9,10 @@ use App\Values\Organization;
 use App\Values\Team;
 use App\Values\User;
 use Bag\Attributes\WithoutValidation;
-use Gate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 

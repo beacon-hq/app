@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Log;
 use Laravel\Cashier\Cashier;
 use Laravel\Cashier\Checkout;
 use Stripe\StripeClient;
+use Symfony\Component\HttpFoundation\Response;
 
 class SubscriptionBillingService
 {
@@ -28,7 +29,7 @@ class SubscriptionBillingService
 
     public function getSubscription(Organization $organization): Subscription
     {
-        return Subscription::from($this->subscriptionBillingRepository->getSubscription($organization));
+        return Subscription::fromModel($this->subscriptionBillingRepository->getSubscription($organization));
     }
 
     public function hasActiveSubscription(Organization $organization): bool
@@ -48,7 +49,7 @@ class SubscriptionBillingService
 
     public function getPlan(Organization $organization): Product
     {
-        return Product::from($this->subscriptionBillingRepository->getPlan($organization));
+        return Product::fromModel($this->subscriptionBillingRepository->getPlan($organization));
     }
 
     public function changeSubscription(Organization $organization, Product $product): bool
@@ -56,7 +57,7 @@ class SubscriptionBillingService
         return $this->subscriptionBillingRepository->changeSubscription($organization, $product->id);
     }
 
-    public function reportUsage(string $id, Organization $organization, int $quantity = 1, ?\DateTimeInterface $timestamp = null): bool
+    public function reportUsage(string $id, Organization $organization, int $quantity = 1): bool
     {
         try {
             // Skip if billing is not enabled
@@ -92,7 +93,7 @@ class SubscriptionBillingService
         }
     }
 
-    public function setFraudThreshold(string $subscriptionId, ?string $productId = null, bool $isTrial = false): void
+    public function setFraudThreshold(string $subscriptionId, ?string $productId = null): void
     {
         $thresholdAmount = $this->getThresholdAmount($productId);
 
@@ -143,12 +144,17 @@ class SubscriptionBillingService
         return $this->subscriptionBillingRepository->resumeSubscription($organization, $billing);
     }
 
+    public function downloadInvoice(Organization $organization, string $billing): Response
+    {
+        return $this->organizationRepository->findById($organization->id)->downloadInvoice($billing);
+    }
+
     protected function getStripeClient(): StripeClient
     {
         return app()->has(StripeClient::class) ? app(StripeClient::class) : Cashier::stripe();
     }
 
-    protected function getThresholdAmount(?string $productId = null): Money
+    protected function getThresholdAmount(?string $productId = null): mixed
     {
         // Default threshold from config
         $defaultThreshold = config('beacon.billing.trial_fraud_limit');

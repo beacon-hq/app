@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Traits\BelongsToTeam;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 use Laravel\Sanctum\PersonalAccessToken as SanctumPersonalAccessToken;
 
@@ -41,11 +43,31 @@ use Laravel\Sanctum\PersonalAccessToken as SanctumPersonalAccessToken;
  */
 class AccessToken extends SanctumPersonalAccessToken
 {
+    use BelongsToTeam;
+
     protected $fillable = [
         'name',
         'token',
+        'token_value',
         'plain_text_suffix',
         'abilities',
         'expires_at',
     ];
+
+    protected $hidden = [
+        'token_value',
+        'token',
+    ];
+
+    public function teams(): MorphTo
+    {
+        return $this->tokenable();
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'token_value' => 'encrypted',
+        ];
+    }
 }

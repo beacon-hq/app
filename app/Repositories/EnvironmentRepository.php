@@ -50,4 +50,9 @@ class EnvironmentRepository
     {
         return Environment::findOrFail($id);
     }
+
+    public function findByName(string $environment): ?Environment
+    {
+        return Environment::where('name', $environment)->first();
+    }
 }

@@ -19,6 +19,7 @@ use Bag\Casts\CollectionOf;
 use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
 use Bag\Values\Optional;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Carbon;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
@@ -42,8 +43,8 @@ readonly class Policy extends Bag
         #[Cast(CollectionOf::class, PolicyDefinition::class)]
         public Optional|PolicyDefinitionCollection $definition,
         public ?string $description = null,
-        public ?Carbon $createdAt = null,
-        public ?Carbon $updatedAt = null,
+        public ?CarbonImmutable $createdAt = null,
+        public ?CarbonImmutable $updatedAt = null,
     ) {
     }
 

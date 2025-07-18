@@ -16,7 +16,14 @@ import Tag from '@/Components/Tag';
 import { Alert, AlertDescription, AlertTitle } from '@/Components/ui/alert';
 import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/Components/ui/card';
+import {
+    ChartContainer,
+    ChartLegend,
+    ChartLegendContent,
+    ChartTooltip,
+    ChartTooltipContent,
+} from '@/Components/ui/chart';
 import { Switch } from '@/Components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
@@ -25,9 +32,11 @@ import { Form } from '@/Pages/FeatureFlags/Components/Form';
 import StatusEditor from '@/Pages/FeatureFlags/Components/StatusEditor';
 import { cn, localDateTime } from '@/lib/utils';
 import { useFeatureFlagStore } from '@/stores/featureFlagStore';
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import { ChevronRight, CircleCheckBig, Info, PlusCircle, TriangleAlert } from 'lucide-react';
 import React, { FormEvent, useEffect } from 'react';
+import { Area, AreaChart, CartesianGrid, LabelList, Pie, PieChart, XAxis, YAxis } from 'recharts';
+import { ulid } from 'ulidx';
 
 function StatusCard({
     status,
@@ -72,65 +81,70 @@ function StatusCard({
 }
 
 export default function Edit({
-    featureFlag,
     featureTypes,
     tags,
     applications,
     environments,
     policies,
     log,
+    metrics,
+    ...props
 }: {
-    featureFlag: FeatureFlag;
     featureTypes: FeatureTypeCollection;
     tags: TagCollection;
     applications: ApplicationCollection;
     environments: EnvironmentCollection;
     policies: PolicyCollection;
     log: ActivityLogCollection;
-}) {
+    metrics: {
+        evaluations: {
+            total: number;
+            data: {
+                date: string;
+                active: number;
+                inactive: number;
+                total: number;
+            }[];
+        };
+        variants: { data: { value: string; count: number; percentage: number; fill: string }[]; total: number };
+    };
+} & { featureFlag?: FeatureFlag }) {
     // Initialize the feature flag store
-    const {
-        featureFlag: storeFeatureFlag,
-        setFeatureFlag,
-        addStatus: storeAddStatus,
-        updateStatus,
-        deleteStatus,
-    } = useFeatureFlagStore();
+    const { featureFlag, setFeatureFlag, addStatus } = useFeatureFlagStore();
 
-    // Initialize store with data from props
-    useEffect(() => {
-        setFeatureFlag(featureFlag);
-    }, []);
+    const { setData, put, errors, processing } = useForm<FeatureFlag>(featureFlag as FeatureFlag);
+    const [hadFeatureFlags, setHadFeatureFlags] = React.useState<boolean>(false);
 
-    // Sync form data with store changes
     useEffect(() => {
-        setData(storeFeatureFlag as FeatureFlag);
-    }, [storeFeatureFlag]);
+        if (props.featureFlag) {
+            setFeatureFlag(props.featureFlag);
+        }
+    }, [props.featureFlag]);
+
+    useEffect(() => {
+        if (featureFlag !== null) {
+            setData(featureFlag);
+        }
+        if (featureFlag === null) {
+            setFeatureFlag(props.featureFlag as FeatureFlag);
+        }
+
+        if (!hadFeatureFlags) {
+            setHadFeatureFlags((featureFlag?.statuses?.length ?? 0) > 0);
+        }
+    }, [featureFlag]);
 
     function changeTab(routeName: string) {
         return function () {
             router.push({
-                url: route(routeName, { feature_flag: featureFlag.id }),
+                url: route(routeName, { feature_flag: featureFlag?.id }),
             });
         };
     }
 
-    const { data, setData, put, errors, processing } = useForm<FeatureFlag>({
-        id: featureFlag.id,
-        name: featureFlag.name,
-        description: featureFlag.description,
-        feature_type: featureFlag.feature_type,
-        tags: featureFlag.tags,
-        statuses: featureFlag.statuses,
-        last_seen_at: featureFlag.last_seen_at,
-        created_at: null,
-        updated_at: null,
-        status: featureFlag.status ?? false,
-    });
-
     const submitFeatureFlag = (e: FormEvent) => {
         e.preventDefault();
-        put(route('feature-flags.update', { feature_flag: featureFlag.id as string }), {
+        put(route('feature-flags.update', { feature_flag: featureFlag?.id as string }), {
             onSuccess: () => {
                 changeTab('feature-flags.edit.overview')();
             },
@@ -145,11 +159,6 @@ export default function Edit({
         router.get(route('applications.index'));
     };
 
-    // Use the store's addStatus action
-    const addStatus = () => {
-        storeAddStatus();
-    };
-
     let tab = 'overview';
 
     switch (true) {
@@ -158,34 +167,49 @@ export default function Edit({
             break;
         case route().current('feature-flags.edit.policy'):
             tab = 'policy';
-            if (!data.statuses?.length) {
+            if (featureFlag?.statuses?.length === 0) {
                 addStatus();
             }
             break;
         case route().current('feature-flags.edit.activity'):
             tab = 'activity';
             break;
+        case route().current('feature-flags.edit.metrics'):
+            tab = 'metrics';
+            break;
     }
 
-    // Use the store's updateStatus action
-    const onStatusChange = (status: FeatureFlagStatus) => {
-        updateStatus(status);
+    const variantMetricsConfig: Record<string, { label: string; fill: string }> = metrics.variants.data.reduce(
+        (config, variant) => {
+            config[variant.value] = {
+                label: variant.value,
+                fill: variant.fill,
+            };
+            return config;
+        },
+        {} as Record<string, { label: string; fill: string }>,
+    );
 
-        if ((storeFeatureFlag?.statuses?.length || 0) === 0) {
-            addStatus();
-        }
-    };
-
-    // Use the store's deleteStatus action
-    const onDelete = (status: FeatureFlagStatus) => {
-        deleteStatus(status.id as string);
+    const evaluationsMetricsConfig = {
+        active: {
+            label: 'Active',
+            fill: 'var(--color-green-600)',
+        },
+        inactive: {
+            label: 'Inactive',
+            fill: 'var(--color-neutral-500)',
+        },
+        total: {
+            label: 'Total',
+            fill: 'var(--color-blue-600)',
+        },
     };
 
     return (
         <Authenticated
             breadcrumbs={[
                 { name: 'Feature Flags', href: route('feature-flags.index'), icon: 'Flag' },
-                { name: featureFlag.name as string },
+                { name: (featureFlag?.name as string) ?? 'Edit Feature Flag' },
             ]}
         >
             <Head title="Feature Flag | Edit" />
@@ -215,6 +239,13 @@ export default function Edit({
                                 Configuration
                             </TabsTrigger>
                             <TabsTrigger
+                                value="metrics"
+                                className="rounded-lg grow px-6 cursor-pointer"
+                                onClick={changeTab('feature-flags.edit.metrics')}
+                            >
+                                Metrics
+                            </TabsTrigger>
+                            <TabsTrigger
                                 value="activity"
                                 className="rounded-lg grow px-6 cursor-pointer"
                                 onClick={changeTab('feature-flags.edit.activity')}
@@ -222,7 +253,7 @@ export default function Edit({
                                 Activity Log
                             </TabsTrigger>
                         </TabsList>
-                        {featureFlag.status && (
+                        {featureFlag?.status && (
                             <Alert variant="success" className="mt-4">
                                 <CircleCheckBig />
                                 <AlertTitle className="prose text-green-500">Feature Flag Active</AlertTitle>
@@ -234,7 +265,7 @@ export default function Edit({
                                 </AlertDescription>
                             </Alert>
                         )}
-                        {!featureFlag.status && (
+                        {!featureFlag?.status && (
                             <Alert variant="error" className="mt-4">
                                 <TriangleAlert />
                                 <AlertTitle className="prose text-red-500">Feature Flag Inactive</AlertTitle>
@@ -248,61 +279,61 @@ export default function Edit({
                                 <CardHeader>
                                     <CardTitle className="flex flex-row items-center gap-4 text-2xl mb-4">
                                         <IconColor
-                                            color={featureFlag.feature_type?.color as string}
-                                            icon={featureFlag.feature_type?.icon}
+                                            color={featureFlag?.feature_type?.color as string}
+                                            icon={featureFlag?.feature_type?.icon}
                                             className="w-8 h-8"
                                         />
-                                        {featureFlag.name}
+                                        {featureFlag?.name}
                                     </CardTitle>
-                                    <p className="text-xs text-neutral-500">{featureFlag.description}</p>
+                                    <p className="text-xs text-neutral-500">{featureFlag?.description}</p>
                                 </CardHeader>
                                 <DefinitionList>
                                     <Definition>
                                         <DefinitionTerm>Type</DefinitionTerm>
-                                        <DefinitionDescription>{featureFlag.feature_type?.name}</DefinitionDescription>
+                                        <DefinitionDescription>{featureFlag?.feature_type?.name}</DefinitionDescription>
                                     </Definition>
                                     <Definition>
                                         <DefinitionTerm>Last Seen At</DefinitionTerm>
                                         <DefinitionDescription>
-                                            {featureFlag.last_seen_at === null
+                                            {featureFlag?.last_seen_at === null
                                                 ? 'never'
-                                                : localDateTime(featureFlag.last_seen_at)}
+                                                : localDateTime(featureFlag?.last_seen_at)}
                                         </DefinitionDescription>
                                     </Definition>
                                     <Definition>
                                         <DefinitionTerm>Updated At</DefinitionTerm>
                                         <DefinitionDescription>
-                                            {localDateTime(featureFlag.updated_at)}
+                                            {localDateTime(featureFlag?.updated_at)}
                                         </DefinitionDescription>
                                     </Definition>
                                     <Definition>
                                         <DefinitionTerm>Created At</DefinitionTerm>
                                         <DefinitionDescription>
-                                            {localDateTime(featureFlag.created_at)}
+                                            {localDateTime(featureFlag?.created_at)}
                                         </DefinitionDescription>
                                     </Definition>
                                     <Definition>
                                         <DefinitionTerm>Tags</DefinitionTerm>
                                         <DefinitionDescription>
-                                            {featureFlag.tags?.map((tag) => (
+                                            {featureFlag?.tags?.map((tag) => (
                                                 <Tag key={tag.id} tag={tag} className="mb-2 inline-block"></Tag>
                                             ))}
-                                            {featureFlag.tags === null && 'No tags'}
+                                            {featureFlag?.tags === null && 'No tags'}
                                         </DefinitionDescription>
                                     </Definition>
                                 </DefinitionList>
                             </Card>
                             <div className="mt-2 grow">
                                 <TabsContent value="overview" className="flex flex-col gap-4">
-                                    {featureFlag.statuses?.map((status, index) => (
+                                    {featureFlag?.statuses?.map((status) => (
                                         <StatusCard
-                                            key={index}
+                                            key={status.id ?? ulid()}
                                             status={status}
                                             policies={policies}
                                             featureFlag={featureFlag}
                                         />
                                     ))}
-                                    {featureFlag.statuses?.length === 0 && (
+                                    {featureFlag?.statuses?.length === 0 && (
                                         <>
                                             <Alert variant="info" className="rounded-lg w-3/4 mx-auto">
                                                 <Info className="text-blue-500" />
@@ -315,16 +346,14 @@ export default function Edit({
                                                 </AlertDescription>
                                             </Alert>
                                             <div className="w-full">
-                                                <Button className="mt-4 w-32 mx-auto block">
-                                                    <Link
-                                                        href={route('feature-flags.edit.policy', {
-                                                            feature_flag: featureFlag.id as string,
-                                                        })}
-                                                        className="flex items-center"
-                                                    >
-                                                        <PlusCircle className="inline-block mr-2" />
-                                                        Add a Policy
-                                                    </Link>
+                                                <Button
+                                                    className="mt-4 w-32 mx-auto block"
+                                                    onClick={function () {
+                                                        changeTab('feature-flags.edit.policy')();
+                                                    }}
+                                                >
+                                                    <PlusCircle className="inline-block mr-2" />
+                                                    Add a Policy
                                                 </Button>
                                             </div>
                                         </>
@@ -337,8 +366,13 @@ export default function Edit({
                                             <div className="flex flex-row gap-2 items-center">
                                                 <Switch
                                                     id="status"
-                                                    checked={data.status ?? false}
-                                                    onCheckedChange={(active) => setData('status', active)}
+                                                    checked={featureFlag?.status ?? false}
+                                                    onCheckedChange={(active) =>
+                                                        setFeatureFlag({
+                                                            ...featureFlag,
+                                                            status: active,
+                                                        } as FeatureFlag)
+                                                    }
                                                 />
                                                 Enabled
                                             </div>
@@ -346,9 +380,7 @@ export default function Edit({
                                         <CardContent>
                                             <Form
                                                 submit={submitFeatureFlag}
-                                                data={data}
                                                 tags={tags}
-                                                setData={setData}
                                                 errors={errors}
                                                 processing={processing}
                                                 onCancel={handleCancel}
@@ -358,29 +390,16 @@ export default function Edit({
                                     </Card>
                                 </TabsContent>
                                 <TabsContent value="policy" className="flex flex-col gap-4">
-                                    {/* Use the store's statuses instead of form data */}
-                                    {(storeFeatureFlag?.statuses?.length || 0) === 0 && (
-                                        <StatusEditor
-                                            featureFlag={featureFlag}
-                                            applications={applications}
-                                            environments={environments}
-                                            policies={policies}
-                                            onStatusChange={onStatusChange}
-                                            onDelete={onDelete}
-                                        />
-                                    )}
-                                    {(storeFeatureFlag?.statuses || []).map((status, index) => (
-                                        <StatusEditor
-                                            key={status.id}
-                                            featureFlag={featureFlag}
-                                            status={status}
-                                            applications={applications}
-                                            environments={environments}
-                                            policies={policies}
-                                            onStatusChange={onStatusChange}
-                                            onDelete={onDelete}
-                                        />
-                                    ))}
+                                    {(featureFlag?.statuses?.length ?? 0) > 0 &&
+                                        featureFlag?.statuses?.map((status) => (
+                                            <StatusEditor
+                                                key={status.id}
+                                                status={status}
+                                                applications={applications}
+                                                environments={environments}
+                                                policies={policies}
+                                            />
+                                        ))}
                                     <div className="flex flex-row justify-between w-full">
                                         <Button
                                             type="button"
@@ -391,9 +410,137 @@ export default function Edit({
                                             <PlusCircle className="inline-block" />
                                             Add Application
                                         </Button>
-                                        <Button type="button" onClick={submitFeatureFlag} className="w-fit block">
-                                            Save
-                                        </Button>
+                                        {(hadFeatureFlags || (featureFlag?.statuses?.length ?? 0) > 0) && (
+                                            <Button type="button" onClick={submitFeatureFlag} className="w-fit block">
+                                                Save
+                                            </Button>
+                                        )}
+                                    </div>
+                                </TabsContent>
+                                <TabsContent value="metrics" className="flex flex-col gap-4">
+                                    <div className="flex flex-row gap-4">
+                                        <Card className="w-1/2 flex flex-col gap-2">
+                                            <CardHeader className="items-center pb-0">
+                                                <CardTitle>Evaluations</CardTitle>
+                                                <CardDescription>Last 30 Days</CardDescription>
+                                            </CardHeader>
+                                            <CardContent className="flex-1 pb-0 min-h-[285px]">
+                                                {metrics.evaluations.total > 0 && (
+                                                    <ChartContainer
+                                                        config={evaluationsMetricsConfig}
+                                                        className="max-h-[300px]"
+                                                    >
+                                                        <AreaChart
+                                                            data={metrics.evaluations.data}
+                                                            margin={{
+                                                                left: 12,
+                                                                right: 12,
+                                                                top: 12,
+                                                            }}
+                                                        >
+                                                            <CartesianGrid vertical={false} />
+                                                            <XAxis
+                                                                dataKey="date"
+                                                                tickLine={false}
+                                                                axisLine={false}
+                                                                tickMargin={8}
+                                                                tickFormatter={(value) => value.slice(0, 3)}
+                                                            />
+                                                            <YAxis
+                                                                dataKey="total"
+                                                                tickLine={false}
+                                                                axisLine={false}
+                                                                width={20}
+                                                            />
+                                                            <ChartTooltip
+                                                                cursor={false}
+                                                                content={<ChartTooltipContent />}
+                                                            />
+                                                            <Area
+                                                                dataKey="total"
+                                                                type="linear"
+                                                                fill="var(--chart-3)"
+                                                                fillOpacity={0.4}
+                                                                stroke="var(--chart-2)"
+                                                                stackId="2"
+                                                            />
+                                                            <Area
+                                                                dataKey="active"
+                                                                type="linear"
+                                                                fill="var(--chart-1)"
+                                                                fillOpacity={0.4}
+                                                                stroke="var(--chart-1)"
+                                                                stackId="1"
+                                                            />
+                                                            <Area
+                                                                dataKey="inactive"
+                                                                type="linear"
+                                                                fill="var(--chart-2)"
+                                                                fillOpacity={0.4}
+                                                                stroke="var(--chart-2)"
+                                                                stackId="1"
+                                                            />
+                                                        </AreaChart>
+                                                    </ChartContainer>
+                                                )}
+                                                {metrics.evaluations.total === 0 && (
+                                                    <p className="flex items-center h-full w-fit mx-auto text-xs">
+                                                        No evaluations have been recorded for this feature flag in the
+                                                        last 30 days.
+                                                    </p>
+                                                )}
+                                            </CardContent>
+                                            {metrics.evaluations.total > 0 && (
+                                                <CardFooter>Total: {metrics.evaluations.total}</CardFooter>
+                                            )}
+                                        </Card>
+                                        <Card className="w-1/2">
+                                            <CardHeader className="items-center pb-0">
+                                                <CardTitle>Variant Results</CardTitle>
+                                                <CardDescription>Last 30 Days</CardDescription>
+                                            </CardHeader>
+                                            <CardContent className="flex-1 pb-0">
+                                                {metrics.variants.total > 0 && (
+                                                    <ChartContainer
+                                                        config={variantMetricsConfig}
+                                                        className="mx-auto aspect-square max-h-[250px]"
+                                                    >
+                                                        <PieChart accessibilityLayer>
+                                                            <ChartTooltip
+                                                                cursor={false}
+                                                                content={<ChartTooltipContent hideLabel />}
+                                                            />
+                                                            <Pie
+                                                                data={metrics.variants.data}
+                                                                dataKey="count"
+                                                                nameKey="value"
+                                                                strokeWidth={5}
+                                                            >
+                                                                <LabelList
+                                                                    dataKey="percentage"
+                                                                    stroke="none"
+                                                                    className="fill-background"
+                                                                    fontSize={12}
+                                                                    formatter={(value: number) => `${value}%`}
+                                                                />
+                                                            </Pie>
+                                                            <ChartLegend
+                                                                content={<ChartLegendContent nameKey="value" />}
+                                                            />
+                                                        </PieChart>
+                                                    </ChartContainer>
+                                                )}
+                                                {metrics.variants.total === 0 && (
+                                                    <p className="flex items-center h-full w-fit mx-auto text-xs">
+                                                        No variant data has been recorded for this feature flag in the
+                                                        last 30 days.
+                                                    </p>
+                                                )}
+                                            </CardContent>
+                                            {metrics.variants.total > 0 && (
+                                                <CardFooter>Total: {metrics.variants.total}</CardFooter>
+                                            )}
+                                        </Card>
                                     </div>
                                 </TabsContent>
                                 <TabsContent value="activity" className="flex flex-col gap-4">

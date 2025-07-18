@@ -155,6 +155,7 @@ const Sidebar = function (props: { expanded: boolean } & AuthProp) {
                                 <SidebarMenuButton
                                     size="lg"
                                     className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                                    data-dusk="user-menu"
                                 >
                                     {props.auth?.user && <UserAvatar user={props.auth?.user} />}
                                     <div className="grid grow text-left text-sm leading-tight">
@@ -205,7 +206,7 @@ const Sidebar = function (props: { expanded: boolean } & AuthProp) {
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem asChild>
-                                    <Link method="post" href={route('logout')} className="w-full">
+                                    <Link method="post" href={route('logout')} className="w-full" data-dusk="logout">
                                         <LogOut />
                                         Log out
                                     </Link>

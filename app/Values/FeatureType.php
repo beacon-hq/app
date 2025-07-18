@@ -20,11 +20,12 @@ use Bag\Bag;
 use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
 use Bag\Values\Optional;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Carbon;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
- * @method static static from(Optional|string $id, Optional|string $name, Optional|string $description, Optional|string $icon, Color|string $color = '#e3e3e3', bool $temporary = false, Carbon|null $createdAt = null, Carbon|null $updatedAt = null)
+ * @method static static from(Optional|string $id, Optional|string $name, Optional|string $description, Optional|string $icon, Color|string $color = '#e3e3e3', bool $temporary = false, bool $isDefault = false, Carbon|null $createdAt = null, Carbon|null $updatedAt = null)
  * @method static FeatureTypeCollection<FeatureType> collect(iterable $items)
  * @method static FeatureTypeFactory<FeatureType> factory(Collection|array|int $data = [])
  */
@@ -46,8 +47,9 @@ readonly class FeatureType extends Bag
         #[Cast(ColorCast::class)]
         public Color|string $color = '#e3e3e3',
         public bool $temporary = false,
-        public ?Carbon $createdAt = null,
-        public ?Carbon $updatedAt = null,
+        public bool $isDefault = false,
+        public ?CarbonImmutable $createdAt = null,
+        public ?CarbonImmutable $updatedAt = null,
     ) {
     }
 
@@ -59,6 +61,7 @@ readonly class FeatureType extends Bag
             'name' => $featureType->name,
             'description' => $featureType->description,
             'temporary' => $featureType->temporary,
+            'isDefault' => $featureType->is_default,
             'color' => $featureType->color,
             'icon' => $featureType->icon,
             'createdAt' => $featureType->created_at,
@@ -73,6 +76,7 @@ readonly class FeatureType extends Bag
             'description' => ['nullable'],
             'color' => ['required'],
             'icon' => ['required'],
+            'isDefault' => ['boolean'],
         ];
     }
 }

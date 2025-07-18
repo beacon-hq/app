@@ -8,6 +8,7 @@ use App\Services\AppContextService;
 use App\Services\OrganizationService;
 use App\Services\TeamService;
 use App\Values\Organization;
+use App\Values\Team;
 use App\Values\User;
 use Bag\Attributes\WithoutValidation;
 use Illuminate\Http\RedirectResponse;
@@ -48,7 +49,7 @@ class OrganizationController extends Controller
 
         $this->appContextService->setOrganization($organization);
 
-        $team = $this->teamService->create(App\Values\Team::from(
+        $team = $this->teamService->create(Team::from(
             name: $request->json('team.name'),
             color: $request->json('team.color'),
             icon: $request->json('team.icon'),

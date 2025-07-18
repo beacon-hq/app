@@ -30,7 +30,7 @@ class ApiRateLimitServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Skip rate limiting if it's disabled
-        if (!config('beacon.api.rate_limiting.enabled', true)) {
+        if (!config('beacon.billing.enabled') || !config('beacon.api.rate_limiting.enabled', false)) {
             RateLimiter::for('api', function (Request $request) {
                 return Limit::none();
             });
@@ -40,7 +40,7 @@ class ApiRateLimitServiceProvider extends ServiceProvider
 
         // Define rate limiter for API requests
         RateLimiter::for('api', function (Request $request) {
-            $organization = App::context()->has('organization') ? App::context()->organization : OrganizationValue::from(auth()->user()->organization);
+            $organization = App::context()->has('organization') ? App::context()->organization : OrganizationValue::from(auth()->user()?->organization ?? []);
 
             // Get the organization service from the container
             $subscriptionBillingService = $this->app->make(SubscriptionBillingService::class);

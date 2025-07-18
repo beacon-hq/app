@@ -85,4 +85,10 @@ readonly class Product extends Bag
             'metered_price' => Money::ofMinor($model->meteredPrice->unit_amount, 'USD')->multipliedBy($model->metadata['evaluation_tier_size'])->dividedBy(1000)
         ];
     }
+
+    public static function formatZeroMoney(): string
+    {
+        return Money::of(0, 'USD')->formatTo('en_US', true);
+    }
+
 }

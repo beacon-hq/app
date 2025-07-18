@@ -5,30 +5,25 @@ import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { Textarea } from '@/Components/ui/textarea';
-import { cn } from '@/lib/utils';
+import { usePolicyStore } from '@/stores/policyStore';
 import { FormErrors } from '@/types/global';
-import { GripVertical } from 'lucide-react';
-import React, { FormEvent, forwardRef, useState } from 'react';
+import React, { FormEvent } from 'react';
 
 export function Form({
     submit,
-    data,
-    setData,
     errors,
     processing,
     onCancel,
     policies,
-    subjects,
 }: {
     submit: (e: FormEvent) => void;
-    data: Policy;
-    setData: (key: keyof Policy, value: any) => void;
     errors: FormErrors;
     processing: any;
     onCancel: any;
     policies?: PolicyCollection;
-    subjects?: string[];
 }) {
+    const { policy, updatePolicy } = usePolicyStore();
+
     return (
         <form onSubmit={(e) => e.preventDefault()} className="flex flex-col space-y-4">
             <div>
@@ -39,9 +34,9 @@ export function Form({
                     <Input
                         id="name"
                         type="text"
-                        value={data.name as string}
+                        value={policy?.name as string}
                         autoComplete="off"
-                        onChange={(e) => setData('name', e.target.value)}
+                        onChange={(e) => updatePolicy({ ...policy, name: e.target.value } as Policy)}
                     />
                 </div>
                 <InputError message={errors?.name} />
@@ -50,66 +45,58 @@ export function Form({
                 <Label htmlFor="description">Description</Label>
                 <Textarea
                     id="description"
-                    value={data.description ?? ''}
+                    value={policy?.description ?? ''}
                     rows={8}
-                    onChange={(e) => setData('description', e.target.value)}
+                    onChange={(e) => updatePolicy({ ...policy, description: e.target.value } as Policy)}
                 />
                 <InputError message={errors?.description} />
             </div>
-            {data.id && (
-                <PolicyDefinitionForm
-                    data={data}
-                    setData={setData}
-                    errors={errors}
-                    processing={processing}
-                    policies={policies}
-                />
-            )}
+            {policy?.id !== undefined && <PolicyDefinitionForm policies={policies} />}
             <div className="flex justify-end">
                 <Button variant="link" className="mr-2" type="button" onClick={onCancel}>
                     Cancel
                 </Button>
                 <Button type="submit" className="w-24" disabled={processing} onClick={submit}>
-                    {data.id ? 'Update' : 'Create'}
+                    {policy?.id ? 'Update' : 'Create'}
                 </Button>
             </div>
         </form>
     );
 }
-
-function Toggle({ value, onValueChange }: { value: boolean; onValueChange: (value: boolean) => void }) {
-    const [checked, setChecked] = useState(value);
-
-    function setState(value: boolean) {
-        setChecked(value);
-        onValueChange(value);
-    }
-
-    return (
-        <div
-            className="rounded-md flex flex-row w-full mx-auto h-10 p-0.5 group"
-            data-state={checked ? 'checked' : 'unchecked'}
-        >
-            <div
-                className="bg-secondary rounded-l-md w-1/2 h-full pt-1.5 text-center group-data-[state=checked]:bg-primary group-data-[state=checked]:text-secondary cursor-pointer group-data-[state=checked]:font-semibold"
-                onClick={() => setState(true)}
-            >
-                AND
-            </div>
-            <div
-                className="bg-secondary rounded-r-md w-1/2 h-full pt-1.5 text-center group-data-[state=unchecked]:bg-primary group-data-[state=unchecked]:text-secondary cursor-pointer group-data-[state=unchecked]:font-semibold"
-                onClick={() => setState(false)}
-            >
-                OR
-            </div>
-        </div>
-    );
-}
-
-const SortableThumb = forwardRef<HTMLDivElement, { className?: string }>((props, ref) => {
-    return (
-        <div ref={ref} {...props} className={cn(props.className ?? 'cursor-move')}>
-            <GripVertical />
-        </div>
-    );
-});
+//
+// function Toggle({ value, onValueChange }: { value: boolean; onValueChange: (value: boolean) => void }) {
+//     const [checked, setChecked] = useState(value);
+//
+//     function setState(value: boolean) {
+//         setChecked(value);
+//         onValueChange(value);
+//     }
+//
+//     return (
+//         <div
+//             className="rounded-md flex flex-row w-full mx-auto h-10 p-0.5 group"
+//             data-state={checked ? 'checked' : 'unchecked'}
+//         >
+//             <div
+//                 className="bg-secondary rounded-l-md w-1/2 h-full pt-1.5 text-center group-data-[state=checked]:bg-primary group-data-[state=checked]:text-secondary cursor-pointer group-data-[state=checked]:font-semibold"
+//                 onClick={() => setState(true)}
+//             >
+//                 AND
+//             </div>
+//             <div
+//                 className="bg-secondary rounded-r-md w-1/2 h-full pt-1.5 text-center group-data-[state=unchecked]:bg-primary group-data-[state=unchecked]:text-secondary cursor-pointer group-data-[state=unchecked]:font-semibold"
+//                 onClick={() => setState(false)}
+//             >
+//                 OR
+//             </div>
+//         </div>
+//     );
+// }
+//
+// const SortableThumb = forwardRef<HTMLDivElement, { className?: string }>((props, ref) => {
+//     return (
+//         <div ref={ref} {...props} className={cn(props.className ?? 'cursor-move')}>
+//             <GripVertical />
+//         </div>
+//     );
+// });

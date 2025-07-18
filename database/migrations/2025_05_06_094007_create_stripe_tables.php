@@ -38,5 +38,9 @@ return new class () extends Migration {
             $table->boolean('active');
             $table->timestamps();
         });
+
+        if (config('beacon.billing.enabled', false)) {
+            \Artisan::call('stripe:sync');
+        }
     }
 };

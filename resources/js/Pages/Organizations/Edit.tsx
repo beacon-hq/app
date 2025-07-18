@@ -15,6 +15,7 @@ export default function Edit({ organization }: { organization: Organization }) {
         name: organization.name,
         id: organization.id,
         owner: organization.owner,
+        onboarded_at: organization.onboarded_at,
     });
 
     const handleSubmit = () => {

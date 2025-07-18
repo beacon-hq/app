@@ -19,6 +19,7 @@ class FeatureTypeFactory extends Factory
             'name' => $this->faker->name(),
             'description' => $this->faker->text(),
             'temporary' => $this->faker->boolean(),
+            'is_default' => false,
             'color' => $this->faker->hexColor(),
             'icon' => $this->faker->word(),
             'team_id' => Team::factory(),

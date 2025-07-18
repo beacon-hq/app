@@ -20,7 +20,7 @@ class MetricsService
             'changesMetrics' => $this->metricsRepository->getChangesMetrics(),
             'createdMetrics' => $this->metricsRepository->getCreatedMetrics(),
             'archivedMetrics' => $this->metricsRepository->getArchivedMetrics(),
-            'flagStatusData' => $this->metricsRepository->getFlagStatusData(),
+            'flagStatusData' => $this->metricsRepository->getFlagLifeCycleMetrics(),
             'flagTypeData' => $this->metricsRepository->getFlagTypeData(),
             'ageData' => $this->metricsRepository->getAgeData(),
             'usageOverTimeData' => $this->metricsRepository->getUsageOverTimeData(),
@@ -34,5 +34,10 @@ class MetricsService
         return Cache::flexible('plan-metrics', [30, 60], fn () => [
             'evaluations' => $this->metricsRepository->getPlanUsage(),
         ]);
+    }
+
+    public function getFlagMetrics(string $featureFlagId): array
+    {
+        return $this->metricsRepository->getFlagMetrics($featureFlagId);
     }
 }

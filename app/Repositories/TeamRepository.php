@@ -23,7 +23,7 @@ class TeamRepository
             ->withWhereHas(
                 'organization',
                 fn (BelongsTo|Builder $query) => $query
-                    ->whereIn('id', $organizations->pluck('id'))
+                    ->whereIn('id', $organizations->pluck('id')->toArray())
             )
             ->findOrFail($id);
     }

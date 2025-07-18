@@ -12,10 +12,10 @@ import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { SidebarTrigger, SidebarWrapper, useSidebar } from '@/Components/ui/sidebar';
 import { Toaster } from '@/Components/ui/sonner';
+import { useAlertHandler } from '@/hooks/use-alert-handler';
 import { Gate } from '@/lib/permissions';
 import { usePage } from '@inertiajs/react';
 import React, { PropsWithChildren, useState } from 'react';
-import { useAlertHandler } from '@/hooks/use-alert-handler';
 
 export default function Authenticated({
     breadcrumbs,
@@ -70,17 +70,19 @@ export default function Authenticated({
                     </div>
                 )}
 
-                <header className="bg-background w-full px-12 pt-4 flex justify-between">
-                    {breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} />}
-                    {!breadcrumbs && (
-                        <h1 className="inline-block text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                            {header}
-                        </h1>
-                    )}
-                    {headerAction}
-                </header>
-                <main className="w-full min-h-(--body-height) block bg-background px-12 pb-6">{children}</main>
-                <Footer />
+                <div data-dusk="main" className="bg-background">
+                    <header className="bg-background w-full px-12 pt-4 flex justify-between">
+                        {breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} />}
+                        {!breadcrumbs && (
+                            <h1 className="inline-block text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                                {header}
+                            </h1>
+                        )}
+                        {headerAction}
+                    </header>
+                    <main className="w-full min-h-(--body-height) block bg-background px-12 pb-6">{children}</main>
+                    <Footer />
+                </div>
             </div>
             <Dialog open={createTeamOpen} onOpenChange={setCreateTeamOpen}>
                 <DialogContent>

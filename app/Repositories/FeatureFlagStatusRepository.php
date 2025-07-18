@@ -29,6 +29,12 @@ class FeatureFlagStatusRepository
 
     public function evaluate(FeatureFlag $featureFlag, FeatureFlagContext $context): FeatureFlagResponse
     {
+        // If the feature flag has no specific status for the application and environment,
+        // return the default status of the feature flag.
+        if (FeatureFlagStatus::whereFeatureFlag($featureFlag)->count() === 0) {
+            return $featureFlag->status;
+        }
+
         $status = FeatureFlagStatus::query()
             ->whereApplication($context->appName)
             ->whereEnvironment($context->environment)

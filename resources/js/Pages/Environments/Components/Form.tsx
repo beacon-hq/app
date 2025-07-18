@@ -49,12 +49,17 @@ export function Form({
                     autoComplete="off"
                     disabled={data.id !== undefined && data.id !== ''}
                     onChange={(e) => setData('name', e.target.value)}
+                    data-dusk="input-environment-name"
                 />
                 <InputError message={errors?.name} />
             </div>
             <div>
                 <Label>Color</Label>
-                <ColorPicker onColorChange={(color) => setData('color', color)} color={data.color} />
+                <ColorPicker
+                    onColorChange={(color) => setData('color', color)}
+                    color={data.color}
+                    data-dusk="color-picker"
+                />
                 <InputError message={errors?.color} />
             </div>
             <div>
@@ -64,6 +69,7 @@ export function Form({
                     value={data.description ?? ''}
                     rows={8}
                     onChange={(e) => setData('description', e.target.value)}
+                    data-dusk="input-environment-description"
                 />
                 <InputError message={errors?.description} />
             </div>
@@ -71,7 +77,7 @@ export function Form({
                 <Button variant="link" className="mr-2" type="button" onClick={onCancel}>
                     Cancel
                 </Button>
-                <Button type="submit" className="w-24" disabled={processing}>
+                <Button type="submit" className="w-24" disabled={processing} data-dusk="submit-environment">
                     {data.id ? 'Update' : 'Create'}
                 </Button>
             </div>

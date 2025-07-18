@@ -13,10 +13,11 @@ import { Sheet, SheetContent, SheetTitle } from '@/Components/ui/sheet';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Form } from '@/Pages/FeatureFlags/Components/Form';
 import Table from '@/Pages/FeatureFlags/Components/Table';
+import { useFeatureFlagStore } from '@/stores/featureFlagStore';
 import { PageProps } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { PlusCircle } from 'lucide-react';
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 
 export default function Index({
     featureFlags,
@@ -41,8 +42,10 @@ export default function Index({
     applications: ApplicationCollection;
     environments: EnvironmentCollection;
 }) {
+    const { featureFlag, setFeatureFlag } = useFeatureFlagStore();
+
     const [showSheet, setShowSheet] = useState(false);
-    const { data, setData, post, errors, reset, processing, transform } = useForm<FeatureFlag>({
+    const { setData, post, errors, reset, processing, transform } = useForm<FeatureFlag>({
         id: undefined,
         status: false,
         description: '',
@@ -53,6 +56,7 @@ export default function Index({
         last_seen_at: null,
         created_at: null,
         updated_at: null,
+        completed_at: null,
     });
     const [tableOptions] = useState<TableOptions>({
         page,
@@ -67,6 +71,7 @@ export default function Index({
             onSuccess: function () {
                 setShowSheet(false);
                 reset();
+                setFeatureFlag(null);
             },
         });
     };
@@ -74,7 +79,14 @@ export default function Index({
     const handleCancel = () => {
         setShowSheet(false);
         reset();
+        setFeatureFlag(null);
     };
+
+    useEffect(() => {
+        if (featureFlag !== null) {
+            setData(featureFlag);
+        }
+    }, [featureFlag]);
 
     return (
         <Authenticated
@@ -111,8 +123,6 @@ export default function Index({
                     <SheetTitle className="mb-4">New Feature Flag</SheetTitle>
                     <Form
                         submit={submit}
-                        data={data}
-                        setData={setData}
                         errors={errors}
                         processing={processing}
                         onCancel={handleCancel}

@@ -13,7 +13,7 @@ it('lists applications', function () {
     $user = User::factory()->hasAttached($team)->create();
     Application::factory(5)->for($team)->create();
 
-    $this->actingAs($user)->get('/applications')
+    $this->actingAs($user)->get(route('applications.index'))
         ->assertInertia(
             fn (Assert $page) => $page
                 ->component('Applications/Index')
@@ -22,38 +22,38 @@ it('lists applications', function () {
 });
 
 it('creates an application', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user] = createOwner();
 
-    $this->actingAs($user)->post('/applications', [
+    $this->actingAs($user)->post(route('applications.store'), [
         'name' => 'Test Application',
         'display_name' => 'Test Application',
         'color' => Color::EMERALD->value,
-    ])->assertRedirect('/applications');
+    ])->assertRedirectToRoute('applications.index');
 
     $this->assertDatabaseHas('applications', [
         'name' => 'Test Application',
         'display_name' => 'Test Application',
-        'slug' => 'test-application',
         'color' => Color::EMERALD->value,
         'team_id' => $team->id,
     ]);
 });
 
 it('fails validation with missing required fields on create', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user] = createOwner();
 
-    $this->actingAs($user)->post('/applications', [
-    ])->assertInvalid(['name', 'color']);
+    $this
+        ->actingAs($user)
+        ->post(route('applications.store'), [])
+        ->assertInvalid(['name']);
 });
 
 it('shows the edit form', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user] = createOwner();
     $application = Application::factory()->for($team)->create();
 
-    $this->actingAs($user)->get("/applications/{$application->slug}/edit")
+    $this
+        ->actingAs($user)
+        ->get(route('applications.edit', ['application' => $application->id]))
         ->assertInertia(
             fn (Assert $page) => $page
                 ->component('Applications/Edit')
@@ -61,43 +61,44 @@ it('shows the edit form', function () {
                 ->where('application', [
                     'name' => $application->name,
                     'display_name' => $application->display_name,
-                    'slug' => $application->slug,
                     'description' => $application->description,
                     'color' => $application->color,
                     'environments' => $application->environments->toArray(),
                     'id' => $application->id,
-                    'last_seen_at' => (string) $application->last_seen_at,
+                    'last_seen_at' => $application->last_seen_at->toIso8601ZuluString('µ'),
                 ])
         );
 });
 
 it('updates an application', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user] = createOwner();
     $application = Application::factory()->for($team)->create();
 
-    $this->actingAs($user)->put("/applications/{$application->slug}", [
-        'display_name' => 'Updated Application',
-        'color' => Color::EMERALD->value,
-        'description' => 'updated description',
-    ])->assertRedirect('/applications');
+    $this
+        ->actingAs($user)
+        ->put(route('applications.update', ['application' => $application->id]), [
+            'display_name' => 'Updated Application',
+            'color' => Color::EMERALD->value,
+            'description' => 'updated description',
+        ])
+        ->assertRedirectToRoute('applications.index');
 
     $this->assertDatabaseHas('applications', [
         'name' => $application->name,
         'display_name' => 'Updated Application',
-        'slug' => $application->slug,
         'color' => Color::EMERALD->value,
         'description' => 'updated description',
     ]);
 });
 
 it('fails validation with missing required fields on update', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user] = createOwner();
     $application = Application::factory()->for($team)->create();
 
     $this
         ->actingAs($user)
-        ->put("/applications/{$application->slug}", [])
-        ->assertInvalid(['color']);
+        ->put(route('applications.update', ['application' => $application->id]), [
+            'displayName' => '',
+        ])
+        ->assertInvalid(['displayName']);
 });

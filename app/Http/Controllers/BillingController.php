@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Models\Organization;
 use App\Services\MetricsService;
 use App\Services\ProductService;
 use App\Services\SubscriptionBillingService;
@@ -12,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\App;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class BillingController extends Controller
 {
@@ -39,9 +39,9 @@ class BillingController extends Controller
         ]);
     }
 
-    public function show(string $billing): \Symfony\Component\HttpFoundation\Response
+    public function show(string $billing): SymfonyResponse
     {
-        return Organization::find(App::context()->organization->id)->downloadInvoice($billing);
+        return $this->subscriptionBillingService->downloadInvoice(App::context()->organization, $billing);
     }
 
     public function update(string $billing)

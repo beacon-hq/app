@@ -1,4 +1,4 @@
-import { FeatureFlag, FeatureFlagStatus, RolloutStrategy, VariantStrategy } from '@/Application';
+import { FeatureFlag, FeatureFlagStatus, PolicyDefinitionType, RolloutStrategy, VariantStrategy } from '@/Application';
 import { ulid } from 'ulidx';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
@@ -14,7 +14,7 @@ interface FeatureFlagState {
     featureFlag: FeatureFlag | null;
 
     // Feature flag actions
-    setFeatureFlag: (featureFlag: FeatureFlag) => void;
+    setFeatureFlag: (featureFlag: FeatureFlag | null) => void;
 
     // Status CRUD actions
     updateStatus: (status: FeatureFlagStatus) => void;
@@ -31,6 +31,9 @@ interface FeatureFlagState {
         }>,
     ) => void;
 
+    // Definition management for specific status
+    addStatusPolicyDefinition: (statusId: string) => void;
+
     // Variant management for specific status
     setStatusVariants: (statusId: string, variants: Variant[]) => void;
     updateStatusVariant: (statusId: string, variantId: string, updates: Partial<Variant>) => void;
@@ -45,6 +48,21 @@ interface FeatureFlagState {
         }>,
     ) => void;
 }
+
+export const emptyStatus = (): FeatureFlagStatus => ({
+    definition: [],
+    application: null,
+    environment: null,
+    feature_flag: null,
+    status: false,
+    id: ulid(),
+    rollout_strategy: RolloutStrategy.RANDOM,
+    rollout_percentage: 100,
+    rollout_context: [],
+    variants: [],
+    variant_strategy: VariantStrategy.RANDOM,
+    variant_context: [],
+});
 
 export const useFeatureFlagStore = create<FeatureFlagState>()(
     devtools((set) => ({
@@ -77,26 +95,10 @@ export const useFeatureFlagStore = create<FeatureFlagState>()(
                 if (!state.featureFlag) return state;
                 const statuses = state.featureFlag.statuses || [];
 
-                // Create a new status with default properties
-                const newStatus: FeatureFlagStatus = {
-                    definition: [],
-                    application: null,
-                    environment: null,
-                    feature_flag: null,
-                    status: false,
-                    id: ulid(),
-                    rollout_strategy: RolloutStrategy.RANDOM,
-                    rollout_percentage: 100,
-                    rollout_context: [],
-                    variants: [],
-                    variant_strategy: VariantStrategy.RANDOM,
-                    variant_context: [],
-                };
-
                 return {
                     featureFlag: {
                         ...state.featureFlag,
-                        statuses: [...statuses, newStatus],
+                        statuses: [...statuses, emptyStatus()],
                     },
                 };
             }),
@@ -117,6 +119,30 @@ export const useFeatureFlagStore = create<FeatureFlagState>()(
                                     rollout_strategy: rolloutUpdates.strategy ?? status.rollout_strategy,
                                     rollout_context: rolloutUpdates.context ?? status.rollout_context,
                                 };
+                            }
+                            return status;
+                        }),
+                    },
+                };
+            }),
+
+        addStatusPolicyDefinition: (statusId) =>
+            set((state) => {
+                if (!state.featureFlag) return state;
+                const statuses = state.featureFlag.statuses || [];
+                return {
+                    featureFlag: {
+                        ...state.featureFlag,
+                        statuses: statuses.map((status) => {
+                            if (status.id === statusId) {
+                                const newCondition = {
+                                    type: PolicyDefinitionType.EXPRESSION,
+                                    subject: '',
+                                    operator: null,
+                                    values: [],
+                                };
+                                const updatedDefinition = [...(status.definition || []), newCondition];
+                                return { ...status, definition: updatedDefinition };
                             }
                             return status;
                         }),
@@ -192,7 +218,7 @@ export const useFeatureFlagStore = create<FeatureFlagState>()(
                         statuses: statuses.map((status) => {
                             if (status.id === statusId) {
                                 const newVariant: Variant = {
-                                    id: crypto.randomUUID(),
+                                    id: ulid(),
                                     value: '',
                                     type: 'string',
                                     percentage: 0,

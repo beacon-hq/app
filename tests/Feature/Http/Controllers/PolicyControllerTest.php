@@ -3,16 +3,13 @@
 declare(strict_types=1);
 
 use App\Models\Policy;
-use App\Models\Team;
-use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 
 it('lists policies', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user] = createOwner();
     Policy::factory(5)->for($team)->create();
 
-    $this->actingAs($user)->get('/policies')
+    $this->actingAs($user)->get(route('policies.index'))
         ->assertInertia(
             fn (Assert $page) => $page
                 ->component('Policies/Index')
@@ -21,35 +18,34 @@ it('lists policies', function () {
 });
 
 it('creates a policy', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user] = createOwner();
 
-    $this->actingAs($user)->post('/policies', [
+    $this->actingAs($user)->post(route('policies.store'), [
         'name' => 'Test Policy',
         'description' => 'test description'
-    ])->assertRedirect('/policies');
+    ])->assertRedirectToRoute('policies.index');
 
     $this->assertDatabaseHas('policies', [
         'name' => 'Test Policy',
-        'slug' => 'test-policy',
         'description' => 'test description',
         'team_id' => $team->id,
     ]);
 });
 
 it('fails validation with missing required fields on create', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [, $user] = createOwner();
 
-    $this->actingAs($user)->post('/policies', [])->assertInvalid(['name', 'description']);
+    $this
+        ->actingAs($user)
+        ->post(route('policies.store'), [])
+        ->assertInvalid(['name']);
 });
 
 it('shows the edit form', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user] = createOwner();
     $policy = Policy::factory()->for($team)->create();
 
-    $this->actingAs($user)->get("/policies/{$policy->slug}/edit")
+    $this->actingAs($user)->get(route('policies.edit', ['policy' => $policy->id]))
         ->assertInertia(
             fn (Assert $page) => $page
                 ->component('Policies/Edit')
@@ -59,7 +55,6 @@ it('shows the edit form', function () {
                     'description' => $policy->description,
                     'definition' => json_decode($policy->definition->toJson(), true),
                     'id' => $policy->id,
-                    'slug' => $policy->slug,
                     'created_at' => $policy->created_at->toISOString(),
                     'updated_at' => $policy->updated_at->toISOString(),
                 ])
@@ -67,27 +62,24 @@ it('shows the edit form', function () {
 });
 
 it('updates a policy', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user] = createOwner();
     $policy = Policy::factory()->for($team)->create();
 
-    $this->actingAs($user)->put("/policies/{$policy->slug}", [
+    $this->actingAs($user)->put(route('policies.update', ['policy' => $policy->id]), [
         'name' => 'Updated Policy',
         'description' => 'updated description',
-    ])->assertRedirect("/policies/{$policy->slug}/edit");
+    ])->assertRedirectToRoute('policies.edit', ['policy' => $policy->id]);
 
     $this->assertDatabaseHas('policies', [
         'name' => 'Updated Policy',
-        'slug' => 'updated-policy',
         'description' => 'updated description',
     ]);
 });
 
 it('fails validation on update', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user] = createOwner();
     $policy = Policy::factory()->for($team)->create();
 
-    $this->actingAs($user)->put("/policies/{$policy->slug}", [])
-        ->assertInvalid(['description']);
+    $this->actingAs($user)->put(route('policies.update', ['policy' => $policy->id]), [])
+        ->assertInvalid(['name']);
 });

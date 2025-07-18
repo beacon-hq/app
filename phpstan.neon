@@ -3,5 +3,9 @@ includes:
 parameters:
     paths:
         - app/
-    level: 4
+    level: 1
     treatPhpDocTypesAsCertain: true
+    disableSchemaScan: true
+    disableMigrationScan: true
+    parallel:
+        maximumNumberOfProcesses: 1

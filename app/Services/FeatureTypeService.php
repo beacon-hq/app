@@ -41,4 +41,25 @@ class FeatureTypeService
 
         return FeatureType::from($featureType);
     }
+
+    public function findByName(string $string): FeatureType
+    {
+        $featureType = $this->featureTypeRepository->findByName($string);
+
+        return FeatureType::from($featureType);
+    }
+
+    public function getDefault(): FeatureType
+    {
+        $featureType = $this->featureTypeRepository->getDefault();
+
+        return FeatureType::from($featureType);
+    }
+
+    public function setAsDefault(string $id): FeatureType
+    {
+        $featureType = $this->featureTypeRepository->setAsDefault($id);
+
+        return FeatureType::from($featureType);
+    }
 }

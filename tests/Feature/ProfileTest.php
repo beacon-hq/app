@@ -9,7 +9,7 @@ test('profile page is displayed', function () {
 
     $response = $this
         ->actingAs($user)
-        ->get('/profile');
+        ->get(route('profile.edit'));
 
     $response->assertOk();
 });
@@ -27,7 +27,7 @@ test('profile information can be updated', function () {
 
     $response
         ->assertSessionHasNoErrors()
-        ->assertRedirect('/profile');
+        ->assertRedirectToRoute('profile.edit');
 
     $user->refresh();
 
@@ -50,7 +50,7 @@ test('email verification status is unchanged when the email address is unchanged
 
     $response
         ->assertSessionHasNoErrors()
-        ->assertRedirect('/profile');
+        ->assertRedirectToRoute('profile.edit');
 
     $this->assertNotNull($user->refresh()->email_verified_at);
 });
@@ -66,7 +66,7 @@ test('user can delete their account', function () {
 
     $response
         ->assertSessionHasNoErrors()
-        ->assertRedirect('/');
+        ->assertRedirectToRoute('welcome');
 
     $this->assertGuest();
     $this->assertNull($user->fresh());
@@ -84,7 +84,7 @@ test('correct password must be provided to delete account', function () {
 
     $response
         ->assertSessionHasErrors('password')
-        ->assertRedirect('/profile');
+        ->assertRedirectToRoute('profile.edit');
 
     $this->assertNotNull($user->fresh());
 });

@@ -12,14 +12,19 @@ use App\Models\Team;
 use App\Values\AppContext;
 use App\Values\Organization as OrganizationValue;
 use App\Values\Team as TeamValue;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Laravel\Cashier\Cashier;
+use Laravel\Dusk\Dusk;
 use Laravel\Pennant\Middleware\EnsureFeaturesAreActive;
 use Laravel\Sanctum\Sanctum;
+use URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,7 +33,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // URL::forceScheme('https');
+        !Str::contains(config('app.url'), ['localhost', '127.0.0.1']) && URL::forceScheme('https');
+
+        Date::use(CarbonImmutable::class);
 
         app()->singleton(AppContext::class, fn () => AppContext::from(AppContext::empty()));
 
@@ -81,6 +88,10 @@ class AppServiceProvider extends ServiceProvider
                 abort(503);
             }
         );
+
+        if (app()->environment('local')) {
+            Dusk::selectorHtmlAttribute('data-dusk');
+        }
     }
 
     /**

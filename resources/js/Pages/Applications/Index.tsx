@@ -1,5 +1,6 @@
 import { Application, ApplicationCollection } from '@/Application';
-import ItemList from '@/Components/ItemList';
+import { IconColor } from '@/Components/IconColor';
+import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Sheet, SheetContent, SheetTitle } from '@/Components/ui/sheet';
@@ -43,7 +44,7 @@ export default function Index({ applications }: PageProps & { applications: Appl
             header="Applications"
             icon="AppWindowMac"
             headerAction={
-                <Button onClick={() => setShowSheet(true)}>
+                <Button onClick={() => setShowSheet(true)} data-dusk="button-new-application">
                     <PlusCircle className="mr-2 inline-block h-6 w-6" />
                     New Application
                 </Button>
@@ -52,7 +53,7 @@ export default function Index({ applications }: PageProps & { applications: Appl
             <Head title="Applications" />
             <div className="grid grid-cols-3 gap-6 mt-6">
                 {applications.map((application: Application) => (
-                    <Card className="w-full relative" key={application.id}>
+                    <Card className="w-full relative" key={application.id} data-dusk="card-application">
                         <CardHeader className="flex flex-row justify-between items-center">
                             <CardTitle>
                                 <h2 className="text-xl truncate">
@@ -60,20 +61,31 @@ export default function Index({ applications }: PageProps & { applications: Appl
                                         href={route('applications.edit', {
                                             application: application.id as string,
                                         })}
+                                        className="flex flex-row items-center"
                                     >
                                         <span className="absolute inset-0"></span>
+                                        <IconColor color={application.color} className="inline-block mr-2" />
                                         {application.display_name}
                                     </Link>
                                 </h2>
                             </CardTitle>
-                            {(application?.environments?.length ?? 0) > 0 && (
-                                <ItemList items={application.environments as any} />
-                            )}
                         </CardHeader>
                         <CardContent className="grow">
                             <p className="text-sm overflow-hidden truncate -mt-2 text-neutral-500">
                                 {application.description}
                             </p>
+                            <div className="flex gap-2 mt-4">
+                                {(application?.environments?.length ?? 0) > 0 &&
+                                    application?.environments?.map((environment) => (
+                                        <Badge
+                                            className="bg-gray-200 dark:bg-gray-800 rounded-full text-primary py-0 pl-0"
+                                            key={environment.id}
+                                        >
+                                            <IconColor color={environment.color} className="mr-2" />
+                                            {environment.name}
+                                        </Badge>
+                                    ))}
+                            </div>
                         </CardContent>
                         <CardFooter variant="inset" className="bg-neutral-100">
                             <p className="text-xs text-neutral-500">

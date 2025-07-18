@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 use Laravel\Fortify\Features;
 
+env('FORTIFY_TESTING', false) && Features::twoFactorAuthentication([
+    'confirm' => false,
+    'confirmPassword' => false
+]);
+
 return [
 
     /*
@@ -148,14 +153,18 @@ return [
     'features' => [
         Features::registration(),
         Features::resetPasswords(),
-        Features::emailVerification(),
         Features::updateProfileInformation(),
         Features::updatePasswords(),
-        Features::twoFactorAuthentication([
-            'confirm' => true,
-            'confirmPassword' => true,
-            // 'window' => 0,
-        ]),
+        ... (env('FORTIFY_TESTING', false)) ? [] : [
+            Features::emailVerification(),
+            Features::twoFactorAuthentication([
+                'confirm' => true,
+                'confirmPassword' => true,
+                // 'window' => 0,
+            ]),
+        ],
     ],
+
+    'testing' => env('FORTIFY_TESTING', false),
 
 ];

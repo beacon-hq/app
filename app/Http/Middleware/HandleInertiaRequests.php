@@ -63,9 +63,6 @@ class HandleInertiaRequests extends Middleware
 
         return [
             ...parent::share($request),
-            'ssr' => [
-                'enabled' => true,
-            ],
             'ziggy' => fn () => [
                 ...(new Ziggy())->toArray(),
                 'location' => $request->url(),

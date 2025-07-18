@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Carbon;
 use Spatie\Activitylog\LogOptions;
@@ -30,6 +31,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property string $feature_type_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property Carbon|null $completed_at
  * @property bool $status
  * @property-read Collection<int, Application> $applications
  * @property-read int|null $applications_count
@@ -75,6 +77,7 @@ class FeatureFlag extends Model
         'feature_type_id',
         'team_id',
         'status',
+        'completed_at',
     ];
 
     public function featureType(): BelongsTo
@@ -118,6 +121,11 @@ class FeatureFlag extends Model
             ->withTimestamps();
     }
 
+    public function usages(): HasMany
+    {
+        return $this->hasMany(FeatureFlagUsage::class);
+    }
+
     public function scopeWhereEnvironment(Builder $query, array|string $environment): void
     {
         $query->whereHas(
@@ -158,6 +166,22 @@ class FeatureFlag extends Model
         );
     }
 
+    public function scopeWithComplete(Builder $query): void
+    {
+        $query->whereNotNull('completed_at');
+    }
+
+    public function scopeWithoutComplete(Builder $query): void
+    {
+        $query->whereNull('completed_at');
+    }
+
+
+    public function isCompleted(): bool
+    {
+        return $this->completed_at !== null;
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -165,6 +189,7 @@ class FeatureFlag extends Model
             ->logOnly([
                 'description',
                 'status',
+                'completed_at',
                 'featureType.name',
             ])
             ->logOnlyDirty()
@@ -176,6 +201,7 @@ class FeatureFlag extends Model
         return [
             'id' => 'string',
             'last_seen_at' => 'datetime',
+            'completed_at' => 'datetime',
         ];
     }
 }

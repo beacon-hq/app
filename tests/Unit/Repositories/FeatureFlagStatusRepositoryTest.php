@@ -13,7 +13,6 @@ use App\Models\FeatureType;
 use App\Models\Tag;
 use App\Models\Team;
 use App\Repositories\FeatureFlagStatusRepository;
-use App\Values\FeatureFlag as FeatureFlagValue;
 use App\Values\FeatureFlagContext;
 use App\Values\FeatureFlagResponse;
 use App\Values\PolicyDefinition;
@@ -41,10 +40,10 @@ it('evaluates scalar value policies', function (array $policyDefinition, array $
 
     $this->featureFlag->statuses()->sync([$featureFlagStatus]);
 
-    $context = FeatureFlagContext::from($context);
+    $context = FeatureFlagContext::from(...$context);
 
     $featureFlagStatusRepository = resolve(FeatureFlagStatusRepository::class);
-    $result = $featureFlagStatusRepository->evaluate(FeatureFlagValue::from($this->featureFlag), $context);
+    $result = $featureFlagStatusRepository->evaluate($this->featureFlag, $context);
 
     expect($result)
         ->toBeInstanceOf(FeatureFlagResponse::class)
@@ -63,10 +62,10 @@ it('evaluates array value policies', function (array $policyDefinition, array $c
     ]);
     $this->featureFlag->statuses()->sync([$featureFlagStatus]);
 
-    $context = FeatureFlagContext::from($context);
+    $context = FeatureFlagContext::from(...$context);
 
     $featureFlagStatusRepository = resolve(FeatureFlagStatusRepository::class);
-    $result = $featureFlagStatusRepository->evaluate(FeatureFlagValue::from($this->featureFlag), $context);
+    $result = $featureFlagStatusRepository->evaluate($this->featureFlag, $context);
 
     expect($result)
         ->toBeInstanceOf(FeatureFlagResponse::class)
@@ -93,10 +92,10 @@ it('does not evaluate invalid policies', function () {
         'environment' => $this->environment->name,
     ];
 
-    $context = FeatureFlagContext::from($context);
+    $context = FeatureFlagContext::from(...$context);
 
     $featureFlagStatusRepository = resolve(FeatureFlagStatusRepository::class);
-    $result = $featureFlagStatusRepository->evaluate(FeatureFlagValue::from($this->featureFlag), $context);
+    $result = $featureFlagStatusRepository->evaluate($this->featureFlag, $context);
 
     expect($result)
         ->toBeInstanceOf(FeatureFlagResponse::class)

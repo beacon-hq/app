@@ -48,6 +48,7 @@ class FeatureType extends Model
         'name',
         'description',
         'temporary',
+        'is_default',
         'color',
         'icon',
         'team_id',
@@ -58,6 +59,7 @@ class FeatureType extends Model
         return [
             'id' => 'string',
             'temporary' => 'boolean',
+            'is_default' => 'boolean',
         ];
     }
 }

@@ -8,8 +8,8 @@ use App\Services\InviteService;
 use App\Values\Invite;
 use App\Values\User;
 use Bag\Attributes\WithoutValidation;
-use Gate;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 
 class InviteController extends Controller
 {

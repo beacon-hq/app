@@ -7,6 +7,7 @@
 /storage/pail
 /vendor
 .env
+.env.dusk
 .env.backup
 .env.production
 .phpactor.json
@@ -26,3 +27,7 @@ docs/.vitepress/dist/
 docs/.vitepress/cache/
 /tests/output
 bootstrap/ssr
+
+**/caddy
+frankenphp
+frankenphp-worker.php

@@ -14,7 +14,7 @@ class EnsureTwoFactorAuthMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::guest()) {
+        if (Auth::guest() || config('fortify.testing', false)) {
             return $next($request);
         }
 

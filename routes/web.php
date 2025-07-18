@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Events\FeatureFlagEvaluated;
+use App\Events\FeatureFlagEvaluatedEvent;
 use App\Http\Controllers\AccessTokenController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\BillingController;
@@ -26,18 +26,27 @@ use App\Models\Environment;
 use App\Values\FeatureFlag;
 use App\Values\FeatureFlagContext;
 use App\Values\FeatureFlagResponse;
+use Bag\Values\Optional;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Lottery;
 
 Route::get('/test', function () {
     $flag = FeatureFlag::from(\App\Models\FeatureFlag::inRandomOrder()->first());
-    $c = FeatureFlagContext::from([
-        'appName' => Application::inRandomOrder()->first()->name,
-        'environment' => Environment::inRandomOrder()->first()->name,
-    ]);
+    $c = FeatureFlagContext::from(
+        scopeType: null,
+        scope: [],
+        appName: Application::inRandomOrder()->first()->name,
+        environment: Environment::inRandomOrder()->first()->name,
+        sessionId: Optional::empty(),
+        ip: Optional::empty(),
+        userAgent: Optional::empty(),
+        referrer: Optional::empty(),
+        url: Optional::empty(),
+        method: Optional::empty()
+    );
     $r = FeatureFlagResponse::from($flag->name, null, Lottery::odds(8, 10)->choose());
 
-    FeatureFlagEvaluated::dispatch($flag, $c, $r);
+    FeatureFlagEvaluatedEvent::dispatch($flag, $c, $r);
 })->name('test');
 
 Route::get('/', [IndexController::class, 'index'])->name('welcome');
@@ -79,10 +88,14 @@ Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
     Route::get('feature-flags/{featureFlag}/activity-log', [FeatureFlagController::class, 'activityLog'])
         ->name('feature-flags.activity-log');
 
+
     Route::resource(
         'feature-types',
         FeatureTypeController::class,
     )->except(['delete', 'create', 'show']);
+
+    Route::patch('/feature-types/{feature_type}/set-default', [FeatureTypeController::class, 'setDefault'])
+        ->name('feature-types.set-default');
 
     Route::resource(
         'tags',
@@ -139,6 +152,7 @@ Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
         Route::get('/feature-flags/{feature_flag}/overview', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.overview');
         Route::get('/feature-flags/{feature_flag}/policy', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.policy');
         Route::get('/feature-flags/{feature_flag}/activity', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.activity');
+        Route::get('/feature-flags/{feature_flag}/metrics', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.metrics');
     });
 });
 

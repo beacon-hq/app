@@ -21,8 +21,10 @@ class FeatureTypeController extends Controller
         ]);
     }
 
-    public function store(FeatureType $featureType, FeatureTypeService $featureTypeService): RedirectResponse
-    {
+    public function store(
+        FeatureType $featureType,
+        FeatureTypeService $featureTypeService
+    ): RedirectResponse {
         Gate::authorize('create', $featureType);
 
         $featureTypeService->create($featureType);
@@ -58,6 +60,24 @@ class FeatureTypeController extends Controller
             'alert',
             [
                 'message' => 'Feature type updated successfully.',
+                'status' => 'success',
+            ]
+        );
+    }
+
+    public function setDefault(
+        #[WithoutValidation]
+        FeatureType $featureType,
+        FeatureTypeService $featureTypeService
+    ): RedirectResponse {
+        Gate::authorize('update', $featureType);
+
+        $featureTypeService->setAsDefault($featureType->id);
+
+        return redirect()->route('feature-types.index')->with(
+            'alert',
+            [
+                'message' => 'Default feature type updated successfully.',
                 'status' => 'success',
             ]
         );

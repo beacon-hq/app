@@ -87,6 +87,28 @@ export function Form({
                 </Label>
                 <InputError message={errors?.temporary} />
             </div>
+            <div className="flex items-center">
+                <Switch
+                    id="is_default"
+                    checked={data.is_default ?? false}
+                    onCheckedChange={(checked) => setData('is_default', checked)}
+                />
+                <Label htmlFor="is_default" className="ml-4 flex items-center">
+                    Set as Default
+                    <TooltipProvider delayDuration={0}>
+                        <Tooltip>
+                            <TooltipTrigger>
+                                <InfoCircledIcon className="ml-2 h-4 w-4" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                The default feature type will be assigned to automatically created feature flags. Only
+                                one feature type can be set as default.
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                </Label>
+                <InputError message={errors?.is_default} />
+            </div>
             <div></div>
             <div className="flex justify-end">
                 <Button variant="link" className="mr-2" type="button" onClick={onCancel}>

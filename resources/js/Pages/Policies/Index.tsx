@@ -5,21 +5,34 @@ import { Sheet, SheetContent, SheetTitle } from '@/Components/ui/sheet';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Form } from '@/Pages/Policies/Components/Form';
 import Table from '@/Pages/Policies/Components/Table';
+import { usePolicyStore } from '@/stores/policyStore';
 import { PageProps } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { PlusCircle } from 'lucide-react';
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 
 export default function Index({ policies }: PageProps & { policies: PolicyCollection }) {
     const [showSheet, setShowSheet] = useState(false);
-    const { data, setData, post, errors, reset, processing } = useForm<Policy>({
+    const newPolicy = {
         id: undefined,
         name: '',
         description: '',
         definition: undefined,
         created_at: null,
         updated_at: null,
-    });
+    };
+    const { setData, post, errors, reset, processing } = useForm<Policy>(newPolicy);
+
+    const { policy, setPolicy } = usePolicyStore();
+
+    useEffect(
+        function () {
+            if (policy) {
+                setData(policy);
+            }
+        },
+        [policy],
+    );
 
     const submit = (e: FormEvent<Element>) => {
         e.preventDefault();
@@ -27,6 +40,7 @@ export default function Index({ policies }: PageProps & { policies: PolicyCollec
             onSuccess: function () {
                 setShowSheet(false);
                 reset();
+                setPolicy(newPolicy);
             },
         });
     };
@@ -34,13 +48,19 @@ export default function Index({ policies }: PageProps & { policies: PolicyCollec
     const handleCancel = () => {
         setShowSheet(false);
         reset();
+        setPolicy(newPolicy);
     };
 
     return (
         <Authenticated
             breadcrumbs={[{ name: 'Policies', icon: 'SlidersHorizontal' }]}
             headerAction={
-                <Button onClick={() => setShowSheet(true)}>
+                <Button
+                    onClick={function () {
+                        setPolicy(newPolicy);
+                        setShowSheet(true);
+                    }}
+                >
                     <PlusCircle className="mr-2 inline-block h-6 w-6" />
                     New Policy
                 </Button>
@@ -61,14 +81,7 @@ export default function Index({ policies }: PageProps & { policies: PolicyCollec
             <Sheet open={showSheet} onOpenChange={setShowSheet}>
                 <SheetContent onOpenAutoFocus={(event) => event.preventDefault()}>
                     <SheetTitle className="mb-4">New Policy</SheetTitle>
-                    <Form
-                        submit={submit}
-                        data={data}
-                        setData={setData}
-                        errors={errors}
-                        processing={processing}
-                        onCancel={handleCancel}
-                    />
+                    <Form submit={submit} errors={errors} processing={processing} onCancel={handleCancel} />
                 </SheetContent>
             </Sheet>
         </Authenticated>

@@ -12,25 +12,22 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Textarea } from '@/Components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/Components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import { useFeatureFlagStore } from '@/stores/featureFlagStore';
 import { FormErrors } from '@/types/global';
 import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { ChevronsUpDown } from 'lucide-react';
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 
 export function Form({
     submit,
-    data,
     tags,
-    setData,
     errors,
     processing,
     onCancel,
     featureTypes,
 }: {
     submit: (e: FormEvent) => void;
-    data: FeatureFlag;
     tags: TagCollection;
-    setData: (key: keyof FeatureFlag, value: any) => void;
     errors: FormErrors;
     processing: any;
     onCancel: any;
@@ -38,6 +35,8 @@ export function Form({
 }) {
     const [tagsOpen, setTagsOpen] = useState(false);
     const [tagFilter, setTagFilter] = useState('');
+
+    const { featureFlag, setFeatureFlag } = useFeatureFlagStore();
 
     return (
         <form onSubmit={submit} className="flex flex-col space-y-4">
@@ -58,10 +57,10 @@ export function Form({
                 <Input
                     id="name"
                     type="text"
-                    value={data.name as string}
+                    value={featureFlag?.name as string}
                     autoComplete="off"
-                    disabled={data.id != null && data.id !== ''}
-                    onChange={(e) => setData('name', e.target.value)}
+                    disabled={featureFlag?.id != null && featureFlag?.id !== ''}
+                    onChange={(e) => setFeatureFlag({ ...featureFlag, name: e.target.value } as FeatureFlag)}
                 />
                 <InputError message={errors?.name} />
             </div>
@@ -70,9 +69,12 @@ export function Form({
                     Feature Type
                 </Label>
                 <Select
-                    value={data.feature_type?.id ?? ''}
+                    value={featureFlag?.feature_type?.id ?? ''}
                     onValueChange={(value) =>
-                        setData('feature_type', featureTypes.filter((type: FeatureType) => type.id == value)[0])
+                        setFeatureFlag({
+                            ...featureFlag,
+                            feature_type: featureTypes.filter((type: FeatureType) => type.id == value)[0],
+                        } as FeatureFlag)
                     }
                 >
                     <SelectTrigger id="feature_type">
@@ -124,22 +126,22 @@ export function Form({
                             aria-expanded={tagsOpen}
                             className="w-full justify-between h-fit"
                         >
-                            {(data.tags?.length ?? 0) === 0 && <span>Select tags…</span>}
-                            {(data.tags?.length ?? 0) > 0 && (
+                            {(featureFlag?.tags?.length ?? 0) === 0 && <span>Select tags…</span>}
+                            {(featureFlag?.tags?.length ?? 0) > 0 && (
                                 <span className="flex flex-wrap gap-1">
-                                    {data.tags?.map((tag: TagValue) => (
+                                    {featureFlag?.tags?.map((tag: TagValue) => (
                                         <Tag
                                             key={tag.id}
                                             tag={tag}
                                             showClose={true}
                                             onClick={(e) => {
                                                 e.preventDefault();
-                                                setData(
-                                                    'tags',
-                                                    data.tags?.filter(
+                                                setFeatureFlag({
+                                                    ...featureFlag,
+                                                    tags: featureFlag?.tags?.filter(
                                                         (existingTag: TagValue) => existingTag.id !== tag.id,
                                                     ),
-                                                );
+                                                } as FeatureFlag);
                                                 const oldFilter = tagFilter;
                                                 setTagFilter('');
                                                 setTagFilter(oldFilter);
@@ -165,8 +167,9 @@ export function Form({
                                     {tags.map(function (tag) {
                                         if (
                                             tagFilter == '' &&
-                                            (data.tags?.filter((existingTag: TagValue) => existingTag.id === tag.id)
-                                                ?.length ?? 0) > 0
+                                            (featureFlag?.tags?.filter(
+                                                (existingTag: TagValue) => existingTag.id === tag.id,
+                                            )?.length ?? 0) > 0
                                         ) {
                                             return;
                                         }
@@ -176,19 +179,22 @@ export function Form({
                                                 value={tag.id as string}
                                                 onSelect={() => {
                                                     if (
-                                                        (data.tags?.filter(
+                                                        (featureFlag?.tags?.filter(
                                                             (existingTag: TagValue) => existingTag.id === tag.id,
                                                         ).length ?? 0) > 0
                                                     ) {
-                                                        setData(
-                                                            'tags',
-                                                            data.tags?.filter(
+                                                        setFeatureFlag({
+                                                            ...featureFlag,
+                                                            tags: featureFlag?.tags?.filter(
                                                                 (existingTag: TagValue) => existingTag.id !== tag.id,
                                                             ),
-                                                        );
+                                                        } as FeatureFlag);
                                                         return;
                                                     } else {
-                                                        setData('tags', [...(data.tags ?? []), tag]);
+                                                        setFeatureFlag({
+                                                            ...featureFlag,
+                                                            tags: [...(featureFlag?.tags ?? []), tag],
+                                                        } as FeatureFlag);
                                                     }
                                                 }}
                                             >
@@ -208,9 +214,14 @@ export function Form({
                 <Label htmlFor="description">Description</Label>
                 <Textarea
                     id="description"
-                    value={data.description ?? ''}
+                    value={featureFlag?.description ?? ''}
                     rows={8}
-                    onChange={(e) => setData('description', e.target.value)}
+                    onChange={(e) =>
+                        setFeatureFlag({
+                            ...featureFlag,
+                            description: e.target.value,
+                        } as FeatureFlag)
+                    }
                 />
                 <InputError message={errors?.description} />
             </div>
@@ -219,7 +230,7 @@ export function Form({
                     Cancel
                 </Button>
                 <Button type="submit" className="w-24" disabled={processing}>
-                    {data.id ? 'Update' : 'Create'}
+                    {featureFlag?.id ? 'Update' : 'Create'}
                 </Button>
             </div>
         </form>

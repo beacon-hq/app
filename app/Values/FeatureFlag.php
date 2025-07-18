@@ -21,12 +21,13 @@ use Bag\Casts\CollectionOf;
 use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
 use Bag\Values\Optional;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Carbon;
 use Spatie\TypeScriptTransformer\Attributes\Hidden as HiddenFromTypeScript;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
- * @method static static from(Optional|string $id, Optional|string $name, Optional|string $description, Carbon|null $lastSeenAt, FeatureType|Optional $featureType, Optional|TagCollection $tags, ApplicationCollection|Optional $applications, FeatureFlagStatusCollection|Optional $statuses, Carbon|null $createdAt = null, Carbon|null $updatedAt = null, bool $status = false)
+ * @method static static from(Optional|string $id, Optional|string $name, Optional|string $description, Carbon|null $lastSeenAt, FeatureType|Optional $featureType, Optional|TagCollection $tags, ApplicationCollection|Optional $applications, FeatureFlagStatusCollection|Optional $statuses, Carbon|null $createdAt = null, Carbon|null $updatedAt = null, Carbon|null $completedAt = null, bool $status = false)
  * @method static FeatureFlagCollection<FeatureFlag> collect(iterable $items)
  * @method static FeatureFlagFactory<FeatureFlag> factory(Collection|array|int $data = [])
  */
@@ -43,7 +44,7 @@ readonly class FeatureFlag extends Bag
         public Optional|string $id,
         public Optional|string $name,
         public Optional|string $description,
-        public Carbon|null $lastSeenAt,
+        public CarbonImmutable|null $lastSeenAt,
         public FeatureType|Optional $featureType,
         #[Cast(CollectionOf::class, Tag::class)]
         public Optional|TagCollection $tags,
@@ -51,8 +52,9 @@ readonly class FeatureFlag extends Bag
         public ApplicationCollection|Optional $applications,
         #[Cast(CollectionOf::class, FeatureFlagStatus::class)]
         public FeatureFlagStatusCollection|Optional $statuses,
-        public Carbon|null $createdAt = null,
-        public Carbon|null $updatedAt = null,
+        public CarbonImmutable|null $createdAt = null,
+        public CarbonImmutable|null $updatedAt = null,
+        public CarbonImmutable|null $completedAt = null,
         public bool $status = false,
     ) {
     }
@@ -70,6 +72,7 @@ readonly class FeatureFlag extends Bag
             'statuses' => FeatureFlagStatus::collect($featureFlag->statuses),
             'created_at' => $featureFlag->created_at,
             'updated_at' => $featureFlag->updated_at,
+            'completed_at' => $featureFlag->completed_at,
             'status' => $featureFlag->status ?? false,
         ];
     }

@@ -67,7 +67,7 @@ class FeatureFlagService
 
     public function touch(FeatureFlag $featureFlag): FeatureFlag
     {
-        $updatedFeatureFlag = $this->featureFlagRepository->update($featureFlag->with(lastSeenAt: now()));
+        $updatedFeatureFlag = $this->featureFlagRepository->touch($featureFlag);
 
         return FeatureFlag::from($updatedFeatureFlag);
     }

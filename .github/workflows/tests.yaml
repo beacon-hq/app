@@ -17,7 +17,7 @@ jobs:
       matrix:
         php-versions: [ '8.3', '8.4' ]
         ignore-platform-reqs: [ '--ignore-platform-reqs', '' ]
-        laravel-versions: [ '^11', '^12' ]
+        laravel-versions: [ '^12' ]
         exclude:
           - php-versions: '8.3'
             ignore-platform-reqs: '--ignore-platform-reqs'
@@ -75,3 +75,101 @@ jobs:
         run: npm ci # or pnpm install / yarn install / bun install
       - name: Build with VitePress
         run: npm run docs:build # or pnpm docs:build / yarn docs:build / bun run docs:build
+  dusk:
+    # The operating system to run on
+    runs-on: ubuntu-latest
+
+    services:
+      # Set up the Redis service (if you need it)
+      redis:
+        image: redis
+        env:
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, intl, fileinfo
+
+      # Copy the .env.dusk.ci file we commited to the .env that'll be used by Laravel
+      - name: Copy .env
+        run: cp .env.dusk.ci .env
+
+      # Install Composer dependencies without showing progress, with dist and an optimized autoload (both potentially faster)
+      - name: Install Dependencies
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+      # Generate a new application key, which fills in APP_KEY in .env
+      - name: Generate key
+        run: php artisan key:generate
+
+      - name: Run migrations
+        run: php artisan migrate --force --seed
+
+      # Install the Chrome binaries required for Dusk to run tests
+      - name: Install Chrome binaries
+        run: php artisan dusk:chrome-driver --detect
+
+      # Start the Chrome driver so we're able to run browser tests with Chrome
+      - name: Start Chrome Driver
+        run: ./vendor/laravel/dusk/bin/chromedriver-linux &
+
+      # Build assets. This could vary for your setup.
+      - name: Build assets
+        run: npm install && npm run build
+
+      # Start a basic Laravel server with no reloading
+      - name: Run Laravel Server
+        run: php artisan serve --no-reload &
+
+      - name: Validate Config
+        run: php artisan tinker --execute='echo config("app.url") . PHP_EOL . route("applications.index");'
+
+      # Run our Dusk test suite. This could be different if you don't use Pest (e.g. php artisan dusk)
+      - name: Execute tests
+        run: php artisan pest:dusk
+
+      # If there's a failure, upload the Dusk screenshots as an artifact
+      - name: Upload Screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: tests/Browser/screenshots
+
+      # If there's a failure, upload the Dusk console logs as an artifact
+      - name: Upload Console Logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: console
+          path: tests/Browser/console

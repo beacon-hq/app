@@ -17,6 +17,7 @@ export default function Index({ featureTypes }: PageProps & { featureTypes: Feat
         name: '',
         description: '',
         temporary: true,
+        is_default: false,
         color: '#e6e6e6',
         icon: '',
         created_at: null,

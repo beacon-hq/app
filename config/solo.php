@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use SoloTerm\Solo\Commands\Command;
-use SoloTerm\Solo\Commands\EnhancedTailCommand;
 use SoloTerm\Solo\Hotkeys as Hotkeys;
 use SoloTerm\Solo\Themes as Themes;
 
@@ -47,16 +46,12 @@ return [
     |
     */
     'commands' => [
-        'Sail' => './vendor/bin/sail up',
-        'Logs' => EnhancedTailCommand::file(storage_path('logs/laravel.log')),
-        'Dumps' => './vendor/bin/sail artisan solo:dumps',
-        'Pest' => Command::from('./vendor/bin/sail pest')->lazy(),
-        'Vite' => './vendor/bin/sail npm run dev; ./vendor/bin/sail exec beacon killall -9 node',
+        'Pest' => Command::from('pest')->lazy(),
+        'Vite' => 'npm run dev',
         // Lazy commands do no automatically start when Solo starts.
-        // 'Dumps' => Command::from('./vendor/bin/sail artisan solo:dumps')->lazy(),
-        'Pint' => Command::from('./vendor/bin/sail pint')->lazy(),
-        'Horizon' => Command::from('./vendor/bin/sail artisan horizon'),
-        'Typescript' => Command::from('./vendor/bin/sail artisan typescript:transform')->lazy(),
+        'Pint' => Command::from('pint')->lazy(),
+        'Horizon' => Command::from('artisan horizon'),
+        'Typescript' => Command::from('artisan typescript:transform')->lazy(),
     ],
 
     /*

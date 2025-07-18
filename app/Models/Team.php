@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\Role;
+use App\Events\TeamCreatedEvent;
 use App\Models\Traits\BelongsToOrganization;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
@@ -61,6 +62,10 @@ class Team extends Model
         'organization',
     ];
 
+    protected $dispatchesEvents = [
+        'created' => TeamCreatedEvent::class,
+    ];
+
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class)->withTimestamps();
@@ -73,6 +78,7 @@ class Team extends Model
         $token = $this->tokens()->create([
             'name' => $name,
             'token' => hash('sha256', $plainTextToken),
+            'token_value' => $plainTextToken,
             'plain_text_suffix' => Str::substr($plainTextToken, -5),
             'abilities' => $abilities,
             'expires_at' => $expiresAt,

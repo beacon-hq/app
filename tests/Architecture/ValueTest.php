@@ -6,7 +6,8 @@ use App\Values\AppContext;
 use App\Values\FeatureFlagContext;
 use App\Values\FeatureFlagResponse;
 use App\Values\PolicyDefinition;
-use App\Values\TypescriptTransformer;
+use App\Values\TrendMetric;
+use App\Values\ValueMetric;
 use Bag\Attributes\MapName;
 
 arch()
@@ -17,7 +18,6 @@ arch()
         'App\Values\Casts',
         'App\Values\Factories',
         'App\Values\Collections',
-        TypescriptTransformer::class
     ])
     ->toHaveMethod('fromModel')
     ->ignoring([
@@ -28,5 +28,6 @@ arch()
         FeatureFlagContext::class,
         PolicyDefinition::class,
         FeatureFlagResponse::class,
-        TypescriptTransformer::class,
+        ValueMetric::class,
+        TrendMetric::class,
     ]);

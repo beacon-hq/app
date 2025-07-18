@@ -8,7 +8,6 @@ use App\Models\Organization;
 use App\Models\StripeProduct;
 use App\Values\Organization as OrganizationValue;
 use App\Values\Product;
-use Brick\Money\Money;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterval;
 use Illuminate\Support\Collection;
@@ -184,7 +183,7 @@ class SubscriptionBillingRepository
             return [
                 'total' => $product->basePrice->formatTo('en_US', true),
                 'base' => $product->basePrice->formatTo('en_US', true),
-                'metered' => Money::of(0, 'USD')->formatTo('en_US', true),
+                'metered' => Product::formatZeroMoney(),
             ];
         }
     }

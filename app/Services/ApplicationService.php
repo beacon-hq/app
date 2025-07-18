@@ -41,4 +41,16 @@ class ApplicationService
 
         return Application::from($application);
     }
+
+    public function findByName(string $appName): ?Application
+    {
+        $application = $this->applicationRepository->findByName($appName);
+
+        if (!$application) {
+            return null;
+        }
+
+        return Application::from($application);
+
+    }
 }

@@ -24,7 +24,7 @@ class EnsureTeamMiddleware
             if (Auth::user() instanceof Team) {
                 Session::put('team', Auth::user());
             } else {
-                if (Auth::user()->teams()->count() > 1 && !$request->routeIs('teams.select')) {
+                if (Auth::user()->teams()->count() > 1 && !$request->routeIs('teams.select') && !app()->environment('testing')) {
                     return redirect()->route('teams.select');
                 }
 

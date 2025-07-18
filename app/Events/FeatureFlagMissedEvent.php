@@ -17,7 +17,7 @@ use Illuminate\Queue\SerializesModels;
 /**
  * @method static PendingDispatch dispatch(FeatureFlag $featureFlag, FeatureFlagContext $context, FeatureFlagResponse $response)
  */
-class FeatureFlagEvaluated
+class FeatureFlagMissedEvent
 {
     use Dispatchable;
     use InteractsWithSockets;

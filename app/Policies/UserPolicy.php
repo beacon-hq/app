@@ -40,6 +40,14 @@ class UserPolicy
      */
     public function update(User $user, User|UserValue $value): bool
     {
+        if ($user->id === $value->id || $user->id === Auth::user()->id) {
+            return true;
+        }
+
+        if ($value instanceof UserValue && !$value->has('id')) {
+            return false;
+        }
+
         return $user->hasPermissionTo(Permission::USERS_UPDATE() . '.' . $value->id) || $user->id === Auth::user()->id;
     }
 

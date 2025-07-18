@@ -21,8 +21,8 @@ use Bag\Bag;
 use Bag\Casts\CollectionOf;
 use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
-use Bag\Validation\Rules\OptionalOr;
 use Bag\Values\Optional;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Carbon;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
@@ -50,7 +50,7 @@ readonly class Application extends Bag
         public EnvironmentCollection|Optional $environments,
         #[Cast(ColorCast::class)]
         public Color|string $color = '#e3e3e3',
-        public Carbon|null $lastSeenAt = null,
+        public CarbonImmutable|null $lastSeenAt = null,
     ) {
     }
 
@@ -71,9 +71,10 @@ readonly class Application extends Bag
     public static function rules(): array
     {
         return [
-            'name' => [new OptionalOr(['required_without:id', 'exclude_with:id'])],
-            'description' => [new OptionalOr(['nullable'])],
-            'color' => [new OptionalOr(['present'])],
+            'name' => ['required_without:id', 'exclude_with:id'],
+            'displayName' => ['required'],
+            'description' => ['nullable'],
+            'color' => ['present'],
         ];
     }
 }

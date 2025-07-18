@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 use App\Enums\Color;
 use App\Models\Tag;
-use App\Models\Team;
-use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 
 it('lists tags', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user] = createOwner();
     Tag::factory(5)->for($team)->create();
 
-    $this->actingAs($user)->get('/tags')
+    $this->actingAs($user)->get(route('tags.index'))
         ->assertInertia(
             fn (Assert $page) => $page
                 ->component('Tags/Index')
@@ -22,18 +19,16 @@ it('lists tags', function () {
 });
 
 it('creates a tag', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user] = createOwner();
 
-    $this->actingAs($user)->post('/tags', [
+    $this->actingAs($user)->post(route('tags.store'), [
         'name' => 'Test Tag',
         'color' => Color::CYAN->value,
         'description' => 'test description'
-    ])->assertRedirect('/tags');
+    ])->assertRedirectToRoute('tags.index');
 
     $this->assertDatabaseHas('tags', [
         'name' => 'Test Tag',
-        'slug' => 'test-tag',
         'color' => Color::CYAN->value,
         'description' => 'test description',
         'team_id' => $team->id,
@@ -41,27 +36,28 @@ it('creates a tag', function () {
 });
 
 it('fails validation with missing required fields on create', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [, $user] = createOwner();
 
-    $this->actingAs($user)->post('/tags', [])->assertInvalid(['name', 'color']);
+    $this
+        ->actingAs($user)
+        ->post(route('tags.store'), [])
+        ->assertInvalid(['name', 'color']);
 });
 
 it('shows the edit form', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user] = createOwner();
     $tag = Tag::factory()->for($team)->create();
 
-    $this->actingAs($user)->get("/tags/{$tag->slug}/edit")
+    $this->actingAs($user)->get(route('tags.edit', ['tag' => $tag->id]))
         ->assertInertia(
             fn (Assert $page) => $page
                 ->component('Tags/Edit')
                 ->has('tag')
                 ->where('tag', [
+                    'id' => $tag->id,
                     'name' => $tag->name,
                     'description' => $tag->description,
                     'color' => $tag->color,
-                    'slug' => $tag->slug,
                     'created_at' => $tag->created_at->toISOString(),
                     'updated_at' => $tag->updated_at->toISOString(),
                 ])
@@ -69,29 +65,29 @@ it('shows the edit form', function () {
 });
 
 it('updates a tag', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user] = createOwner();
     $tag = Tag::factory()->for($team)->create();
 
-    $this->actingAs($user)->put("/tags/{$tag->slug}", [
+    $this->actingAs($user)->put(route('tags.update', ['tag' => $tag->id]), [
         'name' => 'Updated Tag',
         'color' => Color::RED->value,
         'description' => 'updated description',
-    ])->assertRedirect('/tags');
+    ])->assertRedirectToRoute('tags.index');
 
     $this->assertDatabaseHas('tags', [
+        'id' => $tag->id,
         'name' => 'Updated Tag',
         'color' => Color::RED->value,
-        'slug' => 'updated-tag',
         'description' => 'updated description',
     ]);
 });
 
 it('fails validation', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user] = createOwner();
     $tag = Tag::factory()->for($team)->create();
 
-    $this->actingAs($user)->put("/tags/{$tag->slug}", [])
+    $this
+        ->actingAs($user)
+        ->put(route('tags.update', ['tag' => $tag->id]), [])
         ->assertInvalid(['name', 'color']);
 });

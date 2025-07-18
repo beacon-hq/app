@@ -52,4 +52,9 @@ class ApplicationRepository
     {
         return Application::findOrFail($id);
     }
+
+    public function findByName(string $appName): ?Application
+    {
+        return Application::where('name', $appName)->first();
+    }
 }

@@ -13,6 +13,7 @@ use Bag\Attributes\StripExtraParameters;
 use Bag\Attributes\Transforms;
 use Bag\Bag;
 use Bag\Mappers\SnakeCase;
+use Carbon\CarbonImmutable;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
@@ -30,6 +31,7 @@ readonly class Organization extends Bag
         public ?string $id,
         public ?User $owner,
         public ?string $name,
+        public ?CarbonImmutable $onboardedAt,
     ) {
     }
 
@@ -40,6 +42,7 @@ readonly class Organization extends Bag
             'id' => $organization->id,
             'owner' => $organization->owner !== null ? User::from($organization->owner) : null,
             'name' => $organization->name,
+            'onboardedAt' => $organization->onboarded_at,
         ];
     }
 }

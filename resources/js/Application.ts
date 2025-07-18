@@ -63,6 +63,7 @@ export type FeatureFlag = {
     statuses?: FeatureFlagStatusCollection;
     created_at: string | null;
     updated_at: string | null;
+    completed_at: string | null;
     status: boolean;
 };
 export type FeatureFlagCollection = FeatureFlag[];
@@ -105,6 +106,7 @@ export type FeatureType = {
     icon?: string;
     color: Color | string;
     temporary: boolean;
+    is_default: boolean;
     created_at: string | null;
     updated_at: string | null;
 };
@@ -124,6 +126,7 @@ export type Organization = {
     id: string | null;
     owner: User | null;
     name: string | null;
+    onboarded_at: string | null;
 };
 export type OrganizationCollection = Organization[];
 export enum Permission {
@@ -272,6 +275,13 @@ export type Team = {
     color: Color | string | null;
 };
 export type TeamCollection = Team[];
+export type TrendMetric = {
+    labels: any;
+    data: any;
+    total: number;
+    projections?: any;
+};
+export type TrendMetricCollection = {};
 export type User = {
     id?: number;
     team?: Team;
@@ -293,6 +303,11 @@ export enum UserStatus {
     INACTIVE = 'inactive',
     PENDING = 'pending',
 }
+export type ValueMetric = {
+    value: number;
+    previous?: any;
+};
+export type ValueMetricCollection = {};
 export enum VariantStrategy {
     RANDOM = 'random',
     CONTEXT = 'context',
