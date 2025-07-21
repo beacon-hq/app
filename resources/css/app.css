@@ -1,6 +1,13 @@
 @import 'tailwindcss';
+
+@plugin "tailwindcss-motion";
+
 /*noinspection CssInvalidAtRule*/
 @source "../../";
+
+/*noinspection CssInvalidAtRule*/
+@source "../../docs/**/*.md";
+
 /*noinspection CssInvalidAtRule*/
 @source inline('{bg,stroke,border}-{red,orange,yellow,lime,green,emerald,cyan,sky,blue,indigo,purple,fuchsia,info,success,warning,error}-400');
 
@@ -162,6 +169,62 @@ div.react-colorful {
     inherits: false;
     initial-value: 0deg;
     syntax: '<angle>';
+}
+
+@utility animation-delay-0 {
+    animation-delay: 0ms;
+}
+
+@utility animation-delay-10 {
+    animation-delay: 10ms;
+}
+
+@utility animation-delay-25 {
+    animation-delay: 25ms;
+}
+
+@utility animation-delay-50 {
+    animation-delay: 50ms;
+}
+
+@utility animation-delay-75 {
+    animation-delay: 75ms;
+}
+
+@utility animation-delay-100 {
+    animation-delay: 100ms;
+}
+
+@utility animation-delay-150 {
+    animation-delay: 150ms;
+}
+
+@utility animation-delay-200 {
+    animation-delay: 200ms;
+}
+
+@utility animation-delay-300 {
+    animation-delay: 300ms;
+}
+
+@utility animation-delay-500 {
+    animation-delay: 500ms;
+}
+
+@utility animation-delay-750 {
+    animation-delay: 750ms;
+}
+
+@utility animation-delay-1000 {
+    animation-delay: 1000ms;
+}
+
+@utility animation-delay-1500 {
+    animation-delay: 1500ms;
+}
+
+@utility animation-delay-2000 {
+    animation-delay: 2000ms;
 }
 
 @theme {

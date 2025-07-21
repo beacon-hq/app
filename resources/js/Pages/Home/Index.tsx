@@ -1,12 +1,15 @@
 import { ProductCollection } from '@/Application';
 import NavMenu from '@/Components/NavMenu';
+import { Switch } from '@/Components/ui/switch';
 import { CentralizedControlAnimation } from '@/Pages/Home/Components/CentralizedControlAnimation';
 import Pricing from '@/Pages/Home/Components/Pricing';
 import useScrollToLocation from '@/hooks/use-scroll-to-location';
+import { cn } from '@/lib/utils';
 import { PageProps } from '@/types';
 import { SiGithub, SiYoutube } from '@icons-pack/react-simple-icons';
 import { Head, usePage } from '@inertiajs/react';
-import { Radio } from 'lucide-react';
+import { AppWindowMac } from 'lucide-react';
+import { useReducedMotion } from 'motion/react';
 import React, { useEffect, useRef, useState } from 'react';
 
 export default function Index({ auth, products }: PageProps & { products: ProductCollection }) {
@@ -17,6 +20,12 @@ export default function Index({ auth, products }: PageProps & { products: Produc
 
     const pricingRef = useRef(null);
 
+    const [deploySwitchState, setDeploySwitchState] = useState(false);
+
+    const motionReduced = useReducedMotion();
+
+    const deploySwitchTimeout = useRef<any>(null);
+
     useEffect(() => {
         const isDarkMode =
             localStorage.theme === 'dark' ||
@@ -24,6 +33,20 @@ export default function Index({ auth, products }: PageProps & { products: Produc
         setIsDark(isDarkMode);
         document.documentElement.classList.toggle('dark', isDarkMode);
     }, []);
+
+    useEffect(() => {
+        deploySwitchTimeout.current = setTimeout(
+            () => {
+                setDeploySwitchState(!deploySwitchState);
+            },
+            motionReduced ? 10000 : 3000,
+        );
+    }, [deploySwitchState]);
+
+    const toggleDeploySwitch = () => {
+        clearTimeout(deploySwitchTimeout.current);
+        setDeploySwitchState(!deploySwitchState);
+    };
 
     const toggleAppearance = () => {
         const newIsDark = !isDark;
@@ -191,7 +214,7 @@ export default function Index({ auth, products }: PageProps & { products: Produc
                                     strokeLinejoin: 'round',
                                     strokeMiterlimit: 2,
                                 }}
-                                className="mx-auto"
+                                className="mx-auto grayscale-100 group-hover:grayscale-0 motion-reduce:grayscale-0"
                             >
                                 <rect x="0" y="0" width="64" height="64" style={{ fill: '#328c6b' }} />
                                 <path
@@ -214,17 +237,242 @@ export default function Index({ auth, products }: PageProps & { products: Produc
                     </div>
                     <div className="items-center justify-between max-w-3xl mx-auto flex md:flex-row flex-col gap-20">
                         <div className="prose dark:prose-invert">
-                            <h2 className="text-2xl font-bold mb-4 mt-4">Zero-Downtime Rollouts</h2>
+                            <h2 className="text-2xl font-bold mb-4 mt-4">Zero-Downtime Configuration Changes</h2>
                             <p className="mb-6">
                                 Change Feature Flag configurations without deploying code. Beacon allows you to manage
                                 your feature flags in real-time, ensuring a smooth experience for your users.
                             </p>
                         </div>
-                        <div>
-                            <Radio
-                                size={120}
-                                className="motion-safe:animate-zoomInOut text-primary motion-safe:animate-infinite motion-safe:[animation-duration:_3s]"
+                        <div className="flex flex-row gap-8 items-center">
+                            <Switch
+                                className="scale-300 rotate-90"
+                                checked={deploySwitchState}
+                                onClick={toggleDeploySwitch}
                             />
+                            <AppWindowMac
+                                className={cn('h-48 w-48', {
+                                    'stroke-gray-300': !deploySwitchState,
+                                    'stroke-[#06df73]': deploySwitchState,
+                                })}
+                            />
+                        </div>
+                    </div>
+                    <div className="items-center justify-between max-w-3xl mx-auto flex md:flex-row flex-col gap-20">
+                        <div>
+                            <svg
+                                width="100%"
+                                height="100%"
+                                viewBox="0 0 1054 1054"
+                                version="1.1"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <g transform="matrix(1,0,0,1,-13.0779,-13.0779)">
+                                    <g transform="matrix(1.45509,0,0,1.45509,-245.747,-245.747)">
+                                        <circle
+                                            cx="540"
+                                            cy="540"
+                                            r="357.657"
+                                            style={{ strokeWidth: '8.93px' }}
+                                            className="fill-secondary motion-preset-blink motion-safe:motion-duration-[5s] motion-reduce:motion-duration-[10s] motion-delay-700 stroke-primary"
+                                        />
+                                    </g>
+                                    <g transform="matrix(1.45509,0,0,1.45509,-245.747,-245.747)">
+                                        <circle
+                                            cx="540"
+                                            cy="540"
+                                            r="281.534"
+                                            style={{ strokeWidth: '8.93px' }}
+                                            className="fill-secondary motion-preset-blink motion-safe:motion-duration-[5s] motion-reduce:motion-duration-[10s] motion-delay-500 stroke-primary"
+                                        />
+                                    </g>
+                                    <g transform="matrix(2.73406,0,0,2.73406,-936.391,-936.391)">
+                                        <circle
+                                            cx="540"
+                                            cy="540"
+                                            r="105.928"
+                                            style={{ strokeWidth: '8.93px' }}
+                                            className="fill-secondary motion-preset-blink motion-safe:motion-duration-[5s] motion-reduce:motion-duration-[10s] motion-delay-300 stroke-primary"
+                                        />
+                                    </g>
+                                    <g transform="matrix(2.49718,0,0,2.49718,-808.475,-808.475)">
+                                        <circle
+                                            cx="540"
+                                            cy="540"
+                                            r="64.975"
+                                            style={{ strokeWidth: '8.93px' }}
+                                            className="fill-secondary motion-preset-blink motion-safe:motion-duration-[5s] motion-reduce:motion-duration-[10s] motion-delay-100 stroke-primary"
+                                        />
+                                    </g>
+                                    <g transform="matrix(1.45509,0,0,1.45509,-245.747,-245.747)">
+                                        <circle
+                                            cx="540"
+                                            cy="540"
+                                            r="14.592"
+                                            style={{ strokeWidth: '8.93px' }}
+                                            className="fill-secondary motion-preset-blink motion-safe:motion-duration-[5s] motion-reduce:motion-duration-[10s] stroke-primary"
+                                        />
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                        <div className="prose dark:prose-invert">
+                            <h2 className="text-2xl font-bold mb-4 mt-4">Gradual Rollouts</h2>
+                            <p className="mb-6">
+                                Gradually roll out new features to a percentage of your users. Monitor performance and
+                                user feedback before a full rollout, ensuring a smooth transition and minimizing risk.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="items-center justify-between max-w-3xl mx-auto flex md:flex-row flex-col gap-20">
+                        <div className="prose dark:prose-invert">
+                            <h2 className="text-2xl font-bold mb-4 mt-4">A/B Testing</h2>
+                            <p className="mb-6">
+                                Use Feature Flags to run experiments with advanced audience segmentation and multiple
+                                variants. Measure user engagement and performance to make data-driven decisions on which
+                                features to keep or discard.
+                            </p>
+                        </div>
+                        <div>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                xmlSpace="preserve"
+                                fillRule="evenodd"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                clipRule="evenodd"
+                                viewBox="0 0 18 21"
+                                className="w-3/4"
+                                id="experiments"
+                            >
+                                <g transform="translate(-3.5 -1.5)">
+                                    <path
+                                        id="Liquid"
+                                        fill="#06df73"
+                                        fillRule="nonzero"
+                                        d="M17.584 15.068C17.745 15.362 20 19.664 20 20c0 1.097-.902 2-2 2H6c-1.098 0-2-.903-2-2 0-.336 2.292-4.705 2.453-4.999m0-.001h11.094"
+                                        className="motion-safe:motion-preset-blink motion-duration-[10s]"
+                                    ></path>
+                                    <path
+                                        id="Liquid"
+                                        fill="#fb64b6"
+                                        fillRule="nonzero"
+                                        d="M17.584 15.068C17.745 15.362 20 19.664 20 20c0 1.097-.902 2-2 2H6c-1.098 0-2-.903-2-2 0-.336 2.292-4.705 2.453-4.999m0-.001h11.094"
+                                        className="motion-safe:motion-preset-blink motion-duration-[10s] motion-delay-[5s]"
+                                    ></path>
+                                    <path
+                                        id="Flask"
+                                        fill="none"
+                                        fillRule="nonzero"
+                                        stroke="#000"
+                                        className="stroke-[0.5]"
+                                        d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08c.161.294.245.624.245.96 0 1.097-.902 2-2 2H6c-1.098 0-2-.903-2-2 0-.336.084-.666.245-.96l5.51-10.08A2 2 0 0 0 10 8V2M6.453 15h11.094M8.5 2h7"
+                                    ></path>
+                                    <g id="Bubbles">
+                                        <g
+                                            id="bubble-1"
+                                            className="motion-safe:motion-preset-float-sm motion-duration-3000 motion-delay-100"
+                                        >
+                                            <path
+                                                fill="none"
+                                                fillRule="nonzero"
+                                                stroke="#000"
+                                                strokeWidth="0.33934"
+                                                d="M7.335 19.45c.186 0 .34.153.34.34"
+                                            ></path>
+                                            <circle
+                                                cx="7.5"
+                                                cy="16.5"
+                                                r="5.5"
+                                                fill="none"
+                                                stroke="#000"
+                                                strokeWidth="2"
+                                                transform="matrix(.16967 0 0 .16967 6.114 16.939)"
+                                            ></circle>
+                                        </g>
+                                        <circle
+                                            cx="18.5"
+                                            cy="8.5"
+                                            r="3.5"
+                                            fill="none"
+                                            stroke="#000"
+                                            strokeWidth="2"
+                                            transform="matrix(.16967 0 0 .16967 6.114 16.939)"
+                                            className="motion-safe:motion-preset-float-sm motion-duration-2500 motion-delay-300"
+                                        ></circle>
+                                        <circle
+                                            cx="7.5"
+                                            cy="4.5"
+                                            r="2.5"
+                                            fill="none"
+                                            stroke="#000"
+                                            strokeWidth="2"
+                                            transform="matrix(.16967 0 0 .16967 6.153 16.6)"
+                                            className="motion-safe:motion-preset-float-sm motion-duration-4000 motion-delay-500"
+                                        ></circle>
+                                        <circle
+                                            cx="18.5"
+                                            cy="8.5"
+                                            r="3.5"
+                                            fill="none"
+                                            stroke="#000"
+                                            strokeWidth="2"
+                                            transform="matrix(.16967 0 0 .16967 8.522 15.327)"
+                                            className="motion-safe:motion-preset-float-sm motion-duration-3500 motion-delay-200"
+                                        ></circle>
+                                        <circle
+                                            cx="7.5"
+                                            cy="16.5"
+                                            r="5.5"
+                                            fill="none"
+                                            stroke="#000"
+                                            strokeWidth="2"
+                                            transform="matrix(.16967 0 0 .16967 10.727 16.43)"
+                                            className="motion-safe:motion-preset-float-sm motion-duration-2800 motion-delay-700"
+                                        ></circle>
+                                        <circle
+                                            cx="7.5"
+                                            cy="4.5"
+                                            r="2.5"
+                                            fill="none"
+                                            stroke="#000"
+                                            strokeWidth="2"
+                                            transform="matrix(.16967 0 0 .16967 12.713 16.939)"
+                                            className="motion-safe:motion-preset-float-sm motion-duration-3200 motion-delay-400"
+                                        ></circle>
+                                        <circle
+                                            cx="18.5"
+                                            cy="8.5"
+                                            r="3.5"
+                                            fill="none"
+                                            stroke="#000"
+                                            strokeWidth="2"
+                                            transform="matrix(.16967 0 0 .16967 12.154 18.38)"
+                                            className="motion-safe:motion-preset-float-sm motion-duration-2700 motion-delay-600"
+                                        ></circle>
+                                        <circle
+                                            cx="7.5"
+                                            cy="16.5"
+                                            r="5.5"
+                                            fill="none"
+                                            stroke="#000"
+                                            strokeWidth="2"
+                                            transform="matrix(.16967 0 0 .16967 14.954 14.139)"
+                                            className="motion-safe:motion-preset-float-sm motion-duration-4200 motion-delay-150"
+                                        ></circle>
+                                        <circle
+                                            cx="7.5"
+                                            cy="4.5"
+                                            r="2.5"
+                                            fill="none"
+                                            stroke="#000"
+                                            strokeWidth="2"
+                                            transform="matrix(.16967 0 0 .16967 15.887 18.466)"
+                                            className="motion-safe:motion-preset-float-sm motion-duration-3800 motion-delay-800"
+                                        ></circle>
+                                    </g>
+                                </g>
+                            </svg>
                         </div>
                     </div>
                 </div>
