@@ -34,7 +34,6 @@
     animation-iteration-count: infinite;
 }
 
-
 /* get started animation */
 svg#get-started.animate #map-path {
     stroke-dasharray: 900; /* Set to the approximate length of the path */
@@ -1542,4 +1541,31 @@ div.react-colorful {
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@theme inline {
+    --animate-shine: shine var(--duration) infinite linear;
+    @keyframes shine {
+        0% {
+            background-position: 0% 0%;
+        }
+        50% {
+            background-position: 100% 100%;
+        }
+        to {
+            background-position: 0% 0%;
+        }
+    }
+}
+
+/*---break---*/
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
 }

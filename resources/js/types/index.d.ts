@@ -22,4 +22,5 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
             message: string;
             status?: 'success' | 'error' | 'info' | 'warning';
         } | null;
+        docsUrl: string;
     };

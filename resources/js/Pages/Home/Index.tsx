@@ -1,5 +1,8 @@
 import { ProductCollection } from '@/Application';
 import NavMenu from '@/Components/NavMenu';
+import { AuroraText } from '@/Components/magicui/aurora-text';
+import { ShineBorder } from '@/Components/magicui/shine-border';
+import { Button } from '@/Components/ui/button';
 import { Switch } from '@/Components/ui/switch';
 import { CentralizedControlAnimation } from '@/Pages/Home/Components/CentralizedControlAnimation';
 import Pricing from '@/Pages/Home/Components/Pricing';
@@ -12,7 +15,7 @@ import { AppWindowMac } from 'lucide-react';
 import { useReducedMotion } from 'motion/react';
 import React, { useEffect, useRef, useState } from 'react';
 
-export default function Index({ auth, products }: PageProps & { products: ProductCollection }) {
+export default function Index({ auth, products, docsUrl = '/docs' }: PageProps & { products: ProductCollection }) {
     useScrollToLocation();
     const pricingEnabled = usePage().props.features['pricing.enabled'];
 
@@ -61,7 +64,7 @@ export default function Index({ auth, products }: PageProps & { products: Produc
             <NavMenu auth={auth} />
 
             <header className="flex flex-col items-center">
-                <div className="mx-auto px-4 py-8 text-center w-11/12 md:w-3/4">
+                <div className="mx-auto px-4 py-8 text-center w-full md:w-3/4">
                     <svg
                         viewBox="0 0 2173 742"
                         xmlns="http://www.w3.org/2000/svg"
@@ -179,10 +182,79 @@ export default function Index({ auth, products }: PageProps & { products: Produc
                         </g>
                     </svg>
                 </div>
-
-                <h1 className="text-4xl text-center w-full font-bold mb-8 bg-linear-to-br text-transparent bg-clip-text inline-block from-green-400 via-blue-500 to-blue-600 dark:from-green-800 dark:via-blue-800 dark:to-blue-900">
-                    Feature Flag Management For Laravel
+                <h1 className="text-4xl text-center w-full font-bold text-transparent bg-clip-text inline-block">
+                    <AuroraText colors={['#00e281', '#00e7a4', '#00f1ed', '#00b9fa', '#009aff']} speed={4}>
+                        Feature Flag Management For Laravel
+                    </AuroraText>
                 </h1>
+                <div className="perspective-dramatic transform-3d w-1/2 mx-auto max-h-120 md:mx-h-180 lg:max-h-240 aspect-video">
+                    <div
+                        className="w-full translate-x-[5%] translate-y-[40%] rotate-y-4 rotate-x-0 rounded-md z-10"
+                        style={{
+                            maskImage: 'linear-gradient(8deg,transparent 0%, black 67%, black 100%)',
+                        }}
+                    >
+                        <ShineBorder
+                            shineColor={['#00e281', '#00e7a4', '#00f1ed', '#00b9fa', '#009aff']}
+                            borderWidth={3}
+                            duration={100}
+                        />
+                        <img
+                            src="/images/hero/hero-applications-light.png"
+                            alt="Beacon Screenshot"
+                            className="dark:hidden rounded-md"
+                        />
+                        <img
+                            src="/images/hero/hero-applications-dark.png"
+                            alt="Beacon Screenshot"
+                            className="hidden dark:block rounded-md"
+                        />
+                    </div>
+                    <div
+                        className="w-full translate-x-[20%] -translate-y-[35%] rotate-y-4 rotate-x-0 rounded-md z-20"
+                        style={{
+                            maskImage: 'linear-gradient(8deg,transparent 0%, black 67%, black 100%)',
+                        }}
+                    >
+                        <ShineBorder
+                            shineColor={['#00e281', '#00e7a4', '#00f1ed', '#00b9fa', '#009aff']}
+                            borderWidth={3}
+                            duration={100}
+                        />
+                        <img
+                            src="/images/hero/hero-feature-flags-light.png"
+                            alt="Beacon Screenshot"
+                            className="dark:hidden rounded-md"
+                        />
+                        <img
+                            src="/images/hero/hero-feature-flags-dark.png"
+                            alt="Beacon Screenshot"
+                            className="hidden dark:block rounded-md"
+                        />
+                    </div>
+                    <div
+                        className="w-full translate-x-[40%] -translate-y-[110%] rotate-y-4 rotate-x-0 rounded-md z-30"
+                        style={{
+                            maskImage: 'linear-gradient(8deg,transparent 0%, black 67%, black 100%)',
+                        }}
+                    >
+                        <ShineBorder
+                            shineColor={['#00e281', '#00e7a4', '#00f1ed', '#00b9fa', '#009aff']}
+                            borderWidth={3}
+                            duration={100}
+                        />
+                        <img
+                            src="/images/hero/hero-dashboard-light.png"
+                            alt="Beacon Screenshot"
+                            className="dark:hidden rounded-md"
+                        />
+                        <img
+                            src="/images/hero/hero-dashboard-dark.png"
+                            alt="Beacon Screenshot"
+                            className="hidden dark:block rounded-md"
+                        />
+                    </div>
+                </div>
             </header>
 
             <section className="dark:bg-neutral-900 w-full">
@@ -484,24 +556,84 @@ export default function Index({ auth, products }: PageProps & { products: Produc
                 </section>
             )}
 
-            <footer className="bg-gray-800 text-white py-6">
-                <div className="container mx-auto px-4 text-center">
-                    <p className="mb-4">
-                        Beacon is made possible by the Laravel community and open-source contributors like you.
-                    </p>
-                    <div className="flex justify-center space-x-4">
-                        <a href="https://github.com/beacon-hq" className="hover:underline">
-                            <div className="flex flex-row items-center">
-                                <SiGithub className="h-4 w-4 inline-block mr-1" /> Github
+            <footer className="bg-secondary">
+                <div className=" w-3/4 mx-auto">
+                    <div className="flex flex-row gap-12 p-12 text-primary">
+                        <div className="prose dark:prose-invert w-1/3">
+                            <h3>Get Started Today</h3>
+                            {pricingEnabled && (
+                                <>
+                                    <p className="text-lg mb-8">
+                                        Unlimited flags, apps, environments, and users — for the price of a coffee.
+                                    </p>
+                                    <a href={`/register?plan=${products[0].id}`}>
+                                        <Button size="lg">Start Free Trial</Button>
+                                    </a>
+                                </>
+                            )}
+                            {!pricingEnabled && (
+                                <>
+                                    <p className="text-lg mb-8">
+                                        Sign up today to start managing your feature flags with Beacon.
+                                    </p>
+                                    <a href="/register">
+                                        <Button size="lg">Sign up</Button>
+                                    </a>
+                                </>
+                            )}
+                        </div>
+                        <div className="w-2/3 flex flex-row justify-between items-start">
+                            <div className="">
+                                <h4 className="font-bold mb-2">Product</h4>
+                                <ul>
+                                    <li>Features</li>
+                                    {pricingEnabled && <li>Pricing</li>}
+                                    <li>FAQ</li>
+                                    {pricingEnabled && <li>Support</li>}
+                                </ul>
                             </div>
-                        </a>
-                        <a href="https://youtube.com/@beacon-hq" className="hover:underline">
-                            <div className="flex flex-row items-center">
-                                <SiYoutube className="h-4 w-4 inline-block mr-1" /> YouTube
+                            <div className="">
+                                {pricingEnabled && (
+                                    <>
+                                        <h4 className="font-bold mb-2">Company</h4>
+                                        <ul>
+                                            <li>Our Team</li>
+                                            {pricingEnabled && <li>Careers</li>}
+                                            <li>Contact</li>
+                                        </ul>
+                                    </>
+                                )}
                             </div>
-                        </a>
+                            <div className="">
+                                <h4 className="font-bold mb-2">Resources</h4>
+                                <ul>
+                                    <li>Get Started</li>
+                                    <li>Documentation</li>
+                                    <li>
+                                        <SiGithub className="h-4 w-4 inline-block mr-1" /> Github
+                                    </li>
+                                    <li>
+                                        <SiYoutube className="h-4 w-4 inline-block mr-1" /> YouTube
+                                    </li>
+                                </ul>
+                            </div>
+                            <div className="">
+                                {pricingEnabled && (
+                                    <>
+                                        <h4 className="font-bold mb-2">Legal</h4>
+                                        <ul>
+                                            <li>Privacy Policy</li>
+                                            <li>Refund Policy</li>
+                                            <li>Terms of Service</li>
+                                        </ul>
+                                    </>
+                                )}
+                            </div>
+                        </div>
                     </div>
-                    <p className="text-sm mt-4">Made with 🦁💖🏳️‍🌈 by Davey Shafik.</p>
+                </div>
+                <div className="container mx-auto px-4 text-center">
+                    <p className="text-sm mt-4 mb-2">Made with 🦁💖🏳️‍🌈 by Davey Shafik.</p>
                     <p className="text-sm">
                         Released under the{' '}
                         <a href="https://github.com/beacon-hq/app/blob/main/LICENSE.md">FCL-1.0-MIT License</a>.

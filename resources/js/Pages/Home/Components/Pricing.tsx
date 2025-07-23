@@ -1,7 +1,6 @@
 import { ProductCollection, Subscription } from '@/Application';
 import ProductCard from '@/Components/ProductCard';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/Components/ui/accordion';
-import { Button } from '@/Components/ui/button';
 import { router } from '@inertiajs/react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import React, { useRef } from 'react';
@@ -134,36 +133,6 @@ export default function Pricing({
                         </Accordion>
                     </div>
                 </section>
-
-                {/* Final CTA */}
-                <motion.section
-                    className="w-full py-20 text-center text-primary relative"
-                    style={{
-                        background:
-                            'linear-gradient(15deg, #00e281, #00e7a4, #00ecc7, #00f1ed, #00d8f5, #00b9fa, #009aff)',
-                    }}
-                    {...(!prefersReducedMotion && {
-                        animate: {
-                            background: [
-                                'linear-gradient(0deg, #00e281, #00e7a4, #00ecc7, #00f1ed, #00d8f5, #00b9fa, #009aff)',
-                                'linear-gradient(30deg, #00e281, #00e7a4, #00ecc7, #00f1ed, #00d8f5, #00b9fa, #009aff)',
-                            ],
-                        },
-                        transition: {
-                            duration: 30,
-                            repeat: Infinity,
-                            ease: 'linear',
-                        },
-                    })}
-                >
-                    <h2 className="text-4xl font-bold mb-4 text-white">Get three months free, then just $5/month.</h2>
-                    <p className="text-lg mb-8 text-white">
-                        Unlimited flags, apps, environments, and users — for the price of a coffee.
-                    </p>
-                    <a href={`/register?plan=${products[0].id}`}>
-                        <Button size="lg">Start Free Trial</Button>
-                    </a>
-                </motion.section>
             </div>
         </>
     );
