@@ -286,7 +286,7 @@ export default function Index({ auth, products, docsUrl = '/docs' }: PageProps &
                                     strokeLinejoin: 'round',
                                     strokeMiterlimit: 2,
                                 }}
-                                className="mx-auto grayscale-100 group-hover:grayscale-0 motion-reduce:grayscale-0"
+                                className="mx-auto motion-safe:grayscale-100 group-hover:grayscale-0 motion-reduce:grayscale-0"
                             >
                                 <rect x="0" y="0" width="64" height="64" style={{ fill: '#328c6b' }} />
                                 <path
@@ -405,7 +405,7 @@ export default function Index({ auth, products, docsUrl = '/docs' }: PageProps &
                                 features to keep or discard.
                             </p>
                         </div>
-                        <div>
+                        <div className="rotate-12 h-[218px] overflow-hidden">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 xmlSpace="preserve"
@@ -436,11 +436,10 @@ export default function Index({ auth, products, docsUrl = '/docs' }: PageProps &
                                         id="Flask"
                                         fill="none"
                                         fillRule="nonzero"
-                                        stroke="#000"
-                                        className="stroke-[0.5]"
+                                        className="stroke-[0.5] stroke-primary"
                                         d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08c.161.294.245.624.245.96 0 1.097-.902 2-2 2H6c-1.098 0-2-.903-2-2 0-.336.084-.666.245-.96l5.51-10.08A2 2 0 0 0 10 8V2M6.453 15h11.094M8.5 2h7"
                                     ></path>
-                                    <g id="Bubbles">
+                                    <g id="Bubbles" className="opacity-75">
                                         <g
                                             id="bubble-1"
                                             className="motion-safe:motion-preset-float-sm motion-duration-3000 motion-delay-100"
@@ -448,8 +447,8 @@ export default function Index({ auth, products, docsUrl = '/docs' }: PageProps &
                                             <path
                                                 fill="none"
                                                 fillRule="nonzero"
-                                                stroke="#000"
                                                 strokeWidth="0.33934"
+                                                className="stroke-primary"
                                                 d="M7.335 19.45c.186 0 .34.153.34.34"
                                             ></path>
                                             <circle
@@ -457,7 +456,7 @@ export default function Index({ auth, products, docsUrl = '/docs' }: PageProps &
                                                 cy="16.5"
                                                 r="5.5"
                                                 fill="none"
-                                                stroke="#000"
+                                                className="stroke-primary"
                                                 strokeWidth="2"
                                                 transform="matrix(.16967 0 0 .16967 6.114 16.939)"
                                             ></circle>
@@ -467,80 +466,72 @@ export default function Index({ auth, products, docsUrl = '/docs' }: PageProps &
                                             cy="8.5"
                                             r="3.5"
                                             fill="none"
-                                            stroke="#000"
                                             strokeWidth="2"
                                             transform="matrix(.16967 0 0 .16967 6.114 16.939)"
-                                            className="motion-safe:motion-preset-float-sm motion-duration-2500 motion-delay-300"
+                                            className="stroke-primary motion-safe:motion-preset-float-sm motion-duration-2500 motion-delay-300"
                                         ></circle>
                                         <circle
                                             cx="7.5"
                                             cy="4.5"
                                             r="2.5"
                                             fill="none"
-                                            stroke="#000"
                                             strokeWidth="2"
                                             transform="matrix(.16967 0 0 .16967 6.153 16.6)"
-                                            className="motion-safe:motion-preset-float-sm motion-duration-4000 motion-delay-500"
+                                            className="stroke-primary motion-safe:motion-preset-float-sm motion-duration-4000 motion-delay-500"
                                         ></circle>
                                         <circle
                                             cx="18.5"
                                             cy="8.5"
                                             r="3.5"
                                             fill="none"
-                                            stroke="#000"
                                             strokeWidth="2"
                                             transform="matrix(.16967 0 0 .16967 8.522 15.327)"
-                                            className="motion-safe:motion-preset-float-sm motion-duration-3500 motion-delay-200"
+                                            className="stroke-primary motion-safe:motion-preset-float-sm motion-duration-3500 motion-delay-200"
                                         ></circle>
                                         <circle
                                             cx="7.5"
                                             cy="16.5"
                                             r="5.5"
                                             fill="none"
-                                            stroke="#000"
                                             strokeWidth="2"
                                             transform="matrix(.16967 0 0 .16967 10.727 16.43)"
-                                            className="motion-safe:motion-preset-float-sm motion-duration-2800 motion-delay-700"
+                                            className="stroke-primary motion-safe:motion-preset-float-sm motion-duration-2800 motion-delay-700"
                                         ></circle>
                                         <circle
                                             cx="7.5"
                                             cy="4.5"
                                             r="2.5"
                                             fill="none"
-                                            stroke="#000"
                                             strokeWidth="2"
                                             transform="matrix(.16967 0 0 .16967 12.713 16.939)"
-                                            className="motion-safe:motion-preset-float-sm motion-duration-3200 motion-delay-400"
+                                            className="stroke-primary motion-safe:motion-preset-float-sm motion-duration-3200 motion-delay-400"
                                         ></circle>
                                         <circle
                                             cx="18.5"
                                             cy="8.5"
                                             r="3.5"
                                             fill="none"
-                                            stroke="#000"
                                             strokeWidth="2"
                                             transform="matrix(.16967 0 0 .16967 12.154 18.38)"
-                                            className="motion-safe:motion-preset-float-sm motion-duration-2700 motion-delay-600"
+                                            className="stroke-primary motion-safe:motion-preset-float-sm motion-duration-2700 motion-delay-600"
                                         ></circle>
                                         <circle
                                             cx="7.5"
                                             cy="16.5"
                                             r="5.5"
                                             fill="none"
-                                            stroke="#000"
                                             strokeWidth="2"
                                             transform="matrix(.16967 0 0 .16967 14.954 14.139)"
-                                            className="motion-safe:motion-preset-float-sm motion-duration-4200 motion-delay-150"
+                                            className="stroke-primary motion-safe:motion-preset-float-sm motion-duration-4200 motion-delay-150"
                                         ></circle>
                                         <circle
                                             cx="7.5"
                                             cy="4.5"
                                             r="2.5"
                                             fill="none"
-                                            stroke="#000"
                                             strokeWidth="2"
                                             transform="matrix(.16967 0 0 .16967 15.887 18.466)"
-                                            className="motion-safe:motion-preset-float-sm motion-duration-3800 motion-delay-800"
+                                            className="stroke-primary motion-safe:motion-preset-float-sm motion-duration-3800 motion-delay-800"
                                         ></circle>
                                     </g>
                                 </g>
