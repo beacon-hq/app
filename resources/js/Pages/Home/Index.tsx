@@ -1,7 +1,6 @@
 import { ProductCollection } from '@/Application';
 import NavMenu from '@/Components/NavMenu';
 import { AuroraText } from '@/Components/magicui/aurora-text';
-import { ShineBorder } from '@/Components/magicui/shine-border';
 import { Button } from '@/Components/ui/button';
 import { Switch } from '@/Components/ui/switch';
 import { CentralizedControlAnimation } from '@/Pages/Home/Components/CentralizedControlAnimation';
@@ -182,23 +181,21 @@ export default function Index({ auth, products, docsUrl = '/docs' }: PageProps &
                         </g>
                     </svg>
                 </div>
-                <h1 className="text-4xl text-center w-full font-bold text-transparent bg-clip-text inline-block">
+                <h1 className="text-4xl text-center w-full font-bold text-transparent bg-clip-text inline-block px-4">
                     <AuroraText colors={['#00e281', '#00e7a4', '#00f1ed', '#00b9fa', '#009aff']} speed={4}>
                         Feature Flag Management For Laravel
                     </AuroraText>
                 </h1>
-                <div className="perspective-dramatic transform-3d w-1/2 mx-auto max-h-120 md:mx-h-180 lg:max-h-240 aspect-video">
+                <div className="perspective-[25vh] aspect-square relative top-20 xl:top-30 transform-3d transform-gpu sm:w-3/4 xl:left-[7.5%] md:left-5 -left-5 w-full">
                     <div
-                        className="w-full translate-x-[5%] translate-y-[40%] rotate-y-4 rotate-x-0 rounded-md z-10"
+                        className={cn(
+                            'sm:w-full w-10/12 absolute translate-x-[15%] sm:translate-x-[0%] translate-y-[0%] rotate-y-4 rotate-x-0 rounded-md z-30',
+                            '[background:linear-gradient(45deg,#fff,theme(colors.white)_50%,#fff)_padding-box,conic-gradient(from_var(--border-angle),#07e38f,#00e7aa,#13daf4,#07baf9,_theme(colors.sky.700/.48))_border-box] rounded-2xl border-4 border-transparent motion-safe:animate-border',
+                        )}
                         style={{
                             maskImage: 'linear-gradient(8deg,transparent 0%, black 67%, black 100%)',
                         }}
                     >
-                        <ShineBorder
-                            shineColor={['#00e281', '#00e7a4', '#00f1ed', '#00b9fa', '#009aff']}
-                            borderWidth={3}
-                            duration={100}
-                        />
                         <img
                             src="/images/hero/hero-applications-light.png"
                             alt="Beacon Screenshot"
@@ -211,16 +208,14 @@ export default function Index({ auth, products, docsUrl = '/docs' }: PageProps &
                         />
                     </div>
                     <div
-                        className="w-full translate-x-[20%] -translate-y-[35%] rotate-y-4 rotate-x-0 rounded-md z-20"
+                        className={cn(
+                            'sm:w-full w-10/12 absolute translate-x-[17%] sm:translate-x-[2%] translate-y-[20%] sm:translate-y-[15%] rotate-y-4 rotate-x-0 rounded-md z-30',
+                            '[background:linear-gradient(45deg,#fff,theme(colors.white)_50%,#fff)_padding-box,conic-gradient(from_var(--border-angle),#07e38f,#00e7aa,#13daf4,#07baf9,_theme(colors.sky.700/.48))_border-box] rounded-2xl border-4 border-transparent motion-safe:animate-border',
+                        )}
                         style={{
                             maskImage: 'linear-gradient(8deg,transparent 0%, black 67%, black 100%)',
                         }}
                     >
-                        <ShineBorder
-                            shineColor={['#00e281', '#00e7a4', '#00f1ed', '#00b9fa', '#009aff']}
-                            borderWidth={3}
-                            duration={100}
-                        />
                         <img
                             src="/images/hero/hero-feature-flags-light.png"
                             alt="Beacon Screenshot"
@@ -233,16 +228,14 @@ export default function Index({ auth, products, docsUrl = '/docs' }: PageProps &
                         />
                     </div>
                     <div
-                        className="w-full translate-x-[40%] -translate-y-[110%] rotate-y-4 rotate-x-0 rounded-md z-30"
+                        className={cn(
+                            'sm:w-full w-10/12 absolute translate-x-[19%] sm:translate-x-[4%] translate-y-[40%] sm:translate-y-[30%] rotate-y-4 rotate-x-0 rounded-md z-30',
+                            '[background:linear-gradient(45deg,#fff,theme(colors.white)_50%,#fff)_padding-box,conic-gradient(from_var(--border-angle),#07e38f,#00e7aa,#13daf4,#07baf9,_theme(colors.sky.700/.48))_border-box] rounded-2xl border-4 border-transparent motion-safe:animate-border',
+                        )}
                         style={{
                             maskImage: 'linear-gradient(8deg,transparent 0%, black 67%, black 100%)',
                         }}
                     >
-                        <ShineBorder
-                            shineColor={['#00e281', '#00e7a4', '#00f1ed', '#00b9fa', '#009aff']}
-                            borderWidth={3}
-                            duration={100}
-                        />
                         <img
                             src="/images/hero/hero-dashboard-light.png"
                             alt="Beacon Screenshot"
@@ -258,9 +251,9 @@ export default function Index({ auth, products, docsUrl = '/docs' }: PageProps &
             </header>
 
             <section className="dark:bg-neutral-900 w-full">
-                <div className="mx-auto px-4 py-12 flex flex-col gap-12">
+                <div className="mx-auto flex flex-col gap-12">
                     <div className="items-center md:max-w-4xl max-w-full mx-auto flex md:flex-row flex-col">
-                        <div className="prose dark:prose-invert">
+                        <div className="prose dark:prose-invert px-4 py-12">
                             <h2 className="">Centralized Control</h2>
                             <p className="text-gray-600 dark:text-gray-300">
                                 Manage all your feature flags from a single dashboard. Control rollouts across multiple
@@ -271,46 +264,48 @@ export default function Index({ auth, products, docsUrl = '/docs' }: PageProps &
                             <CentralizedControlAnimation />
                         </div>
                     </div>
-                    <div className="items-center justify-between max-w-3xl mx-auto flex md:flex-row flex-col gap-12 group">
-                        <div>
-                            <svg
-                                width="60%"
-                                height="100%"
-                                viewBox="0 0 64 64"
-                                version="1.1"
-                                xmlns="http://www.w3.org/2000/svg"
-                                xmlSpace="preserve"
-                                style={{
-                                    fillRule: 'evenodd',
-                                    clipRule: 'evenodd',
-                                    strokeLinejoin: 'round',
-                                    strokeMiterlimit: 2,
-                                }}
-                                className="mx-auto motion-safe:grayscale-100 group-hover:grayscale-0 motion-reduce:grayscale-0"
-                            >
-                                <rect x="0" y="0" width="64" height="64" style={{ fill: '#328c6b' }} />
-                                <path
-                                    id="flag"
-                                    d="M32,30.563L32,26.625L12,21L12,43.5L32,37.875L32,41.813L52,36.188L32,30.563Z"
-                                    style={{ fill: '#fdfdfc' }}
-                                    className="group-hover:motion-safe:animate-wiggle origin-center"
-                                />
-                            </svg>
-                        </div>
-                        <div className="prose dark:prose-invert">
-                            <h2 className="text-2xl font-bold mb-4 mt-4">Built for Laravel Pennant</h2>
-                            <p className="mb-6">
-                                Seamlessly integrate Beacon with{' '}
-                                <a href="http://laravel.com/docs/pennant">Laravel Pennant</a> to manage feature flags
-                                across all environments with ease. Gain centralized control, simplify rollouts, and
-                                improve your team&apos;s productivity.
-                            </p>
+                    <div className="w-full mx-auto group bg-secondary py-12">
+                        <div className="max-w-3xl mx-auto gap-12 flex md:flex-row flex-col items-center justify-between">
+                            <div>
+                                <svg
+                                    width="60%"
+                                    height="100%"
+                                    viewBox="0 0 64 64"
+                                    version="1.1"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    xmlSpace="preserve"
+                                    style={{
+                                        fillRule: 'evenodd',
+                                        clipRule: 'evenodd',
+                                        strokeLinejoin: 'round',
+                                        strokeMiterlimit: 2,
+                                    }}
+                                    className="mx-auto motion-safe:grayscale-100 group-hover:grayscale-0 motion-reduce:grayscale-0"
+                                >
+                                    <rect x="0" y="0" width="64" height="64" style={{ fill: '#328c6b' }} />
+                                    <path
+                                        id="flag"
+                                        d="M32,30.563L32,26.625L12,21L12,43.5L32,37.875L32,41.813L52,36.188L32,30.563Z"
+                                        style={{ fill: '#fdfdfc' }}
+                                        className="group-hover:motion-safe:animate-wiggle origin-center"
+                                    />
+                                </svg>
+                            </div>
+                            <div className="prose dark:prose-invert px-4">
+                                <h2 className="text-2xl font-bold mb-4 mt-4">Built for Laravel Pennant</h2>
+                                <p>
+                                    Seamlessly integrate Beacon with{' '}
+                                    <a href="http://laravel.com/docs/pennant">Laravel Pennant</a> to manage feature
+                                    flags across all environments with ease. Gain centralized control, simplify
+                                    rollouts, and improve your team&apos;s productivity.
+                                </p>
+                            </div>
                         </div>
                     </div>
-                    <div className="items-center justify-between max-w-3xl mx-auto flex md:flex-row flex-col gap-20">
-                        <div className="prose dark:prose-invert">
+                    <div className="items-center justify-between max-w-3xl mx-auto flex md:flex-row flex-col gap-0 md:gap-8">
+                        <div className="prose dark:prose-invert px-4 py-12">
                             <h2 className="text-2xl font-bold mb-4 mt-4">Zero-Downtime Configuration Changes</h2>
-                            <p className="mb-6">
+                            <p>
                                 Change Feature Flag configurations without deploying code. Beacon allows you to manage
                                 your feature flags in real-time, ensuring a smooth experience for your users.
                             </p>
@@ -329,83 +324,86 @@ export default function Index({ auth, products, docsUrl = '/docs' }: PageProps &
                             />
                         </div>
                     </div>
-                    <div className="items-center justify-between max-w-3xl mx-auto flex md:flex-row flex-col gap-20">
-                        <div>
-                            <svg
-                                width="100%"
-                                height="100%"
-                                viewBox="0 0 1054 1054"
-                                version="1.1"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <g transform="matrix(1,0,0,1,-13.0779,-13.0779)">
-                                    <g transform="matrix(1.45509,0,0,1.45509,-245.747,-245.747)">
-                                        <circle
-                                            cx="540"
-                                            cy="540"
-                                            r="357.657"
-                                            style={{ strokeWidth: '8.93px' }}
-                                            className="fill-secondary motion-preset-blink motion-safe:motion-duration-[5s] motion-reduce:motion-duration-[10s] motion-delay-700 stroke-primary"
-                                        />
+                    <div className="w-full bg-secondary py-12">
+                        <div className="items-center mx-auto  justify-between max-w-3xl flex md:flex-row flex-col gap-20 ">
+                            <div>
+                                <svg
+                                    width="100%"
+                                    height="100%"
+                                    viewBox="0 0 1054 1054"
+                                    version="1.1"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <g transform="matrix(1,0,0,1,-13.0779,-13.0779)">
+                                        <g transform="matrix(1.45509,0,0,1.45509,-245.747,-245.747)">
+                                            <circle
+                                                cx="540"
+                                                cy="540"
+                                                r="357.657"
+                                                style={{ strokeWidth: '8.93px' }}
+                                                className="fill-secondary motion-preset-blink motion-safe:motion-duration-[5s] motion-reduce:motion-duration-[10s] motion-delay-700 stroke-primary"
+                                            />
+                                        </g>
+                                        <g transform="matrix(1.45509,0,0,1.45509,-245.747,-245.747)">
+                                            <circle
+                                                cx="540"
+                                                cy="540"
+                                                r="281.534"
+                                                style={{ strokeWidth: '8.93px' }}
+                                                className="fill-secondary motion-preset-blink motion-safe:motion-duration-[5s] motion-reduce:motion-duration-[10s] motion-delay-500 stroke-primary"
+                                            />
+                                        </g>
+                                        <g transform="matrix(2.73406,0,0,2.73406,-936.391,-936.391)">
+                                            <circle
+                                                cx="540"
+                                                cy="540"
+                                                r="105.928"
+                                                style={{ strokeWidth: '8.93px' }}
+                                                className="fill-secondary motion-preset-blink motion-safe:motion-duration-[5s] motion-reduce:motion-duration-[10s] motion-delay-300 stroke-primary"
+                                            />
+                                        </g>
+                                        <g transform="matrix(2.49718,0,0,2.49718,-808.475,-808.475)">
+                                            <circle
+                                                cx="540"
+                                                cy="540"
+                                                r="64.975"
+                                                style={{ strokeWidth: '8.93px' }}
+                                                className="fill-secondary motion-preset-blink motion-safe:motion-duration-[5s] motion-reduce:motion-duration-[10s] motion-delay-100 stroke-primary"
+                                            />
+                                        </g>
+                                        <g transform="matrix(1.45509,0,0,1.45509,-245.747,-245.747)">
+                                            <circle
+                                                cx="540"
+                                                cy="540"
+                                                r="14.592"
+                                                style={{ strokeWidth: '8.93px' }}
+                                                className="fill-secondary motion-preset-blink motion-safe:motion-duration-[5s] motion-reduce:motion-duration-[10s] stroke-primary"
+                                            />
+                                        </g>
                                     </g>
-                                    <g transform="matrix(1.45509,0,0,1.45509,-245.747,-245.747)">
-                                        <circle
-                                            cx="540"
-                                            cy="540"
-                                            r="281.534"
-                                            style={{ strokeWidth: '8.93px' }}
-                                            className="fill-secondary motion-preset-blink motion-safe:motion-duration-[5s] motion-reduce:motion-duration-[10s] motion-delay-500 stroke-primary"
-                                        />
-                                    </g>
-                                    <g transform="matrix(2.73406,0,0,2.73406,-936.391,-936.391)">
-                                        <circle
-                                            cx="540"
-                                            cy="540"
-                                            r="105.928"
-                                            style={{ strokeWidth: '8.93px' }}
-                                            className="fill-secondary motion-preset-blink motion-safe:motion-duration-[5s] motion-reduce:motion-duration-[10s] motion-delay-300 stroke-primary"
-                                        />
-                                    </g>
-                                    <g transform="matrix(2.49718,0,0,2.49718,-808.475,-808.475)">
-                                        <circle
-                                            cx="540"
-                                            cy="540"
-                                            r="64.975"
-                                            style={{ strokeWidth: '8.93px' }}
-                                            className="fill-secondary motion-preset-blink motion-safe:motion-duration-[5s] motion-reduce:motion-duration-[10s] motion-delay-100 stroke-primary"
-                                        />
-                                    </g>
-                                    <g transform="matrix(1.45509,0,0,1.45509,-245.747,-245.747)">
-                                        <circle
-                                            cx="540"
-                                            cy="540"
-                                            r="14.592"
-                                            style={{ strokeWidth: '8.93px' }}
-                                            className="fill-secondary motion-preset-blink motion-safe:motion-duration-[5s] motion-reduce:motion-duration-[10s] stroke-primary"
-                                        />
-                                    </g>
-                                </g>
-                            </svg>
-                        </div>
-                        <div className="prose dark:prose-invert">
-                            <h2 className="text-2xl font-bold mb-4 mt-4">Gradual Rollouts</h2>
-                            <p className="mb-6">
-                                Gradually roll out new features to a percentage of your users. Monitor performance and
-                                user feedback before a full rollout, ensuring a smooth transition and minimizing risk.
-                            </p>
+                                </svg>
+                            </div>
+                            <div className="prose dark:prose-invert px-4">
+                                <h2 className="text-2xl font-bold mt-4">Gradual Rollouts</h2>
+                                <p>
+                                    Gradually roll out new features to a percentage of your users. Monitor performance
+                                    and user feedback before a full rollout, ensuring a smooth transition and minimizing
+                                    risk.
+                                </p>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="items-center justify-between max-w-3xl mx-auto flex md:flex-row flex-col gap-20">
-                        <div className="prose dark:prose-invert">
-                            <h2 className="text-2xl font-bold mb-4 mt-4">A/B Testing</h2>
-                            <p className="mb-6">
+                    <div className="items-center justify-between w-full md:max-w-3xl mx-auto flex md:flex-row flex-col gap-20 py-12">
+                        <div className="prose dark:prose-invert px-4">
+                            <h2 className="text-2xl font-bold mb-4">A/B Testing</h2>
+                            <p>
                                 Use Feature Flags to run experiments with advanced audience segmentation and multiple
                                 variants. Measure user engagement and performance to make data-driven decisions on which
                                 features to keep or discard.
                             </p>
                         </div>
-                        <div className="rotate-12 h-[218px] overflow-hidden">
+                        <div className="rotate-12 max-h-[250px] md:max-h-[218px] flex flex-row justify-center overflow-hidden">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 xmlSpace="preserve"
@@ -414,7 +412,7 @@ export default function Index({ auth, products, docsUrl = '/docs' }: PageProps &
                                 strokeLinejoin="round"
                                 clipRule="evenodd"
                                 viewBox="0 0 18 21"
-                                className="w-3/4"
+                                className="w-[250px] max-h-[218px] overflow-hidden"
                                 id="experiments"
                             >
                                 <g transform="translate(-3.5 -1.5)">
@@ -549,8 +547,8 @@ export default function Index({ auth, products, docsUrl = '/docs' }: PageProps &
 
             <footer className="bg-secondary">
                 <div className=" w-3/4 mx-auto">
-                    <div className="flex flex-row gap-12 p-12 text-primary">
-                        <div className="prose dark:prose-invert w-1/3">
+                    <div className="flex flex-col md:flex-row gap-12 py-12 text-primary">
+                        <div className="prose dark:prose-invert w-full md:w-1/3">
                             <h3>Get Started Today</h3>
                             {pricingEnabled && (
                                 <>
@@ -573,8 +571,8 @@ export default function Index({ auth, products, docsUrl = '/docs' }: PageProps &
                                 </>
                             )}
                         </div>
-                        <div className="w-2/3 flex flex-row justify-between items-start">
-                            <div className="">
+                        <div className="w-full md:w-2/3 flex flex-row flex-wrap gap-4 sm:gap-0 justify-between">
+                            <div className="basis-1/3 sm:basis-1/2 md:basis-1/4">
                                 <h4 className="font-bold mb-2">Product</h4>
                                 <ul>
                                     <li>Features</li>
@@ -583,7 +581,7 @@ export default function Index({ auth, products, docsUrl = '/docs' }: PageProps &
                                     {pricingEnabled && <li>Support</li>}
                                 </ul>
                             </div>
-                            <div className="">
+                            <div className="basis-1/3 sm:basis-1/2 md:basis-1/4">
                                 {pricingEnabled && (
                                     <>
                                         <h4 className="font-bold mb-2">Company</h4>
@@ -595,7 +593,7 @@ export default function Index({ auth, products, docsUrl = '/docs' }: PageProps &
                                     </>
                                 )}
                             </div>
-                            <div className="">
+                            <div className="basis-1/3 sm:basis-1/2 md:basis-1/4">
                                 <h4 className="font-bold mb-2">Resources</h4>
                                 <ul>
                                     <li>Get Started</li>
@@ -608,7 +606,7 @@ export default function Index({ auth, products, docsUrl = '/docs' }: PageProps &
                                     </li>
                                 </ul>
                             </div>
-                            <div className="">
+                            <div className="basis-1/3 sm:basis-1/2 md:basis-1/4">
                                 {pricingEnabled && (
                                     <>
                                         <h4 className="font-bold mb-2">Legal</h4>
