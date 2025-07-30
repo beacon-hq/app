@@ -9,8 +9,8 @@ export default function Index() {
         <AuthenticatedLayout breadcrumbs={[{ name: 'Settings', icon: 'Settings' }]}>
             <Head title="Settings" />
             <div className="py-10">
-                <div className="flex flex-col gap-2 w-full items-center">
-                    <Card className="relative flex flex-row items-center justify-between w-1/3 cursor-pointer">
+                <div className="flex flex-row flex-wrap gap-2 w-full items-center mx-auto">
+                    <Card className="relative grow flex flex-row items-center justify-between w-1/3 cursor-pointer">
                         <div>
                             <CardHeader>
                                 <Network className="size-12" />
@@ -31,7 +31,7 @@ export default function Index() {
                             <ChevronRight className="mr-4" />
                         </div>
                     </Card>
-                    <Card className="relative flex flex-row items-center justify-between w-1/3 cursor-pointer">
+                    <Card className="relative grow flex flex-row items-center justify-between w-1/3 cursor-pointer">
                         <div>
                             <CardHeader>
                                 <UserCircle className="size-12" />
@@ -52,7 +52,7 @@ export default function Index() {
                             <ChevronRight className="mr-4" />
                         </div>
                     </Card>
-                    <Card className="relative flex flex-row items-center justify-between w-1/3 cursor-pointer">
+                    <Card className="relative grow flex flex-row items-center justify-between w-1/3 cursor-pointer">
                         <div>
                             <CardHeader>
                                 <Users className="size-12" />
@@ -73,7 +73,7 @@ export default function Index() {
                             <ChevronRight className="mr-4" />
                         </div>
                     </Card>
-                    <Card className="relative flex flex-row items-center justify-between w-1/3 cursor-pointer">
+                    <Card className="relative grow flex flex-row items-center justify-between w-1/3 cursor-pointer">
                         <div>
                             <CardHeader>
                                 <KeyRound className="size-12" />

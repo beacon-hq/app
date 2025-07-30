@@ -194,7 +194,7 @@ class FeatureFlagRepository
             ->when(isset($filters['application']), fn (Builder $query) => $query->whereApplication($filters['application']))
             ->when(isset($filters['environment']), fn (Builder $query) => $query->whereEnvironment($filters['environment']))
             ->when(isset($filters['featureType']), fn (Builder $query) => $query->whereFeatureType($filters['featureType']))
-            ->when(isset($filters['status']), fn (Builder $query) => $query->whereStatus($filters['status']));
+            ->when(isset($filters['status']), fn (Builder $query) => $query->whereStatus($filters['status'] === 'active'));
 
         return $query;
     }

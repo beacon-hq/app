@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Laravel\Dusk\Browser;
+use Tests\Browser\Components\ColorPicker;
 
 it('can create new application', function () {
     $user = createBrowserUser();
@@ -22,15 +23,15 @@ it('can create new application', function () {
             ->screenshot('applications-form-create');
 
         $browser
-            ->type('#name', 'Test Application')
-            ->type('#description', 'This is a test application.')
-            ->type('#display_name', 'Test App')
-            ->mouseover('.bg-lime-400')
-            ->screenshot('applications-form-create-fill')
-            ->click('.bg-lime-400')
+            ->type('#name', 'Demo Application')
+            ->type('#description', 'This is a demo application.')
+            ->type('#display_name', 'Demo App')
+            ->within(new ColorPicker(), function (Browser $browser) {
+                $browser->selectColor('lime', '@main', 'applications-form-create-fill');
+            })
             ->pause(500)
             ->click('@button-application-submit')
-            ->waitForText('Test Application')
+            ->waitForText('Demo Application')
             ->screenshotElement('@main', 'applications-after-create')
             ->screenshotElement('@card-application', 'applications-app-card');
     });
@@ -45,21 +46,25 @@ it('can edit applications', function () {
         $browser
             ->loginAs($user)
             ->visitRoute('applications.index')
-            ->waitForText('Test Application');
+            ->waitForText('Demo Application');
 
         $browser
             ->click('@card-application')
+            ->resize(3024 / 2, 900)
             ->waitForText('Edit Application')
-            ->screenshotElement('@main', 'applications-edit');
+            ->pause(500)
+            ->screenshotElement('@card-application-edit', 'applications-edit');
 
         $browser
             ->assertDisabled('#name')
-            ->type('#description', 'This is an updated test application.')
-            ->type('#display_name', 'Updated Test App')
-            ->click('.bg-purple-400')
+            ->type('#description', 'This is an updated demo application.')
+            ->type('#display_name', 'Updated Demo App')
+            ->within(new ColorPicker(), function (Browser $browser) {
+                $browser->selectColor('purple');
+            })
             ->pause(500)
             ->click('@button-application-submit')
-            ->waitForText('Updated Test App')
+            ->waitForText('Updated Demo App')
             ->screenshotElement('@main', 'applications-after-edit')
             ->screenshotElement('@card-application', 'applications-app-card-updated');
     });

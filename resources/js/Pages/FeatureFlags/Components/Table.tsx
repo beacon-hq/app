@@ -184,6 +184,7 @@ export default function Table({
                                         feature_flag: row.original.id as string,
                                     })}
                                     className="text-center"
+                                    data-dusk="button-feature-flag-edit"
                                 >
                                     <Pencil className="h-5 w-5 inline-block text-gray-600 hover:text-gray-800" />
                                 </Link>

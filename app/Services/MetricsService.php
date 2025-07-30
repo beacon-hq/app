@@ -36,8 +36,8 @@ class MetricsService
         ]);
     }
 
-    public function getFlagMetrics(string $featureFlagId): array
+    public function getFlagMetrics(string $featureFlagId, ?string $applicationId = null, ?string $environmentId = null): array
     {
-        return $this->metricsRepository->getFlagMetrics($featureFlagId);
+        return $this->metricsRepository->getFlagMetrics($featureFlagId, $applicationId, $environmentId);
     }
 }

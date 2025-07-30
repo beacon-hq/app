@@ -40,7 +40,7 @@ readonly class Environment extends Bag
         #[FromRouteParameter('environment')]
         public Optional|string $id,
         public Optional|string $name,
-        public Optional|string|null $description = null,
+        public Optional|string $description,
         #[Cast(ColorCast::class)]
         public Color|string $color = '#e3e3e3',
         public CarbonImmutable|null $lastSeenAt = null,
@@ -63,7 +63,6 @@ readonly class Environment extends Bag
     {
         return [
             'name' => ['required_without:id', 'exclude_with:id'],
-            'description' => ['nullable'],
             'color' => ['present'],
         ];
     }

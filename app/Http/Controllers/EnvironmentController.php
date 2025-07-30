@@ -61,9 +61,6 @@ class EnvironmentController extends Controller
 
         return redirect()
             ->route('environments.index')
-            ->with('alert', [
-                'message' => 'Environment updated successfully.',
-                'status' => 'success',
-            ]);
+            ->withAlert('success', 'Environment updated successfully.');
     }
 }

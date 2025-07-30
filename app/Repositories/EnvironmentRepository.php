@@ -34,14 +34,9 @@ class EnvironmentRepository
     public function update(EnvironmentValue $environment): Environment
     {
         $env = Environment::findOrFail($environment->id);
-
-        $env->update(
-            $environment
-                ->with(color: $environment->color ?? '')
-                ->toCollection()
-                ->except('name', 'id')
-                ->toArray()
-        );
+        $env->color = $environment->color ?? '';
+        $env->description = $environment->has('description') ? $environment->description : null;
+        $env->save();
 
         return $env->fresh();
     }

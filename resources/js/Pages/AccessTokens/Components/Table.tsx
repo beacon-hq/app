@@ -81,9 +81,9 @@ export default function Table({
                     <div className="flex">
                         <AlertDialog>
                             <AlertDialogTrigger>
-                                <Trash className="h-6 w-6" />
+                                <Trash className="h-6 w-6" data-dusk="button-access-token-delete" />
                             </AlertDialogTrigger>
-                            <AlertDialogContent>
+                            <AlertDialogContent data-dusk="dialog-access-token-delete">
                                 <AlertDialogHeader>
                                     <AlertDialogTitle>Delete Token</AlertDialogTitle>
                                     <AlertDialogDescription>
@@ -93,7 +93,10 @@ export default function Table({
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={() => onDelete(row.original.id as number)}>
+                                    <AlertDialogAction
+                                        onClick={() => onDelete(row.original.id as number)}
+                                        data-dusk="button-access-token-delete-confirm"
+                                    >
                                         Delete
                                     </AlertDialogAction>
                                 </AlertDialogFooter>

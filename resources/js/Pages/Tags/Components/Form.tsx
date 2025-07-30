@@ -36,6 +36,7 @@ export function Form({
                         value={data.name}
                         autoComplete="off"
                         onChange={(e) => setData('name', e.target.value)}
+                        data-dusk="input-tags-name"
                     />
                 </div>
                 {errors.name && <InputError message={errors.name} />}
@@ -52,13 +53,14 @@ export function Form({
                     value={data.description}
                     rows={8}
                     onChange={(e) => setData('description', e.target.value)}
+                    data-dusk="input-tags-description"
                 />
             </div>
             <div className="flex justify-end">
                 <Button variant="link" className="mr-2" type="button" onClick={onCancel}>
                     Cancel
                 </Button>
-                <Button type="submit" className="w-24" disabled={processing}>
+                <Button type="submit" className="w-24" disabled={processing} data-dusk="button-tag-submit">
                     {data.id ? 'Update' : 'Create'}
                 </Button>
             </div>

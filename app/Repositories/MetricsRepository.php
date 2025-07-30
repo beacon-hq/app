@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Models\Activity;
 use App\Models\FeatureFlag;
 use App\Models\FeatureFlagUsage;
 use App\Services\SubscriptionBillingService;
@@ -26,17 +27,19 @@ class MetricsRepository
 
     public function getTotalFlags(): array
     {
-        $total = Metrics::query(FeatureFlag::query())->count()->all()->value()->value;
-        $difference = $total - Metrics::query(FeatureFlag::query())
-                ->count()
-                ->byMonth()
+        $total = Metrics::query(FeatureFlag::query()->whereNull('completed_at'))
+            ->count()
+            ->all()
+            ->value();
+        $difference = Metrics::query(FeatureFlag::query()->whereNull('completed_at'))
                 ->between(now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth())
-                ->value()->value;
+                ->count()
+                ->value();
 
         return [
-            'value' => $total,
+            'value' => $total->value,
             'previous' => [
-                'difference' => $difference,
+                'difference' => $total->value - ($total->value - $difference->value),
                 'type' => 'increase',
             ],
         ];
@@ -44,11 +47,11 @@ class MetricsRepository
 
     public function getChangesMetrics(): array
     {
-        $query = FeatureFlag::query()->where('updated_at', '>', DB::raw('created_at'));
+        $query = Activity::query();
 
         return Metrics::query($query)
             ->count()
-            ->dateColumn('updated_at')
+            ->dateColumn('created_at')
             ->between(
                 now()->startOfMonth(),
                 now()->endOfMonth()
@@ -61,7 +64,7 @@ class MetricsRepository
 
     public function getCreatedMetrics(): array
     {
-        return Metrics::query(FeatureFlag::query())
+        return Metrics::query(FeatureFlag::query()->whereNull('completed_at'))
             ->count('created_at')
             ->between(
                 now()->startOfMonth(),
@@ -74,65 +77,19 @@ class MetricsRepository
 
     public function getArchivedMetrics(): array
     {
-        $query = FeatureFlag::where('status', false);
+        $query = FeatureFlag::whereNotNull('completed_at');
 
         return Metrics::query($query)
             ->count()
-            ->dateColumn('updated_at')
+            ->dateColumn('completed_at')
             ->between(
-                now()->subMonth()->startOfMonth(),
-                now()->subMonth()->endOfMonth()
+                now()->startOfMonth(),
+                now()
             )
             ->byMonth()
             ->withPrevious()
-            ->value()->toArray();
-    }
-
-    public function getFlagStatusData(): array
-    {
-        // Active flags (last seen in the last 30 days)
-        $activeFlags = FeatureFlag::query()
-            ->where('status', true)
-            ->whereHas('statuses', function (Builder $query) {
-                $query->where('status', true);
-            })
-            ->where(function (Builder $query) {
-                $query
-                    ->whereDate('last_seen_at', '>=', now()->subDays(30))
-                    ->orWhereHas('featureType', function (Builder $query) {
-                        $query->where('temporary', false);
-                    });
-            })
-            ->count();
-
-        // Unused (last seen more than 30 days ago)
-        $unusedFlags = FeatureFlag::query()
-            ->where('status', true)
-            ->where(function (Builder $query) {
-                $query->where(function (Builder $query) {
-                    $query->whereNotNull('last_seen_at')
-                        ->whereDate('last_seen_at', '<', now()->subDays(30));
-                })
-                    ->orWhere(function (Builder $query) {
-                        $query->whereNull('last_seen_at')
-                            ->where('created_at', '>=', now()->subDays(30));
-                    });
-            })
-            ->whereHas('featureType', function (Builder $query) {
-                $query->where('temporary', true);
-            })
-            ->count();
-
-        // Inactive flags (never seen)
-        $inactiveFlags = FeatureFlag::query()
-            ->where('status', false)
-            ->count();
-
-        return [
-            ['state' => 'active', 'flags' => $activeFlags, 'fill' => 'var(--color-active)'],
-            ['state' => 'unused', 'flags' => $unusedFlags, 'fill' => 'var(--color-unused)'],
-            ['state' => 'inactive', 'flags' => $inactiveFlags, 'fill' => 'var(--color-inactive)'],
-        ];
+            ->value()
+            ->toArray();
     }
 
     public function getFlagTypeData(): array
@@ -358,6 +315,7 @@ class MetricsRepository
     public function getUnusedFlagMetrics(): TrendMetric
     {
         $query = FeatureFlag::query()
+            ->whereNull('completed_at')
             ->whereDoesntHave('usages', function (Builder $query) {
                 $query->whereNotNull('feature_flag_id');
             });
@@ -365,13 +323,14 @@ class MetricsRepository
         return Metrics::query($query)
             ->countByDay()
             ->dateColumn('created_at')
-            ->all()
+            ->from(now()->subDays(30))
             ->trends();
     }
 
     public function getActiveFlagMetrics(): TrendMetric
     {
         $query = FeatureFlag::query()
+            ->whereNull('completed_at')
             ->where('status', true)
             ->whereHas('statuses', function (Builder $query) {
                 $query->where('status', true);
@@ -381,13 +340,14 @@ class MetricsRepository
         return Metrics::query($query)
             ->countByDay()
             ->dateColumn('last_seen_at')
-            ->all()
+            ->from(now()->subDays(30))
             ->trends();
     }
 
     public function getInactiveFlagMetrics(): TrendMetric
     {
         $query = FeatureFlag::query()
+            ->whereNull('completed_at')
             ->whereHas('featureType', function (Builder $query) {
                 $query->where('temporary', true);
             })
@@ -408,19 +368,19 @@ class MetricsRepository
     public function getStaleFlagMetrics(): TrendMetric
     {
         $query = FeatureFlag::query()
-            ->whereHas('featureType', function (Builder $query) {
-                $query->where('temporary', true);
-            })
+            ->whereNull('completed_at')
+            ->join('feature_types', 'feature_types.id', '=', 'feature_flags.feature_type_id')
+            ->where('temporary', true)
             ->where(function (Builder $query) {
                 $query->where('status', true)
-                    ->whereHas('statuses', function (Builder $query) {
-                        $query->where('status', true);
+                    ->whereExists(function ($query) {
+                        $query->select(DB::raw(1))
+                            ->from('feature_flag_statuses')
+                            ->whereColumn('feature_flag_statuses.feature_flag_id', 'feature_flags.id')
+                            ->where('feature_flag_statuses.status', true);
                     });
             })
-            ->whereDate('last_seen_at', '<', now()->subDays(30))
-            ->whereNot(function (Builder $query) {
-                $query->whereDate('last_seen_at', '>=', now()->subDays(30));
-            });
+            ->whereDate('last_seen_at', '<', now()->subDays(30));
 
         return Metrics::query($query)
             ->countByDay()
@@ -429,18 +389,26 @@ class MetricsRepository
             ->trends();
     }
 
-    public function getFlagMetrics(string $featureFlagId): array
+    public function getFlagMetrics(string $featureFlagId, ?string $applicationId = null, ?string $environmentId = null): array
     {
         return [
-            'evaluations' => $this->getUsageMetrics($featureFlagId),
-            'variants' => $this->getVariantMetrics($featureFlagId),
+            'evaluations' => $this->getUsageMetrics($featureFlagId, $applicationId, $environmentId),
+            'variants' => $this->getVariantMetrics($featureFlagId, $applicationId, $environmentId),
         ];
     }
 
-    public function getUsageMetrics(string $featureFlagId): Collection
+    public function getUsageMetrics(string $featureFlagId, ?string $applicationId = null, ?string $environmentId = null): Collection
     {
         $query = FeatureFlagUsage::query()
             ->where('feature_flag_id', $featureFlagId);
+
+        if ($applicationId) {
+            $query->where('application_id', $applicationId);
+        }
+
+        if ($environmentId) {
+            $query->where('environment_id', $environmentId);
+        }
 
         /** @var TrendMetricCollection $metrics */
         $metrics = Metrics::query($query)
@@ -467,6 +435,7 @@ class MetricsRepository
                 ->when(isset($metrics[0]) && $metrics[0]->labels->isNotEmpty(), function (Collection $collection) use ($metrics) {
                     return $collection->concat($metrics[0]->labels ?? []);
                 })
+                ->unique()
                 ->map(function (string $label, int $index) use ($metrics) {
                     return [
                         'date' => $label,
@@ -476,14 +445,22 @@ class MetricsRepository
                     ];
                 })
                 ->toArray(),
-            'total' => $metrics[1]->total ?? 0 + $metrics[0]->total ?? 0,
+            'total' => ($metrics[1]->total ?? 0) + ($metrics[0]->total ?? 0),
         ]);
     }
 
-    public function getVariantMetrics(string $featureFlagId): array
+    public function getVariantMetrics(string $featureFlagId, ?string $applicationId = null, ?string $environmentId = null): array
     {
         $query = FeatureFlagUsage::query()
             ->where('feature_flag_id', $featureFlagId);
+
+        if ($applicationId) {
+            $query->where('application_id', $applicationId);
+        }
+
+        if ($environmentId) {
+            $query->where('environment_id', $environmentId);
+        }
 
         $chartColors = ['chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5'];
 

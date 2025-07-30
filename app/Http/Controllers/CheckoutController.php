@@ -16,6 +16,10 @@ class CheckoutController
 {
     public function index(ProductService $productService, SubscriptionBillingService $subscriptionBillingService)
     {
+        if (!config('beacon.billing.enabled')) {
+            return \redirect('dashboard');
+        }
+
         $organization = App::context()->organization;
         $hasActiveSubscription = false;
 

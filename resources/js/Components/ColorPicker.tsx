@@ -20,6 +20,7 @@ export function ColorPicker(props: { onColorChange: (color: string | null) => vo
                     setSelectedColor(null);
                     props.onColorChange(null);
                 }}
+                data-dusk="color-picker"
             >
                 <Slash className="h-6 w-6 -ml-1 relative -top-0.5 left-0.5" />
             </div>

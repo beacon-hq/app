@@ -52,6 +52,9 @@ return [
         'Pint' => Command::from('pint')->lazy(),
         'Horizon' => Command::from('artisan horizon'),
         'Typescript' => Command::from('artisan typescript:transform')->lazy(),
+        'Octane' => Command::from('artisan octane:frankenphp --watch'),
+        'Share' => Command::from('cftunnel share alpha.beacon-hq.dev 8000'),
+        'Docs' => Command::from('npm run docs:dev')->lazy(),
     ],
 
     /*

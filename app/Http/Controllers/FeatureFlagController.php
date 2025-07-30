@@ -80,8 +80,12 @@ class FeatureFlagController extends Controller
         ApplicationService $applicationService,
         EnvironmentService $environmentService,
         MetricsService $metricsService,
+        Request $request
     ): Response {
         Gate::authorize('update', $featureFlag);
+
+        $applicationId = $request->get('application_id');
+        $environmentId = $request->get('environment_id');
 
         return Inertia::render('FeatureFlags/Edit', [
             'featureFlag' => $featureFlagService->find($featureFlag->id),
@@ -91,7 +95,7 @@ class FeatureFlagController extends Controller
             'applications' => $applicationService->all(),
             'environments' => $environmentService->all(),
             'log' => $featureFlagService->activityLog($featureFlag->id),
-            'metrics' => $metricsService->getFlagMetrics($featureFlag->id),
+            'metrics' => $metricsService->getFlagMetrics($featureFlag->id, $applicationId, $environmentId),
         ]);
     }
 

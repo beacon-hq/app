@@ -7,14 +7,14 @@ import { PageProps } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import React, { useRef } from 'react';
 
-export default function Index({ auth, products }: PageProps & { products: ProductCollection }) {
+export default function Index({ auth, products, docsUrl }: PageProps & { products: ProductCollection }) {
     useScrollToLocation();
     const pricingRef = useRef(null);
 
     return (
         <>
             <Head title="Choose a Plan" />
-            <NavMenu auth={auth} />
+            <NavMenu auth={auth} docsUrl={docsUrl} />
 
             <div>
                 <Link href="/">

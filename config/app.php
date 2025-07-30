@@ -56,6 +56,8 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'useTLS' => env('APP_SCHEME') === 'https',
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

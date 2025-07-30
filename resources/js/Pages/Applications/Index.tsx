@@ -74,7 +74,7 @@ export default function Index({ applications }: PageProps & { applications: Appl
                             <p className="text-sm overflow-hidden truncate -mt-2 text-neutral-500">
                                 {application.description}
                             </p>
-                            <div className="flex gap-2 mt-4">
+                            <div className="flex flex-wrap gap-2 mt-4">
                                 {(application?.environments?.length ?? 0) > 0 &&
                                     application?.environments?.map((environment) => (
                                         <Badge

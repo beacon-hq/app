@@ -1569,3 +1569,17 @@ div.react-colorful {
         @apply bg-background text-foreground;
     }
 }
+
+@layer components {
+    figure {
+        @apply mb-8 mx-auto max-w-4xl;
+    }
+
+    figure img {
+        @apply mx-auto;
+    }
+
+    figcaption {
+        @apply -mt-4 mb-2 text-xs text-gray-600 dark:text-gray-400 text-center italic px-4;
+    }
+}

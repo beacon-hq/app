@@ -58,7 +58,7 @@ class OrganizationController extends Controller
         Session::put('team', $team);
         $this->appContextService->setTeam($team);
 
-        return redirect()->to(route('organizations.edit', ['id' => $organization->id]))
+        return redirect()->back()
             ->withAlert('success', 'Organization Created Successfully.');
     }
 
@@ -73,9 +73,9 @@ class OrganizationController extends Controller
         #[WithoutValidation]
         Organization $organization
     ): RedirectResponse {
-        $organization = $this->organizationService->update($organization);
+        $this->organizationService->update($organization);
 
-        return redirect()->to(route('organizations.edit', ['id' => $organization->id]))
+        return redirect()->back()
             ->withAlert('success', 'Organization Updated Successfully.');
     }
 

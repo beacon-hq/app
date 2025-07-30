@@ -1,4 +1,5 @@
 import BeaconIcon from '@/Components/BeaconIcon';
+import EarlyAccessNotice from '@/Components/EarlyAccessNotice';
 import GetStarted from '@/Components/illustrations/get-started';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/Components/ui/accordion';
 import { Button } from '@/Components/ui/button';
@@ -42,9 +43,16 @@ interface NavbarData {
             url: string;
         };
     };
+    docs: {
+        url: string;
+    };
 }
 
-export default function NavMenu({ auth, showLogo = false }: AuthProp & { showLogo?: boolean }) {
+export default function NavMenu({
+    auth,
+    showLogo = false,
+    docsUrl = '/docs',
+}: AuthProp & { showLogo?: boolean; docsUrl?: string }) {
     const pricingEnabled = usePage().props.features['pricing.enabled'];
 
     const navbarData: NavbarData = {
@@ -59,12 +67,12 @@ export default function NavMenu({ auth, showLogo = false }: AuthProp & { showLog
                     },
                     {
                         title: 'Installation',
-                        url: '/docs/install',
+                        url: docsUrl + '/install',
                         description: 'Integrate with your Laravel app via Laravel Pennant.',
                     },
                     {
                         title: 'Create Your First Feature Flag',
-                        url: '/docs/get-started',
+                        url: docsUrl + '/get-started',
                         description: 'Learn how to create your first feature flag in Beacon.',
                     },
                 ],
@@ -72,7 +80,7 @@ export default function NavMenu({ auth, showLogo = false }: AuthProp & { showLog
             },
             {
                 title: 'Documentation',
-                url: '/docs',
+                url: docsUrl,
             },
             ...(pricingEnabled
                 ? [
@@ -95,6 +103,9 @@ export default function NavMenu({ auth, showLogo = false }: AuthProp & { showLog
                 title: pricingEnabled ? 'Start Your Free Trial' : 'Sign Up',
                 url: '/register',
             },
+        },
+        docs: {
+            url: docsUrl ?? '/docs',
         },
     };
     const [navBarOpen, setNavBarOpen] = useState(false);
@@ -121,124 +132,127 @@ export default function NavMenu({ auth, showLogo = false }: AuthProp & { showLog
     };
 
     return (
-        <section className="py-4">
-            <div className="container">
-                <nav className="hidden bg-background z-100 px-12 py-2 items-center md:flex flex-row fixed w-full top-0 text-primary">
-                    <div className="flex grow justify-between items-center">
-                        <div className="w-48">
-                            {showLogo && (
-                                <a href={route('welcome')}>
-                                    <BeaconIcon className="h-12" />
-                                </a>
-                            )}
-                            {!showLogo && (
-                                <button
-                                    onClick={scrollToTop}
-                                    className={cn('cursor-pointer', { invisible: !showScrollToTop })}
-                                >
-                                    <BeaconIcon className="h-12" />
-                                </button>
-                            )}
-                        </div>
-                        <div
-                            className={cn('flex items-center gap-6 grow', {
-                                '-ml-18': auth?.user !== null && route().current('checkout.*'),
-                                'ml-24': auth?.user === null,
-                            })}
-                        >
-                            <div className="flex items-center justify-end mx-auto">
-                                <NavigationMenu>
-                                    <NavigationMenuList>
-                                        {navbarData.menu.map((item) => renderMenuItem(item))}
-                                    </NavigationMenuList>
-                                </NavigationMenu>
-                            </div>
-                        </div>
-                        {!auth?.user && (
-                            <div className="flex gap-2 w-48">
-                                <Button asChild variant="outline" size="sm">
-                                    <Link href={navbarData.auth.login.url}>{navbarData.auth.login.title}</Link>
-                                </Button>
-                                <Button asChild size="sm">
-                                    <Link href={navbarData.auth.signup.url}>{navbarData.auth.signup.title}</Link>
-                                </Button>
-                            </div>
-                        )}
-                        {auth?.user && !route().current('checkout.*') && (
-                            <div className="flex gap-2 w-48 justify-end">
-                                <Button asChild variant="outline" size="sm">
-                                    <Link href={route('dashboard')}>Dashboard</Link>
-                                </Button>
-                                <Button asChild variant="outline" size="sm">
-                                    <Link href={route('logout')} method="post">
-                                        Logout
-                                    </Link>
-                                </Button>
-                            </div>
-                        )}
-                        {auth?.user && route().current('checkout.*') && (
-                            <div className="flex gap-2 w-48 justify-end">
-                                <Button asChild variant="outline" size="sm">
-                                    <Link href={route('logout')} method="post">
-                                        Logout
-                                    </Link>
-                                </Button>
-                            </div>
-                        )}
-                    </div>
-                </nav>
-                <div className="lg:hidden flex justify-end">
-                    <div className="flex items-center justify-between">
-                        <Sheet open={navBarOpen} onOpenChange={setNavBarOpen}>
-                            <nav className="bg-background z-50 px-4 py-2 w-screen text-primary h-12 fixed top-0 right-0 flex justify-between">
+        <>
+            <section className="py-4 z-100">
+                <div className="container">
+                    <nav className="hidden bg-background z-100 px-12 py-2 items-center md:flex flex-row fixed w-full top-0 text-primary">
+                        <div className="flex grow justify-between items-center">
+                            <div className="w-48">
                                 {showLogo && (
-                                    <a href={route('welcome')} className="flex items-center gap-2">
-                                        <BeaconIcon />
+                                    <a href={route('welcome')}>
+                                        <BeaconIcon className="h-12" />
                                     </a>
                                 )}
-                                {!showLogo && showScrollToTop && (
-                                    <button onClick={scrollToTop} className="flex items-center gap-2">
-                                        <BeaconIcon />
+                                {!showLogo && (
+                                    <button
+                                        onClick={scrollToTop}
+                                        className={cn('cursor-pointer', { invisible: !showScrollToTop })}
+                                    >
+                                        <BeaconIcon className="h-12" />
                                     </button>
                                 )}
-                                <div className="flex justify-end grow">
-                                    <SheetTrigger asChild>
-                                        <Button variant="outline" size="icon">
-                                            <Menu className="size-4" />
-                                        </Button>
-                                    </SheetTrigger>
+                            </div>
+                            <div
+                                className={cn('flex items-center gap-6 grow', {
+                                    '-ml-18': auth?.user !== null && route().current('checkout.*'),
+                                    'ml-24': auth?.user === null,
+                                })}
+                            >
+                                <div className="flex items-center justify-end mx-auto">
+                                    <NavigationMenu>
+                                        <NavigationMenuList>
+                                            {navbarData.menu.map((item) => renderMenuItem(item))}
+                                        </NavigationMenuList>
+                                    </NavigationMenu>
                                 </div>
-                            </nav>
-                            <SheetContent className="overflow-y-auto text-primary">
-                                <div className="flex flex-col gap-6 p-4">
-                                    <Accordion type="single" collapsible className="flex w-full flex-col gap-4">
-                                        {navbarData.menu.map((item) => renderMobileMenuItem(item))}
-                                    </Accordion>
-
-                                    <div className="flex flex-col gap-3">
-                                        <Button asChild variant="outline">
-                                            <a href={navbarData.auth.login.url}>{navbarData.auth.login.title}</a>
-                                        </Button>
-                                        <Button asChild>
-                                            <a href={navbarData.auth.signup.url}>{navbarData.auth.signup.title}</a>
-                                        </Button>
+                            </div>
+                            {!auth?.user && (
+                                <div className="flex gap-2 w-48">
+                                    <Button asChild variant="outline" size="sm">
+                                        <Link href={navbarData.auth.login.url}>{navbarData.auth.login.title}</Link>
+                                    </Button>
+                                    <Button asChild size="sm">
+                                        <Link href={navbarData.auth.signup.url}>{navbarData.auth.signup.title}</Link>
+                                    </Button>
+                                </div>
+                            )}
+                            {auth?.user && !route().current('checkout.*') && (
+                                <div className="flex gap-2 w-48 justify-end">
+                                    <Button asChild variant="outline" size="sm">
+                                        <Link href={route('dashboard')}>Dashboard</Link>
+                                    </Button>
+                                    <Button asChild variant="outline" size="sm">
+                                        <Link href={route('logout')} method="post">
+                                            Logout
+                                        </Link>
+                                    </Button>
+                                </div>
+                            )}
+                            {auth?.user && route().current('checkout.*') && (
+                                <div className="flex gap-2 w-48 justify-end">
+                                    <Button asChild variant="outline" size="sm">
+                                        <Link href={route('logout')} method="post">
+                                            Logout
+                                        </Link>
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+                    </nav>
+                    <div className="lg:hidden flex justify-end">
+                        <div className="flex items-center justify-between">
+                            <Sheet open={navBarOpen} onOpenChange={setNavBarOpen}>
+                                <nav className="bg-background z-50 px-4 py-2 w-screen text-primary h-12 fixed top-0 right-0 flex justify-between">
+                                    {showLogo && (
+                                        <a href={route('welcome')} className="flex items-center gap-2">
+                                            <BeaconIcon />
+                                        </a>
+                                    )}
+                                    {!showLogo && showScrollToTop && (
+                                        <button onClick={scrollToTop} className="flex items-center gap-2">
+                                            <BeaconIcon />
+                                        </button>
+                                    )}
+                                    <div className="flex justify-end grow">
+                                        <SheetTrigger asChild>
+                                            <Button variant="outline" size="icon">
+                                                <Menu className="size-4" />
+                                            </Button>
+                                        </SheetTrigger>
                                     </div>
-                                </div>
-                            </SheetContent>
-                        </Sheet>
+                                </nav>
+                                <SheetContent className="overflow-y-auto text-primary">
+                                    <div className="flex flex-col gap-6 p-4">
+                                        <Accordion type="single" collapsible className="flex w-full flex-col gap-4">
+                                            {navbarData.menu.map((item) => renderMobileMenuItem(item))}
+                                        </Accordion>
+
+                                        <div className="flex flex-col gap-3">
+                                            <Button asChild variant="outline">
+                                                <a href={navbarData.auth.login.url}>{navbarData.auth.login.title}</a>
+                                            </Button>
+                                            <Button asChild>
+                                                <a href={navbarData.auth.signup.url}>{navbarData.auth.signup.title}</a>
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </SheetContent>
+                            </Sheet>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <button
-                id="scroll-to-top"
-                onClick={scrollToTop}
-                className={`fixed bottom-5 right-5 z-100 bg-primary w-16 h-16 rounded-full flex items-center text-secondary group/scroll-to-top cursor-pointer transition-opacity duration-300 ${
-                    showScrollToTop ? 'opacity-100' : 'opacity-0 pointer-events-none'
-                }`}
-            >
-                <ArrowUp className="mx-auto group-hover/scroll-to-top:motion-safe:animate-bounce" />
-            </button>
-        </section>
+                <button
+                    id="scroll-to-top"
+                    onClick={scrollToTop}
+                    className={`fixed bottom-5 right-5 z-100 bg-primary w-16 h-16 rounded-full flex items-center text-secondary group/scroll-to-top cursor-pointer transition-opacity duration-300 ${
+                        showScrollToTop ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                    }`}
+                >
+                    <ArrowUp className="mx-auto group-hover/scroll-to-top:motion-safe:animate-bounce" />
+                </button>
+            </section>
+            <EarlyAccessNotice className="fixed top-17 z-50" />
+        </>
     );
 }
 

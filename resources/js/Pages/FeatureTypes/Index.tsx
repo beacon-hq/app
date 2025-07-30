@@ -43,7 +43,7 @@ export default function Index({ featureTypes }: PageProps & { featureTypes: Feat
         <Authenticated
             breadcrumbs={[{ name: 'Feature Types', icon: 'Component' }]}
             headerAction={
-                <Button onClick={() => setShowSheet(true)}>
+                <Button onClick={() => setShowSheet(true)} data-dusk="button-new-feature-type">
                     <PlusCircle className="mr-2 inline-block h-6 w-6" />
                     New Feature Type
                 </Button>
@@ -53,7 +53,7 @@ export default function Index({ featureTypes }: PageProps & { featureTypes: Feat
             <div className="w-full">
                 <div className="">
                     <div className="overflow-hidden">
-                        <Card className="mt-8">
+                        <Card className="mt-8" data-dusk="card-feature-types">
                             <CardContent className="px-12 py-4">
                                 <Table featureTypes={featureTypes} />
                             </CardContent>
@@ -62,7 +62,7 @@ export default function Index({ featureTypes }: PageProps & { featureTypes: Feat
                 </div>
             </div>
             <Sheet open={showSheet} onOpenChange={setShowSheet}>
-                <SheetContent onOpenAutoFocus={(event) => event.preventDefault()}>
+                <SheetContent onOpenAutoFocus={(event) => event.preventDefault()} data-dusk="sheet-feature-type-form">
                     <SheetTitle className="mb-4">New Feature Type</SheetTitle>
                     <Form
                         submit={submit}

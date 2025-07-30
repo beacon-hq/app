@@ -1,14 +1,24 @@
 import { Organization } from '@/Application';
 import InputError from '@/Components/InputError';
-import Modal from '@/Components/Modal';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/Components/ui/alert-dialog';
 import { Button } from '@/Components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import Form from '@/Pages/Organizations/Components/Form';
-import { cn } from '@/lib/utils';
 import { Head, useForm } from '@inertiajs/react';
-import React, { FormEventHandler, useRef, useState } from 'react';
+import React, { FormEventHandler, useRef } from 'react';
 
 export default function Edit({ organization }: { organization: Organization }) {
     const { data, setData, patch, errors, reset, processing } = useForm<Organization>({
@@ -18,11 +28,6 @@ export default function Edit({ organization }: { organization: Organization }) {
         onboarded_at: organization.onboarded_at,
     });
 
-    const handleSubmit = () => {
-        patch(route('organizations.update', { id: organization.id as string }));
-    };
-
-    const [confirmingOrganizationDeletion, setConfirmingOrganizationDeletion] = useState(false);
     const passwordInput = useRef<HTMLInputElement>(null);
 
     const {
@@ -37,26 +42,14 @@ export default function Edit({ organization }: { organization: Organization }) {
         password: '',
     });
 
-    const confirmOrganizationDeletion = () => {
-        setConfirmingOrganizationDeletion(true);
-    };
-
     const handleDelete: FormEventHandler = (e) => {
         e.preventDefault();
 
         destroy(route('organizations.destroy', { id: organization.id as string }), {
             preserveScroll: true,
-            onSuccess: () => closeModal(),
             onError: () => passwordInput.current?.focus(),
             onFinish: () => reset(),
         });
-    };
-
-    const closeModal = () => {
-        setConfirmingOrganizationDeletion(false);
-
-        clearErrors();
-        reset();
     };
 
     return (
@@ -71,78 +64,74 @@ export default function Edit({ organization }: { organization: Organization }) {
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                    <div className="bg-white p-4 shadow-sm sm:rounded-lg sm:p-8 dark:bg-gray-800 w-full">
-                        <section className={cn('flex flex-row gap-8')}>
-                            <header className="w-1/4">
-                                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Organization</h2>
-                            </header>
-                            <div className="mt-6 space-y-6 w-3/4 grow">
-                                <Form organization={organization} />
-                            </div>
-                        </section>
-                    </div>
-                    <div className="bg-white p-4 shadow-sm sm:rounded-lg sm:p-8 dark:bg-gray-800 w-full">
-                        <section className="space-y-6">
-                            <header>
-                                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
-                                    Delete Organization
-                                </h2>
+                    <Card
+                        data-dusk="card-organizations-edit"
+                        className="flex flex-row gap-36 bg-background dark:bg-background"
+                    >
+                        <CardHeader>
+                            <CardTitle className="text-xl">Organization</CardTitle>
+                        </CardHeader>
+                        <CardContent className="grow pt-8">
+                            <Form organization={organization} />
+                        </CardContent>
+                    </Card>
+                    <Card data-dusk="card-organizations-delete">
+                        <CardHeader>
+                            <CardTitle className="text-xl">Delete Organization</CardTitle>
+                            <CardDescription className="text-sm text-gray-600 dark:text-gray-400">
+                                Once this organization is deleted, all of its resources and data will be permanently
+                                deleted.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="pt-8">
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button variant="destructive" data-dusk="button-organizations-delete">
+                                        Delete Organization
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent data-dusk="alert-organization-delete">
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>
+                                            Are you sure you want to delete this organization?
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Once this organization is deleted, all of its resources and data will be
+                                            permanently deleted. Please enter your password to confirm you would like to
+                                            permanently delete this organization.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
 
-                                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                    Once this organization is deleted, all of its resources and data will be permanently
-                                    deleted.
-                                </p>
-                            </header>
+                                    <Label htmlFor="password" hidden>
+                                        Password
+                                    </Label>
 
-                            <Button variant="destructive" onClick={confirmOrganizationDeletion}>
-                                Delete Organization
-                            </Button>
+                                    <Input
+                                        id="password"
+                                        type="password"
+                                        name="password"
+                                        ref={passwordInput}
+                                        value={deleteData.password}
+                                        onChange={(e) => setDeleteData('password', e.target.value)}
+                                        className="mt-1 block w-3/4"
+                                        autoFocus
+                                        placeholder="Password"
+                                        aria-required
+                                        data-dusk="input-organization-delete-password"
+                                    />
+                                    <InputError message={deleteErrors?.password} />
 
-                            <Modal show={confirmingOrganizationDeletion} onClose={closeModal}>
-                                <form onSubmit={handleDelete} className="p-6">
-                                    <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
-                                        Are you sure you want to delete this organization?
-                                    </h2>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
 
-                                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                        Once this organization is deleted, all of its resources and data will be
-                                        permanently deleted. Please enter your password to confirm you would like to
-                                        permanently delete this organization.
-                                    </p>
-
-                                    <div className="mt-6">
-                                        <Label htmlFor="password" hidden>
-                                            Password
-                                        </Label>
-
-                                        <Input
-                                            id="password"
-                                            type="password"
-                                            name="password"
-                                            ref={passwordInput}
-                                            value={deleteData.password}
-                                            onChange={(e) => setDeleteData('password', e.target.value)}
-                                            className="mt-1 block w-3/4"
-                                            autoFocus
-                                            placeholder="Password"
-                                            aria-required
-                                        />
-                                        <InputError message={deleteErrors?.password} />
-                                    </div>
-
-                                    <div className="mt-6 flex justify-end">
-                                        <Button variant="secondary" onClick={closeModal}>
-                                            Cancel
-                                        </Button>
-
-                                        <Button variant="destructive" className="ms-3" disabled={processing}>
+                                        <AlertDialogAction onClick={handleDelete}>
                                             Delete Organization
-                                        </Button>
-                                    </div>
-                                </form>
-                            </Modal>
-                        </section>
-                    </div>
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
         </AuthenticatedLayout>

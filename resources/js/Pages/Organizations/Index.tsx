@@ -18,7 +18,7 @@ export default function Index({ organizations }: { organizations: OrganizationCo
                 { name: 'Organizations', icon: 'Network' },
             ]}
             headerAction={
-                <Button onClick={() => setShowSheet(true)}>
+                <Button onClick={() => setShowSheet(true)} data-dusk="button-new-organization">
                     <PlusCircle className="mr-2 inline-block h-6 w-6" />
                     New Organization
                 </Button>
@@ -28,7 +28,7 @@ export default function Index({ organizations }: { organizations: OrganizationCo
             <div className="w-full md:w-1/2 mx-auto pt-12">
                 <div className="overflow-hidden p-4">
                     {organizations.map((organization) => (
-                        <Card key={organization.id} className="mb-4 w-full relative">
+                        <Card key={organization.id} className="mb-4 w-full relative" data-dusk="card-organization">
                             <CardHeader className="flex flex-row items-center justify-between">
                                 <div>
                                     <h3 className="text-2xl font-bold">{organization.name}</h3>

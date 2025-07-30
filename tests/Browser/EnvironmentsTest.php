@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Laravel\Dusk\Browser;
+use Tests\Browser\Components\ColorPicker;
 
 it('can create a new environment', function () {
     $user = createBrowserUser();
@@ -16,16 +17,18 @@ it('can create a new environment', function () {
             ->screenshotElement('@main', 'environments-initial')
             ->click('@button-create-environment')
             ->screenshotElement('@main', 'environments-form-create')
-            ->type('@input-environment-name', 'Testing')
-            ->type('@input-environment-description', 'This is a test environment')
-            ->mouseover('.bg-sky-400')
-            ->screenshotElement('@main', 'environments-form-create-fill')
-            ->click('.bg-sky-400')
+            ->type('@input-environment-name', 'Demo')
+            ->type('@input-environment-description', 'This is a demo environment')
+            ->within(new ColorPicker(), function (Browser $browser) {
+                $browser->selectColor('sky', '@main', 'environments-form-create-fill');
+            })
             ->click('@submit-environment')
-            ->waitForText('Testing')
-            ->assertSee('This is a test environment')
+            ->waitForText('Demo')
+            ->assertSee('This is a demo environment')
             ->screenshotElement('@main', 'environments-after-create')
-            ->screenshotElement('@card-environment', 'environments-environment-card');
+            ->refresh()
+            ->pause(500)
+            ->screenshotElement('.text-card-foreground', 'environments-environment-card');
     });
 });
 
@@ -38,22 +41,22 @@ it('can edit environments', function () {
         $browser
             ->loginAs($user)
             ->visitRoute('environments.index')
-            ->waitForText('Testing');
+            ->waitForText('Environments');
 
         $browser
             ->click('@card-environment')
             ->waitForText('Edit Environment')
-            ->screenshotElement('@main', 'environments-edit');
+            ->screenshotElement('@card-environment-edit', 'environments-edit');
 
         $browser
             ->assertDisabled('@input-environment-name')
-            ->type('@input-environment-description', 'This is an updated test environment')
-            ->click('.bg-purple-400')
+            ->type('@input-environment-description', 'This is an updated demo environment')
+            ->within(new ColorPicker(), function (Browser $browser) {
+                $browser->selectColor('purple');
+            })
             ->pause(500)
             ->click('@submit-environment')
-            ->waitForRoute('environments.index')
-            ->waitForText('Testing')
-            ->assertSee('This is an updated test environment')
+            ->waitForText('This is an updated demo environment')
             ->screenshotElement('@main', 'environments-after-edit');
     });
 });

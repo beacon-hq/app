@@ -41,14 +41,17 @@ const IconPicker = ({
     return (
         <Popover>
             <PopoverTrigger asChild>
-                <div>
+                <div data-dusk="icon-picker">
                     <Label aria-required={required}>Icon</Label>
-                    <Icon
-                        name={selectedIcon == '' ? 'Image' : (selectedIcon as string)}
-                        className={cn('h-8 w-8', {
-                            'text-neutral-400': selectedIcon == '',
-                        })}
-                    />
+                    <div className="flex flex-row items-center gap-2 icon-picker">
+                        <Icon
+                            name={selectedIcon == '' ? 'Image' : (selectedIcon as string)}
+                            className={cn('h-8 w-8', {
+                                'text-neutral-400': selectedIcon == '',
+                            })}
+                        />
+                        <span className="text-sm">Pick an icon</span>
+                    </div>
                     {errors.icon && <InputError message={errors.icon} />}
                 </div>
             </PopoverTrigger>
@@ -62,6 +65,7 @@ const IconPicker = ({
                         }}
                         placeholder="Search icons"
                         className="mt-4"
+                        data-dusk="input-icon-picker-search"
                     />
                 </div>
                 {filteredIcons.length == 0 && (
@@ -70,7 +74,7 @@ const IconPicker = ({
                 {filteredIcons.length > 0 && (
                     <>
                         <div className="grid grid-cols-4 gap-2 mt-4 min-h-64 items-baseline">
-                            {filteredIcons.slice(page * 24, (page + 1) * 24).map(function ([name, Icon]) {
+                            {filteredIcons.slice(page * 24, (page + 1) * 24).map(function ([name, Icon], idx) {
                                 return (
                                     <PopoverClose key={name}>
                                         <Tooltip>
@@ -83,6 +87,7 @@ const IconPicker = ({
                                                         'border-black': name == selectedIcon,
                                                     })}
                                                     onClick={() => handleSelectedIcon(name)}
+                                                    data-dusk={`icon-picker-icon-${idx}`}
                                                 >
                                                     <Icon />
                                                 </Button>

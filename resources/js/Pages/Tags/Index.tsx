@@ -40,7 +40,7 @@ export default function Index({ tags }: PageProps & { tags: TagCollection }) {
         <Authenticated
             breadcrumbs={[{ name: 'Tags', icon: 'Tag' }]}
             headerAction={
-                <Button onClick={() => setShowSheet(true)}>
+                <Button onClick={() => setShowSheet(true)} data-dusk="button-new-tag">
                     <PlusCircle className="mr-2 inline-block h-6 w-6" />
                     New Tag
                 </Button>
@@ -50,7 +50,7 @@ export default function Index({ tags }: PageProps & { tags: TagCollection }) {
             <div className="w-full">
                 <div className="">
                     <div className="overflow-hidden">
-                        <Card className="mt-8">
+                        <Card className="mt-8" data-dusk="card-tags">
                             <CardContent className="px-12 py-4">
                                 <Table tags={tags} />
                             </CardContent>

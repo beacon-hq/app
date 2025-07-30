@@ -55,11 +55,7 @@ export function Form({
             </div>
             <div>
                 <Label>Color</Label>
-                <ColorPicker
-                    onColorChange={(color) => setData('color', color)}
-                    color={data.color}
-                    data-dusk="color-picker"
-                />
+                <ColorPicker onColorChange={(color) => setData('color', color)} color={data.color} />
                 <InputError message={errors?.color} />
             </div>
             <div>

@@ -34,7 +34,7 @@ export default function Edit({ environment }: { environment: Environment }) {
             <div className="mx-auto md:w-7/12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden p-4 sm:rounded-lg">
-                        <Card className="p-8">
+                        <Card className="p-8" data-dusk="card-environment-edit">
                             <CardTitle className="text-2xl">Edit Environment</CardTitle>
                             <CardContent className="py-4">
                                 <Form

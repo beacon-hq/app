@@ -50,14 +50,12 @@ it('onboards new teams', function () {
 
         $browser
             ->click('@finish-onboarding')
-            ->waitForTextIn('@metric-card-total_flags', '1');
-
-        $app = $browser->element('#app')->getSize();
-        $browser->resize($app->getWidth(), $app->getHeight() + 100);
+            ->waitForTextIn('@metric-card-total_flags', '1')
+            ->pause(3000)
+            ->screenshotElement('@main', 'dashboard');
 
         $browser
             ->refresh()
-            ->assertDontSee('Get Started')
-            ->screenshotElement('@dashboard', 'dashboard');
+            ->assertDontSee('Get Started');
     });
 });

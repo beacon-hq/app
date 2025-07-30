@@ -18,6 +18,7 @@ import { DataTableColumnHeader } from '@/Components/ui/data-table-column-header'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/Components/ui/dialog';
 import { Separator } from '@/Components/ui/separator';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
+import { cn } from '@/lib/utils';
 import { Head, router } from '@inertiajs/react';
 import { DotFilledIcon } from '@radix-ui/react-icons';
 import { ColumnDef, ColumnSort, createColumnHelper } from '@tanstack/react-table';
@@ -267,21 +268,26 @@ function calculateHealthScore(
     let score: string;
     let colorClass: string;
 
-    if (ratio >= 0.8) {
-        score = 'Excellent';
-        colorClass = 'fill-green-500';
-    } else if (ratio >= 0.6 || totalFlags < 10) {
-        score = 'Good';
-        colorClass = 'fill-green-400';
-    } else if (ratio >= 0.4) {
-        score = 'Fair';
-        colorClass = 'fill-yellow-500';
-    } else if (ratio >= 0.2) {
-        score = 'Poor';
-        colorClass = 'fill-orange-500';
-    } else {
-        score = 'Critical';
-        colorClass = 'fill-red-500';
+    switch (true) {
+        case ratio >= 0.8 && totalFlags >= 10:
+            score = 'Excellent';
+            colorClass = 'fill-green-500';
+            break;
+        case ratio >= 0.6 || totalFlags < 10:
+            score = 'Good';
+            colorClass = 'fill-green-400';
+            break;
+        case ratio >= 0.4:
+            score = 'Fair';
+            colorClass = 'fill-yellow-500';
+            break;
+        case ratio >= 0.2:
+            score = 'Poor';
+            colorClass = 'fill-orange-500';
+            break;
+        default:
+            score = 'Critical';
+            colorClass = 'fill-red-500';
     }
 
     return {
@@ -345,10 +351,9 @@ export default function Dashboard({ metrics = defaultMetrics, onboarding = false
                     ? item.fill
                     : `var(--color-${item.fill}-400)`,
             percentage: Math.round((item.flags / dashboardMetrics.flagTypeData.total) * 100),
+            label: item.type,
         };
     });
-
-    console.log(dashboardMetrics.ageData);
 
     dashboardMetrics.flagStatusData = [...dashboardMetrics.flagStatusData];
     const healthScore = calculateHealthScore(dashboardMetrics.flagStatusData);
@@ -384,8 +389,10 @@ export default function Dashboard({ metrics = defaultMetrics, onboarding = false
 
     const CustomLabel = ({
         viewBox,
-        total = 0,
-        totalLabel = 'Total',
+        value = 0,
+        valueClassName,
+        totalLabel = undefined,
+        totalLabelClassName,
     }: {
         viewBox?: {
             cx: number;
@@ -395,35 +402,44 @@ export default function Dashboard({ metrics = defaultMetrics, onboarding = false
             innerRadius: number;
             outerRadius: number;
         };
-        total?: number;
+        value?: number | string;
+        valueClassName?: string;
         totalLabel?: string;
+        totalLabelClassName?: string;
     }) => {
         const { cx, cy } = viewBox as { cx: number; cy: number };
+
+        if (typeof value === 'number' && totalLabel === undefined) {
+            totalLabel = 'Total';
+        }
+
         return (
             <>
-                <text x={cx - `${total}`.length * 12} y={cy + 10}>
+                <text x={cx} y={cy + 10} textAnchor="middle">
                     <tspan
-                        className="text-primary"
+                        className={cn('text-primary fill-primary', valueClassName)}
                         style={{
                             fontWeight: 700,
-                            fontSize: '4em',
+                            fontSize: `${Math.max(1, 5 - 0.3 * String(value).length)}em`,
                             fontFamily: '"Source Sans 3", sans-serif',
                         }}
                     >
-                        {total}
+                        {value}
                     </tspan>
                 </text>
-                <text x={cx - 20} y={cy + 20}>
-                    <tspan
-                        className="fill-primary/80"
-                        style={{
-                            fontSize: '0.8em',
-                            fontFamily: '"Source Sans 3", sans-serif',
-                        }}
-                    >
-                        {totalLabel}
-                    </tspan>
-                </text>
+                {totalLabel !== undefined && (
+                    <text x={cx - 20} y={cy + 20}>
+                        <tspan
+                            className={cn('fill-primary/80', totalLabelClassName)}
+                            style={{
+                                fontSize: '0.8em',
+                                fontFamily: '"Source Sans 3", sans-serif',
+                            }}
+                        >
+                            {totalLabel}
+                        </tspan>
+                    </text>
+                )}
             </>
         );
     };
@@ -622,10 +638,10 @@ export default function Dashboard({ metrics = defaultMetrics, onboarding = false
                             <MetricCard title="Total Flags" metric={dashboardMetrics.totalFlags} />
                             <MetricCard title="Changes" metric={dashboardMetrics.changesMetrics} />
                             <MetricCard title="Created" metric={dashboardMetrics.createdMetrics} />
-                            <MetricCard title="Archived" metric={dashboardMetrics.archivedMetrics} />
+                            <MetricCard title="Complete" metric={dashboardMetrics.archivedMetrics} />
                         </div>
                         <div className="mt-4 grid grid-cols-1 justify-center gap-6 lg:grid-cols-3">
-                            <Card className="flex h-80 flex-col">
+                            <Card className="flex h-80 flex-col" data-dusk="metric-card-system-health">
                                 <CardHeader className="items-center pb-0">
                                     <CardTitle>System Health</CardTitle>
                                     <CardDescription>Last 30 Days</CardDescription>
@@ -636,153 +652,57 @@ export default function Dashboard({ metrics = defaultMetrics, onboarding = false
                                             Not enough data
                                         </div>
                                     )}
-                                    {healthScore && (
-                                        <ChartContainer
-                                            config={flagStatusChartConfig}
-                                            className="mx-auto aspect-square max-h-[250px]"
-                                        >
-                                            <PieChart>
-                                                <Pie
-                                                    data={dashboardMetrics.flagStatusData}
-                                                    dataKey="flags"
-                                                    nameKey="state"
-                                                    innerRadius={60}
-                                                    outerRadius={80}
-                                                    strokeWidth={5}
-                                                    label={{ className: 'text-lg font-semibold fill-primary' }}
-                                                    labelLine={{ className: 'stroke-1' }}
-                                                >
-                                                    <Label
-                                                        content={
-                                                            <CustomLabel
-                                                                total={dashboardMetrics.flagStatusData.reduce(
-                                                                    (sum, item) => sum + item.flags,
-                                                                    0,
-                                                                )}
-                                                                totalLabel="Total Flags"
-                                                            />
-                                                        }
-                                                        position="center"
-                                                        fill="grey"
-                                                        style={{
-                                                            fontSize: '32px',
-                                                            fontWeight: 'bold',
-                                                            fontFamily: '"Source Sans 3"',
-                                                        }}
-                                                    />
-                                                </Pie>
-                                                <ChartLegend content={<ChartLegendContent nameKey="state" />} />
-                                            </PieChart>
-                                        </ChartContainer>
-                                    )}
-                                </CardContent>
-                            </Card>
-                            <Card className="h-80 lg:col-span-2">
-                                <CardHeader>
-                                    <CardTitle>Average Flag Age</CardTitle>
-                                    <CardDescription>Last 6 Months</CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <ChartContainer config={ageChartConfig} className="h-36 w-full">
-                                        <LineChart
-                                            accessibilityLayer
-                                            data={dashboardMetrics.ageData}
-                                            margin={{
-                                                left: 0,
-                                                right: 0,
-                                            }}
-                                        >
-                                            <CartesianGrid vertical={false} />
-                                            <XAxis
-                                                dataKey="month"
-                                                tickLine={false}
-                                                axisLine={false}
-                                                tickMargin={8}
-                                                tickFormatter={(value) => value.slice(0, 3)}
-                                            />
-                                            <YAxis dataKey="age" tickLine={false} axisLine={false} />
-                                            <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-                                            <Line
-                                                dataKey="age"
-                                                type="linear"
-                                                stroke="var(--color-age)"
-                                                strokeWidth={2}
-                                                dot={false}
-                                            />
-                                        </LineChart>
+                                    <ChartContainer
+                                        config={flagStatusChartConfig}
+                                        className="mx-auto aspect-square max-h-[250px]"
+                                    >
+                                        <PieChart>
+                                            <Pie
+                                                data={dashboardMetrics.flagStatusData}
+                                                dataKey="flags"
+                                                nameKey="state"
+                                                innerRadius={60}
+                                                outerRadius={80}
+                                                strokeWidth={5}
+                                                label={{ className: 'text-lg font-semibold fill-primary' }}
+                                                labelLine={{ className: 'stroke-1' }}
+                                            >
+                                                <Label
+                                                    content={
+                                                        <CustomLabel
+                                                            value={
+                                                                healthScore !== false
+                                                                    ? (healthScore as HealthScore).score
+                                                                    : dashboardMetrics.flagStatusData.reduce(
+                                                                          (sum, item) => sum + item.flags,
+                                                                          0,
+                                                                      )
+                                                            }
+                                                            valueClassName={
+                                                                healthScore !== false
+                                                                    ? (healthScore as HealthScore).colorClass
+                                                                    : undefined
+                                                            }
+                                                            totalLabel={
+                                                                healthScore !== false ? undefined : 'Total Flags'
+                                                            }
+                                                        />
+                                                    }
+                                                    position="center"
+                                                    fill="grey"
+                                                    style={{
+                                                        fontSize: '32px',
+                                                        fontWeight: 'bold',
+                                                        fontFamily: '"Source Sans 3"',
+                                                    }}
+                                                />
+                                            </Pie>
+                                            <ChartLegend content={<ChartLegendContent nameKey="state" />} />
+                                        </PieChart>
                                     </ChartContainer>
                                 </CardContent>
-                                <CardFooter className="flex-col items-start gap-2 text-sm">
-                                    {dashboardMetrics.ageData.length > 1 && (
-                                        <>
-                                            <div className="flex gap-2 font-medium leading-none">
-                                                {dashboardMetrics.ageData[dashboardMetrics.ageData.length - 1].age >
-                                                dashboardMetrics.ageData[dashboardMetrics.ageData.length - 2].age ? (
-                                                    <>
-                                                        Trending up this month <TrendingUp className="h-4 w-4" />
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        Trending down this month <TrendingDown className="h-4 w-4" />
-                                                    </>
-                                                )}
-                                            </div>
-                                            <div className="text-muted-foreground leading-none">
-                                                Showing average age for the last 6 months
-                                            </div>
-                                        </>
-                                    )}
-                                </CardFooter>
                             </Card>
-                            <Card className="flex h-80 flex-col">
-                                <CardHeader className="items-center pb-0">
-                                    <CardTitle>Flag Types</CardTitle>
-                                </CardHeader>
-                                <CardContent className="flex-1 pb-0 pt-2">
-                                    {dashboardMetrics.flagTypeData.total === 0 && (
-                                        <div className="flex h-full items-center justify-center text-center text-muted-foreground">
-                                            Not enough data
-                                        </div>
-                                    )}
-                                    {dashboardMetrics.flagTypeData.total > 0 && (
-                                        <ChartContainer
-                                            config={flagTypeChartConfig}
-                                            className="mx-auto aspect-square max-h-[250px]"
-                                        >
-                                            <PieChart accessibilityLayer>
-                                                <Pie
-                                                    data={dashboardMetrics.flagTypeData.data}
-                                                    dataKey="flags"
-                                                    nameKey="type"
-                                                    strokeWidth={5}
-                                                    innerRadius={60}
-                                                    outerRadius={80}
-                                                    label={{ className: 'text-lg font-semibold fill-primary ' }}
-                                                    labelLine={{ className: 'stroke-1' }}
-                                                >
-                                                    <Label
-                                                        content={
-                                                            <CustomLabel
-                                                                total={dashboardMetrics.flagTypeData.total}
-                                                                totalLabel="Total Flags"
-                                                            />
-                                                        }
-                                                        position="center"
-                                                        fill="grey"
-                                                        style={{
-                                                            fontSize: '32px',
-                                                            fontWeight: 'bold',
-                                                            fontFamily: '"Source Sans 3"',
-                                                        }}
-                                                    />
-                                                </Pie>
-                                                <ChartLegend content={<ChartLegendContent nameKey="label" />} />
-                                            </PieChart>
-                                        </ChartContainer>
-                                    )}
-                                </CardContent>
-                            </Card>
-                            <Card className="h-80 lg:col-span-2">
+                            <Card className="h-80 lg:col-span-2" data-dusk="metric-card-usage">
                                 <CardHeader>
                                     <CardTitle>Usage</CardTitle>
                                     <CardDescription>Last 6 Months</CardDescription>
@@ -879,9 +799,121 @@ export default function Dashboard({ metrics = defaultMetrics, onboarding = false
                                     )}
                                 </CardFooter>
                             </Card>
+                            <Card className="flex h-80 flex-col" data-dusk="metric-card-flag-types">
+                                <CardHeader className="items-center pb-0">
+                                    <CardTitle>Flag Types</CardTitle>
+                                </CardHeader>
+                                <CardContent className="flex-1 pb-0 pt-2">
+                                    {dashboardMetrics.flagTypeData.total === 0 && (
+                                        <div className="flex h-full items-center justify-center text-center text-muted-foreground">
+                                            Not enough data
+                                        </div>
+                                    )}
+                                    {dashboardMetrics.flagTypeData.total > 0 && (
+                                        <ChartContainer
+                                            config={flagTypeChartConfig}
+                                            className="mx-auto aspect-square max-h-[250px]"
+                                        >
+                                            <PieChart accessibilityLayer>
+                                                <Pie
+                                                    data={dashboardMetrics.flagTypeData.data}
+                                                    dataKey="flags"
+                                                    nameKey="type"
+                                                    strokeWidth={5}
+                                                    innerRadius={60}
+                                                    outerRadius={80}
+                                                    label={{ className: 'text-lg font-semibold fill-primary ' }}
+                                                    labelLine={{ className: 'stroke-1' }}
+                                                >
+                                                    <Label
+                                                        content={
+                                                            <CustomLabel
+                                                                value={dashboardMetrics.flagTypeData.total}
+                                                                totalLabel="Total Flags"
+                                                            />
+                                                        }
+                                                        position="center"
+                                                        fill="grey"
+                                                        style={{
+                                                            fontSize: '32px',
+                                                            fontWeight: 'bold',
+                                                            fontFamily: '"Source Sans 3"',
+                                                        }}
+                                                    />
+                                                </Pie>
+                                                <ChartLegend
+                                                    content={
+                                                        <ChartLegendContent
+                                                            nameKey="label"
+                                                            className="whitespace-nowrap"
+                                                        />
+                                                    }
+                                                />
+                                            </PieChart>
+                                        </ChartContainer>
+                                    )}
+                                </CardContent>
+                            </Card>
+                            <Card className="h-80 lg:col-span-2" data-dusk="metric-card-average-age">
+                                <CardHeader>
+                                    <CardTitle>Average Flag Age</CardTitle>
+                                    <CardDescription>Last 6 Months</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <ChartContainer config={ageChartConfig} className="h-36 w-full">
+                                        <LineChart
+                                            accessibilityLayer
+                                            data={dashboardMetrics.ageData}
+                                            margin={{
+                                                left: 0,
+                                                right: 0,
+                                            }}
+                                        >
+                                            <CartesianGrid vertical={false} />
+                                            <XAxis
+                                                dataKey="month"
+                                                tickLine={false}
+                                                axisLine={false}
+                                                tickMargin={8}
+                                                tickFormatter={(value) => value.slice(0, 3)}
+                                            />
+                                            <YAxis dataKey="age" tickLine={false} axisLine={false} />
+                                            <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                                            <Line
+                                                dataKey="age"
+                                                type="linear"
+                                                stroke="var(--color-age)"
+                                                strokeWidth={2}
+                                                dot={false}
+                                            />
+                                        </LineChart>
+                                    </ChartContainer>
+                                </CardContent>
+                                <CardFooter className="flex-col items-start gap-2 text-sm">
+                                    {dashboardMetrics.ageData.length > 1 && (
+                                        <>
+                                            <div className="flex gap-2 font-medium leading-none">
+                                                {dashboardMetrics.ageData[dashboardMetrics.ageData.length - 1].age >
+                                                dashboardMetrics.ageData[dashboardMetrics.ageData.length - 2].age ? (
+                                                    <>
+                                                        Trending up this month <TrendingUp className="h-4 w-4" />
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        Trending down this month <TrendingDown className="h-4 w-4" />
+                                                    </>
+                                                )}
+                                            </div>
+                                            <div className="text-muted-foreground leading-none">
+                                                Showing average age for the last 6 months
+                                            </div>
+                                        </>
+                                    )}
+                                </CardFooter>
+                            </Card>
                         </div>
                         <div className="mt-4 grid grid-cols-1 justify-center gap-6 lg:grid-cols-2">
-                            <Card className="flex h-fit flex-col">
+                            <Card className="flex h-fit flex-col" data-dusk="metric-card-top-usage">
                                 <CardHeader className="items-center pb-0">
                                     <CardTitle>Top Usage</CardTitle>
                                 </CardHeader>
@@ -899,7 +931,7 @@ export default function Dashboard({ metrics = defaultMetrics, onboarding = false
                                     ></DataTable>
                                 </CardContent>
                             </Card>
-                            <Card className="flex h-fit flex-col">
+                            <Card className="flex h-fit flex-col" data-dusk="metric-card-oldest">
                                 <CardHeader className="items-center pb-0">
                                     <CardTitle>Oldest Flags</CardTitle>
                                 </CardHeader>

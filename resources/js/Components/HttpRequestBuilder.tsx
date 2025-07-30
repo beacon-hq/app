@@ -1,9 +1,9 @@
+import HttpRequestBuilderForm from './HttpRequestBuilderForm';
 import { FeatureFlagStatus, PolicyCollection, PolicyDefinitionCollection } from '@/Application';
 import { Button } from '@/Components/ui/button';
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/Components/ui/sheet';
 import { Code2 } from 'lucide-react';
 import React, { useState } from 'react';
-import HttpRequestBuilderForm from './HttpRequestBuilderForm';
 
 interface HttpRequestBuilderProps {
     status?: FeatureFlagStatus;
@@ -11,7 +11,6 @@ interface HttpRequestBuilderProps {
     policies: PolicyCollection;
     definition: PolicyDefinitionCollection;
 }
-
 
 const HttpRequestBuilder = ({ status, featureFlagName, policies, definition }: HttpRequestBuilderProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -25,7 +24,7 @@ const HttpRequestBuilder = ({ status, featureFlagName, policies, definition }: H
             <SheetTrigger asChild>
                 <Button variant="outline" size="sm" className="gap-2">
                     <Code2 className="h-4 w-4" />
-                    API Request
+                    Code
                 </Button>
             </SheetTrigger>
             <SheetContent side="bottom" className="w-full sm:max-w-none max-h-[80vh] overflow-y-auto">

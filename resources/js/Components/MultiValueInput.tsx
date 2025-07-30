@@ -94,6 +94,7 @@ const MultiValueInput = ({
                         onChange={handleChange}
                         onKeyUp={handleKeyUp}
                         disabled={disabled}
+                        data-dusk="textarea-multi-input-value"
                     />
                 )}
                 {type !== 'textarea' && (
@@ -107,12 +108,13 @@ const MultiValueInput = ({
                         onChange={handleChange}
                         onKeyUp={handleKeyUp}
                         disabled={disabled}
+                        data-dusk="input-multi-input-value"
                     />
                 )}
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger>
-                            <PlusCircle className="-ml-8" onClick={addValue} />
+                            <PlusCircle className="-ml-8" onClick={addValue} data-dusk="button-multi-input-add-value" />
                         </TooltipTrigger>
                         <TooltipContent>
                             <Info className="inline-block" /> Press <kbd>Shift</kbd> + <kbd>Enter</kbd> to add a new

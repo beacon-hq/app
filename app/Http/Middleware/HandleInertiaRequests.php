@@ -57,7 +57,8 @@ class HandleInertiaRequests extends Middleware
                 ],
                 'features' => [
                     'pricing.enabled' => Feature::active(BillingEnabled::class),
-                ]
+                ],
+                'docsUrl' => config('beacon.docs.url'),
             ];
         }
 

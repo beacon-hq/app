@@ -13,19 +13,19 @@ export default function Edit({ mustVerifyEmail, status }: PageProps<{ mustVerify
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                    <div className="bg-white p-4 shadow-sm sm:rounded-lg sm:p-8 dark:bg-gray-800 w-full">
+                    <div className="bg-white p-4 shadow-sm sm:rounded-lg sm:p-8 dark:bg-gray-800 w-full" data-dusk="section-profile-information">
                         <UpdateProfileInformationForm mustVerifyEmail={mustVerifyEmail} status={status} />
                     </div>
 
-                    <div className="bg-white p-4 shadow-sm sm:rounded-lg sm:p-8 dark:bg-gray-800 w-full">
+                    <div className="bg-white p-4 shadow-sm sm:rounded-lg sm:p-8 dark:bg-gray-800 w-full" data-dusk="section-update-password">
                         <UpdatePasswordForm />
                     </div>
 
-                    <div className="bg-white p-4 shadow-sm sm:rounded-lg sm:p-8 dark:bg-gray-800 w-full">
+                    <div className="bg-white p-4 shadow-sm sm:rounded-lg sm:p-8 dark:bg-gray-800 w-full" data-dusk="section-two-factor">
                         <ManageTwoFactorForm />
                     </div>
 
-                    <div className="bg-white p-4 shadow-sm sm:rounded-lg sm:p-8 dark:bg-gray-800 w-full">
+                    <div className="bg-white p-4 shadow-sm sm:rounded-lg sm:p-8 dark:bg-gray-800 w-full" data-dusk="section-delete-user">
                         <DeleteUserForm />
                     </div>
                 </div>

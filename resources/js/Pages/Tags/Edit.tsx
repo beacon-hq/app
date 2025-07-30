@@ -32,7 +32,7 @@ export default function Edit({ tag }: { tag: Tag }) {
             <div className="mx-auto md:w-7/12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden p-4">
-                        <Card className="p-8">
+                        <Card className="p-8" data-dusk="card-tags-edit">
                             <CardTitle className="text-2xl">Edit Tag</CardTitle>
                             <CardContent className="py-4">
                                 <Form

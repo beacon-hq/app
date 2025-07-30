@@ -41,7 +41,7 @@ import React, { useCallback, useRef, useState } from 'react';
 const VariantValueInput: React.FC<{
     variant: Variant;
     onUpdate: (updates: Partial<Variant>) => void;
-}> = ({ variant, onUpdate }) => {
+}> = ({ variant, onUpdate, ...props }) => {
     return (
         <Input
             id={`value-${variant.id}`}
@@ -51,6 +51,7 @@ const VariantValueInput: React.FC<{
             }}
             type={variant.type === 'integer' || variant.type === 'float' ? 'number' : 'text'}
             step={variant.type === 'float' ? '0.01' : '1'}
+            {...props}
         />
     );
 };
@@ -121,7 +122,7 @@ const StatusEditor: React.FC<{
     );
 
     return (
-        <Card>
+        <Card data-dusk="card-feature-flag-status">
             <CardHeader>
                 <CardTitle className="flex flex-row justify-between">
                     <div className="flex flex-row items-center">
@@ -133,6 +134,7 @@ const StatusEditor: React.FC<{
                                         role="combobox"
                                         aria-expanded={applicationsOpen}
                                         className="w-fit justify-between"
+                                        data-dusk="select-application"
                                     >
                                         {status?.application ? (
                                             <div className="flex flex-row items-center">
@@ -151,7 +153,7 @@ const StatusEditor: React.FC<{
                                         <CommandList>
                                             <CommandEmpty>No application found.</CommandEmpty>
                                             <CommandGroup>
-                                                {applications.map((application) => (
+                                                {applications.map((application, idx) => (
                                                     <CommandItem
                                                         key={application.id}
                                                         value={application.id as string}
@@ -162,6 +164,7 @@ const StatusEditor: React.FC<{
                                                             } as FeatureFlagStatus);
                                                             setApplicationsOpen(false);
                                                         }}
+                                                        data-dusk={`select-option-application-${idx}`}
                                                     >
                                                         <IconColor color={application.color} className="mr-2" />
                                                         <p>{application.display_name}</p>
@@ -182,6 +185,7 @@ const StatusEditor: React.FC<{
                                         role="combobox"
                                         aria-expanded={environmentsOpen}
                                         className="w-fit justify-between"
+                                        data-dusk="select-environment"
                                     >
                                         {status?.environment ? (
                                             <div className="flex flex-row items-center">
@@ -203,7 +207,7 @@ const StatusEditor: React.FC<{
                                         <CommandList>
                                             <CommandEmpty>No environment found.</CommandEmpty>
                                             <CommandGroup>
-                                                {environments.map((environment) => (
+                                                {environments.map((environment, idx) => (
                                                     <CommandItem
                                                         key={environment.id}
                                                         value={environment.id as string}
@@ -214,6 +218,7 @@ const StatusEditor: React.FC<{
                                                             } as FeatureFlagStatus);
                                                             setEnvironmentsOpen(false);
                                                         }}
+                                                        data-dusk={`select-option-environment-${idx}`}
                                                     >
                                                         <IconColor color={environment.color} className="mr-2" />
                                                         <p>{environment.name}</p>
@@ -234,6 +239,7 @@ const StatusEditor: React.FC<{
                                 onCheckedChange={(active) =>
                                     updateStatus({ ...status, status: active } as FeatureFlagStatus)
                                 }
+                                data-dusk="switch-enabled"
                             />
                             <Label htmlFor="enabled">Enabled</Label>
                         </div>
@@ -252,9 +258,15 @@ const StatusEditor: React.FC<{
                 {/* Use a controlled value for Tabs with custom handler to prevent infinite loops */}
                 <Tabs className="w-full" value={activeTab} onValueChange={handleTabChange}>
                     <TabsList className="w-fit mx-auto block mb-6">
-                        <TabsTrigger value="conditions">Conditions</TabsTrigger>
-                        <TabsTrigger value="rollout">Rollout</TabsTrigger>
-                        <TabsTrigger value="variants">Variants</TabsTrigger>
+                        <TabsTrigger value="conditions" data-dusk="tab-conditions">
+                            Conditions
+                        </TabsTrigger>
+                        <TabsTrigger value="rollout" data-dusk="tab-rollout">
+                            Rollout
+                        </TabsTrigger>
+                        <TabsTrigger value="variants" data-dusk="tab-variants">
+                            Variants
+                        </TabsTrigger>
                     </TabsList>
                     <TabsContent value="conditions">
                         <div className="w-full justify-center items-center">
@@ -277,6 +289,7 @@ const StatusEditor: React.FC<{
                                             ],
                                         });
                                     }}
+                                    data-dusk="button-add-conditions"
                                 >
                                     <PlusCircle className="inline-block mr-2" /> Add Conditions
                                 </Button>
@@ -300,6 +313,7 @@ const StatusEditor: React.FC<{
                                             updateStatusRollout(status.id, { percentage: value[0] });
                                         }
                                     }}
+                                    data-dusk="slider-rollout-percentage"
                                 />
                                 <p className="w-10">{currentRollout.percentage}%</p>
                             </div>
@@ -320,7 +334,7 @@ const StatusEditor: React.FC<{
                                     }}
                                     disabled={currentRollout.percentage === 100}
                                 >
-                                    <SelectTrigger className="w-1/2 h-9 py-0">
+                                    <SelectTrigger className="w-1/2 h-9 py-0" data-dusk="select-rollout-strategy">
                                         <SelectValue asChild>
                                             {currentRollout.strategy === RolloutStrategy.CONTEXT ? (
                                                 <div className="flex flex-col justify-start text-left">
@@ -348,8 +362,11 @@ const StatusEditor: React.FC<{
                                                     Random distribution, with no stickiness.
                                                 </p>
                                             </SelectItem>
-                                            <SelectItem value={RolloutStrategy.CONTEXT}>
-                                                <p className="font-bold">Sticky</p>
+                                            <SelectItem
+                                                value={RolloutStrategy.CONTEXT}
+                                                data-dusk="select-option-rollout-strategy-sticky"
+                                            >
+                                                <p className="f ont-bold">Sticky</p>
                                                 <p className="text-sm text-primary/80">
                                                     Use one or more context values to segment users, with stickiness.
                                                 </p>
@@ -372,6 +389,7 @@ const StatusEditor: React.FC<{
                                         currentRollout.strategy === RolloutStrategy.RANDOM ||
                                         currentRollout.percentage === 100
                                     }
+                                    data-dusk="input-rollout-context"
                                 />
                             </div>
                         </div>
@@ -393,6 +411,7 @@ const StatusEditor: React.FC<{
                                                     distributeStatusVariantsEvenly(status.id);
                                                 }
                                             }}
+                                            data-dusk="button-distribute-evenly"
                                         >
                                             <AlignHorizontalSpaceAround /> Distribute Evenly
                                         </Button>
@@ -403,7 +422,7 @@ const StatusEditor: React.FC<{
                             {currentVariants.length > 0 && (
                                 <>
                                     <div className="flex flex-col gap-4 mb-6">
-                                        {currentVariants.map((variant) => (
+                                        {currentVariants.map((variant, idx) => (
                                             <div
                                                 key={variant.id}
                                                 className={`flex ${variant.type === 'json' ? 'flex-col' : 'flex-row items-center'} gap-4 p-4 border rounded-md`}
@@ -531,14 +550,37 @@ const StatusEditor: React.FC<{
                                                                     }
                                                                 }}
                                                             >
-                                                                <SelectTrigger id={`type-${variant.id}`}>
+                                                                <SelectTrigger
+                                                                    id={`type-${variant.id}`}
+                                                                    data-dusk="select-variant-type"
+                                                                >
                                                                     <SelectValue placeholder="Select type" />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
-                                                                    <SelectItem value="string">String</SelectItem>
-                                                                    <SelectItem value="integer">Integer</SelectItem>
-                                                                    <SelectItem value="float">Float</SelectItem>
-                                                                    <SelectItem value="json">JSON</SelectItem>
+                                                                    <SelectItem
+                                                                        value="string"
+                                                                        data-dusk="select-option-variant-type-string"
+                                                                    >
+                                                                        String
+                                                                    </SelectItem>
+                                                                    <SelectItem
+                                                                        value="integer"
+                                                                        data-dusk="select-option-variant-type-integer"
+                                                                    >
+                                                                        Integer
+                                                                    </SelectItem>
+                                                                    <SelectItem
+                                                                        value="float"
+                                                                        data-dusk="select-option-variant-type-float"
+                                                                    >
+                                                                        Float
+                                                                    </SelectItem>
+                                                                    <SelectItem
+                                                                        value="json"
+                                                                        data-dusk="select-option-variant-type-json"
+                                                                    >
+                                                                        JSON
+                                                                    </SelectItem>
                                                                 </SelectContent>
                                                             </Select>
                                                         </div>
@@ -560,6 +602,7 @@ const StatusEditor: React.FC<{
                                                                         );
                                                                     }
                                                                 }}
+                                                                data-dusk={`input-variant-value-${idx}`}
                                                             />
                                                         </div>
                                                         <div className="w-48">
@@ -617,6 +660,7 @@ const StatusEditor: React.FC<{
                                                         addStatusVariant(status.id);
                                                     }
                                                 }}
+                                                data-dusk="button-feature-flags-add-variant"
                                             >
                                                 <PlusCircle className="inline-block mr-2" /> Add
                                             </Button>
@@ -710,6 +754,7 @@ const StatusEditor: React.FC<{
                                             distributeStatusVariantsEvenly(status.id);
                                         }
                                     }}
+                                    data-dusk="button-feature-flags-add-variants"
                                 >
                                     <PlusCircle className="inline-block mr-2" /> Add Variants
                                 </Button>

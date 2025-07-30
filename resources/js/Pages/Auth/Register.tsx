@@ -37,7 +37,9 @@ export default function Register({ invite, plan }: { invite: Invite | false | nu
                 <form onSubmit={submit}>
                     <div className="grid grid-cols-2 space-x-2">
                         <div>
-                            <Label htmlFor="first_name">First Name</Label>
+                            <Label htmlFor="first_name" className="text-primary">
+                                First Name
+                            </Label>
 
                             <Input
                                 id="first_name"
@@ -54,7 +56,9 @@ export default function Register({ invite, plan }: { invite: Invite | false | nu
                         </div>
 
                         <div>
-                            <Label htmlFor="last_name">Last Name</Label>
+                            <Label htmlFor="last_name" className="text-primary">
+                                Last Name
+                            </Label>
 
                             <Input
                                 id="last_name"
@@ -71,7 +75,9 @@ export default function Register({ invite, plan }: { invite: Invite | false | nu
                     </div>
 
                     <div className="mt-4">
-                        <Label htmlFor="email">Email</Label>
+                        <Label htmlFor="email" className="text-primary">
+                            Email
+                        </Label>
 
                         <Input
                             id="email"
@@ -88,7 +94,9 @@ export default function Register({ invite, plan }: { invite: Invite | false | nu
                     </div>
 
                     <div className="mt-4">
-                        <Label htmlFor="password">Password</Label>
+                        <Label htmlFor="password" className="text-primary">
+                            Password
+                        </Label>
 
                         <Input
                             id="password"
@@ -105,7 +113,9 @@ export default function Register({ invite, plan }: { invite: Invite | false | nu
                     </div>
 
                     <div className="mt-4">
-                        <Label htmlFor="password_confirmation">Confirm Password</Label>
+                        <Label htmlFor="password_confirmation" className="text-primary">
+                            Confirm Password
+                        </Label>
 
                         <Input
                             id="password_confirmation"

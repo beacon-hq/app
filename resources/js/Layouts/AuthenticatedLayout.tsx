@@ -1,6 +1,7 @@
 import { Permission } from '@/Application';
 import Breadcrumbs from '@/Components/Breadcrumbs';
 import { ColorPicker } from '@/Components/ColorPicker';
+import EarlyAccessNotice from '@/Components/EarlyAccessNotice';
 import Footer from '@/Components/Footer';
 import IconPicker from '@/Components/IconPicker';
 import OrganizationSelect from '@/Components/OrganizationSelect';
@@ -47,26 +48,31 @@ export default function Authenticated({
         }
     }
 
+    console.log(window.location.hostname);
+
     return (
         <SidebarWrapper>
             <Sidebar expanded={open} auth={auth} />
             <div className="flex flex-col w-full">
-                {(header || breadcrumbs) && (
-                    <div className="bg-background w-full sticky top-0 z-50 flex flex-row justify-between items-center py-4 px-12">
-                        <div className="">
-                            <SidebarTrigger />
+                {(header || breadcrumbs) && document.cookie.indexOf('hide-menu-bar') === -1 && (
+                    <div className="bg-background w-full sticky top-0 z-50">
+                        <EarlyAccessNotice />
+                        <div className="flex flex-row justify-between items-center py-4 px-12">
+                            <div>
+                                <SidebarTrigger />
+                            </div>
+                            {!route().current('teams.*') &&
+                                !route().current('profile.*') &&
+                                !route().current('organizations.*') &&
+                                !route().current('settings.*') &&
+                                !route().current('users.*') &&
+                                !Gate.canOnly([`${Permission.BILLING}.*`]) && <TeamSelect teams={teams} />}
+                            {(route().current('teams.*') ||
+                                route().current('users.*') ||
+                                Gate.canOnly([`${Permission.BILLING}.*`])) && (
+                                <OrganizationSelect organizations={organizations} />
+                            )}
                         </div>
-                        {!route().current('teams.*') &&
-                            !route().current('profile.*') &&
-                            !route().current('organizations.*') &&
-                            !route().current('settings.*') &&
-                            !route().current('users.*') &&
-                            !Gate.canOnly([`${Permission.BILLING}.*`]) && <TeamSelect teams={teams} />}
-                        {(route().current('teams.*') ||
-                            route().current('users.*') ||
-                            Gate.canOnly([`${Permission.BILLING}.*`])) && (
-                            <OrganizationSelect organizations={organizations} />
-                        )}
                     </div>
                 )}
 

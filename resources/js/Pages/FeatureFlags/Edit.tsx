@@ -24,6 +24,8 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from '@/Components/ui/chart';
+import { Label } from '@/Components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select';
 import { Switch } from '@/Components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
@@ -109,11 +111,60 @@ export default function Edit({
         variants: { data: { value: string; count: number; percentage: number; fill: string }[]; total: number };
     };
 } & { featureFlag?: FeatureFlag }) {
+    console.log(metrics);
+
     // Initialize the feature flag store
     const { featureFlag, setFeatureFlag, addStatus } = useFeatureFlagStore();
 
     const { setData, put, errors, processing } = useForm<FeatureFlag>(featureFlag as FeatureFlag);
     const [hadFeatureFlags, setHadFeatureFlags] = React.useState<boolean>(false);
+
+    // Metrics filter state with local storage persistence
+    const [selectedApplicationId, setSelectedApplicationId] = React.useState<string>(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('metrics-filter-application') || '';
+        }
+        return '';
+    });
+    const [selectedEnvironmentId, setSelectedEnvironmentId] = React.useState<string>(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('metrics-filter-environment') || '';
+        }
+        return '';
+    });
+    const [metricsLoaded, setMetricsLoaded] = React.useState<boolean>(false);
+
+    // Handle application filter change
+    const handleApplicationChange = (applicationId: string) => {
+        setSelectedApplicationId(applicationId);
+        localStorage.setItem('metrics-filter-application', applicationId);
+        setMetricsLoaded(false);
+    };
+
+    // Handle environment filter change
+    const handleEnvironmentChange = (environmentId: string) => {
+        setSelectedEnvironmentId(environmentId);
+        localStorage.setItem('metrics-filter-environment', environmentId);
+        setMetricsLoaded(false);
+    };
+
+    // Load metrics when both filters are selected
+    const loadMetrics = () => {
+        if (selectedApplicationId && selectedEnvironmentId && featureFlag?.id) {
+            router.get(
+                route('feature-flags.edit.metrics', { feature_flag: featureFlag.id }),
+                {
+                    application_id: selectedApplicationId,
+                    environment_id: selectedEnvironmentId,
+                },
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                    onSuccess: () => setMetricsLoaded(true),
+                },
+            );
+        }
+    };
 
     useEffect(() => {
         if (props.featureFlag) {
@@ -133,6 +184,18 @@ export default function Edit({
             setHadFeatureFlags((featureFlag?.statuses?.length ?? 0) > 0);
         }
     }, [featureFlag]);
+
+    // Automatically load metrics when both filters are selected and we're on the metrics tab
+    useEffect(() => {
+        if (
+            selectedApplicationId &&
+            selectedEnvironmentId &&
+            featureFlag?.id &&
+            route().current('feature-flags.edit.metrics')
+        ) {
+            loadMetrics();
+        }
+    }, [selectedApplicationId, selectedEnvironmentId, featureFlag?.id]);
 
     function changeTab(routeName: string) {
         return function () {
@@ -221,6 +284,7 @@ export default function Edit({
                                 value="overview"
                                 className="rounded-lg grow px-6 cursor-pointer"
                                 onClick={changeTab('feature-flags.edit.overview')}
+                                data-dusk="tab-overview"
                             >
                                 Overview
                             </TabsTrigger>
@@ -228,6 +292,7 @@ export default function Edit({
                                 value="edit"
                                 className="rounded-lg grow px-6 cursor-pointer"
                                 onClick={changeTab('feature-flags.edit')}
+                                data-dusk="tab-edit"
                             >
                                 Edit
                             </TabsTrigger>
@@ -235,6 +300,7 @@ export default function Edit({
                                 value="policy"
                                 className="rounded-lg grow px-6 cursor-pointer"
                                 onClick={changeTab('feature-flags.edit.policy')}
+                                data-dusk="tab-configuration"
                             >
                                 Configuration
                             </TabsTrigger>
@@ -242,6 +308,7 @@ export default function Edit({
                                 value="metrics"
                                 className="rounded-lg grow px-6 cursor-pointer"
                                 onClick={changeTab('feature-flags.edit.metrics')}
+                                data-dusk="tab-metrics"
                             >
                                 Metrics
                             </TabsTrigger>
@@ -249,6 +316,7 @@ export default function Edit({
                                 value="activity"
                                 className="rounded-lg grow px-6 cursor-pointer"
                                 onClick={changeTab('feature-flags.edit.activity')}
+                                data-dusk="tab-activity"
                             >
                                 Activity Log
                             </TabsTrigger>
@@ -351,6 +419,7 @@ export default function Edit({
                                                     onClick={function () {
                                                         changeTab('feature-flags.edit.policy')();
                                                     }}
+                                                    data-dusk="button-add-policy"
                                                 >
                                                     <PlusCircle className="inline-block mr-2" />
                                                     Add a Policy
@@ -373,6 +442,7 @@ export default function Edit({
                                                             status: active,
                                                         } as FeatureFlag)
                                                     }
+                                                    data-dusk="switch-feature-flag-enabled"
                                                 />
                                                 Enabled
                                             </div>
@@ -406,142 +476,251 @@ export default function Edit({
                                             variant="secondary"
                                             className="w-fit flex flex-row items-center"
                                             onClick={addStatus}
+                                            data-dusk="button-add-application"
                                         >
                                             <PlusCircle className="inline-block" />
                                             Add Application
                                         </Button>
                                         {(hadFeatureFlags || (featureFlag?.statuses?.length ?? 0) > 0) && (
-                                            <Button type="button" onClick={submitFeatureFlag} className="w-fit block">
+                                            <Button
+                                                type="button"
+                                                onClick={submitFeatureFlag}
+                                                className="w-fit block"
+                                                data-dusk="button-feature-flag-save"
+                                            >
                                                 Save
                                             </Button>
                                         )}
                                     </div>
                                 </TabsContent>
                                 <TabsContent value="metrics" className="flex flex-col gap-4">
-                                    <div className="flex flex-row gap-4">
-                                        <Card className="w-1/2 flex flex-col gap-2">
-                                            <CardHeader className="items-center pb-0">
-                                                <CardTitle>Evaluations</CardTitle>
-                                                <CardDescription>Last 30 Days</CardDescription>
-                                            </CardHeader>
-                                            <CardContent className="flex-1 pb-0 min-h-[285px]">
-                                                {metrics.evaluations.total > 0 && (
-                                                    <ChartContainer
-                                                        config={evaluationsMetricsConfig}
-                                                        className="max-h-[300px]"
+                                    {/* Application and Environment Filters */}
+                                    <Card>
+                                        <CardHeader>
+                                            <CardDescription>
+                                                Select both an application and environment to load metric data.
+                                            </CardDescription>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <div className="flex flex-row gap-4">
+                                                <div className="flex-1">
+                                                    <Label
+                                                        className="text-sm font-medium mb-2 block"
+                                                        htmlFor="application"
                                                     >
-                                                        <AreaChart
-                                                            data={metrics.evaluations.data}
-                                                            margin={{
-                                                                left: 12,
-                                                                right: 12,
-                                                                top: 12,
-                                                            }}
+                                                        Application
+                                                    </Label>
+                                                    <Select
+                                                        value={selectedApplicationId}
+                                                        onValueChange={handleApplicationChange}
+                                                    >
+                                                        <SelectTrigger>
+                                                            <SelectValue
+                                                                placeholder="Select an application"
+                                                                id="application"
+                                                            />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            {applications.map((application) => (
+                                                                <SelectItem
+                                                                    key={application.id}
+                                                                    value={application.id || ''}
+                                                                >
+                                                                    <div className="flex items-center gap-2">
+                                                                        <IconColor color={application.color} />
+                                                                        {application.display_name}
+                                                                    </div>
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                                <div className="flex-1">
+                                                    <Label
+                                                        className="text-sm font-medium mb-2 block"
+                                                        htmlFor="environment"
+                                                    >
+                                                        Environment
+                                                    </Label>
+                                                    <Select
+                                                        value={selectedEnvironmentId}
+                                                        onValueChange={handleEnvironmentChange}
+                                                    >
+                                                        <SelectTrigger>
+                                                            <SelectValue
+                                                                placeholder="Select an environment"
+                                                                id="environment"
+                                                            />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            {environments.map((environment) => (
+                                                                <SelectItem
+                                                                    key={environment.id}
+                                                                    value={environment.id || ''}
+                                                                >
+                                                                    <div className="flex items-center gap-2">
+                                                                        <IconColor color={environment.color} />
+                                                                        {environment.name}
+                                                                    </div>
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+
+                                    {/* Metrics Charts - Only show when both filters are selected and metrics are loaded */}
+                                    {selectedApplicationId && selectedEnvironmentId && metricsLoaded && (
+                                        <div className="flex flex-row gap-4">
+                                            <Card className="w-1/2 flex flex-col gap-2">
+                                                <CardHeader className="items-center pb-0">
+                                                    <CardTitle>Evaluations</CardTitle>
+                                                    <CardDescription>Last 30 Days</CardDescription>
+                                                </CardHeader>
+                                                <CardContent className="flex-1 pb-0">
+                                                    {metrics.evaluations.total > 0 && (
+                                                        <ChartContainer
+                                                            config={evaluationsMetricsConfig}
+                                                            className="max-h-[320px]"
                                                         >
-                                                            <CartesianGrid vertical={false} />
-                                                            <XAxis
-                                                                dataKey="date"
-                                                                tickLine={false}
-                                                                axisLine={false}
-                                                                tickMargin={8}
-                                                                tickFormatter={(value) => value.slice(0, 3)}
-                                                            />
-                                                            <YAxis
-                                                                dataKey="total"
-                                                                tickLine={false}
-                                                                axisLine={false}
-                                                                width={20}
-                                                            />
-                                                            <ChartTooltip
-                                                                cursor={false}
-                                                                content={<ChartTooltipContent />}
-                                                            />
-                                                            <Area
-                                                                dataKey="total"
-                                                                type="linear"
-                                                                fill="var(--chart-3)"
-                                                                fillOpacity={0.4}
-                                                                stroke="var(--chart-2)"
-                                                                stackId="2"
-                                                            />
-                                                            <Area
-                                                                dataKey="active"
-                                                                type="linear"
-                                                                fill="var(--chart-1)"
-                                                                fillOpacity={0.4}
-                                                                stroke="var(--chart-1)"
-                                                                stackId="1"
-                                                            />
-                                                            <Area
-                                                                dataKey="inactive"
-                                                                type="linear"
-                                                                fill="var(--chart-2)"
-                                                                fillOpacity={0.4}
-                                                                stroke="var(--chart-2)"
-                                                                stackId="1"
-                                                            />
-                                                        </AreaChart>
-                                                    </ChartContainer>
-                                                )}
-                                                {metrics.evaluations.total === 0 && (
-                                                    <p className="flex items-center h-full w-fit mx-auto text-xs">
-                                                        No evaluations have been recorded for this feature flag in the
-                                                        last 30 days.
-                                                    </p>
-                                                )}
-                                            </CardContent>
-                                            {metrics.evaluations.total > 0 && (
-                                                <CardFooter>Total: {metrics.evaluations.total}</CardFooter>
-                                            )}
-                                        </Card>
-                                        <Card className="w-1/2">
-                                            <CardHeader className="items-center pb-0">
-                                                <CardTitle>Variant Results</CardTitle>
-                                                <CardDescription>Last 30 Days</CardDescription>
-                                            </CardHeader>
-                                            <CardContent className="flex-1 pb-0">
-                                                {metrics.variants.total > 0 && (
-                                                    <ChartContainer
-                                                        config={variantMetricsConfig}
-                                                        className="mx-auto aspect-square max-h-[250px]"
-                                                    >
-                                                        <PieChart accessibilityLayer>
-                                                            <ChartTooltip
-                                                                cursor={false}
-                                                                content={<ChartTooltipContent hideLabel />}
-                                                            />
-                                                            <Pie
-                                                                data={metrics.variants.data}
-                                                                dataKey="count"
-                                                                nameKey="value"
-                                                                strokeWidth={5}
+                                                            <AreaChart
+                                                                data={metrics.evaluations.data}
+                                                                margin={{
+                                                                    left: 12,
+                                                                    right: 12,
+                                                                    top: 12,
+                                                                    bottom: 32,
+                                                                }}
                                                             >
-                                                                <LabelList
-                                                                    dataKey="percentage"
-                                                                    stroke="none"
-                                                                    className="fill-background"
-                                                                    fontSize={12}
-                                                                    formatter={(value: number) => `${value}%`}
+                                                                <CartesianGrid vertical={false} />
+                                                                <XAxis
+                                                                    dataKey="date"
+                                                                    tickLine={false}
+                                                                    axisLine={false}
+                                                                    hide={true}
                                                                 />
-                                                            </Pie>
-                                                            <ChartLegend
-                                                                content={<ChartLegendContent nameKey="value" />}
-                                                            />
-                                                        </PieChart>
-                                                    </ChartContainer>
+                                                                <YAxis
+                                                                    dataKey="total"
+                                                                    tickLine={false}
+                                                                    axisLine={false}
+                                                                    width={20}
+                                                                />
+                                                                <ChartTooltip
+                                                                    cursor={false}
+                                                                    content={<ChartTooltipContent />}
+                                                                />
+                                                                <Area
+                                                                    dataKey="total"
+                                                                    type="linear"
+                                                                    fill="var(--chart-3)"
+                                                                    fillOpacity={0.4}
+                                                                    stroke="var(--chart-2)"
+                                                                    stackId="2"
+                                                                />
+                                                                <Area
+                                                                    dataKey="active"
+                                                                    type="linear"
+                                                                    fill="var(--chart-1)"
+                                                                    fillOpacity={0.4}
+                                                                    stroke="var(--chart-1)"
+                                                                    stackId="1"
+                                                                />
+                                                                <Area
+                                                                    dataKey="inactive"
+                                                                    type="linear"
+                                                                    fill="var(--chart-2)"
+                                                                    fillOpacity={0.4}
+                                                                    stroke="var(--chart-2)"
+                                                                    stackId="1"
+                                                                />
+                                                            </AreaChart>
+                                                        </ChartContainer>
+                                                    )}
+                                                    {metrics.evaluations.total === 0 && (
+                                                        <p className="flex items-center h-full w-fit mx-auto text-xs">
+                                                            No evaluations have been recorded for this feature flag in
+                                                            the last 30 days.
+                                                        </p>
+                                                    )}
+                                                </CardContent>
+                                                {metrics.evaluations.total > 0 && (
+                                                    <CardFooter>Total: {metrics.evaluations.total}</CardFooter>
                                                 )}
-                                                {metrics.variants.total === 0 && (
-                                                    <p className="flex items-center h-full w-fit mx-auto text-xs">
-                                                        No variant data has been recorded for this feature flag in the
-                                                        last 30 days.
-                                                    </p>
+                                            </Card>
+                                            <Card className="w-1/2">
+                                                <CardHeader className="items-center pb-0">
+                                                    <CardTitle>Variant Results</CardTitle>
+                                                    <CardDescription>Last 30 Days</CardDescription>
+                                                </CardHeader>
+                                                <CardContent className="flex-1 pb-0">
+                                                    {metrics.variants.total > 0 && (
+                                                        <ChartContainer
+                                                            config={variantMetricsConfig}
+                                                            className="mx-auto aspect-square max-h-[250px]"
+                                                        >
+                                                            <PieChart accessibilityLayer>
+                                                                <ChartTooltip
+                                                                    cursor={false}
+                                                                    content={<ChartTooltipContent hideLabel />}
+                                                                />
+                                                                <Pie
+                                                                    data={metrics.variants.data}
+                                                                    dataKey="count"
+                                                                    nameKey="value"
+                                                                    strokeWidth={5}
+                                                                >
+                                                                    <LabelList
+                                                                        dataKey="percentage"
+                                                                        stroke="none"
+                                                                        className="fill-background"
+                                                                        fontSize={12}
+                                                                        formatter={(value: number) => `${value}%`}
+                                                                    />
+                                                                </Pie>
+                                                                <ChartLegend
+                                                                    content={<ChartLegendContent nameKey="value" />}
+                                                                />
+                                                            </PieChart>
+                                                        </ChartContainer>
+                                                    )}
+                                                    {metrics.variants.total === 0 && (
+                                                        <p className="flex items-center h-full w-fit mx-auto text-xs">
+                                                            No variant data has been recorded for this feature flag in
+                                                            the last 30 days.
+                                                        </p>
+                                                    )}
+                                                </CardContent>
+                                                {metrics.variants.total > 0 && (
+                                                    <CardFooter>Total: {metrics.variants.total}</CardFooter>
                                                 )}
+                                            </Card>
+                                        </div>
+                                    )}
+
+                                    {/* Message when filters are not selected */}
+                                    {(!selectedApplicationId || !selectedEnvironmentId) && (
+                                        <Card>
+                                            <CardContent className="flex items-center justify-center h-64">
+                                                <p className="text-center text-muted-foreground">
+                                                    Please select both an application and environment to view metrics
+                                                    data.
+                                                </p>
                                             </CardContent>
-                                            {metrics.variants.total > 0 && (
-                                                <CardFooter>Total: {metrics.variants.total}</CardFooter>
-                                            )}
                                         </Card>
-                                    </div>
+                                    )}
+
+                                    {/* Loading message */}
+                                    {selectedApplicationId && selectedEnvironmentId && !metricsLoaded && (
+                                        <Card>
+                                            <CardContent className="flex items-center justify-center h-64">
+                                                <p className="text-center text-muted-foreground">
+                                                    Loading metrics data for the selected application and environment...
+                                                </p>
+                                            </CardContent>
+                                        </Card>
+                                    )}
                                 </TabsContent>
                                 <TabsContent value="activity" className="flex flex-col gap-4">
                                     <ActivityLog log={log} />

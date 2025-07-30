@@ -15,5 +15,8 @@ return [
     ],
     'teams' => [
         'invitation_expiration' => new \DateInterval(env('USER_INVITATION_EXPIRATION', 'P1D')),
+    ],
+    'docs' => [
+        'url' => env('BEACON_DOCS_URL', '/docs'),
     ]
 ];

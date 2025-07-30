@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
 use Laravel\Cashier\Cashier;
 use Laravel\Dusk\Dusk;
 use Laravel\Pennant\Middleware\EnsureFeaturesAreActive;
@@ -33,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        !Str::contains(config('app.url'), ['localhost', '127.0.0.1']) && URL::forceScheme('https');
+        config('app.useTLS') && URL::forceScheme('https');
 
         Date::use(CarbonImmutable::class);
 
