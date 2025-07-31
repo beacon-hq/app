@@ -6,6 +6,9 @@
 /storage/*.key
 /storage/pail
 /vendor
+/docs/.vitepress/cache
+/docs/.vitepress/dist
+/public/docs
 .env
 .env.dusk
 .env.backup
@@ -23,8 +26,6 @@ yarn-error.log
 /.vscode
 /.zed
 *.bak
-docs/.vitepress/dist/
-docs/.vitepress/cache/
 /tests/output
 bootstrap/ssr
 
