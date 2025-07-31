@@ -147,7 +147,7 @@ You can also use feature flags directly in your Blade templates:
 
 Now that you've created your first feature flag:
 
-1. **Explore Advanced Features**: Learn about [user targeting and variants](using-feature-flags.md)
+1. **Explore Advanced Features**: Learn about [rollouts](../app/feature-flags/rollouts) and [variants](../app/feature-flags/experiments)
 2. **Team Collaboration**: Invite team members and set up proper permissions
 
 ## Troubleshooting
@@ -158,7 +158,7 @@ Now that you've created your first feature flag:
 - Ensure the feature flag is enabled in your current environment
 
 **Need help?**
-- Check the [Using Feature Flags](using-feature-flags.md) documentation
+- Check the [Feature Flags](../app/feature-flags/basics) documentation
 - Review your feature flag configuration in the Beacon dashboard
 - Verify your Laravel Pennant integration is working correctly
 

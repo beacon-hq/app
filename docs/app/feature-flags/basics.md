@@ -86,4 +86,4 @@ series of conditions that must also be met for the flag to be active.
 Conditions are used to define if a feature flag should be active for a given request. You can set conditions based on
 the [Beacon Context](../../core/context.md) or the current date/time.
 
-For more details on how to configure conditions, see the [Policies documentation](policies.md).
+For more details on how to configure conditions, see the [Policies documentation](../policies).

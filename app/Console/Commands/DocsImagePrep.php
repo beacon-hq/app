@@ -38,7 +38,7 @@ class DocsImagePrep extends Command
                 continue;
             }
 
-            if ($this->hasArgument('matches') && !\str_contains($filename, $this->argument('matches'))) {
+            if ($this->argument('matches') !== null && !\str_contains($filename, $this->argument('matches'))) {
                 continue;
             }
 

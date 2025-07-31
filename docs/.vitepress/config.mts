@@ -169,4 +169,14 @@ export default withMermaid({
             },
         },
     },
+    vite: {
+        plugins: [
+            // @ts-ignore
+            deadFile({
+                root: __dirname,
+                include: ['**/*.md'],
+                exclude: ['**/dist/**', 'config.mts'],
+            }),
+        ],
+    },
 });

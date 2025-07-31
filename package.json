@@ -19,6 +19,7 @@
         "@types/node": "^18.13.0",
         "@types/react": "^18.0.28",
         "@types/react-dom": "^18.0.10",
+        "@vitejs/plugin-basic-ssl": "^2.1.0",
         "@vitejs/plugin-react": "^4.2.0",
         "axios": "^1.8.2",
         "chokidar": "^4.0.3",
@@ -28,7 +29,7 @@
         "lodash-types": "^4.17.1",
         "lucide-vue-next": "^0.525.0",
         "markdown-it-figure-caption": "^0.1.0",
-        "mermaid": "^11.4.1",
+        "mermaid": "^11.9.0",
         "motion": "^12.9.4",
         "postcss": "^8.4.31",
         "react": "^18.2.0",
@@ -40,7 +41,9 @@
         "vite-plugin-run": "^0.6.1",
         "vitepress": "^1.1.3",
         "vitepress-plugin-image-viewer": "^1.1.6",
-        "vitepress-plugin-mermaid": "^2.0.16"
+        "vitepress-plugin-mermaid": "^2.0.16",
+        "vite-plugin-deadfile": "^1.4.0",
+        "vitepress-versioning-plugin": "^1.3.0"
     },
     "dependencies": {
         "@dnd-kit/sortable": "^10.0.0",
@@ -80,7 +83,6 @@
         "@tailwindcss/typography": "^0.5.15",
         "@tanstack/react-table": "^8.20.5",
         "@types/react-syntax-highlighter": "^15.5.13",
-        "@vitejs/plugin-basic-ssl": "^2.1.0",
         "class-variance-authority": "^0.7.0",
         "clsx": "^2.1.1",
         "cmdk": "^1.0.0",
@@ -108,8 +110,6 @@
         "use-debounce": "^10.0.4",
         "usehooks-ts": "^3.1.1",
         "vaul": "^1.1.2",
-        "vite-plugin-deadfile": "^1.4.0",
-        "vitepress-versioning-plugin": "^1.3.0",
         "zustand": "^5.0.6"
     }
 }

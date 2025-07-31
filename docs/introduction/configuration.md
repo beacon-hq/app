@@ -118,4 +118,4 @@ php artisan cache:clear
 
 **Environment mismatch**: Verify that `BEACON_APP_NAME` and `BEACON_ENVIRONMENT` match your Beacon dashboard configuration.
 
-For more troubleshooting tips, see the [Troubleshooting](./troubleshooting) guide.
+For more troubleshooting tips, see the [Troubleshooting](../troubleshooting) guide.

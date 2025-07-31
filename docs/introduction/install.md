@@ -25,7 +25,7 @@ PENNANT_STORE=beacon
 BEACON_ACCESS_TOKEN=<token>
 ```
 
-Create your access token in the [API Token Settings](/settings/api).
+Create your access token in the [API Token Settings](../app/settings/access-tokens).
 
 ## Video Guide
 

@@ -13,31 +13,23 @@ If you're new to Beacon, we recommend starting with our 90-second install video:
 
 <lite-youtube class="mt-4" videoid="lNuCNkJ9-xE" />
 
-If you prefer reading, you can follow the same steps in the [Get Started](get-started) guide.
+If you prefer reading, you can follow the same steps in the [Get Started](./introduction/get-started) guide.
 
 ## Documentation Overview
 
 ### 🚀 Getting Started
-- **[Overview](overview)** - Learn what Beacon is and how it works
-- **[Get Started](get-started)** - Step-by-step setup guide with video
-- **[Installation](install)** - Detailed installation instructions
+- **[Overview](./introduction/overview)** - Learn what Beacon is and how it works
+- **[Get Started](./introduction/get-started)** - Step-by-step setup guide with video
+- **[Installation](./introduction/install)** - Detailed installation instructions
 
 ### 📚 Core Concepts
-- **[Using Feature Flags](using-feature-flags)** - How to define and use feature flags
-- **[Applications & Environments](applications-and-environments)** - Organize your projects and deployments
-- **[Context](context)** - Understanding the data available for targeting
-- **[Policies](policies)** - Create rules to control feature flag activation
+- **[Using Feature Flags](./app/feature-flags)** - How to define and use feature flags
+- **[Applications](./app/applications) & [Environments](./app/applications)** - Organize your projects and deployments
+- **[Context](./core/context)** - Understanding the data available for targeting
+- **[Policies](./core/policies)** - Create rules to control feature flag activation
 
 ### 💡 Examples
 - **[Usage Examples](examples)** - Real-world examples and best practices
-
-### ⚙️ Configuration
-- **[Configuration](configuration)** - Complete configuration reference
-- **[API Rate Limiting](api-rate-limiting)** - Understanding and configuring rate limits
-- **[Meter Reporting](meter-reporting)** - Usage tracking and billing integration
-
-### 🔧 API Reference
-- **[REST API](api-reference)** - Complete API documentation for direct integration
 
 ### 🆘 Help
 - **[Troubleshooting](troubleshooting)** - Common issues and solutions
@@ -52,4 +44,4 @@ Beacon integrates seamlessly with Laravel's Pennant package to provide remote fe
 - ✅ A/B test different variants
 - ✅ Monitor usage and performance
 
-Ready to get started? Head over to the [Get Started](get-started) guide!
+Ready to get started? Head over to the [Get Started](./introduction/get-started) guide!
