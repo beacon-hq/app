@@ -7,6 +7,7 @@ use App\Http\Middleware\EnsureSubscriptionMiddleware;
 use App\Http\Middleware\EnsureTeamMiddleware;
 use App\Http\Middleware\EnsureTwoFactorAuthMiddleware;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\RequestTimingMiddleware;
 use App\Providers\ApiRateLimitServiceProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -24,30 +25,37 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
         then: function () {
             \Route::prefix('api')
+                ->domain(config('beacon.api.domain'))
                 ->middleware(['api'])
                 ->name('api.')
                 ->group(base_path('routes/api.php'));
         }
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->web(append: [
-            EnsureTwoFactorAuthMiddleware::class,
-            EnsureTeamMiddleware::class,
-            EnsureOrganizationMiddleware::class,
-            EnsureSubscriptionMiddleware::class,
-            HandleInertiaRequests::class,
-            AddLinkHeadersForPreloadedAssets::class,
-        ]);
+        $middleware->web(
+            append: [
+                EnsureTwoFactorAuthMiddleware::class,
+                EnsureTeamMiddleware::class,
+                EnsureOrganizationMiddleware::class,
+                EnsureSubscriptionMiddleware::class,
+                HandleInertiaRequests::class,
+                AddLinkHeadersForPreloadedAssets::class,
+            ],
+        );
 
         $middleware->statefulApi();
 
-        $middleware->api(append: [
-            'auth:sanctum',
-            EnsureTeamMiddleware::class,
-            EnsureOrganizationMiddleware::class,
-            EnsureSubscriptionMiddleware::class,
-            'throttle:api',
-        ]);
+        $middleware->api(
+            append: [
+                'auth:sanctum',
+                EnsureTeamMiddleware::class,
+                EnsureOrganizationMiddleware::class,
+                EnsureSubscriptionMiddleware::class,
+                'throttle:api',
+            ],
+        );
+
+        $middleware->prepend([RequestTimingMiddleware::class]);
 
         $middleware->prependToPriorityList(SubstituteBindings::class, EnsureTeamMiddleware::class);
         $middleware->prependToPriorityList(SubstituteBindings::class, EnsureOrganizationMiddleware::class);

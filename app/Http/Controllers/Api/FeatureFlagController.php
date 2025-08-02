@@ -25,16 +25,13 @@ class FeatureFlagController extends Controller
     public function show(
         #[WithoutValidation]
         FeatureFlag $featureFlag,
-        FeatureFlagService $featureFlagService,
         FeatureFlagStatusService $featureFlagStatusService,
         Request $request
     ): FeatureFlagResponse {
         try {
             $context = FeatureFlagContext::from(... $request->json()->all());
 
-            $featureFlag = $featureFlagService->findByName($featureFlag->id);
-
-            return $featureFlagStatusService->getStatus($featureFlag, $context);
+            return $featureFlagStatusService->getStatus(FeatureFlag::withoutValidation(name: $featureFlag->id), $context);
         } catch (\Throwable $e) {
             $response = FeatureFlagResponse::from(
                 featureFlag: $featureFlag->has('name') ? $featureFlag->name : $featureFlag->id,

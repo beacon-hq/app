@@ -38,7 +38,7 @@ class FeatureFlagStatusService
     {
         try {
             $featureFlag = $this->featureFlagRepository->first(filters: [
-                'id' => $featureFlag->id,
+                'name' => $featureFlag->name,
                 'application' => $context->appName,
                 'environment' => $context->environment,
             ]);
@@ -54,7 +54,7 @@ class FeatureFlagStatusService
 
         // Dispatch the feature flag evaluation event
         FeatureFlagEvaluatedEvent::dispatch(
-            FeatureFlag::from($featureFlag),
+            $featureFlag,
             $context,
             $response,
         );

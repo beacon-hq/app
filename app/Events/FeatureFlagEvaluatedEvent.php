@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Events;
 
 use App;
+use App\Models\FeatureFlag;
 use App\Values\AppContext;
-use App\Values\FeatureFlag;
 use App\Values\FeatureFlagContext;
 use App\Values\FeatureFlagResponse;
 use Illuminate\Broadcasting\InteractsWithSockets;

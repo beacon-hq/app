@@ -9,6 +9,7 @@ return [
         'trial_fraud_limit' => 20,
     ],
     'api' => [
+        'domain' => env('BEACON_API_DOMAIN', null),
         'rate_limiting' => [
             'enabled' => env('BEACON_API_RATE_LIMITING_ENABLED', true),
         ],
@@ -18,5 +19,17 @@ return [
     ],
     'docs' => [
         'url' => env('BEACON_DOCS_URL', '/docs'),
-    ]
+    ],
+    'metrics' => [
+        'dashboard' => [
+            'enabled' => true,
+        ],
+        'request' => [
+            'enabled' => env('BEACON_REQUEST_METRICS', true),
+            'reporting' => [
+                'enabled' => env('BEACON_REQUEST_METRICS_REPORTING', true),
+                'sample_rate' => env('BEACON_REQUEST_METRICS_SAMPLE_RATE', 1.0),
+            ],
+        ],
+    ],
 ];

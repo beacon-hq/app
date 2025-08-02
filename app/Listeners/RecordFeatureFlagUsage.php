@@ -11,6 +11,7 @@ use App\Models\Environment;
 use App\Models\FeatureFlagUsage;
 use App\Services\FeatureFlagService;
 use App\Services\SubscriptionBillingService;
+use App\Values\FeatureFlag;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Carbon;
@@ -34,10 +35,12 @@ class RecordFeatureFlagUsage implements ShouldQueue
             $application = Application::firstWhere('name', '=', $event->context->appName);
             $environment = Environment::firstWhere('name', '=', $event->context->environment);
 
+            $featureFlag = ($event->featureFlag instanceof FeatureFlag) ? $event->featureFlag : FeatureFlag::from($event->featureFlag);
+
             // Create a record of this feature flag evaluation
             $usage = FeatureFlagUsage::create([
-                'feature_flag_id' => $event->featureFlag->has('id') && Str::isUlid($event->featureFlag->id) ? $event->featureFlag->id : null,
-                'feature_flag_name' => $event->featureFlag->name,
+                'feature_flag_id' => $featureFlag->has('id') && Str::isUlid($featureFlag->id) ? $featureFlag->id : null,
+                'feature_flag_name' => $featureFlag->name,
                 'application_id' => $application?->id,
                 'application_name' => $event->context->appName,
                 'environment_id' => $environment?->id,
@@ -47,8 +50,8 @@ class RecordFeatureFlagUsage implements ShouldQueue
                 'evaluated_at' => Carbon::now(),
             ]);
 
-            if ($event->featureFlag->has('id') && Str::isUlid($event->featureFlag->id)) {
-                $this->featureFlagService->touch($event->featureFlag);
+            if ($featureFlag->has('id') && Str::isUlid($featureFlag->id)) {
+                $this->featureFlagService->touch($featureFlag);
             }
 
             $this->subscriptionBillingService->reportUsage($usage->id, $event->appContext->organization);
@@ -56,7 +59,7 @@ class RecordFeatureFlagUsage implements ShouldQueue
             // Log the exception but don't fail the application
             Log::error('Failed to record feature flag usage: ' . $e->getMessage(), [
                 'exception' => $e,
-                'feature_flag' => $event->featureFlag->id,
+                'feature_flag' => $featureFlag->id,
             ]);
         }
     }

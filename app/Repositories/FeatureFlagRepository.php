@@ -190,6 +190,7 @@ class FeatureFlagRepository
         $query
             ->when(isset($filters['id']), fn (Builder $query) => $query->where('id', $filters['id']))
             ->when(isset($filters['name'][0]), fn (Builder $query) => $query->whereName($filters['name'][0]))
+            ->when(isset($filters['name']) && !is_array($filters['name']), fn (Builder $query) => $query->whereName($filters['name']))
             ->when(isset($filters['tag']), fn (Builder $query) => $query->whereTags($filters['tag']))
             ->when(isset($filters['application']), fn (Builder $query) => $query->whereApplication($filters['application']))
             ->when(isset($filters['environment']), fn (Builder $query) => $query->whereEnvironment($filters['environment']))

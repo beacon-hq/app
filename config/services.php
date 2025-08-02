@@ -37,4 +37,13 @@ return [
         ],
     ],
 
+    'cachet' => [
+        'url' => env('CACHET_URL'),
+        'token' => env('CACHET_API_TOKEN'),
+        'metrics' => [
+            'web_request_timing' => env('CACHET_METRICS_WEB_REQUEST_TIMING', 1),
+            'api_request_timing' => env('CACHET_METRICS_API_REQUEST_TIMING', 2),
+        ],
+    ]
+
 ];

@@ -51,6 +51,5 @@ class ApplicationService
         }
 
         return Application::from($application);
-
     }
 }
