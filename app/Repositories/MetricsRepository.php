@@ -149,6 +149,7 @@ class MetricsRepository
                     'feature_flag_usages.active',
                     DB::raw('COUNT(feature_flag_usages.id) as count')
                 )
+                ->where('feature_flag_usages.team_id', App::context()->team->id)
                 ->whereDate('feature_flag_usages.evaluated_at', '>=', $startDate)
                 ->whereDate('feature_flag_usages.evaluated_at', '<=', $endDate)
                 ->groupBy('feature_flag_usages.active')
@@ -200,6 +201,7 @@ class MetricsRepository
             ->join('feature_flag_usages', 'feature_flags.id', '=', 'feature_flag_usages.feature_flag_id')
             ->join('applications', 'applications.id', '=', 'feature_flag_usages.application_id')
             ->join('feature_types', 'feature_types.id', '=', 'feature_flags.feature_type_id')
+            ->where('feature_flags.team_id', App::context()->team->id)
             ->whereDate('feature_flag_usages.evaluated_at', '>=', $startDate)
             ->whereDate('feature_flag_usages.evaluated_at', '<=', $endDate)
             ->groupBy('feature_flags.id', 'feature_flags.name', 'applications.name', 'applications.color', 'feature_types.id', 'feature_types.color')
@@ -248,6 +250,7 @@ class MetricsRepository
             ->join('applications', 'applications.id', '=', 'feature_flag_statuses.application_id')
             ->join('feature_types', 'feature_types.id', '=', 'feature_flags.feature_type_id')
             ->where('feature_types.temporary', true)
+            ->where('feature_flags.team_id', App::context()->team->id)
             ->orderByDesc('feature_flag_statuses.created_at')
             ->limit(6)
             ->get();
