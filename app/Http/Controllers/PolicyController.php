@@ -27,15 +27,14 @@ class PolicyController extends Controller
     {
         Gate::authorize('create', $policy);
 
-        $policyService->create($policy);
+        $policy = $policyService->create($policy);
 
-        return redirect()->route('policies.index')->with(
-            'alert',
-            [
-                'message' => 'Policy created successfully.',
-                'status' => 'success',
-            ]
-        );
+        return redirect()
+            ->route('policies.edit', ['policy' => $policy->id])
+            ->withAlert(
+                'success',
+                'Policy created successfully.',
+            );
     }
 
     public function edit(
