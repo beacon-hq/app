@@ -35,20 +35,65 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->registerNightwing();
+        $this->registerMacros();
+        $this->appSetup();
+
+        app()->singleton(RequestTimingMiddleware::class);
+        app()->singleton(AppContext::class, fn () => AppContext::from(AppContext::empty()));
+
+        EnsureFeaturesAreActive::whenInactive(
+            function () {
+                abort(503);
+            }
+        );
+    }
+
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        Vite::prefetch(concurrency: 3);
+        Cashier::useCustomerModel(Organization::class);
+    }
+
+    protected function registerNightwing(): void
+    {
         Nightwatch::user(function (Authenticatable $user) {
             return [
                 'name' => "{$user->first_name} {$user->last_name}",
                 'username' => $user->email,
             ];
         });
+    }
 
-        $this->app->singleton(RequestTimingMiddleware::class);
-
+    protected function appSetup(): void
+    {
         config('app.useTLS') ? URL::forceScheme('https') : URL::forceScheme('http');
 
         Date::use(CarbonImmutable::class);
 
-        app()->singleton(AppContext::class, fn () => AppContext::from(AppContext::empty()));
+        Sanctum::usePersonalAccessTokenModel(AccessToken::class);
+
+        Gate::guessPolicyNamesUsing(function (string $class) {
+            return '\\App\\Policies\\' . class_basename($class) . 'Policy';
+        });
+
+        if (app()->environment('local')) {
+            Dusk::selectorHtmlAttribute('data-dusk');
+        }
+    }
+
+    protected function registerMacros(): void
+    {
+        RedirectResponse::macro('withAlert', function (string $status, string $message) {
+            return $this->with('alert', [
+                'status' => $status,
+                'message' => $message,
+                'timestamp' => now()->getPreciseTimestamp(),
+            ]);
+        });
 
         App::macro('context', function (Organization|OrganizationValue|null $organization = null, Team|TeamValue|null $team = null): AppContext {
             $newContext = $context = resolve(AppContext::class);
@@ -85,38 +130,5 @@ class AppServiceProvider extends ServiceProvider
 
             return $newContext;
         });
-
-        Sanctum::usePersonalAccessTokenModel(AccessToken::class);
-
-        Gate::guessPolicyNamesUsing(function (string $class) {
-            return '\\App\\Policies\\' . class_basename($class) . 'Policy';
-        });
-
-        RedirectResponse::macro('withAlert', function (string $status, string $message) {
-            return $this->with('alert', [
-                'status' => $status,
-                'message' => $message,
-                'timestamp' => now()->getPreciseTimestamp(),
-            ]);
-        });
-
-        EnsureFeaturesAreActive::whenInactive(
-            function () {
-                abort(503);
-            }
-        );
-
-        if (app()->environment('local')) {
-            Dusk::selectorHtmlAttribute('data-dusk');
-        }
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public function boot(): void
-    {
-        Vite::prefetch(concurrency: 3);
-        Cashier::useCustomerModel(Organization::class);
     }
 }
