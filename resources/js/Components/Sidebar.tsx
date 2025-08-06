@@ -23,7 +23,7 @@ import {
 import { Gate } from '@/lib/permissions';
 import { cn } from '@/lib/utils';
 import { AuthProp } from '@/types';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import {
     AppWindowMac,
     CircleUser,
@@ -41,6 +41,7 @@ import {
 import React from 'react';
 
 const Sidebar = function (props: { expanded: boolean } & AuthProp) {
+    const billingEnabled = usePage().props.features['pricing.enabled'] ?? false;
     return (
         <SidebarContainer collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -191,7 +192,7 @@ const Sidebar = function (props: { expanded: boolean } & AuthProp) {
                                             My Account
                                         </Link>
                                     </DropdownMenuItem>
-                                    {Gate.can(Permission.BILLING_UPDATE) && (
+                                    {Gate.can(Permission.BILLING_UPDATE) && billingEnabled && (
                                         <DropdownMenuItem asChild>
                                             <a href={route('billing.index')} className="w-full">
                                                 <CreditCard />

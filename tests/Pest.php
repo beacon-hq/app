@@ -125,7 +125,7 @@ function vendorPackages(): array
 function createBrowserUser(): User
 {
     $user = app(UserService::class)->create(
-        \App\Values\User::from(...User::factory(['first_name' => 'Beacon Demo'])->make()->toArray(), password: 'testing'),
+        \App\Values\User::from(...User::factory(['first_name' => 'Beacon Demo'])->make()->toArray(), password: 'Password123!'),
     )->id;
 
     $userModel = User::find($user);

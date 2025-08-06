@@ -1,302 +1,92 @@
+<script setup>
+// @ts-ignore
+import { CirclePlus, Pencil } from 'lucide-vue-next';
+</script>
+
 # Policies
 
-The Policies section manages access control, permissions, and governance rules for feature flags, applications, and user interactions within the Beacon system.
+Policies are used to define the conditions under which a feature is active. Policies can
+be created as re-usable sets of conditions, and they function exactly as if they were created within a feature flag
+directly.
 
-## Overview
+> [!TIP]
+> For in-depth details of how a policy is structured, review the [Core Policies documentation](../core/policies).
 
-Policies define who can access what resources and what actions they can perform. They provide fine-grained control over feature flag management, application access, and system administration, ensuring security and compliance across the organization.
+![Policy Listing](../screenshots/policies-initial.png){.light-only}
+![Policy Listing](../screenshots/dark/policies-initial.png){.dark-only}
 
-*Main policies listing page showing all configured access policies*
+## Creating a Policy
 
-## Policies Listing
+To create a new policy, click the <kbd><CirclePlus /> New Policy</kbd> button.
 
-### Policies Table
+![Create Policy Form](../screenshots/policies-form-create.png){.light-only}
+![Create Policy Form](../screenshots/dark/policies-form-create.png){.dark-only}
 
-The main interface displays policies in a structured table format:
 
-*Data table showing policies with scope, permissions, and assignment information*
+## Editing a Policy
 
-**Table Columns:**
-- **Name**: Policy name and description
-- **Type**: Policy type (User, Team, Application, etc.)
-- **Scope**: Resources covered by the policy
-- **Permissions**: Actions allowed by the policy
-- **Assignments**: Users/teams assigned to the policy
-- **Status**: Active/inactive state
-- **Actions**: Edit, delete, and management options
+To Edit a policy, click the <Pencil /> edit button next to the policy you want to modify.
 
-### Policy Categories
+![Policy Edit](../screenshots/policies-edit.png){.light-only}
+![Policy Edit](../screenshots/dark/policies-edit.png){.dark-only}
 
-*Categorized view of policies organized by type and scope*
+## Adding Conditions to a Policy
 
-- **User Policies**: Individual user permissions
-- **Team Policies**: Group-based access control
-- **Application Policies**: Application-specific permissions
-- **System Policies**: System-wide administrative policies
-- **Custom Policies**: Organization-specific policy types
+Policy Conditions can be one of the following:
 
-## Creating Policies
+* Expression: A comparison expression that is applied to the [Beacon Context](../core/context).
+* Policy: A reference to another Policy that is included in this Policy.
+* Date/Time: A date or time condition that must be met.
+* Operator: A logical operator that combines multiple other condition types.
 
-### New Policy Form
+### Expression Conditions
 
-*Form for creating a new access policy*
+Expression conditions allow you to define a condition based on the Beacon Context.
 
-**Form Fields:**
-- **Name**: Unique policy identifier
-- **Display Name**: Human-readable policy name
-- **Description**: Detailed description of the policy's purpose
-- **Type**: Policy type selection
-- **Scope**: Resources covered by the policy
-- **Permissions**: Actions allowed by the policy
+To use an Expression, set the <kbd>Type</kbd> to <kbd>Expression</kbd>, then enter a Context property, choose an [Operator](../core/policies#Operators), and enter one or more values to compare the Context value against.
 
-### Policy Templates
+![Policy Expression Condition](../screenshots/policies-form-expression.png){.light-only}
+![Policy Expression Condition](../screenshots/dark/policies-form-expression.png){.dark-only}
 
-*Pre-configured policy templates for common use cases*
+> [!TIP]
+> Use Laravel's dot-notation to reference nested properties in the Beacon Context.
 
-**Template Categories:**
-- **Developer Templates**: Common developer permissions
-- **Admin Templates**: Administrative access policies
-- **Read-only Templates**: View-only access policies
-- **Team Lead Templates**: Team management permissions
-- **Custom Templates**: Organization-specific templates
+### Policy Conditions
 
-### Permission Builder
+Policy conditions allow you to include another Policy within the current Policy. This is useful for re-using common conditions across multiple Policies.
 
-*Visual interface for building complex permission sets*
+Policy conditions are inlined, meaning that the conditions of the referenced Policy are evaluated as part of the current Policy.
 
-**Builder Features:**
-- **Resource Selection**: Choose resources to control
-- **Action Selection**: Define allowed actions
-- **Condition Builder**: Add conditional logic
-- **Preview**: Real-time permission preview
-- **Validation**: Ensure policy consistency
+![Policy Condition](../screenshots/policies-form-policy.png){.light-only}
+![Policy Condition](../screenshots/dark/policies-form-policy.png){.dark-only}
 
-## Editing Policies
+> [!INFO]
+> You cannot choose a Policy that references the current Policy, as this would create an infinite loop.
 
-### Edit Policy Form
+To use a Policy, set the <kbd>Type</kbd> to <kbd>Policy</kbd>, then select the Policy you want to include from the dropdown.
 
-*Form for modifying existing policy settings*
+### Date/Time Conditions
 
-- Pre-populated current values
-- Impact analysis for changes
-- Validation for required fields
-- Save and cancel options
-- Change history tracking
+Date/Time conditions allow you to specify a condition based on a specific date or time.
 
-### Policy Versioning
+To use a Date/Time condition, set the <kbd>Type</kbd> to <kbd>Date/Time</kbd>, then enter a Context property, choose an [Operator](../core/policies#Operators-1), and choose a date and/or time value to compare the Context value against.
 
-*Version control system for policy changes*
+![Date/Time Condition](../screenshots/policies-form-datetime.png){.light-only}
+![Date/Time Condition](../screenshots/dark/policies-form-datetime.png){.dark-only}
 
-**Versioning Features:**
-- **Version History**: Complete change history
-- **Rollback Capability**: Revert to previous versions
-- **Change Comparison**: Compare policy versions
-- **Approval Workflow**: Version approval process
-- **Deployment Tracking**: Track policy deployments
+### Operator Conditions
 
-## Policy Management
+Operator conditions allow you to combine multiple other condition types using logical operators.
 
-### Policy Assignment
+To use an Operator condition, set the <kbd>Type</kbd> to <kbd>Operator</kbd>, then select the logical operator you want to use (AND, OR, AND NOT, XOR).
 
-*Interface for assigning policies to users and teams*
+![Operator Condition](../screenshots/policies-form-operator.png){.light-only}
+![Operator Condition](../screenshots/dark/policies-form-operator.png){.dark-only}
 
-**Assignment Methods:**
-- **Individual Assignment**: Assign to specific users
-- **Team Assignment**: Assign to entire teams
-- **Role-based Assignment**: Assign based on roles
-- **Bulk Assignment**: Assign to multiple entities
-- **Conditional Assignment**: Dynamic policy assignment
+> [!WARNING]
+> Operators should only be used between two other conditions. Trailing operators will be ignored.
 
-### Policy Inheritance
+Using Operator conditions, you can combine multiple conditions together to create complex policies:
 
-*Hierarchical policy inheritance system*
-
-- **Parent-Child Relationships**: Policy inheritance chains
-- **Override Capabilities**: Child policy overrides
-- **Conflict Resolution**: Handle inheritance conflicts
-- **Inheritance Visualization**: Visual inheritance tree
-- **Impact Analysis**: Understand inheritance effects
-
-## Access Control
-
-### User Permissions
-
-*Individual user permission management*
-
-**Permission Categories:**
-- **Feature Flag Permissions**: Flag creation, editing, deletion
-- **Application Permissions**: Application access and management
-- **Environment Permissions**: Environment-specific access
-- **Administrative Permissions**: System administration rights
-- **Reporting Permissions**: Analytics and reporting access
-
-### Team Permissions
-
-*Team-based permission management*
-
-- **Team Access Control**: Team-wide permissions
-- **Member Management**: Add/remove team members
-- **Role Assignments**: Team role-based permissions
-- **Resource Sharing**: Team resource access
-- **Collaboration Settings**: Team collaboration controls
-
-## Policy Enforcement
-
-### Real-time Enforcement
-
-*Real-time policy enforcement monitoring*
-
-**Enforcement Features:**
-- **Access Monitoring**: Real-time access tracking
-- **Violation Detection**: Policy violation alerts
-- **Automatic Blocking**: Prevent unauthorized actions
-- **Audit Logging**: Complete enforcement logs
-- **Performance Monitoring**: Enforcement performance metrics
-
-### Compliance Monitoring
-
-*Compliance monitoring and reporting dashboard*
-
-- **Compliance Status**: Overall compliance health
-- **Violation Reports**: Policy violation summaries
-- **Audit Trails**: Complete audit trail records
-- **Regulatory Compliance**: Industry-specific compliance
-- **Risk Assessment**: Security risk evaluation
-
-## Policy Analytics
-
-### Usage Analytics
-
-*Analytics dashboard for policy usage and effectiveness*
-
-**Analytics Features:**
-- **Usage Patterns**: Policy usage trends
-- **Access Patterns**: User access behavior
-- **Violation Trends**: Policy violation patterns
-- **Performance Impact**: Policy enforcement performance
-- **Effectiveness Metrics**: Policy effectiveness measurement
-
-### Security Insights
-
-*Security insights and recommendations*
-
-- **Security Posture**: Overall security status
-- **Risk Analysis**: Security risk assessment
-- **Threat Detection**: Potential security threats
-- **Recommendations**: Security improvement suggestions
-- **Compliance Gaps**: Compliance gap identification
-
-## Advanced Policy Features
-
-### Conditional Policies
-
-*Advanced conditional policy configuration*
-
-**Conditional Features:**
-- **Time-based Conditions**: Time-sensitive permissions
-- **Location-based Conditions**: Geographic restrictions
-- **Context-based Conditions**: Situational permissions
-- **Dynamic Conditions**: Runtime condition evaluation
-- **Complex Logic**: Multi-condition policy rules
-
-### Policy Automation
-
-*Automated policy management and enforcement*
-
-- **Auto-assignment Rules**: Automatic policy assignment
-- **Lifecycle Automation**: Automated policy lifecycle
-- **Violation Response**: Automated violation handling
-- **Compliance Automation**: Automated compliance checks
-- **Integration Automation**: External system integration
-
-## Policy Integration
-
-### SSO Integration
-
-*Single Sign-On integration for policy enforcement*
-
-**SSO Features:**
-- **Identity Provider Integration**: Connect with SSO providers
-- **Role Mapping**: Map SSO roles to policies
-- **Attribute-based Access**: Use SSO attributes for policies
-- **Session Management**: SSO session policy enforcement
-- **Multi-provider Support**: Support multiple SSO providers
-
-### External System Integration
-
-*Integration with external security and management systems*
-
-- **LDAP Integration**: Active Directory integration
-- **RBAC Systems**: Role-based access control systems
-- **Security Tools**: Integration with security platforms
-- **Audit Systems**: External audit system integration
-- **Compliance Tools**: Regulatory compliance tools
-
-## Policy Reporting
-
-### Access Reports
-
-*Comprehensive access and permission reporting*
-
-**Report Types:**
-- **User Access Reports**: Individual user access summaries
-- **Team Access Reports**: Team permission reports
-- **Resource Access Reports**: Resource usage reports
-- **Violation Reports**: Policy violation summaries
-- **Compliance Reports**: Regulatory compliance reports
-
-### Audit Reports
-
-*Detailed audit reporting for compliance and security*
-
-- **Activity Logs**: Complete user activity logs
-- **Change Logs**: Policy and permission changes
-- **Access Logs**: Resource access tracking
-- **Security Events**: Security-related event logs
-- **Compliance Logs**: Compliance-related activities
-
-## Policy Governance
-
-### Approval Workflows
-
-*Workflow management for policy changes and assignments*
-
-**Workflow Features:**
-- **Multi-stage Approval**: Multi-level approval processes
-- **Role-based Approval**: Approval based on roles
-- **Conditional Approval**: Context-sensitive approvals
-- **Automated Approval**: Rule-based automatic approval
-- **Escalation Procedures**: Approval escalation handling
-
-### Policy Reviews
-
-*Regular policy review and maintenance processes*
-
-- **Scheduled Reviews**: Automated review scheduling
-- **Review Assignments**: Assign reviewers to policies
-- **Review Tracking**: Track review progress
-- **Review Reports**: Review outcome reporting
-- **Continuous Monitoring**: Ongoing policy monitoring
-
-## Emergency Procedures
-
-### Emergency Access
-
-*Emergency access procedures and break-glass policies*
-
-**Emergency Features:**
-- **Break-glass Access**: Emergency override procedures
-- **Emergency Contacts**: Emergency response contacts
-- **Incident Response**: Security incident procedures
-- **Access Restoration**: Post-incident access restoration
-- **Audit Requirements**: Emergency access auditing
-
-### Policy Suspension
-
-*Emergency policy suspension and override capabilities*
-
-- **Temporary Suspension**: Temporarily disable policies
-- **Override Procedures**: Emergency policy overrides
-- **Incident Management**: Policy-related incident handling
-- **Recovery Procedures**: Policy recovery processes
-- **Documentation Requirements**: Emergency action documentation
+![Complex Policy](../screenshots/policies-form-complex.png){.light-only}
+![Complex Policy](../screenshots/dark/policies-form-complex.png){.dark-only}

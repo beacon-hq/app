@@ -62,6 +62,7 @@ export const PolicyValueEditor = function ({
                     setValue([e.target.value]);
                 }}
                 disabled={disabled}
+                data-dusk={`input-policy-value-${id}`}
             />
         </>
     );

@@ -39,42 +39,53 @@ const TeamSelect = ({ teams }: { teams: TeamCollection }) => {
 
     if (teams.length > 1) {
         return (
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button type="button" variant="secondary" className="flex flex-row items-center gap-0.5">
-                        {uniqueOrganizationCount > 1 && (
-                            <>
-                                {auth.currentTeam.organization?.name}
-                                <ChevronRight />
-                            </>
-                        )}
-                        <div className="flex aspect-square size-8 items-center justify-center rounded-lg">
-                            <IconColor color={auth.currentTeam.color} icon={auth.currentTeam.icon} />
-                        </div>
-                        <div className="flex flex-col gap-0.5 leading-none">{auth.currentTeam.name}</div>
-                        <ChevronsUpDown className="ml-4" />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width]" align="start">
-                    {teams
-                        .filter((team) => team.id != selectedTeam.id)
-                        .map((team) => (
-                            <DropdownMenuItem key={team.id} onSelect={() => chooseTeam(team)}>
-                                {uniqueOrganizationCount > 1 && (
-                                    <>
-                                        {team.organization?.name}
-                                        <ChevronRight />
-                                    </>
-                                )}
-                                <div className="flex aspect-square size-8 items-center justify-center rounded-lg">
-                                    <IconColor color={team.color} icon={team.icon} />
-                                </div>
-                                <div className="flex flex-col gap-0.5 leading-none">{team.name}</div>
-                                {team.id === selectedTeam.id && <Check className="ml-auto" />}
-                            </DropdownMenuItem>
-                        ))}
-                </DropdownMenuContent>
-            </DropdownMenu>
+            <div data-dusk="team-select">
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            className="flex flex-row items-center gap-0.5"
+                            data-dusk="select-team"
+                        >
+                            {uniqueOrganizationCount > 1 && (
+                                <>
+                                    {auth.currentTeam.organization?.name}
+                                    <ChevronRight />
+                                </>
+                            )}
+                            <div className="flex aspect-square size-8 items-center justify-center rounded-lg">
+                                <IconColor color={auth.currentTeam.color} icon={auth.currentTeam.icon} />
+                            </div>
+                            <div className="flex flex-col gap-0.5 leading-none">{auth.currentTeam.name}</div>
+                            <ChevronsUpDown className="ml-4" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width]" align="start">
+                        {teams
+                            .filter((team) => team.id != selectedTeam.id)
+                            .map((team, idx) => (
+                                <DropdownMenuItem
+                                    key={team.id}
+                                    onSelect={() => chooseTeam(team)}
+                                    data-dusk={`select-option-team-${idx}`}
+                                >
+                                    {uniqueOrganizationCount > 1 && (
+                                        <>
+                                            {team.organization?.name}
+                                            <ChevronRight />
+                                        </>
+                                    )}
+                                    <div className="flex aspect-square size-8 items-center justify-center rounded-lg">
+                                        <IconColor color={team.color} icon={team.icon} />
+                                    </div>
+                                    <div className="flex flex-col gap-0.5 leading-none">{team.name}</div>
+                                    {team.id === selectedTeam.id && <Check className="ml-auto" />}
+                                </DropdownMenuItem>
+                            ))}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
         );
     }
 };

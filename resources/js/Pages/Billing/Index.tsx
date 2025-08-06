@@ -88,8 +88,6 @@ export default function Index({
         ends_at: string;
     };
 }) {
-    console.log(subscriptionStatus);
-
     let currentUsage = 0;
     if (usage.evaluations.total > subscription.plan.entitlements.evaluations) {
         currentUsage = Math.ceil((subscription.plan.entitlements.evaluations / usage.evaluations.total) * 100);

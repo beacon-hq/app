@@ -12,7 +12,8 @@ Feature Types allow you to group Feature Flags by their intended functionality.
 
 ## Overview
 
-![Feature Types Overview](../screenshots/feature-types-initial.png)
+![Feature Types Overview](../screenshots/feature-types-initial.png){.light-only}
+![Feature Types Overview](../screenshots/dark/feature-types-initial.png){.dark-only}
 
 Feature Types provide a way to categorize feature flags based on their purpose or behavior. Each
 feature type has its own name, icon, and color to make it easier to identify what the intended purpose
@@ -32,7 +33,8 @@ By default, Beacon provides the following four Feature Types:
 
 ## Creating Feature Types
 
-![New Feature Type Form](../screenshots/feature-types-form-create.png)
+![New Feature Type Form](../screenshots/feature-types-form-create.png){.light-only}
+![New Feature Type Form](../screenshots/dark/feature-types-form-create.png){.dark-only}
 
 To create a new Feature Type, click the <kbd><CirclePlus /> New Feature Type</kbd> button.
 
@@ -46,10 +48,12 @@ To create a new Feature Type, click the <kbd><CirclePlus /> New Feature Type</kb
 
 After creating a new feature type, it will show up in the Feature Type list:
 
-![Feature Type Table](../screenshots/feature-types-after-create.png)
+![Feature Type Table](../screenshots/feature-types-after-create.png){.light-only}
+![Feature Type Table](../screenshots/dark/feature-types-after-create.png){.dark-only}
 
 ## Editing Feature Types
 
 To edit a feature type, click the <Pencil /> button for the Feature Type. 
 
-![Edit Feature Type Form](../screenshots/feature-types-edit.png)
+![Edit Feature Type Form](../screenshots/feature-types-edit.png){.light-only}
+![Edit Feature Type Form](../screenshots/dark/feature-types-edit.png){.dark-only}

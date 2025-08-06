@@ -1,4 +1,4 @@
-import { Policy, PolicyCollection } from '@/Application';
+import { Policy, PolicyCollection, PolicyDefinitionCollection, PolicyDefinitionType } from '@/Application';
 import InputError from '@/Components/InputError';
 import { PolicyDefinitionForm } from '@/Components/PolicyDefinitionForm';
 import { Button } from '@/Components/ui/button';
@@ -7,6 +7,7 @@ import { Label } from '@/Components/ui/label';
 import { Textarea } from '@/Components/ui/textarea';
 import { usePolicyStore } from '@/stores/policyStore';
 import { FormErrors } from '@/types/global';
+import { PlusCircle } from 'lucide-react';
 import React, { FormEvent } from 'react';
 
 export function Form({
@@ -34,7 +35,7 @@ export function Form({
                     <Input
                         id="name"
                         type="text"
-                        value={policy?.name as string}
+                        value={policy?.name ?? ''}
                         autoComplete="off"
                         onChange={(e) => updatePolicy({ ...policy, name: e.target.value } as Policy)}
                         data-dusk="input-policy-name"
@@ -53,12 +54,47 @@ export function Form({
                 />
                 <InputError message={errors?.description} />
             </div>
-            {policy?.id !== undefined && <PolicyDefinitionForm policies={policies} />}
+            {policy !== undefined &&
+                policy?.id !== undefined &&
+                policy.definition !== undefined &&
+                (policy.definition as PolicyDefinitionCollection).length > 0 && (
+                    <PolicyDefinitionForm policies={policies} />
+                )}
+            {(policy === undefined || (policy?.definition?.length ?? 0) === 0) && (
+                <Button
+                    variant="outline"
+                    className="mx-auto block"
+                    type="button"
+                    onClick={() => {
+                        updatePolicy({
+                            ...policy,
+                            definition: [
+                                ...(policy?.definition ?? []),
+                                {
+                                    type: PolicyDefinitionType.EXPRESSION,
+                                    subject: '',
+                                    operator: null,
+                                    values: [],
+                                },
+                            ] as PolicyDefinitionCollection,
+                        } as Policy);
+                    }}
+                    data-dusk="button-policies-add-conditions"
+                >
+                    <PlusCircle className="inline-block mr-2" /> Add Conditions
+                </Button>
+            )}
             <div className="flex justify-end">
                 <Button variant="link" className="mr-2" type="button" onClick={onCancel}>
                     Cancel
                 </Button>
-                <Button type="submit" className="w-24" disabled={processing} onClick={submit} data-dusk="button-policy-submit">
+                <Button
+                    type="submit"
+                    className="w-24"
+                    disabled={processing}
+                    onClick={submit}
+                    data-dusk="button-policy-submit"
+                >
                     {policy?.id ? 'Update' : 'Create'}
                 </Button>
             </div>

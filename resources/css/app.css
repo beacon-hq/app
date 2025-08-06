@@ -10,6 +10,7 @@
 
 /*noinspection CssInvalidAtRule*/
 @source inline('{bg,stroke,border}-{red,orange,yellow,lime,green,emerald,cyan,sky,blue,indigo,purple,fuchsia,info,success,warning,error}-400');
+/*noinspection CssInvalidAtRule*/
 @source inline('inline-block');
 
 /*noinspection CssInvalidAtRule*/
@@ -115,7 +116,7 @@ svg#get-started.animate #laravel {
     .dark {
         --background: hsl(240 10% 3.9%);
         --foreground: hsl(0 0% 98%);
-        --card: hsl(240 10% 3.9%);
+        --card: var(--color-neutral-900);
         --card-foreground: hsl(0 0% 98%);
         --popover: hsl(240 10% 3.9%);
         --popover-foreground: hsl(0 0% 98%);
@@ -1505,6 +1506,7 @@ div.react-colorful {
     --border-radius-sm: calc(var(--radius) - 4px);
     --color-background: var(--background);
     --color-foreground: var(--foreground);
+    --color-card: var(--card);
     --color-card-DEFAULT: var(--card);
     --color-card-foreground: var(--card-foreground);
     --color-popover: var(--popover);

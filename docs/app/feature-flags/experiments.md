@@ -4,7 +4,8 @@ import {AlignHorizontalSpaceAround} from 'lucide-vue-next';
 </script>
 # Multi-Variant Experiments
 
-![Feature Flag Variant Tab](../../screenshots/feature-flags-variants-tab.png)
+![Feature Flag Variant Tab](../../screenshots/feature-flags-variants-tab.png){.light-only}
+![Feature Flag Variant Tab](../../screenshots/dark/feature-flags-variants-tab.png){.dark-only}
 
 Variants allow you to define different values for a feature flag, enabling A/B testing or feature toggling with multiple options.
 
@@ -16,4 +17,5 @@ To evenly distribute variants, you can click the <kbd><AlignHorizontalSpaceAroun
 
 Similar to the [Rollout configuration](#rollout), you can specify the Stickiness behavior, which determines how the variant behaves for a user across multiple requests.
 
-![Feature Flag with Variant Configuration](../../screenshots/feature-flags-variants-configured.png)
+![Feature Flag with Variant Configuration](../../screenshots/feature-flags-variants-configured.png){.light-only}
+![Feature Flag with Variant Configuration](../../screenshots/dark/feature-flags-variants-configured.png){.dark-only}

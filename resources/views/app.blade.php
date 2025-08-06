@@ -52,7 +52,7 @@
             </style>
         @endif
     </head>
-    <body class="font-sans antialiased bg-background">
+    <body data-dusk="body" class="font-sans antialiased bg-background">
         @inertia
     </body>
 </html>

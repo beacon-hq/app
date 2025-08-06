@@ -11,13 +11,15 @@ Each organization can have multiple [Teams](./teams), and a user can belong to m
 
 ## Overview
 
-![Organizations Overview](../../screenshots/organizations-initial.png)
+![Organizations Overview](../../screenshots/organizations-initial.png){.light-only}
+![Organizations Overview](../../screenshots/dark/organizations-initial.png){.dark-only}
 
 ## Creating Organizations
 
 To create a new Organization, click the <kbd><CirclePlus /> New Organization</kbd> button.
 
-![New Organization Form](../../screenshots/organizations-form-create.png)
+![New Organization Form](../../screenshots/organizations-form-create.png){.light-only}
+![New Organization Form](../../screenshots/dark/organizations-form-create.png){.dark-only}
 
 **Form Fields:**
 
@@ -28,23 +30,27 @@ To create a new Organization, click the <kbd><CirclePlus /> New Organization</kb
 
 After creating a new organization, it will show up in the Organization list:
 
-![Organization Card](../../screenshots/organizations-list.png)
+![Organization Card](../../screenshots/organizations-list.png){.light-only}
+![Organization Card](../../screenshots/dark/organizations-list.png){.dark-only}
 
 ## Editing Organizations
 
 To edit an organization, click the card in the list.
 
-![Edit Organization Form](../../screenshots/organizations-edit.png)
+![Edit Organization Form](../../screenshots/organizations-edit.png){.light-only}
+![Edit Organization Form](../../screenshots/dark/organizations-edit.png){.dark-only}
 
 ## Deleting Organizations
 
 To delete an organization, click the <kbd>Delete Organization</kbd> button at the bottom of the edit form.
 
-![Delete Organization](../../screenshots/organizations-delete.png)
+![Delete Organization](../../screenshots/organizations-delete.png){.light-only}
+![Delete Organization](../../screenshots/dark/organizations-delete.png){.dark-only}
 
 You will be prompted to confirm the deletion. This action is irreversible and will delete all associated data.
 
-![Delete Organization Confirmation](../../screenshots/organizations-confirm-delete.png)
+![Delete Organization Confirmation](../../screenshots/organizations-confirm-delete.png){.light-only}
+![Delete Organization Confirmation](../../screenshots/dark/organizations-confirm-delete.png){.dark-only}
 
 > [!NOTE]
 > Users with access to another organization will still have access, while those that do not will not have access until

@@ -108,6 +108,9 @@ graph LR
 
 The context value is a date/time string that will be parsed and compared against the current time. The supported operators are:
 
+
+#### Operators
+
 - **less than or equal** (`<=`): Feature is active if current time is before or equal to the specified date/time
 - **greater than or equal** (`>=`): Feature is active if current time is after or equal to the specified date/time (default behavior)
 

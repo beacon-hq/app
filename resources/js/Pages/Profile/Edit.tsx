@@ -1,6 +1,7 @@
 import DeleteUserForm from './Partials/DeleteUserForm';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
+import { Card, CardContent } from '@/Components/ui/card';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import ManageTwoFactorForm from '@/Pages/Profile/Partials/ManageTwoFactorForm';
 import { PageProps } from '@/types';
@@ -13,21 +14,29 @@ export default function Edit({ mustVerifyEmail, status }: PageProps<{ mustVerify
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                    <div className="bg-white p-4 shadow-sm sm:rounded-lg sm:p-8 dark:bg-gray-800 w-full" data-dusk="section-profile-information">
-                        <UpdateProfileInformationForm mustVerifyEmail={mustVerifyEmail} status={status} />
-                    </div>
+                    <Card data-dusk="section-profile-information">
+                        <CardContent>
+                            <UpdateProfileInformationForm mustVerifyEmail={mustVerifyEmail} status={status} />
+                        </CardContent>
+                    </Card>
 
-                    <div className="bg-white p-4 shadow-sm sm:rounded-lg sm:p-8 dark:bg-gray-800 w-full" data-dusk="section-update-password">
-                        <UpdatePasswordForm />
-                    </div>
+                    <Card data-dusk="section-update-password">
+                        <CardContent>
+                            <UpdatePasswordForm />
+                        </CardContent>
+                    </Card>
 
-                    <div className="bg-white p-4 shadow-sm sm:rounded-lg sm:p-8 dark:bg-gray-800 w-full" data-dusk="section-two-factor">
-                        <ManageTwoFactorForm />
-                    </div>
+                    <Card data-dusk="section-two-factor">
+                        <CardContent>
+                            <ManageTwoFactorForm />
+                        </CardContent>
+                    </Card>
 
-                    <div className="bg-white p-4 shadow-sm sm:rounded-lg sm:p-8 dark:bg-gray-800 w-full" data-dusk="section-delete-user">
-                        <DeleteUserForm />
-                    </div>
+                    <Card data-dusk="section-delete-user">
+                        <CardContent>
+                            <DeleteUserForm />
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
         </Authenticated>

@@ -18,6 +18,23 @@ code {
     display: inline-block;
 }
 
+html.dark .light-only {
+    display: none !important;
+}
+
+html:not(.dark) .dark-only {
+    display: none !important;
+}
+
+.medium-zoom-overlay {
+    backdrop-filter: blur(5rem);
+}
+
+.medium-zoom-overlay,
+.medium-zoom-image--opened {
+    z-index: 999;
+}
+
 kbd {
     display: inline-block;
     background-color: var(--vp-c-gray-3);
@@ -39,7 +56,8 @@ svg.lucide {
 }
 
 .main img {
-    cursor: zoom-in;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .mermaid rect, .mermaid polygon {

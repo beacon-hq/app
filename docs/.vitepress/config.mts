@@ -1,7 +1,8 @@
 import tailwindcss from '@tailwindcss/vite';
-// @ts-ignore
-import markdownItFigureCaption from 'markdown-it-figure-caption';
+// import markdownItFigureCaption from 'markdown-it-figure-caption';
 import deadFile from 'vite-plugin-deadfile';
+// @ts-ignore
+import lightbox from 'vitepress-plugin-lightbox';
 import { withMermaid } from 'vitepress-plugin-mermaid';
 
 const BASE_PATH = '/docs/';
@@ -40,7 +41,6 @@ export default withMermaid({
 
         ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
         ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
-        ['script', { src: 'https://kit.fontawesome.com/a26c7e9148.js', crossorigin: 'anonymous' }],
         [
             'link',
             {
@@ -77,10 +77,10 @@ export default withMermaid({
                     {
                         text: 'Basics',
                         collapsed: true,
-                        link: '/app/basics/login',
+                        link: '/app/basics/registration',
                         items: [
-                            { text: 'Logging In', link: '/app/basics/login' },
                             { text: 'Creating an Account', link: '/app/basics/registration' },
+                            { text: 'Logging In', link: '/app/basics/login' },
                             { text: 'Changing Teams', link: '/app/basics/teams' },
                         ],
                     },
@@ -158,8 +158,11 @@ export default withMermaid({
             dark: 'monokai',
             light: 'github-light',
         },
+        image: {
+            lazyLoading: true,
+        },
         config: (md) => {
-            md.use(markdownItFigureCaption);
+            md.use(lightbox, {});
         },
     },
     vue: {

@@ -83,8 +83,8 @@ Beacon automatically wraps the [scope](https://laravel.com/docs/pennant#scope) t
 
 The additional context always includes:
 
-- Application Name (`app.name`)
-- Environment (`app.env`)
+- Application Name (`BEACON_APP_NAME` or `APP_NAME`)
+- Environment (`BEACON_APP_ENV` or `APP_ENV`)
 
 In addition, the following are included if available:
 

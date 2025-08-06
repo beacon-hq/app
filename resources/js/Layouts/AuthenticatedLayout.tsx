@@ -48,8 +48,6 @@ export default function Authenticated({
         }
     }
 
-    console.log(window.location.hostname);
-
     return (
         <SidebarWrapper>
             <Sidebar expanded={open} auth={auth} />

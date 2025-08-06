@@ -66,12 +66,12 @@ export default function UpdateProfileInformation({
     return (
         <section className={cn('flex flex-row gap-8', className)}>
             <header className="w-1/4">
-                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Profile Settings</h2>
+                <h2 className="text-lg font-medium text-primary mt-8">Profile Settings</h2>
 
-                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Update your account's profile settings.</p>
+                <p className="mt-1 text-sm text-primary">Update your account's profile settings.</p>
             </header>
 
-            <form onSubmit={submit} className="mt-6 space-y-6 w-3/4 grow">
+            <form onSubmit={submit} className="mt-8 space-y-6 w-3/4 grow">
                 <div className="flex gap-8 items-center">
                     <Avatar className="rounded-lg w-1/4 h-1/4">
                         <AvatarImage
@@ -226,7 +226,9 @@ export default function UpdateProfileInformation({
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <Button disabled={processing} data-dusk="button-save-profile">Save</Button>
+                    <Button disabled={processing} data-dusk="button-save-profile">
+                        Save
+                    </Button>
                 </div>
             </form>
         </section>

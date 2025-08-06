@@ -111,8 +111,6 @@ export default function Edit({
         variants: { data: { value: string; count: number; percentage: number; fill: string }[]; total: number };
     };
 } & { featureFlag?: FeatureFlag }) {
-    console.log(metrics);
-
     // Initialize the feature flag store
     const { featureFlag, setFeatureFlag, addStatus } = useFeatureFlagStore();
 
@@ -355,7 +353,7 @@ export default function Edit({
                                     </CardTitle>
                                     <p className="text-xs text-neutral-500">{featureFlag?.description}</p>
                                 </CardHeader>
-                                <DefinitionList>
+                                <DefinitionList className="text-card-foreground">
                                     <Definition>
                                         <DefinitionTerm>Type</DefinitionTerm>
                                         <DefinitionDescription>{featureFlag?.feature_type?.name}</DefinitionDescription>

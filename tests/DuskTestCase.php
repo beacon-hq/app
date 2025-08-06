@@ -35,6 +35,8 @@ abstract class DuskTestCase extends BaseTestCase
             $this->shouldStartMaximized() ? '--start-maximized' : '--window-size=1920,1080',
             '--disable-search-engine-choice-screen',
             '--disable-smooth-scrolling',
+            '--disable-font-subpixel-positioning',
+            '--disable-lcd-text',
             '--user-agent="Laravel/Dusk"',
         ])->unless($this->hasHeadlessDisabled(), function (Collection $items) {
             return $items->merge([

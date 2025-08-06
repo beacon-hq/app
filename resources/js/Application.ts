@@ -48,7 +48,7 @@ export enum Color {
 export type Environment = {
     id?: string;
     name?: string;
-    description?: string | null;
+    description?: string;
     color: Color | string;
     last_seen_at: string | null;
 };

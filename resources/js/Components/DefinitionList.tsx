@@ -10,11 +10,11 @@ export const Definition = function ({ children, className }: PropsWithChildren &
 };
 
 export const DefinitionTerm = function ({ children, className }: PropsWithChildren & { className?: string }) {
-    return <dt className={cn('text-sm text-gray-500 font-bold', className)}>{children}</dt>;
+    return <dt className={cn('text-sm text-primary font-bold', className)}>{children}</dt>;
 };
 
 export const DefinitionDescription = function ({ children, className }: PropsWithChildren & { className?: string }) {
-    return <dd className={cn('mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2', className)}>{children}</dd>;
+    return <dd className={cn('mt-1 text-sm text-primary sm:mt-0 sm:col-span-2', className)}>{children}</dd>;
 };
 
 export default DefinitionList;

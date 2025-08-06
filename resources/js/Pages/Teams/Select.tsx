@@ -16,10 +16,10 @@ export default function Select({ teams }: PageProps) {
         return acc;
     }, [] as string[]).length;
     return (
-        <Guest className="w-fit min-w-1/2 mx-auto">
+        <Guest className="w-full min-w-1/2 mx-auto">
             <Head title="Choose a Team" />
 
-            <div className="py-6 w-full">
+            <div className="py-6 w-full xl:w-1/2">
                 <div className="mx-auto w-full space-y-6 sm:px-6 lg:px-8">
                     <div className="px-6 lg:px-0">
                         <h1 className="text-center text-2xl font-bold mb-4">Choose a Team</h1>
@@ -44,7 +44,7 @@ export default function Select({ teams }: PageProps) {
                                                     {team.name}
                                                 </div>
                                                 <div className="grow-0">
-                                                    {uniqueOrganizationCount <= 1 && <ChevronRight />}
+                                                    <ChevronRight />
                                                 </div>
                                             </div>
                                         </div>

@@ -6,14 +6,16 @@ import { CirclePlus } from 'lucide-vue-next';
 
 The Feature Flags section is the core functionality of Beacon, allowing users to manage, monitor, and configure feature flags across their applications and environments.
 
-![Feature Flags Overview](../screenshots/feature-flags-initial.png)
+![Feature Flags Overview](../screenshots/feature-flags-initial.png){.light-only}
+![Feature Flags Overview](../screenshots/dark/feature-flags-initial.png){.dark-only}
 *Main feature flags listing page with no feature flags defined*
 
 ## Feature Flags Listing
 
 The main interface displays feature flags in a sortable, filterable data table:
 
-![Feature Flags Table](../screenshots/feature-flags-list.png)
+![Feature Flags Table](../screenshots/feature-flags-list.png){.light-only}
+![Feature Flags Table](../screenshots/dark/feature-flags-list.png){.dark-only}
 
 **Table Columns:**
 - **Flag Name**: Display name with feature type icon and global status indicator
@@ -35,7 +37,8 @@ The main interface displays feature flags in a sortable, filterable data table:
 
 Clicking the <kbd><CirclePlus /> New Feature Flag</kbd> button opens a side sheet for flag creation:
 
-![New Feature Flag Form](../screenshots/feature-flags-form-create.png)
+![New Feature Flag Form](../screenshots/feature-flags-form-create.png){.light-only}
+![New Feature Flag Form](../screenshots/dark/feature-flags-form-create.png){.dark-only}
 
 **Form Fields:**
 - **Name**: Unique identifier for the flag
@@ -48,14 +51,16 @@ Clicking the <kbd><CirclePlus /> New Feature Flag</kbd> button opens a side shee
 
 Clicking on a Feature Flag opens a detail view:
 
-![Edit Feature Flag](../screenshots/feature-flags-edit-overview.png)
+![Edit Feature Flag](../screenshots/feature-flags-edit-overview.png){.light-only}
+![Edit Feature Flag](../screenshots/dark/feature-flags-edit-overview.png){.dark-only}
 *Feature Flag Overview*
 
 ### Editing Feature Flags
 
 Clicking the <kbd>Edit</kbd> tab will let you edit the flags basic details:
 
-![Feature Flag Editing](../screenshots/feature-flags-edit-tab.png)
+![Feature Flag Editing](../screenshots/feature-flags-edit-tab.png){.light-only}
+![Feature Flag Editing](../screenshots/dark/feature-flags-edit-tab.png){.dark-only}
 *Feature Flag Edit Form*
 
 Here you can set the global status, change the Feature Flag Type, edit the description,
@@ -63,7 +68,8 @@ and manage tags.
 
 ### Configuring Policies
 
-![Feature Flag Configuration](../screenshots/feature-flags-configuration-tab.png)
+![Feature Flag Configuration](../screenshots/feature-flags-configuration-tab.png){.light-only}
+![Feature Flag Configuration](../screenshots/dark/feature-flags-configuration-tab.png){.dark-only}
 
 A flag's Configuration defines whether a feature flag is active or not. Each Application/Environment must have
 its own policy configuration, otherwise the flag will not be active in that context.
@@ -104,7 +110,8 @@ Similar to the [Rollout configuration](#rollout), you can specify the Stickiness
 
 ### Metrics
 
-![Feature Flag Usage Metrics](../screenshots/feature-flags-metrics-tab.png)
+![Feature Flag Usage Metrics](../screenshots/feature-flags-metrics-tab.png){.light-only}
+![Feature Flag Usage Metrics](../screenshots/dark/feature-flags-metrics-tab.png){.dark-only}
 *Feature Flag Metrics*
 
 The Metrics tab provides insights into the number of evaluations for a given flag,

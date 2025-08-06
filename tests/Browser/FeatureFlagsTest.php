@@ -156,6 +156,7 @@ it('can create a basic configuration', function () {
         $browser
             ->click('@button-add-policy')
             ->waitForText('Configuration')
+            ->pause(500)
             ->screenshotElement('@main', 'feature-flags-configuration-tab');
 
         $browser
@@ -189,7 +190,6 @@ it('can configure feature flag rollouts and variants', function () {
 
         $browser
             ->loginAs($user)
-            ->addCookie('hide-menu-bar', 1)
             ->visitRoute('feature-flags.index')
             ->waitForText('Feature Flags');
 
@@ -235,8 +235,7 @@ it('can configure feature flag rollouts and variants', function () {
             ->click('@select-option-rollout-strategy-sticky')
             ->pause(500)
             ->type('@input-multi-input-value', 'user.id')
-            ->pause(500)
-            ->click('@button-multi-input-add-value')
+            ->keys('@input-multi-input-value', '{enter}')
             ->pause(500)
             ->screenshotElement('@card-feature-flag-status', 'feature-flags-rollout-configured');
 

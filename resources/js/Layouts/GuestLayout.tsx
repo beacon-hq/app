@@ -13,14 +13,14 @@ export default function Guest({ className, children }: PropsWithChildren & { cla
             {document.cookie.indexOf('hide-menu-bar') === -1 && <NavMenu showLogo />}
             <main
                 className={cn(
-                    'flex grow flex-col items-center pt-6 sm:justify-center sm:pt-0 dark:bg-gray-900',
+                    'flex grow flex-col items-center pt-6 sm:justify-center sm:pt-0 text-primary dark:text-secondary bg-background dark:bg-secondary',
                     className,
                 )}
                 data-dusk="main"
             >
                 <div>
                     <Link href="/">
-                        <ApplicationLogo className="h-48 w-96 fill-current text-gray-500" />
+                        <ApplicationLogo className="h-48 w-96 mt-12 fill-current text-gray-500" />
                     </Link>
                 </div>
 

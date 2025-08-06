@@ -30,7 +30,7 @@ export default function Index({ errors }: { errors: FormErrors }) {
                 <div className="py-6">
                     <div className="mx-auto w-full space-y-6 sm:px-6 lg:px-8">
                         <div className="prose px-6 lg:px-0">
-                            <h1 className="text-center">Verification</h1>
+                            <h1 className="text-center text-primary">Verification</h1>
                             <Card className="w-96 mx-auto p-4">
                                 <CardContent className="flex flex-col justify-center">
                                     <div className="not-prose flex flex-col gap-4 mt-4 w-full">

@@ -9,7 +9,8 @@ filtering, and management across the application.
 
 ## Overview
 
-![Tags Overview](../screenshots/tags-initial.png)
+![Tags Overview](../screenshots/tags-initial.png){.light-only}
+![Tags Overview](../screenshots/dark/tags-initial.png){.dark-only}
 
 Tags are labels that can be attached to feature flags to provide additional context, organization, and filtering
 capabilities. They help teams categorize flags by purpose, team ownership, release cycles, or any other meaningful
@@ -23,7 +24,8 @@ classification system.
 
 ## Creating a Tag
 
-![New Tag Form](../screenshots/tags-form-create.png)
+![New Tag Form](../screenshots/tags-form-create.png){.light-only}
+![New Tag Form](../screenshots/dark/tags-form-create.png){.dark-only}
 
 To create a new Tag, click the <kbd><CirclePlus /> New Tag</kbd> button.
 
@@ -34,10 +36,12 @@ To create a new Tag, click the <kbd><CirclePlus /> New Tag</kbd> button.
 
 After creating a new tag, it will show up in the Tags list:
 
-![Tag Table](../screenshots/tags-after-create.png)
+![Tag Table](../screenshots/tags-after-create.png){.light-only}
+![Tag Table](../screenshots/dark/tags-after-create.png){.dark-only}
 
 ## Editing Tags
 
 To edit a tag, click the <Pencil /> edit button for the Tag.
 
-![Edit Tag Form](../screenshots/tags-edit.png)
+![Edit Tag Form](../screenshots/tags-edit.png){.light-only}
+![Edit Tag Form](../screenshots/dark/tags-edit.png){.dark-only}

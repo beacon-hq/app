@@ -25,7 +25,6 @@ export default function ManageTwoFactorForm({ className = '' }: { className?: st
             setLoadingSecrets(false);
         });
 
-        console.log(errors);
         if (errors.password === undefined) {
             await Promise.all([
                 axios
@@ -41,14 +40,12 @@ export default function ManageTwoFactorForm({ className = '' }: { className?: st
     };
     return (
         <section className={cn('flex flex-row gap-8', className)}>
-            <header className="w-1/4">
-                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Authentication Code</h2>
+            <header className="w-1/4 mt-8">
+                <h2 className="text-lg font-medium text-primary">Authentication Code</h2>
 
-                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                    Need to setup a new device with two factor authentication?
-                </p>
+                <p className="mt-1 text-sm  text-primary">Need to setup a new device with two factor authentication?</p>
             </header>
-            <div className="mt-6 space-y-6 w-3/4 grow">
+            <div className="mt-8 space-y-6 w-3/4 grow">
                 <div className="flex flex-col items-start justify-start w-full">
                     {(qrCode === null || secretKey === null) && !loadingSecrets && (
                         <div className="flex flex-col gap-4">

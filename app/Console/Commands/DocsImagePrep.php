@@ -15,7 +15,7 @@ class DocsImagePrep extends Command
      *
      * @var string
      */
-    protected $signature = 'docs:image-prep {matches?}';
+    protected $signature = 'docs:image-prep {matches?} {--dark}';
 
     /**
      * The console command description.
@@ -29,8 +29,13 @@ class DocsImagePrep extends Command
      */
     public function handle()
     {
-        if (!file_exists(base_path('docs/screenshots'))) {
-            mkdir(base_path('docs/screenshots'), 0755, true);
+        $path = base_path('docs/screenshots');
+        if ($this->option('dark')) {
+            $path = base_path('docs/screenshots/dark');
+        }
+
+        if (!file_exists($path)) {
+            mkdir($path, 0755, true);
         }
 
         foreach (glob(\base_path('/tests/Browser/screenshots/*.png')) as $filename) {
@@ -42,7 +47,7 @@ class DocsImagePrep extends Command
                 continue;
             }
 
-            $this->components->task('Preparing ' . basename($filename), function () use ($filename) {
+            $this->components->task('Preparing ' . basename($filename), function () use ($path, $filename) {
                 $image = new Imagick($filename);
                 $image->setImageDepth(8);
                 $image->setType(Imagick::IMGTYPE_TRUECOLORMATTE);
@@ -53,7 +58,7 @@ class DocsImagePrep extends Command
 
                 // Add drop shadow
                 $clone = clone $image;
-                $clone->setImageBackgroundColor(new ImagickPixel('black'));
+                $clone->setImageBackgroundColor(new ImagickPixel($this->option('dark') ? 'black' : 'white'));
                 $clone->shadowImage(25, 3, 5, 5);
                 $clone->compositeImage($image, Imagick::COMPOSITE_OVER, 0, 0);
                 $image = $clone;
@@ -61,7 +66,7 @@ class DocsImagePrep extends Command
                 $image->borderImage(new ImagickPixel('transparent'), 30, 30);
 
                 // Save to docs/screenshots
-                $targetPath = base_path('docs/screenshots/' . basename($filename));
+                $targetPath = $path . \DIRECTORY_SEPARATOR . basename($filename);
                 $image->writeImage($targetPath);
                 $image->clear();
             });

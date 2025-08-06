@@ -173,9 +173,62 @@ it('is prompted to choose an organization and team on login', function () {
         $browser->loginAs($user);
 
         $browser
+            ->resize(600, 730)
             ->addCookie('hide-menu-bar', 1)
             ->visitRoute('teams.select')
-            ->pause(10000)
-            ->screenshotElement('@main', 'organizations-select-team');
+            ->pause(500)
+            ->screenshotElement('@main', 'login-select-team');
+    });
+});
+
+it('can switch organization and team', function () {
+    $user = createBrowserUser();
+
+    $this->browse(function (Browser $browser) use ($user) {
+        $browser->resize(3024 / 2, 600);
+
+        $browser
+            ->loginAs($user)
+            ->visitRoute('organizations.index')
+            ->waitForText('Organizations');
+
+        $browser
+            ->resize(3024 / 2, 700)
+            ->click('@button-new-organization')
+            ->waitForText('New Organization');
+
+        $browser
+            ->pause(1000)
+            ->refresh()
+            ->pause(500)
+            ->click('@button-new-organization')
+            ->pause(500)
+            ->type('@input-organization-name', 'Demo Organization')
+            ->type('@input-team-name', 'Demo Team')
+            ->within(new IconPicker(), function (Browser $browser) {
+                $browser->selectIcon('flag', 0);
+            })
+            ->within(new ColorPicker(), function (Browser $browser) {
+                $browser->selectColor('blue');
+            })
+            ->click('@button-organization-submit')
+            ->pause(1000)
+            ->visitRoute('organizations.index')
+            ->waitForText('Demo Organization');
+
+        $browser
+            ->visitRoute('dashboard')
+            ->pause(500)
+            ->click('@skip-onboarding')
+            ->resize(900, 600)
+            ->pause(2000)
+            ->click('@select-team')
+            ->pause(500)
+            ->click('@select-option-team-0')
+            ->pause(1000)
+            ->click('@skip-onboarding')
+            ->pause(500)
+            ->click('@select-team')
+            ->screenshot('organization-team-select');
     });
 });
