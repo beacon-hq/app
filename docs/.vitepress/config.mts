@@ -1,8 +1,5 @@
 import tailwindcss from '@tailwindcss/vite';
-// import markdownItFigureCaption from 'markdown-it-figure-caption';
 import deadFile from 'vite-plugin-deadfile';
-// @ts-ignore
-import lightbox from 'vitepress-plugin-lightbox';
 import { withMermaid } from 'vitepress-plugin-mermaid';
 
 const BASE_PATH = '/docs/';
@@ -162,9 +159,6 @@ export default withMermaid({
         },
         image: {
             lazyLoading: true,
-        },
-        config: (md) => {
-            md.use(lightbox, {});
         },
     },
     vue: {
