@@ -62,17 +62,17 @@ export default function NavMenu({
                 items: [
                     {
                         title: 'Features',
-                        url: '/features',
+                        url: docsUrl + '/introduction/overview.html#key-features',
                         description: 'Learn all about the features of Beacon.',
                     },
                     {
                         title: 'Installation',
-                        url: docsUrl + '/install',
+                        url: docsUrl + '/introduction/install.html',
                         description: 'Integrate with your Laravel app via Laravel Pennant.',
                     },
                     {
                         title: 'Create Your First Feature Flag',
-                        url: docsUrl + '/get-started',
+                        url: docsUrl + '/introduction/get-started.html',
                         description: 'Learn how to create your first feature flag in Beacon.',
                     },
                 ],
@@ -80,7 +80,7 @@ export default function NavMenu({
             },
             {
                 title: 'Documentation',
-                url: docsUrl,
+                url: docsUrl + '/index.html',
             },
             ...(pricingEnabled
                 ? [
