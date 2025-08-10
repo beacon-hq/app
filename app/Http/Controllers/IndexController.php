@@ -5,19 +5,14 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Services\MailService;
-use App\Services\ProductService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 class IndexController extends Controller
 {
-    public function index(ProductService $productService)
+    public function index()
     {
-        return Inertia::render('Home/Index', [
-            'products' => Cache::flexible('products', [3000, 6000], fn () => $productService->all()),
-            'docsUrl' => config('beacon.docs.url'),
-        ]);
+        return Inertia::render('Home/Index');
     }
 
     /**

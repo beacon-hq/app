@@ -3,7 +3,7 @@ import EarlyAccessNotice from '@/Components/EarlyAccessNotice';
 import Footer from '@/Components/Footer';
 import NavMenu from '@/Components/NavMenu';
 import { cn } from '@/lib/utils';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import React, { PropsWithChildren } from 'react';
 
 export default function Guest({ className, children }: PropsWithChildren & { className?: string }) {

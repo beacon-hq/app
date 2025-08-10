@@ -14,9 +14,10 @@ import { AppWindowMac } from 'lucide-react';
 import { useReducedMotion } from 'motion/react';
 import React, { useEffect, useRef, useState } from 'react';
 
-export default function Index({ auth, products, docsUrl = '/docs' }: PageProps & { products: ProductCollection }) {
+export default function Index() {
     useScrollToLocation();
     const pricingEnabled = usePage().props.features['pricing.enabled'];
+    const { products } = usePage().props;
 
     const [isDark, setIsDark] = useState(false);
 
@@ -60,7 +61,7 @@ export default function Index({ auth, products, docsUrl = '/docs' }: PageProps &
     return (
         <>
             <Head title="Welcome" />
-            <NavMenu auth={auth} />
+            <NavMenu />
 
             <header className="flex flex-col items-center">
                 <div className="mx-auto px-4 py-8 text-center w-full md:w-3/4">
@@ -541,7 +542,7 @@ export default function Index({ auth, products, docsUrl = '/docs' }: PageProps &
 
             {pricingEnabled && (
                 <section id="pricing" className="scroll-mt-8" ref={pricingRef}>
-                    <Pricing products={products} />
+                    <Pricing products={products as ProductCollection} />
                 </section>
             )}
 
@@ -555,7 +556,7 @@ export default function Index({ auth, products, docsUrl = '/docs' }: PageProps &
                                     <p className="text-lg mb-8">
                                         Unlimited flags, apps, environments, and users — for the price of a coffee.
                                     </p>
-                                    <a href={`/register?plan=${products[0].id}`}>
+                                    <a href={`/register?plan=${(products as ProductCollection)[0].id}`}>
                                         <Button size="lg">Start Free Trial</Button>
                                     </a>
                                 </>

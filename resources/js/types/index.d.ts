@@ -1,4 +1,4 @@
-import { OrganizationCollection, Permission, Team, TeamCollection, User } from '@/Application';
+import { OrganizationCollection, Permission, ProductCollection, Team, TeamCollection, User } from '@/Application';
 
 type Auth = {
     user: User;
@@ -30,4 +30,5 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
             };
             url: string;
         } | null;
+        products?: ProductCollection;
     };

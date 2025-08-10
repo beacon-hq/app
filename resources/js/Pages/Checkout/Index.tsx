@@ -4,17 +4,18 @@ import NavMenu from '@/Components/NavMenu';
 import Pricing from '@/Pages/Home/Components/Pricing';
 import useScrollToLocation from '@/hooks/use-scroll-to-location';
 import { PageProps } from '@/types';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import React, { useRef } from 'react';
 
-export default function Index({ auth, products, docsUrl }: PageProps & { products: ProductCollection }) {
+export default function Index() {
     useScrollToLocation();
     const pricingRef = useRef(null);
+    const products = usePage().props.products;
 
     return (
         <>
             <Head title="Choose a Plan" />
-            <NavMenu auth={auth} docsUrl={docsUrl} />
+            <NavMenu />
 
             <div>
                 <Link href="/">
@@ -27,7 +28,7 @@ export default function Index({ auth, products, docsUrl }: PageProps & { product
                     <h1 className="mb-0">Choose a Plan to Get Started</h1>
                     <p className="text-sm mt-0">Cancel or change your plan at any time.</p>
                 </div>
-                <Pricing products={products} />
+                <Pricing products={products as ProductCollection} />
             </section>
         </>
     );

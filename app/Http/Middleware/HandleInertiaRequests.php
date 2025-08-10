@@ -7,6 +7,7 @@ namespace App\Http\Middleware;
 use App;
 use App\Features\BillingEnabled;
 use App\Services\OrganizationService;
+use App\Services\ProductService;
 use App\Services\TeamService;
 use App\Values\User;
 use Auth;
@@ -25,7 +26,7 @@ class HandleInertiaRequests extends Middleware
      */
     protected $rootView = 'app';
 
-    public function __construct(protected TeamService $teamService, protected OrganizationService $organizationService)
+    public function __construct(protected TeamService $teamService, protected OrganizationService $organizationService, protected ProductService $productService)
     {
     }
 
@@ -36,9 +37,31 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $data = [
+            'ziggy' => fn () => [
+                ...(new Ziggy())->toArray(),
+                'location' => $request->url(),
+            ],
+            'features' => [
+                'pricing.enabled' => Feature::active(BillingEnabled::class),
+            ],
+            'docsUrl' => config('beacon.docs.url'),
+            'products' => Cache::flexible('products', [3000, 6000], fn () => $this->productService->all()),
+            'status' => config('beacon.status.enabled') ? [
+                ... Cache::get('beacon.status', [
+                    'data' => [
+                        'status' => 'operational',
+                        'message' => 'All systems operational.',
+                    ],
+                ]),
+                'url' => config('services.cachet.url'),
+            ] : null,
+        ];
+
         if (Auth::hasUser()) {
             return [
                 ...parent::share($request),
+                ... $data,
                 'alert' => fn () => $request->session()->pull('alert'),
                 'notifications' => fn () => $request->session()->get('notifications') ?? [],
                 'auth' => [
@@ -52,46 +75,13 @@ class HandleInertiaRequests extends Middleware
                 'ssr' => [
                     'enabled' => true,
                 ],
-                'ziggy' => fn () => [
-                    ...(new Ziggy())->toArray(),
-                    'location' => $request->url(),
-                ],
-                'features' => [
-                    'pricing.enabled' => Feature::active(BillingEnabled::class),
-                ],
-                'docsUrl' => config('beacon.docs.url'),
-                'status' => config('beacon.status.enabled') ? [
-                    ... Cache::get('beacon.status', [
-                        'data' => [
-                            'status' => 'operational',
-                            'message' => 'All systems operational.',
-                        ],
-                    ]),
-                    'url' => config('services.cachet.url'),
-                ] : null,
             ];
         }
 
         return [
             ...parent::share($request),
+            ... $data,
             'theme' => 'system',
-            'ziggy' => fn () => [
-                ...(new Ziggy())->toArray(),
-                'location' => $request->url(),
-            ],
-            'features' => [
-                'pricing.enabled' => Feature::active(BillingEnabled::class),
-            ],
-            'docsUrl' => config('beacon.docs.url'),
-            'status' => config('beacon.status.enabled') ? [
-                ... Cache::get('beacon.status', [
-                    'data' => [
-                        'status' => 'operational',
-                        'message' => 'All systems operational!',
-                    ],
-                ]),
-                'url' => config('services.cachet.url'),
-            ] : null,
         ];
     }
 

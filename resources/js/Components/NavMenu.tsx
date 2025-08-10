@@ -1,4 +1,4 @@
-import { ProductCollection } from '@/Application';
+import { Product, ProductCollection } from '@/Application';
 import BeaconIcon from '@/Components/BeaconIcon';
 import EarlyAccessNotice from '@/Components/EarlyAccessNotice';
 import GetStarted from '@/Components/illustrations/get-started';
@@ -51,16 +51,13 @@ interface NavbarData {
 }
 
 export default function NavMenu({
-    auth,
     showLogo = false,
-    docsUrl = '/docs',
 }: AuthProp & {
     showLogo?: boolean;
-    docsUrl?: string;
 }) {
     const pricingEnabled = usePage().props.features['pricing.enabled'];
-    const status = usePage().props.status;
-    const products = usePage().props.products as ProductCollection;
+
+    const { docsUrl, products, status, auth } = usePage().props;
 
     const navbarData: NavbarData = {
         menu: [
@@ -131,7 +128,7 @@ export default function NavMenu({
             },
             signup: {
                 title: pricingEnabled ? 'Start Your Free Trial' : 'Sign Up',
-                url: pricingEnabled ? `/register?plan=${products[0].id}` : '/register',
+                url: pricingEnabled ? `/register?plan=${(products as ProductCollection)[0].id}` : '/register',
             },
         },
         docs: {
