@@ -11,6 +11,7 @@ use App\Services\TeamService;
 use App\Values\User;
 use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
 use Laravel\Pennant\Feature;
 use Tighten\Ziggy\Ziggy;
@@ -59,18 +60,38 @@ class HandleInertiaRequests extends Middleware
                     'pricing.enabled' => Feature::active(BillingEnabled::class),
                 ],
                 'docsUrl' => config('beacon.docs.url'),
+                'status' => config('beacon.status.enabled') ? [
+                    ... Cache::get('beacon.status', [
+                        'data' => [
+                            'status' => 'operational',
+                            'message' => 'All systems operational.',
+                        ],
+                    ]),
+                    'url' => config('services.cachet.url'),
+                ] : null,
             ];
         }
 
         return [
             ...parent::share($request),
+            'theme' => 'system',
             'ziggy' => fn () => [
                 ...(new Ziggy())->toArray(),
                 'location' => $request->url(),
             ],
             'features' => [
                 'pricing.enabled' => Feature::active(BillingEnabled::class),
-            ]
+            ],
+            'docsUrl' => config('beacon.docs.url'),
+            'status' => config('beacon.status.enabled') ? [
+                ... Cache::get('beacon.status', [
+                    'data' => [
+                        'status' => 'operational',
+                        'message' => 'All systems operational!',
+                    ],
+                ]),
+                'url' => config('services.cachet.url'),
+            ] : null,
         ];
     }
 

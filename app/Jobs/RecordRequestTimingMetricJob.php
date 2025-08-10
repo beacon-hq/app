@@ -29,6 +29,10 @@ class RecordRequestTimingMetricJob implements ShouldQueue
 
     public function handle(): void
     {
+        if (!config('beacon.status.enabled')) {
+            return;
+        }
+
         $metric = config('services.cachet.metrics.web_request_timing');
         if ($this->requestType === 'api') {
             $metric = config('services.cachet.metrics.api_request_timing');

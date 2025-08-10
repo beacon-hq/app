@@ -20,6 +20,9 @@ return [
     'docs' => [
         'url' => env('BEACON_DOCS_URL', '/docs'),
     ],
+    'status' => [
+        'enabled' => env('BEACON_STATUS_ENABLED', false),
+    ],
     'metrics' => [
         'dashboard' => [
             'enabled' => true,

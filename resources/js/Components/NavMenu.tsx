@@ -12,12 +12,13 @@ import {
     NavigationMenuTrigger,
 } from '@/Components/ui/navigation-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/Components/ui/sheet';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/Components/ui/tooltip';
 import useScrollToLocation from '@/hooks/use-scroll-to-location';
 import { cn } from '@/lib/utils';
 import { AuthProp } from '@/types';
 import { Method } from '@inertiajs/core';
 import { Link, usePage } from '@inertiajs/react';
-import { ArrowUp, Menu } from 'lucide-react';
+import { ArrowUp, Circle, Menu } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 interface MenuItem {
@@ -52,8 +53,12 @@ export default function NavMenu({
     auth,
     showLogo = false,
     docsUrl = '/docs',
-}: AuthProp & { showLogo?: boolean; docsUrl?: string }) {
+}: AuthProp & {
+    showLogo?: boolean;
+    docsUrl?: string;
+}) {
     const pricingEnabled = usePage().props.features['pricing.enabled'];
+    const status = usePage().props.status;
 
     const navbarData: NavbarData = {
         menu: [
@@ -90,6 +95,29 @@ export default function NavMenu({
                           onClick: () => {
                               setNavBarOpen(false);
                           },
+                      },
+                  ]
+                : []),
+            ...(status !== undefined && status !== null
+                ? [
+                      {
+                          title: 'Status',
+                          url: status.url,
+                          icon: (
+                              <Tooltip>
+                                  <TooltipTrigger>
+                                      <Circle
+                                          className={cn('w-4 h-4 mr-2', {
+                                              'text-green-500 fill-green-500': status.data.status === 'operational',
+                                              'text-yellow-500 fill-yellow-500':
+                                                  status.data.status === 'partial_outage',
+                                              'text-red-500 fill-red-500': status.data.status === 'major_outage',
+                                          })}
+                                      />
+                                  </TooltipTrigger>
+                                  <TooltipContent className="z-100">{status.data.message}</TooltipContent>
+                              </Tooltip>
+                          ),
                       },
                   ]
                 : []),
@@ -288,8 +316,9 @@ const renderMenuItem = (item: MenuItem) => {
             <NavigationMenuLink
                 href={item.url}
                 onClick={item.onClick}
-                className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-accent-foreground"
+                className="group flex flex-row h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-accent-foreground"
             >
+                {item.icon}
                 {item.title}
             </NavigationMenuLink>
         </NavigationMenuItem>
@@ -329,6 +358,7 @@ const renderMobileMenuItem = (item: MenuItem) => {
 };
 
 const SubMenuLink = ({ item }: { item: MenuItem }) => {
+    console.log(item);
     return (
         <a
             className="flex flex-row gap-4 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none hover:bg-muted hover:text-accent-foreground"

@@ -8,7 +8,9 @@ use App\Http\Middleware\EnsureTeamMiddleware;
 use App\Http\Middleware\EnsureTwoFactorAuthMiddleware;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\RequestTimingMiddleware;
+use App\Jobs\GetSystemStatusJob;
 use App\Providers\ApiRateLimitServiceProvider;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -66,4 +68,8 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    ->withSchedule(function (Schedule $schedule) {
+        $schedule->call(fn () => GetSystemStatusJob::dispatch())->everyMinute()->name(GetSystemStatusJob::class);
+    })
+    ->create();
