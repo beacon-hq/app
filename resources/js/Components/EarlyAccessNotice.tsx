@@ -2,7 +2,6 @@ import { cn } from '@/lib/utils';
 import React from 'react';
 
 const EarlyAccessNotice = ({ className }: { className?: string }) => {
-    return;
     return (
         <>
             {window.location.hostname !== 'beacon-hq.dev' && !navigator.userAgent.includes('Laravel/Dusk') && (
