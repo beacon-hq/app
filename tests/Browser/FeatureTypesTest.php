@@ -8,6 +8,10 @@ use Laravel\Dusk\Browser;
 use Tests\Browser\Components\ColorPicker;
 use Tests\Browser\Components\IconPicker;
 
+afterEach(fn () => $this->browse(function (Browser $browser) {
+    $browser->logout();
+}));
+
 it('can create new feature type', function () {
     $user = createBrowserUser();
 

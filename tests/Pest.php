@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Sleep;
-use Laravel\Dusk\Browser;
 use Pest\Arch\Support\Composer;
 use function Pest\Laravel\freezeTime;
 use Pest\TestSuite;
@@ -52,11 +51,7 @@ pest()->extend(DuskTestCase::class)
     ->in('Browser')
     ->beforeAll(function () {
         Artisan::call('migrate:fresh');
-    })
-    ->afterEach(fn () => $this->browse(function (Browser $browser) {
-        $browser->logout();
-    }));
-;
+    });
 
 /*
 |--------------------------------------------------------------------------

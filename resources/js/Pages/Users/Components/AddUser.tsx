@@ -42,12 +42,12 @@ const AddUser = ({ teams }: { teams: Team[] }) => {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button>
+                <Button data-dusk="button-invite-user">
                     <PlusCircle className="mr-2 h-4 w-4" />
                     Invite User
                 </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent data-dusk="dialog-invite-user">
                 <DialogHeader>
                     <DialogTitle>Invite New User</DialogTitle>
                 </DialogHeader>
@@ -59,21 +59,30 @@ const AddUser = ({ teams }: { teams: Team[] }) => {
                             type="email"
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
-                            placeholder="john@example.com"
+                            placeholder="user@example.com"
+                            data-dusk="input-invite-email"
                         />
                         {errors.email && <span className="text-sm text-destructive">{errors.email}</span>}
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="role">Role</Label>
                         <Select value={data.role} onValueChange={(value: Role) => setData('role', value)}>
-                            <SelectTrigger>
+                            <SelectTrigger data-dusk="select-invite-role">
                                 <SelectValue placeholder="Select a role" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value={Role.DEVELOPER}>Developer</SelectItem>
-                                <SelectItem value={Role.ADMIN}>Admin</SelectItem>
-                                <SelectItem value={Role.BILLER}>Biller</SelectItem>
-                                <SelectItem value={Role.OWNER}>Owner</SelectItem>
+                                <SelectItem value={Role.DEVELOPER} data-dusk="select-option-invite-role-developer">
+                                    Developer
+                                </SelectItem>
+                                <SelectItem value={Role.ADMIN} data-dusk="select-option-invite-role-admin">
+                                    Admin
+                                </SelectItem>
+                                <SelectItem value={Role.BILLER} data-dusk="select-option-invite-role-biller">
+                                    Biller
+                                </SelectItem>
+                                <SelectItem value={Role.OWNER} data-dusk="select-option-invite-role-owner">
+                                    Owner
+                                </SelectItem>
                             </SelectContent>
                         </Select>
                         {errors.role && <span className="text-sm text-destructive">{errors.role}</span>}
@@ -83,12 +92,16 @@ const AddUser = ({ teams }: { teams: Team[] }) => {
                             Team <span className="text-destructive">*</span>
                         </Label>
                         <Select value={data.team} onValueChange={(value) => setData('team', value)}>
-                            <SelectTrigger>
+                            <SelectTrigger data-dusk="select-invite-team">
                                 <SelectValue placeholder="Select a team" />
                             </SelectTrigger>
                             <SelectContent>
-                                {teams.map((team) => (
-                                    <SelectItem key={team.id} value={team.id?.toString() ?? ''}>
+                                {teams.map((team, idx) => (
+                                    <SelectItem
+                                        key={team.id}
+                                        value={team.id?.toString() ?? ''}
+                                        data-dusk={`select-option-invite-team-${idx}`}
+                                    >
                                         {team.name}
                                     </SelectItem>
                                 ))}
@@ -101,7 +114,11 @@ const AddUser = ({ teams }: { teams: Team[] }) => {
                     <DialogClose asChild>
                         <Button variant="secondary">Cancel</Button>
                     </DialogClose>
-                    <Button onClick={handleSubmit} disabled={processing || !data.email || !data.team}>
+                    <Button
+                        onClick={handleSubmit}
+                        disabled={processing || !data.email || !data.team}
+                        data-dusk="button-invite-submit"
+                    >
                         Send Invite
                     </Button>
                 </DialogFooter>

@@ -45,7 +45,9 @@ const IconPicker = ({
                     <Label aria-required={required}>Icon</Label>
                     <div className="flex flex-row items-center gap-2 icon-picker">
                         <Icon
-                            name={selectedIcon == '' ? 'Image' : (selectedIcon as string)}
+                            name={
+                                selectedIcon === '' || selectedIcon === undefined ? 'Image' : (selectedIcon as string)
+                            }
                             className={cn('h-8 w-8', {
                                 'text-neutral-400': selectedIcon == '',
                             })}

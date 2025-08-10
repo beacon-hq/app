@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Laravel\Fortify\Features;
 
-env('FORTIFY_TESTING', false) && Features::twoFactorAuthentication([
+env('FORTIFY_TESTING', false) && !isset($_COOKIE['fortify-testing']) && Features::twoFactorAuthentication([
     'confirm' => false,
     'confirmPassword' => false
 ]);
@@ -155,12 +155,11 @@ return [
         Features::resetPasswords(),
         Features::updateProfileInformation(),
         Features::updatePasswords(),
-        ... (env('FORTIFY_TESTING', false)) ? [] : [
+        ... (env('FORTIFY_TESTING', false) && !isset($_COOKIE['fortify-testing'])) ? [] : [
             Features::emailVerification(),
             Features::twoFactorAuthentication([
                 'confirm' => true,
                 'confirmPassword' => true,
-                // 'window' => 0,
             ]),
         ],
     ],

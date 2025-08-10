@@ -60,12 +60,12 @@ class TeamMemberManageController extends Controller
             $invite = false;
         }
 
-        Session::put('invite', $invite);
-
         try {
             $userService->findByEmail($invite->email);
 
-            return redirect()->route('login');
+            Session::put('invite', $invite);
+
+            return redirect()->route('register');
         } catch (ModelNotFoundException) {
             return redirect()->route('register');
         }

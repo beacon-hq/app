@@ -82,6 +82,7 @@ export default function Edit({
                                                 name="name"
                                                 value={data.name as string}
                                                 onChange={(e) => setData('name', e.target.value)}
+                                                data-dusk="input-teams-name"
                                             />
                                             <InputError message={errors.name} />
                                         </div>
@@ -111,7 +112,12 @@ export default function Edit({
                                             >
                                                 Cancel
                                             </Button>
-                                            <Button type="submit" className="w-24" disabled={processing}>
+                                            <Button
+                                                type="submit"
+                                                className="w-24"
+                                                disabled={processing}
+                                                data-dusk="button-teams-submit"
+                                            >
                                                 Update
                                             </Button>
                                         </div>

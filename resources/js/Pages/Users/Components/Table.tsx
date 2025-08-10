@@ -69,7 +69,7 @@ export default function Table({
                     <div className="flex items-center gap-2">
                         <span>{value}</span>
                         {cell.row.original.id === currentUser.id && (
-                            <Badge variant="outline" className="text-primary/50 rounded-full bg-yellow-100">
+                            <Badge variant="outline" className="text-black/50 rounded-full bg-yellow-100">
                                 You
                             </Badge>
                         )}
@@ -141,13 +141,19 @@ export default function Table({
                                 onClick={() => router.post(route('verification.resend'), { id: row.original.id })}
                             />
                         )}
-                        <UserCog className="h-6 w-6 cursor-pointer" onClick={() => onManage(row.original)} />
+                        <UserCog
+                            className="h-6 w-6 cursor-pointer"
+                            onClick={() => onManage(row.original)}
+                            data-dusk={
+                                row.original.id === currentUser.id ? 'button-user-edit-self' : 'button-user-edit'
+                            }
+                        />
                         {row.original.id !== currentUser.id && (
                             <AlertDialog>
-                                <AlertDialogTrigger>
+                                <AlertDialogTrigger data-dusk="button-user-delete">
                                     <Trash className="h-6 w-6 cursor-pointer" />
                                 </AlertDialogTrigger>
-                                <AlertDialogContent>
+                                <AlertDialogContent data-dusk="dialog-user-delete">
                                     <AlertDialogHeader>
                                         <AlertDialogTitle>Delete User</AlertDialogTitle>
                                         <AlertDialogDescription>

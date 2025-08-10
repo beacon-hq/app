@@ -9,7 +9,7 @@ const BASE_PATH = '/docs/';
 
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
-    title: 'Beacon',
+    title: 'beacon',
     description: 'Feature Flag Management for Laravel',
     base: BASE_PATH,
     outDir: '../public/docs',
@@ -60,6 +60,8 @@ export default withMermaid({
             level: [2, 3],
             label: 'On this page',
         },
+
+        nav: [{ text: 'Beacon Dashboard', link: 'https://beacon-hq.dev/dashboard' }],
 
         sidebar: [
             {

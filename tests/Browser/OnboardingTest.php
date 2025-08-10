@@ -11,6 +11,10 @@ use App\Values\FeatureFlagResponse;
 use Illuminate\Support\Facades\App;
 use Laravel\Dusk\Browser;
 
+afterEach(fn () => $this->browse(function (Browser $browser) {
+    $browser->logout();
+}));
+
 it('onboards new teams', function () {
     $user = createBrowserUser();
 

@@ -2,8 +2,8 @@
 
 Whether changing Teams, or Organizations, you can do so from the top navigation bar. Click on the current Team or Organization name to open a dropdown menu where you can select a different one.
 
-![Change Team](../../screenshots/team-select.png){.light-only}
-![Change Team](../../screenshots/dark/team-select.png){.dark-only}
+![Change Team](../../screenshots/teams-select.png){.light-only}
+![Change Team](../../screenshots/dark/teams-select.png){.dark-only}
 
 If you are a member of multiple Organizations, you will see them listed also:
 

@@ -43,7 +43,7 @@ export default function Login({
     return (
         <GuestLayout>
             <Head title="Log in" />
-            <Card className="mt-8 p-4 pt-8 w-2/3 md:1/2 lg:w-1/3 xl:w-1/3">
+            <Card className="mt-8 p-4 pt-8 w-2/3 md:1/2 lg:w-1/3 xl:w-1/3" data-dusk="card-login">
                 <CardContent>
                     <InviteAlert invite={invite} variant="login" />
 

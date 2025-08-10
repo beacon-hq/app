@@ -5,6 +5,10 @@ declare(strict_types=1);
 use App\Models\User;
 use Laravel\Dusk\Browser;
 
+afterEach(fn () => $this->browse(function (Browser $browser) {
+    $browser->logout();
+}));
+
 it('can view dashboard', function () {
     $user = createBrowserUser();
 

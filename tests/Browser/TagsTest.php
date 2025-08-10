@@ -7,6 +7,10 @@ use App\Listeners\InitTeamDataListener;
 use Laravel\Dusk\Browser;
 use Tests\Browser\Components\ColorPicker;
 
+afterEach(fn () => $this->browse(function (Browser $browser) {
+    $browser->logout();
+}));
+
 it('can create new tag', function () {
     $user = createBrowserUser();
 

@@ -5,6 +5,10 @@ declare(strict_types=1);
 use Laravel\Dusk\Browser;
 use Tests\Browser\Components\ColorPicker;
 
+afterEach(fn () => $this->browse(function (Browser $browser) {
+    $browser->logout();
+}));
+
 it('can create new application', function () {
     $user = createBrowserUser();
 

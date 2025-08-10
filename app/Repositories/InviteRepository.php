@@ -12,7 +12,6 @@ use App\Values\Organization;
 use App\Values\Team;
 use App\Values\User;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -67,8 +66,6 @@ class InviteRepository
     public function all(): Collection
     {
         return Invite::query()
-            ->withoutGlobalScope(CurrentTeamScope::class)
-            ->whereBelongsTo(Auth::user())
             ->get();
     }
 

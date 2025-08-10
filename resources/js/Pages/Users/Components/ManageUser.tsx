@@ -64,7 +64,7 @@ const ManageUser = ({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent>
+            <DialogContent data-dusk="dialog-user-manage">
                 <DialogHeader>
                     <DialogTitle>
                         Manage User: {user.first_name} {user.last_name}

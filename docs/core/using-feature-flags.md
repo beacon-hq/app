@@ -56,7 +56,7 @@ class ExampleFeature
 }
 ```
 
-> [!NOTE]
+> [!TIP]
 > For usability, it is highly recommended that you add a custom name to your class-based feature flags.
 
 ## Evaluating a Feature Flag

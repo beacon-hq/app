@@ -5,6 +5,10 @@ declare(strict_types=1);
 use App\Models\User;
 use Laravel\Dusk\Browser;
 
+afterEach(fn () => $this->browse(function (Browser $browser) {
+    $browser->logout();
+}));
+
 it('can register a new user', function () {
     $this->browse(function (Browser $browser) {
         $browser->resize(600, 1000);

@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 use Laravel\Dusk\Browser;
 
+afterEach(fn () => $this->browse(function (Browser $browser) {
+    $browser->logout();
+}));
+
 it('can navigate to access tokens', function () {
     $user = createBrowserUser();
     $this->browse(function (Browser $browser) use ($user) {

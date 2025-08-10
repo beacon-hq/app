@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 use Laravel\Dusk\Browser;
 
+afterEach(fn () => $this->browse(function (Browser $browser) {
+    $browser->logout();
+}));
+
 it('can create new policy', function () {
     $user = createBrowserUser();
 
