@@ -29,7 +29,7 @@ class SubscriptionBillingService
 
     public function getSubscription(Organization $organization): Subscription
     {
-        return Subscription::fromModel($this->subscriptionBillingRepository->getSubscription($organization));
+        return Subscription::from($this->subscriptionBillingRepository->getSubscription($organization));
     }
 
     public function hasActiveSubscription(Organization $organization): bool
@@ -49,7 +49,7 @@ class SubscriptionBillingService
 
     public function getPlan(Organization $organization): Product
     {
-        return Product::fromModel($this->subscriptionBillingRepository->getPlan($organization));
+        return Product::from($this->subscriptionBillingRepository->getPlan($organization));
     }
 
     public function changeSubscription(Organization $organization, Product $product): bool
@@ -164,7 +164,7 @@ class SubscriptionBillingService
         }
 
         try {
-            $product = Product::fromModel($this->productRepository->find($productId));
+            $product = Product::from($this->productRepository->find($productId));
 
             if (isset($product->entitlements['evaluations'])) {
                 $evaluations = (int) $product->entitlements['evaluations'];
