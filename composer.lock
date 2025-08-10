@@ -119,12 +119,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/beacon-hq/metrics.git",
-                "reference": "907415a42f032f7080de9209f8423d613a3a5c70"
+                "reference": "94cb5032dd83a8efd748a50294306d544500f778"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/beacon-hq/metrics/zipball/907415a42f032f7080de9209f8423d613a3a5c70",
-                "reference": "907415a42f032f7080de9209f8423d613a3a5c70",
+                "url": "https://api.github.com/repos/beacon-hq/metrics/zipball/94cb5032dd83a8efd748a50294306d544500f778",
+                "reference": "94cb5032dd83a8efd748a50294306d544500f778",
                 "shasum": ""
             },
             "require": {
@@ -179,7 +179,7 @@
                 "issues": "https://github.com/beacon-hq/metrics/issues",
                 "source": "https://github.com/beacon-hq/metrics/tree/main"
             },
-            "time": "2025-07-02T11:10:56+00:00"
+            "time": "2025-08-10T16:13:56+00:00"
         },
         {
             "name": "brick/math",
