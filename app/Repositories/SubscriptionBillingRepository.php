@@ -77,6 +77,7 @@ class SubscriptionBillingRepository
 
                 return $checkout->trialUntil(now()->add($trialLength)->endOfDay());
             })
+            ->allowPromotionCodes()
             ->checkout([
                 'success_url' => route('dashboard'),
                 'cancel_url' => route('checkout.index'),
