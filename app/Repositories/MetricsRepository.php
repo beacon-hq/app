@@ -293,7 +293,7 @@ class MetricsRepository
         ]);
 
 
-        if ($metrics->projections->when->projectedDate->greaterThan($currentPeriodEnd)) {
+        if ($metrics->projections->when->projectedDate?->greaterThan($currentPeriodEnd)) {
             $data['projections'] = $metrics->projections->toCollection()->only('data')->toArray();
         }
 
