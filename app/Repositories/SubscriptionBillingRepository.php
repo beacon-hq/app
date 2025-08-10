@@ -168,7 +168,7 @@ class SubscriptionBillingRepository
 
     public function predictNextBill(array $planMetrics, Product $product): array
     {
-        if ($planMetrics['evaluations']['projections']['date']['projected_total'] > $product->entitlements['evaluations']) {
+        if ($planMetrics['evaluations']['projections']['date']['projected_total'] ?? 0 > $product->entitlements['evaluations']) {
             $overage = $product
                 ->meteredPrice
                 ->multipliedBy(ceil(($planMetrics['evaluations']['projections']['date']['projected_total'] - $product->entitlements['evaluations']) / 1000));
