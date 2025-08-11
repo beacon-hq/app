@@ -14,6 +14,7 @@ use App\Http\Controllers\FeatureTypeController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\OurTeamController;
 use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ProfileController;
@@ -56,6 +57,7 @@ Route::post('/subscribe', [IndexController::class, 'store'])->name('subscribe');
 
 Route::get('/privacy-policy', PrivacyPolicyController::class)->name('company.privacy-policy');
 Route::get('/terms-of-service', TosController::class)->name('company.terms-of-service');
+Route::get('/our-team', OurTeamController::class)->name('company.our-team');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 

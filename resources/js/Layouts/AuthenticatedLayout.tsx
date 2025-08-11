@@ -85,7 +85,7 @@ export default function Authenticated({
                         {headerAction}
                     </header>
                     <main className="w-full min-h-(--body-height) block bg-background px-12 pb-6">{children}</main>
-                    <Footer />
+                    <Footer expanded={false} />
                 </div>
             </div>
             <Dialog open={createTeamOpen} onOpenChange={setCreateTeamOpen}>

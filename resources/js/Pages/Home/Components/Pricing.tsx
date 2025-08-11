@@ -116,7 +116,7 @@ export default function Pricing({
                 </section>
 
                 {/* FAQ Section */}
-                <section className="py-20">
+                <section className="pt-20 pb-10" id="faq">
                     <div className="w-3xl max-w-full mx-auto px-6">
                         <h2 className="text-3xl font-bold text-primary text-center mb-12">
                             Frequently Asked Questions

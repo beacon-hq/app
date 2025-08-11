@@ -19,7 +19,10 @@ class FeatureFlagController extends Controller
 {
     public function index(Request $request, FeatureFlagService $featureFlagService): FeatureFlagCollection
     {
-        return $featureFlagService->all();
+        return $featureFlagService->all(filters: [
+            'application' => $request->json('app_name'),
+            'environment' => $request->json('environment'),
+        ]);
     }
 
     public function show(

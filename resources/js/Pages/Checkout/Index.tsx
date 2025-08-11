@@ -1,5 +1,6 @@
 import { ProductCollection } from '@/Application';
 import ApplicationLogo from '@/Components/ApplicationLogo';
+import Footer from '@/Components/Footer';
 import NavMenu from '@/Components/NavMenu';
 import Pricing from '@/Pages/Home/Components/Pricing';
 import useScrollToLocation from '@/hooks/use-scroll-to-location';
@@ -30,6 +31,8 @@ export default function Index() {
                 </div>
                 <Pricing products={products as ProductCollection} />
             </section>
+
+            <Footer />
         </>
     );
 }
