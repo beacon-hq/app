@@ -9,7 +9,7 @@ import useScrollToLocation from '@/hooks/use-scroll-to-location';
 import { cn } from '@/lib/utils';
 import { PageProps } from '@/types';
 import { SiGithub, SiYoutube } from '@icons-pack/react-simple-icons';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { AppWindowMac } from 'lucide-react';
 import { useReducedMotion } from 'motion/react';
 import React, { useEffect, useRef, useState } from 'react';
@@ -612,9 +612,12 @@ export default function Index() {
                                     <>
                                         <h4 className="font-bold mb-2">Legal</h4>
                                         <ul>
-                                            <li>Privacy Policy</li>
-                                            <li>Refund Policy</li>
-                                            <li>Terms of Service</li>
+                                            <li>
+                                                <Link href={route('company.privacy-policy')}>Privacy Policy</Link>
+                                            </li>
+                                            <li>
+                                                <Link href={route('company.terms-of-service')}>Terms of Service</Link>
+                                            </li>
                                         </ul>
                                     </>
                                 )}

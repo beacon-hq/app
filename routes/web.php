@@ -15,12 +15,14 @@ use App\Http\Controllers\IndexController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PolicyController;
+use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TeamMemberManageController;
 use App\Http\Controllers\UserController;
+use App\Http\TosController;
 use App\Models\Application;
 use App\Models\Environment;
 use App\Values\FeatureFlag;
@@ -51,6 +53,9 @@ Route::get('/test', function () {
 
 Route::get('/', [IndexController::class, 'index'])->name('welcome');
 Route::post('/subscribe', [IndexController::class, 'store'])->name('subscribe');
+
+Route::get('/privacy-policy', PrivacyPolicyController::class)->name('company.privacy-policy');
+Route::get('/terms-of-service', TosController::class)->name('company.terms-of-service');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
