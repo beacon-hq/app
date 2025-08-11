@@ -38,11 +38,11 @@
         "tailwindcss-motion": "^1.1.1",
         "typescript": "^5.0.2",
         "vite": "^6.2.4",
+        "vite-plugin-deadfile": "^1.4.0",
         "vite-plugin-run": "^0.6.1",
         "vitepress": "^1.1.3",
         "vitepress-plugin-image-viewer": "^1.1.6",
         "vitepress-plugin-mermaid": "^2.0.16",
-        "vite-plugin-deadfile": "^1.4.0",
         "vitepress-versioning-plugin": "^1.3.0"
     },
     "dependencies": {
@@ -106,6 +106,7 @@
         "recharts": "^2.13.3",
         "sonner": "^2.0.1",
         "tailwind-merge": "^3.0.2",
+        "tw-animate-css": "^1.3.6",
         "ulidx": "^2.4.1",
         "use-debounce": "^10.0.4",
         "usehooks-ts": "^3.1.1",
