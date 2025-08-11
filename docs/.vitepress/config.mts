@@ -10,6 +10,7 @@ export default withMermaid({
     description: 'Feature Flag Management for Laravel',
     base: BASE_PATH,
     outDir: '../public/docs',
+    cleanUrls: true,
     head: [
         ['meta', { name: 'author', content: 'Beacon HQ' }],
         ['meta', { name: 'og:type', content: 'website' }],
