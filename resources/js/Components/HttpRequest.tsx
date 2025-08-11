@@ -97,7 +97,7 @@ const HttpRequest = ({
                 {} as Record<string, any>,
             );
 
-        let curlCmd = `curl -X POST "https://beacon-hq.dev/api/features/${featureFlagName}"`;
+        let curlCmd = `curl -X POST "https://api.beacon-hq.dev/api/features/${featureFlagName}"`;
 
         curlCmd += ` -H "Authorization: Bearer ${apiKey !== '' ? apiKey : '<api key>'}"`;
 
@@ -111,7 +111,7 @@ const HttpRequest = ({
 
         setCurlCommand(curlCmd);
 
-        let httpieCmd = `http -pb POST "https://beacon-hq.dev/api/features/${featureFlagName}"`;
+        let httpieCmd = `http -pb POST "https://api.beacon-hq.dev/api/features/${featureFlagName}"`;
 
         httpieCmd += ` Authorization:"Bearer ${apiKey ?? '<api key>'}"`;
 
