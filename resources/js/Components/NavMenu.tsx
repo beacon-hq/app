@@ -86,6 +86,37 @@ export default function NavMenu({
                 title: 'Documentation',
                 url: docsUrl + '/index.html',
             },
+            {
+                title: 'Projects',
+                items: [
+                    {
+                        title: 'Beam',
+                        url: 'https://beam.beacon-hq.dev',
+                        icon: (
+                            <img
+                                className="w-12 h-12"
+                                src="https://beam.beacon-hq.dev/images/icon.svg"
+                                alt="Beam Logo"
+                                title="Beam — Feature Flags for the Frontend powered by Laravel Pennant"
+                            />
+                        ),
+                        description: 'Feature Flags for the Frontend, powered by Laravel Pennant',
+                    },
+                    {
+                        title: 'Metrics',
+                        url: 'https://metrics.beacon-hq.dev',
+                        icon: (
+                            <img
+                                className="w-12 h-12"
+                                src="https://metrics.beacon-hq.dev/assets/images/icon.svg"
+                                alt="Beacon Metrics Logo"
+                                title="Simple Metrics for Laravel"
+                            />
+                        ),
+                        description: 'Simple Metrics for Laravel',
+                    },
+                ],
+            },
             ...(pricingEnabled
                 ? [
                       {
@@ -289,7 +320,11 @@ const renderMenuItem = (item: MenuItem) => {
             <NavigationMenuItem key={item.title}>
                 <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
                 <NavigationMenuContent className={cn('bg-popover text-popover-foreground')}>
-                    <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+                    <ul
+                        className={cn('grid gap-3 p-4 md:w-[400px] lg:w-[500px]', {
+                            'lg:grid-cols-[.75fr_1fr]': item.graphic,
+                        })}
+                    >
                         {item.graphic && (
                             <NavigationMenuLink asChild>
                                 <li className="row-span-3">
@@ -318,7 +353,7 @@ const renderMenuItem = (item: MenuItem) => {
                 className="group flex flex-row h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-accent-foreground"
             >
                 {item.icon}
-                {item.title}
+                <span className="block">{item.title}</span>
             </NavigationMenuLink>
         </NavigationMenuItem>
     );
@@ -357,10 +392,9 @@ const renderMobileMenuItem = (item: MenuItem) => {
 };
 
 const SubMenuLink = ({ item }: { item: MenuItem }) => {
-    console.log(item);
     return (
         <a
-            className="flex flex-row gap-4 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none hover:bg-muted hover:text-accent-foreground"
+            className="flex flex-row items-center gap-4 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none hover:bg-muted hover:text-accent-foreground"
             href={item.url}
         >
             <div className="text-foreground">{item.icon}</div>
