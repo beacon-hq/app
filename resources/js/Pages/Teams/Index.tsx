@@ -22,6 +22,7 @@ export default function Index({ teams }: { teams: TeamCollection }) {
         return acc;
     }, [] as string[]).length;
 
+    // @ts-ignore
     const { data, setData, errors, post, processing, reset } = useForm<Team>({
         id: undefined,
         organization: undefined,

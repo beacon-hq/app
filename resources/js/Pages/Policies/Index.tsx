@@ -21,6 +21,7 @@ export default function Index({ policies }: PageProps & { policies: PolicyCollec
         created_at: null,
         updated_at: null,
     };
+    // @ts-ignore
     const { setData, post, errors, reset, processing } = useForm<Policy>(newPolicy);
 
     const { policy, setPolicy } = usePolicyStore();

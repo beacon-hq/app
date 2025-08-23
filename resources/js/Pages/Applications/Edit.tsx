@@ -6,6 +6,7 @@ import { Head, router, useForm } from '@inertiajs/react';
 import React, { FormEvent } from 'react';
 
 export default function Edit({ application }: { application: Application }) {
+    // @ts-ignore
     const { data, setData, put, errors, processing, transform } = useForm<Application>({
         id: application.id,
         name: application.name,

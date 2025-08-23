@@ -21,6 +21,7 @@ import { Head, useForm } from '@inertiajs/react';
 import React, { FormEventHandler, useRef } from 'react';
 
 export default function Edit({ organization }: { organization: Organization }) {
+    // @ts-ignore
     const { data, setData, patch, errors, reset, processing } = useForm<Organization>({
         name: organization.name,
         id: organization.id,

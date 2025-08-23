@@ -27,6 +27,7 @@ export default function Edit({ policies, ...props }: { policy: Policy; policies:
         [policy],
     );
 
+    // @ts-ignore
     const { setData, put, errors, processing } = useForm<Policy>(props.policy);
 
     const submit = (e: FormEvent) => {

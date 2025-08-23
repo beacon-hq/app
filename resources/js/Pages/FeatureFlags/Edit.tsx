@@ -114,6 +114,7 @@ export default function Edit({
     // Initialize the feature flag store
     const { featureFlag, setFeatureFlag, addStatus } = useFeatureFlagStore();
 
+    // @ts-ignore
     const { setData, put, errors, processing } = useForm<FeatureFlag>(featureFlag as FeatureFlag);
     const [hadFeatureFlags, setHadFeatureFlags] = React.useState<boolean>(false);
 

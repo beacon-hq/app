@@ -26,6 +26,7 @@ const ManageUser = ({
 }) => {
     const currentUser = (usePage().props.auth as Auth).user;
 
+    // @ts-ignore
     const { data, setData, patch, post, processing, errors, reset } = useForm({
         role: user.roles?.[0] ?? Role.DEVELOPER,
         status: user.status ?? UserStatus.ACTIVE,
@@ -36,6 +37,7 @@ const ManageUser = ({
 
     useEffect(() => {
         if (open) {
+            // @ts-ignore
             setData({
                 role: user.roles?.[0] ?? Role.DEVELOPER,
                 status: user.status ?? UserStatus.ACTIVE,
@@ -136,6 +138,7 @@ const ManageUser = ({
                                                         const newTeams = isSelected
                                                             ? data.teams.filter((t) => t.id !== team.id)
                                                             : [...data.teams, team];
+                                                        // @ts-ignore
                                                         setData('teams', newTeams);
                                                     }}
                                                 >

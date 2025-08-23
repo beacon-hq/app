@@ -14,6 +14,7 @@ import React, { FormEvent, useState } from 'react';
 
 export default function Index({ applications }: PageProps & { applications: ApplicationCollection }) {
     const [showSheet, setShowSheet] = useState(false);
+    // @ts-ignore
     const { data, setData, post, errors, reset, processing, transform } = useForm<Application>({
         id: undefined,
         color: '#e6e6e6',

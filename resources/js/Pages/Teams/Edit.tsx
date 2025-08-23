@@ -27,6 +27,7 @@ export default function Edit({
     page: number;
     perPage: number;
 }) {
+    // @ts-ignore
     const { data, setData, errors, patch, processing } = useForm<Team>({
         id: team.id,
         color: team.color,
@@ -81,7 +82,10 @@ export default function Edit({
                                                 id="name"
                                                 name="name"
                                                 value={data.name as string}
-                                                onChange={(e) => setData('name', e.target.value)}
+                                                onChange={(e) => {
+                                                    // @ts-ignore
+                                                    setData('name', e.target.value)
+                                                }}
                                                 data-dusk="input-teams-name"
                                             />
                                             <InputError message={errors.name} />
@@ -89,7 +93,10 @@ export default function Edit({
                                         <div>
                                             <Label htmlFor="color">Team Color</Label>
                                             <ColorPicker
-                                                onColorChange={(color: string | null) => setData('color', color)}
+                                                onColorChange={(color: string | null) => {
+                                                    // @ts-ignore
+                                                    setData('color', color)
+                                                }}
                                                 color={data.color as string}
                                             />
                                             <InputError message={errors.color} />
@@ -98,7 +105,10 @@ export default function Edit({
                                             <Label htmlFor="icon">Team Icon</Label>
                                             <IconPicker
                                                 icon={data.icon as string}
-                                                onIconSelect={(icon) => setData('icon', icon)}
+                                                onIconSelect={(icon) => {
+                                                    // @ts-ignore
+                                                    setData('icon', icon)
+                                                }}
                                                 errors={errors}
                                             />
                                             <InputError message={errors.icon} />

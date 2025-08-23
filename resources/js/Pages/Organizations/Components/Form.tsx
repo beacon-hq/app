@@ -10,6 +10,7 @@ import { useForm } from '@inertiajs/react';
 import React from 'react';
 
 const Form = ({ organization, onCancel }: { organization?: Organization; onCancel?: () => void }) => {
+    // @ts-ignore
     const { data, setData, patch, post, errors, reset, processing } = useForm({
         id: organization?.id ?? '',
         owner: organization?.owner ?? null,

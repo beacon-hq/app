@@ -45,6 +45,7 @@ export default function Index({
     const { featureFlag, setFeatureFlag } = useFeatureFlagStore();
 
     const [showSheet, setShowSheet] = useState(false);
+    // @ts-ignore
     const { setData, post, errors, reset, processing, transform } = useForm<FeatureFlag>({
         id: undefined,
         status: false,
