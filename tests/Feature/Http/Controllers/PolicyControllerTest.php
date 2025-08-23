@@ -20,10 +20,13 @@ it('lists policies', function () {
 it('creates a policy', function () {
     [$team, $user] = createOwner();
 
-    $this->actingAs($user)->post(route('policies.store'), [
-        'name' => 'Test Policy',
-        'description' => 'test description'
-    ])->assertRedirectToRoute('policies.index');
+    $this
+        ->actingAs($user)
+        ->post(route('policies.store'), [
+            'name' => 'Test Policy',
+            'description' => 'test description'
+        ])
+        ->assertRedirectToRoute('policies.edit', ['policy' => Policy::latest()->first()->id]);
 
     $this->assertDatabaseHas('policies', [
         'name' => 'Test Policy',

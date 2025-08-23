@@ -8,7 +8,7 @@ use Illuminate\Console\Command;
 use Imagick;
 use ImagickPixel;
 
-class DocsImagePrep extends Command
+class DocsImagePrepCommand extends Command
 {
     /**
      * The name and signature of the console command.
