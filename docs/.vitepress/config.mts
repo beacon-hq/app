@@ -1,5 +1,4 @@
 import tailwindcss from '@tailwindcss/vite';
-import deadFile from 'vite-plugin-deadfile';
 import { withMermaid } from 'vitepress-plugin-mermaid';
 
 const BASE_PATH = '/docs/';
@@ -10,7 +9,7 @@ export default withMermaid({
     description: 'Feature Flag Management for Laravel',
     base: BASE_PATH,
     outDir: '../public/docs',
-    cleanUrls: true,
+    cleanUrls: false,
     head: [
         ['meta', { name: 'author', content: 'Beacon HQ' }],
         ['meta', { name: 'og:type', content: 'website' }],
@@ -145,13 +144,7 @@ export default withMermaid({
             { text: 'YouTube', icon: 'youtube', link: 'https://youtube.com/@beacon-hq' },
         ],
 
-        plugins: [
-            tailwindcss(),
-            deadFile({
-                root: '../docs',
-                include: ['**/*.md'],
-            }),
-        ],
+        plugins: [tailwindcss()],
     },
     markdown: {
         theme: {
@@ -168,15 +161,5 @@ export default withMermaid({
                 isCustomElement: (tag) => tag === 'lite-youtube',
             },
         },
-    },
-    vite: {
-        plugins: [
-            // @ts-ignore
-            deadFile({
-                root: __dirname,
-                include: ['**/*.md'],
-                exclude: ['**/dist/**', 'config.mts'],
-            }),
-        ],
     },
 });
