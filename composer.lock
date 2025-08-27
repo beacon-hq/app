@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "243a0af1bab79778c54cc27ea8d8f924",
+    "content-hash": "cab82e4944d3ffc472f9fb991514d95e",
     "packages": [
         {
             "name": "archtechx/enums",
@@ -119,12 +119,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/beacon-hq/metrics.git",
-                "reference": "94cb5032dd83a8efd748a50294306d544500f778"
+                "reference": "77f146d4875e70ba0c623668daf28597b3014886"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/beacon-hq/metrics/zipball/94cb5032dd83a8efd748a50294306d544500f778",
-                "reference": "94cb5032dd83a8efd748a50294306d544500f778",
+                "url": "https://api.github.com/repos/beacon-hq/metrics/zipball/77f146d4875e70ba0c623668daf28597b3014886",
+                "reference": "77f146d4875e70ba0c623668daf28597b3014886",
                 "shasum": ""
             },
             "require": {
@@ -179,7 +179,7 @@
                 "issues": "https://github.com/beacon-hq/metrics/issues",
                 "source": "https://github.com/beacon-hq/metrics/tree/main"
             },
-            "time": "2025-08-10T16:13:56+00:00"
+            "time": "2025-08-23T04:31:14+00:00"
         },
         {
             "name": "brick/math",
@@ -297,119 +297,6 @@
                 }
             ],
             "time": "2025-08-05T13:08:53+00:00"
-        },
-        {
-            "name": "captainhook/captainhook-phar",
-            "version": "5.25.11",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/captainhook-git/captainhook-phar.git",
-                "reference": "a5dbcd8d20b3dcdb1cbd6948d0d3a058453b3d6a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/captainhook-git/captainhook-phar/zipball/a5dbcd8d20b3dcdb1cbd6948d0d3a058453b3d6a",
-                "reference": "a5dbcd8d20b3dcdb1cbd6948d0d3a058453b3d6a",
-                "shasum": ""
-            },
-            "require": {
-                "composer-plugin-api": "^1.1||^2.0",
-                "ext-json": "*",
-                "ext-spl": "*",
-                "phar-io/composer-distributor": "^1.0.1",
-                "php": ">=8.0"
-            },
-            "require-dev": {
-                "composer/composer": "^1.1 || ^2.0"
-            },
-            "type": "composer-plugin",
-            "extra": {
-                "class": "CaptainHook\\Composer\\Plugin"
-            },
-            "autoload": {
-                "psr-4": {
-                    "CaptainHook\\Composer\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Sebastian Feldmann",
-                    "email": "sf@sebastian-feldmann.info"
-                }
-            ],
-            "description": "PHP git hook manager",
-            "homepage": "https://github.com/captainhook-git/captainhook",
-            "keywords": [
-                "commit-msg",
-                "git",
-                "hooks",
-                "post-merge",
-                "pre-commit",
-                "pre-push",
-                "prepare-commit-msg"
-            ],
-            "support": {
-                "issues": "https://github.com/captainhook-git/captainhook/issues",
-                "source": "https://github.com/captainhook-git/captainhook-phar/tree/5.25.11"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/sponsors/sebastianfeldmann",
-                    "type": "github"
-                }
-            ],
-            "time": "2025-04-08T07:07:48+00:00"
-        },
-        {
-            "name": "captainhook/hook-installer",
-            "version": "1.0.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/captainhook-git/hook-installer.git",
-                "reference": "fb3c45f6204b08baba999f4ffc4ae707bf684e8b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/captainhook-git/hook-installer/zipball/fb3c45f6204b08baba999f4ffc4ae707bf684e8b",
-                "reference": "fb3c45f6204b08baba999f4ffc4ae707bf684e8b",
-                "shasum": ""
-            },
-            "require": {
-                "composer-plugin-api": "^1.1|^2.0",
-                "php": ">=8.0"
-            },
-            "require-dev": {
-                "composer/composer": "*"
-            },
-            "type": "composer-plugin",
-            "extra": {
-                "class": "CaptainHook\\HookInstaller\\ComposerPlugin"
-            },
-            "autoload": {
-                "psr-4": {
-                    "CaptainHook\\HookInstaller\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Sebastian Feldmann",
-                    "email": "sf@sebastian-feldmann.info"
-                }
-            ],
-            "description": "Composer Plugin that makes everyone activate the CaptainHook git hooks locally",
-            "support": {
-                "issues": "https://github.com/captainhook-git/hook-installer/issues",
-                "source": "https://github.com/captainhook-git/hook-installer/tree/1.0.4"
-            },
-            "time": "2025-04-08T07:12:26+00:00"
         },
         {
             "name": "carbonphp/carbon-doctrine-types",
@@ -2002,22 +1889,22 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "7.9.3",
+            "version": "7.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "7b2f29fe81dc4da0ca0ea7d42107a0845946ea77"
+                "reference": "b51ac707cfa420b7bfd4e4d5e510ba8008e822b4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/7b2f29fe81dc4da0ca0ea7d42107a0845946ea77",
-                "reference": "7b2f29fe81dc4da0ca0ea7d42107a0845946ea77",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/b51ac707cfa420b7bfd4e4d5e510ba8008e822b4",
+                "reference": "b51ac707cfa420b7bfd4e4d5e510ba8008e822b4",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "guzzlehttp/promises": "^1.5.3 || ^2.0.3",
-                "guzzlehttp/psr7": "^2.7.0",
+                "guzzlehttp/promises": "^2.3",
+                "guzzlehttp/psr7": "^2.8",
                 "php": "^7.2.5 || ^8.0",
                 "psr/http-client": "^1.0",
                 "symfony/deprecation-contracts": "^2.2 || ^3.0"
@@ -2108,7 +1995,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/7.9.3"
+                "source": "https://github.com/guzzle/guzzle/tree/7.10.0"
             },
             "funding": [
                 {
@@ -2124,7 +2011,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-03-27T13:37:11+00:00"
+            "time": "2025-08-23T22:36:01+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -2211,16 +2098,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "2.7.1",
+            "version": "2.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "c2270caaabe631b3b44c85f99e5a04bbb8060d16"
+                "reference": "21dc724a0583619cd1652f673303492272778051"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/c2270caaabe631b3b44c85f99e5a04bbb8060d16",
-                "reference": "c2270caaabe631b3b44c85f99e5a04bbb8060d16",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/21dc724a0583619cd1652f673303492272778051",
+                "reference": "21dc724a0583619cd1652f673303492272778051",
                 "shasum": ""
             },
             "require": {
@@ -2236,7 +2123,7 @@
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.8.2",
                 "http-interop/http-factory-tests": "0.9.0",
-                "phpunit/phpunit": "^8.5.39 || ^9.6.20"
+                "phpunit/phpunit": "^8.5.44 || ^9.6.25"
             },
             "suggest": {
                 "laminas/laminas-httphandlerrunner": "Emit PSR-7 responses"
@@ -2307,7 +2194,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/2.7.1"
+                "source": "https://github.com/guzzle/psr7/tree/2.8.0"
             },
             "funding": [
                 {
@@ -2323,7 +2210,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-03-27T12:30:47+00:00"
+            "time": "2025-08-23T21:21:41+00:00"
         },
         {
             "name": "guzzlehttp/uri-template",
@@ -2413,16 +2300,16 @@
         },
         {
             "name": "inertiajs/inertia-laravel",
-            "version": "v2.0.5",
+            "version": "v2.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/inertiajs/inertia-laravel.git",
-                "reference": "aa103fded86dd32e1b1d94b701a314cd22cecc8e"
+                "reference": "6d0afc3237c370036de4a703927b17a4e7b83298"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/inertiajs/inertia-laravel/zipball/aa103fded86dd32e1b1d94b701a314cd22cecc8e",
-                "reference": "aa103fded86dd32e1b1d94b701a314cd22cecc8e",
+                "url": "https://api.github.com/repos/inertiajs/inertia-laravel/zipball/6d0afc3237c370036de4a703927b17a4e7b83298",
+                "reference": "6d0afc3237c370036de4a703927b17a4e7b83298",
                 "shasum": ""
             },
             "require": {
@@ -2477,9 +2364,9 @@
             ],
             "support": {
                 "issues": "https://github.com/inertiajs/inertia-laravel/issues",
-                "source": "https://github.com/inertiajs/inertia-laravel/tree/v2.0.5"
+                "source": "https://github.com/inertiajs/inertia-laravel/tree/v2.0.6"
             },
-            "time": "2025-08-12T15:57:22+00:00"
+            "time": "2025-08-26T06:17:48+00:00"
         },
         {
             "name": "jawira/case-converter",
@@ -2546,43 +2433,6 @@
                 "source": "https://github.com/jawira/case-converter/tree/v3.6.0"
             },
             "time": "2025-06-13T21:12:55+00:00"
-        },
-        {
-            "name": "joetannenbaum/chewie",
-            "version": "0.1.11",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/joetannenbaum/chewie.git",
-                "reference": "7040f1c157e6756f45f49f4a821303cae3cfe424"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/joetannenbaum/chewie/zipball/7040f1c157e6756f45f49f4a821303cae3cfe424",
-                "reference": "7040f1c157e6756f45f49f4a821303cae3cfe424",
-                "shasum": ""
-            },
-            "require": {
-                "laravel/prompts": "0.x"
-            },
-            "require-dev": {
-                "pestphp/pest": "^2.33",
-                "tightenco/duster": "^2.7"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/helpers.php"
-                ],
-                "psr-4": {
-                    "Chewie\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "support": {
-                "issues": "https://github.com/joetannenbaum/chewie/issues",
-                "source": "https://github.com/joetannenbaum/chewie/tree/0.1.11"
-            },
-            "time": "2024-12-07T01:53:54+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -2837,16 +2687,16 @@
         },
         {
             "name": "laravel/fortify",
-            "version": "v1.28.0",
+            "version": "v1.29.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/fortify.git",
-                "reference": "138d9790081343d4c4357daa5425790cd7f6bd82"
+                "reference": "7f334449341219633acf40993461585ae5178d14"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/fortify/zipball/138d9790081343d4c4357daa5425790cd7f6bd82",
-                "reference": "138d9790081343d4c4357daa5425790cd7f6bd82",
+                "url": "https://api.github.com/repos/laravel/fortify/zipball/7f334449341219633acf40993461585ae5178d14",
+                "reference": "7f334449341219633acf40993461585ae5178d14",
                 "shasum": ""
             },
             "require": {
@@ -2898,20 +2748,20 @@
                 "issues": "https://github.com/laravel/fortify/issues",
                 "source": "https://github.com/laravel/fortify"
             },
-            "time": "2025-07-22T15:26:32+00:00"
+            "time": "2025-08-14T21:50:18+00:00"
         },
         {
             "name": "laravel/framework",
-            "version": "v12.25.0",
+            "version": "v12.26.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "2ee2ba94ae60efd24c7a787cbb1a2f82f714bb20"
+                "reference": "1a8e961a1801794c36c243bb610210d0a2bd61cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/2ee2ba94ae60efd24c7a787cbb1a2f82f714bb20",
-                "reference": "2ee2ba94ae60efd24c7a787cbb1a2f82f714bb20",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/1a8e961a1801794c36c243bb610210d0a2bd61cb",
+                "reference": "1a8e961a1801794c36c243bb610210d0a2bd61cb",
                 "shasum": ""
             },
             "require": {
@@ -2951,9 +2801,9 @@
                 "symfony/http-kernel": "^7.2.0",
                 "symfony/mailer": "^7.2.0",
                 "symfony/mime": "^7.2.0",
-                "symfony/polyfill-php83": "^1.31",
-                "symfony/polyfill-php84": "^1.31",
-                "symfony/polyfill-php85": "^1.31",
+                "symfony/polyfill-php83": "^1.33",
+                "symfony/polyfill-php84": "^1.33",
+                "symfony/polyfill-php85": "^1.33",
                 "symfony/process": "^7.2.0",
                 "symfony/routing": "^7.2.0",
                 "symfony/uid": "^7.2.0",
@@ -3115,20 +2965,20 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2025-08-18T22:20:52+00:00"
+            "time": "2025-08-27T13:51:06+00:00"
         },
         {
             "name": "laravel/horizon",
-            "version": "v5.33.3",
+            "version": "v5.33.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/horizon.git",
-                "reference": "aabcd425b34005182acc4c22aae48692684cb765"
+                "reference": "678362049ce5b9ce96673ac0282bbfda3279eca9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/horizon/zipball/aabcd425b34005182acc4c22aae48692684cb765",
-                "reference": "aabcd425b34005182acc4c22aae48692684cb765",
+                "url": "https://api.github.com/repos/laravel/horizon/zipball/678362049ce5b9ce96673ac0282bbfda3279eca9",
+                "reference": "678362049ce5b9ce96673ac0282bbfda3279eca9",
                 "shasum": ""
             },
             "require": {
@@ -3193,22 +3043,22 @@
             ],
             "support": {
                 "issues": "https://github.com/laravel/horizon/issues",
-                "source": "https://github.com/laravel/horizon/tree/v5.33.3"
+                "source": "https://github.com/laravel/horizon/tree/v5.33.4"
             },
-            "time": "2025-08-11T14:55:49+00:00"
+            "time": "2025-08-25T13:31:24+00:00"
         },
         {
             "name": "laravel/nightwatch",
-            "version": "v1.13.1",
+            "version": "v1.13.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/nightwatch.git",
-                "reference": "56da29b452817508f22cb1cfb06abb8d8b23de68"
+                "reference": "a9585c7f2af7ebb11468bd6a8a41340baf979067"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/nightwatch/zipball/56da29b452817508f22cb1cfb06abb8d8b23de68",
-                "reference": "56da29b452817508f22cb1cfb06abb8d8b23de68",
+                "url": "https://api.github.com/repos/laravel/nightwatch/zipball/a9585c7f2af7ebb11468bd6a8a41340baf979067",
+                "reference": "a9585c7f2af7ebb11468bd6a8a41340baf979067",
                 "shasum": ""
             },
             "require": {
@@ -3281,7 +3131,7 @@
                 "issues": "https://github.com/laravel/nightwatch/issues",
                 "source": "https://github.com/laravel/nightwatch"
             },
-            "time": "2025-08-21T01:37:20+00:00"
+            "time": "2025-08-25T07:31:52+00:00"
         },
         {
             "name": "laravel/octane",
@@ -3633,72 +3483,6 @@
                 "source": "https://github.com/laravel/serializable-closure"
             },
             "time": "2025-03-19T13:51:03+00:00"
-        },
-        {
-            "name": "laravel/tinker",
-            "version": "v2.10.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/laravel/tinker.git",
-                "reference": "22177cc71807d38f2810c6204d8f7183d88a57d3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/laravel/tinker/zipball/22177cc71807d38f2810c6204d8f7183d88a57d3",
-                "reference": "22177cc71807d38f2810c6204d8f7183d88a57d3",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/console": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
-                "illuminate/contracts": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
-                "illuminate/support": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
-                "php": "^7.2.5|^8.0",
-                "psy/psysh": "^0.11.1|^0.12.0",
-                "symfony/var-dumper": "^4.3.4|^5.0|^6.0|^7.0"
-            },
-            "require-dev": {
-                "mockery/mockery": "~1.3.3|^1.4.2",
-                "phpstan/phpstan": "^1.10",
-                "phpunit/phpunit": "^8.5.8|^9.3.3|^10.0"
-            },
-            "suggest": {
-                "illuminate/database": "The Illuminate Database package (^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0)."
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Laravel\\Tinker\\TinkerServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Laravel\\Tinker\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Taylor Otwell",
-                    "email": "taylor@laravel.com"
-                }
-            ],
-            "description": "Powerful REPL for the Laravel framework.",
-            "keywords": [
-                "REPL",
-                "Tinker",
-                "laravel",
-                "psysh"
-            ],
-            "support": {
-                "issues": "https://github.com/laravel/tinker/issues",
-                "source": "https://github.com/laravel/tinker/tree/v2.10.1"
-            },
-            "time": "2025-01-27T14:24:01+00:00"
         },
         {
             "name": "lastguest/murmurhash",
@@ -5422,220 +5206,6 @@
             "time": "2024-05-08T12:36:18+00:00"
         },
         {
-            "name": "phar-io/composer-distributor",
-            "version": "1.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phar-io/composer-distributor.git",
-                "reference": "dd7d936290b2a42b0c64bfe08090b5c597c280c9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/phar-io/composer-distributor/zipball/dd7d936290b2a42b0c64bfe08090b5c597c280c9",
-                "reference": "dd7d936290b2a42b0c64bfe08090b5c597c280c9",
-                "shasum": ""
-            },
-            "require": {
-                "composer-plugin-api": "^1.1 || ^2.0",
-                "ext-dom": "*",
-                "ext-libxml": "*",
-                "phar-io/filesystem": "^2.0",
-                "phar-io/gnupg": "^1.0",
-                "php": "^7.3 || ^8.0"
-            },
-            "require-dev": {
-                "composer/composer": "^2.0",
-                "phpunit/phpunit": "^9.4"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "PharIo\\ComposerDistributor\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Andreas Heigl",
-                    "email": "andreas@heigl.org",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Arne Blankerts",
-                    "email": "arne@blankerts.de",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Sebastian Feldmann",
-                    "email": "sf@sebastian-feldmann.info",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Base Code for a composer plugin that installs PHAR-files",
-            "homepage": "https://phar.io",
-            "keywords": [
-                "bin",
-                "binary",
-                "composer",
-                "distribute",
-                "phar",
-                "phive"
-            ],
-            "support": {
-                "issues": "https://github.com/phar-io/composer-distributor/issues",
-                "source": "https://github.com/phar-io/composer-distributor/tree/1.0.2"
-            },
-            "funding": [
-                {
-                    "url": "https://phar.io",
-                    "type": "other"
-                }
-            ],
-            "time": "2023-05-31T17:05:49+00:00"
-        },
-        {
-            "name": "phar-io/executor",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phar-io/executor.git",
-                "reference": "5bfb7400224a0c1cf83343660af85c7f5a073473"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/phar-io/executor/zipball/5bfb7400224a0c1cf83343660af85c7f5a073473",
-                "reference": "5bfb7400224a0c1cf83343660af85c7f5a073473",
-                "shasum": ""
-            },
-            "require": {
-                "phar-io/filesystem": "^2.0",
-                "php": "^7.2||^8.0"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Arne Blankerts",
-                    "email": "arne@blankerts.de",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Sebastian Heuer",
-                    "email": "sebastian@phpeople.de",
-                    "role": "Developer"
-                }
-            ],
-            "support": {
-                "issues": "https://github.com/phar-io/executor/issues",
-                "source": "https://github.com/phar-io/executor/tree/1.0.1"
-            },
-            "time": "2020-11-30T10:53:57+00:00"
-        },
-        {
-            "name": "phar-io/filesystem",
-            "version": "2.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phar-io/filesystem.git",
-                "reference": "222e3ea432262a05706b7066697c21257664d9d1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/phar-io/filesystem/zipball/222e3ea432262a05706b7066697c21257664d9d1",
-                "reference": "222e3ea432262a05706b7066697c21257664d9d1",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.2 || ^8.0"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Arne Blankerts",
-                    "email": "arne@blankerts.de",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Sebastian Heuer",
-                    "email": "sebastian@phpeople.de",
-                    "role": "Developer"
-                }
-            ],
-            "support": {
-                "issues": "https://github.com/phar-io/filesystem/issues",
-                "source": "https://github.com/phar-io/filesystem/tree/2.0.1"
-            },
-            "time": "2020-11-30T10:16:22+00:00"
-        },
-        {
-            "name": "phar-io/gnupg",
-            "version": "1.0.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phar-io/gnupg.git",
-                "reference": "ed8ab1740ac4e9db99500e7252911f2821357093"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/phar-io/gnupg/zipball/ed8ab1740ac4e9db99500e7252911f2821357093",
-                "reference": "ed8ab1740ac4e9db99500e7252911f2821357093",
-                "shasum": ""
-            },
-            "require": {
-                "phar-io/executor": "^1.0",
-                "phar-io/filesystem": "^2.0",
-                "php": "^7.2||^8.0"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Arne Blankerts",
-                    "email": "arne@blankerts.de",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Sebastian Heuer",
-                    "email": "sebastian@phpeople.de",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Thin GnuPG wrapper class around the gnupg binary, mimicking the pecl/gnupg api",
-            "support": {
-                "issues": "https://github.com/phar-io/gnupg/issues",
-                "source": "https://github.com/phar-io/gnupg/tree/1.0.3"
-            },
-            "time": "2024-08-22T20:45:57+00:00"
-        },
-        {
             "name": "phpdocumentor/reflection-common",
             "version": "2.2.0",
             "source": {
@@ -5968,16 +5538,16 @@
         },
         {
             "name": "prinsfrank/standards",
-            "version": "v3.12.3",
+            "version": "v3.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PrinsFrank/standards.git",
-                "reference": "8442c5d3dca137fb260c3f61caf0b162841d4bbc"
+                "reference": "abd9c711d3ee3fe66d257a629c2939fab419b408"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PrinsFrank/standards/zipball/8442c5d3dca137fb260c3f61caf0b162841d4bbc",
-                "reference": "8442c5d3dca137fb260c3f61caf0b162841d4bbc",
+                "url": "https://api.github.com/repos/PrinsFrank/standards/zipball/abd9c711d3ee3fe66d257a629c2939fab419b408",
+                "reference": "abd9c711d3ee3fe66d257a629c2939fab419b408",
                 "shasum": ""
             },
             "require": {
@@ -5994,7 +5564,7 @@
                 "phpstan/phpstan": "^2",
                 "phpstan/phpstan-strict-rules": "^2",
                 "phpunit/phpunit": "^11.2.6",
-                "prinsfrank/pdfparser": "2.0.0-alpha.1",
+                "prinsfrank/pdfparser": "^2.1",
                 "prinsfrank/transliteration": "^1.0",
                 "symfony/panther": "dev-main"
             },
@@ -6016,7 +5586,7 @@
             "description": "A collection of standards as PHP Enums: ISO3166, ISO4217, ISO639...",
             "support": {
                 "issues": "https://github.com/PrinsFrank/standards/issues",
-                "source": "https://github.com/PrinsFrank/standards/tree/v3.12.3"
+                "source": "https://github.com/PrinsFrank/standards/tree/v3.13.0"
             },
             "funding": [
                 {
@@ -6024,7 +5594,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-05-16T18:05:29+00:00"
+            "time": "2025-08-26T17:51:33+00:00"
         },
         {
             "name": "psr/clock",
@@ -6437,84 +6007,6 @@
                 "source": "https://github.com/php-fig/simple-cache/tree/3.0.0"
             },
             "time": "2021-10-29T13:26:27+00:00"
-        },
-        {
-            "name": "psy/psysh",
-            "version": "v0.12.10",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/bobthecow/psysh.git",
-                "reference": "6e80abe6f2257121f1eb9a4c55bf29d921025b22"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/6e80abe6f2257121f1eb9a4c55bf29d921025b22",
-                "reference": "6e80abe6f2257121f1eb9a4c55bf29d921025b22",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "ext-tokenizer": "*",
-                "nikic/php-parser": "^5.0 || ^4.0",
-                "php": "^8.0 || ^7.4",
-                "symfony/console": "^7.0 || ^6.0 || ^5.0 || ^4.0 || ^3.4",
-                "symfony/var-dumper": "^7.0 || ^6.0 || ^5.0 || ^4.0 || ^3.4"
-            },
-            "conflict": {
-                "symfony/console": "4.4.37 || 5.3.14 || 5.3.15 || 5.4.3 || 5.4.4 || 6.0.3 || 6.0.4"
-            },
-            "require-dev": {
-                "bamarni/composer-bin-plugin": "^1.2"
-            },
-            "suggest": {
-                "ext-pcntl": "Enabling the PCNTL extension makes PsySH a lot happier :)",
-                "ext-pdo-sqlite": "The doc command requires SQLite to work.",
-                "ext-posix": "If you have PCNTL, you'll want the POSIX extension as well."
-            },
-            "bin": [
-                "bin/psysh"
-            ],
-            "type": "library",
-            "extra": {
-                "bamarni-bin": {
-                    "bin-links": false,
-                    "forward-command": false
-                },
-                "branch-alias": {
-                    "dev-main": "0.12.x-dev"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "src/functions.php"
-                ],
-                "psr-4": {
-                    "Psy\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Justin Hileman",
-                    "email": "justin@justinhileman.info"
-                }
-            ],
-            "description": "An interactive shell for modern PHP.",
-            "homepage": "https://psysh.org",
-            "keywords": [
-                "REPL",
-                "console",
-                "interactive",
-                "shell"
-            ],
-            "support": {
-                "issues": "https://github.com/bobthecow/psysh/issues",
-                "source": "https://github.com/bobthecow/psysh/tree/v0.12.10"
-            },
-            "time": "2025-08-04T12:39:37+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
@@ -7256,87 +6748,17 @@
             "time": "2023-09-03T09:24:00+00:00"
         },
         {
-            "name": "soloterm/solo",
-            "version": "v0.4.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/soloterm/solo.git",
-                "reference": "80778094596b1489d3fbf22e3db990c2d752d8fe"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/soloterm/solo/zipball/80778094596b1489d3fbf22e3db990c2d752d8fe",
-                "reference": "80778094596b1489d3fbf22e3db990c2d752d8fe",
-                "shasum": ""
-            },
-            "require": {
-                "ext-pcntl": "*",
-                "ext-posix": "*",
-                "illuminate/console": "^10|^11|^12",
-                "illuminate/process": "^10|^11|^12",
-                "illuminate/support": "^10|^11|^12",
-                "joetannenbaum/chewie": "^0.1",
-                "laravel/prompts": "^0.1.21|^0.2|^0.3",
-                "php": "^8.2"
-            },
-            "require-dev": {
-                "illuminate/database": "^10|^11|^12",
-                "laravel/serializable-closure": "^1.3",
-                "orchestra/testbench": "^8.29|^9.5|^10",
-                "phpunit/phpunit": "^10.5|^11"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "SoloTerm\\Solo\\Providers\\SoloServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "SoloTerm\\Solo\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Aaron Francis",
-                    "email": "aarondfrancis@gmail.com"
-                }
-            ],
-            "description": "A Laravel package to run multiple commands at once, to aid in local development.",
-            "support": {
-                "issues": "https://github.com/soloterm/solo/issues",
-                "source": "https://github.com/soloterm/solo/tree/v0.4.0"
-            },
-            "funding": [
-                {
-                    "url": "https://aaronfrancis.com/backstage",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/aarondfrancis",
-                    "type": "github"
-                }
-            ],
-            "time": "2025-02-19T19:10:50+00:00"
-        },
-        {
             "name": "spatie/backtrace",
-            "version": "1.7.4",
+            "version": "1.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/backtrace.git",
-                "reference": "cd37a49fce7137359ac30ecc44ef3e16404cccbe"
+                "reference": "8c0f16a59ae35ec8c62d85c3c17585158f430110"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/backtrace/zipball/cd37a49fce7137359ac30ecc44ef3e16404cccbe",
-                "reference": "cd37a49fce7137359ac30ecc44ef3e16404cccbe",
+                "url": "https://api.github.com/repos/spatie/backtrace/zipball/8c0f16a59ae35ec8c62d85c3c17585158f430110",
+                "reference": "8c0f16a59ae35ec8c62d85c3c17585158f430110",
                 "shasum": ""
             },
             "require": {
@@ -7374,7 +6796,8 @@
                 "spatie"
             ],
             "support": {
-                "source": "https://github.com/spatie/backtrace/tree/1.7.4"
+                "issues": "https://github.com/spatie/backtrace/issues",
+                "source": "https://github.com/spatie/backtrace/tree/1.8.1"
             },
             "funding": [
                 {
@@ -7386,7 +6809,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2025-05-08T15:41:09+00:00"
+            "time": "2025-08-26T08:22:30+00:00"
         },
         {
             "name": "spatie/error-solutions",
@@ -11754,6 +11177,119 @@
             "time": "2025-08-19T09:24:27+00:00"
         },
         {
+            "name": "captainhook/captainhook-phar",
+            "version": "5.25.11",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/captainhook-git/captainhook-phar.git",
+                "reference": "a5dbcd8d20b3dcdb1cbd6948d0d3a058453b3d6a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/captainhook-git/captainhook-phar/zipball/a5dbcd8d20b3dcdb1cbd6948d0d3a058453b3d6a",
+                "reference": "a5dbcd8d20b3dcdb1cbd6948d0d3a058453b3d6a",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.1||^2.0",
+                "ext-json": "*",
+                "ext-spl": "*",
+                "phar-io/composer-distributor": "^1.0.1",
+                "php": ">=8.0"
+            },
+            "require-dev": {
+                "composer/composer": "^1.1 || ^2.0"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "CaptainHook\\Composer\\Plugin"
+            },
+            "autoload": {
+                "psr-4": {
+                    "CaptainHook\\Composer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Feldmann",
+                    "email": "sf@sebastian-feldmann.info"
+                }
+            ],
+            "description": "PHP git hook manager",
+            "homepage": "https://github.com/captainhook-git/captainhook",
+            "keywords": [
+                "commit-msg",
+                "git",
+                "hooks",
+                "post-merge",
+                "pre-commit",
+                "pre-push",
+                "prepare-commit-msg"
+            ],
+            "support": {
+                "issues": "https://github.com/captainhook-git/captainhook/issues",
+                "source": "https://github.com/captainhook-git/captainhook-phar/tree/5.25.11"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/sebastianfeldmann",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-04-08T07:07:48+00:00"
+        },
+        {
+            "name": "captainhook/hook-installer",
+            "version": "1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/captainhook-git/hook-installer.git",
+                "reference": "fb3c45f6204b08baba999f4ffc4ae707bf684e8b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/captainhook-git/hook-installer/zipball/fb3c45f6204b08baba999f4ffc4ae707bf684e8b",
+                "reference": "fb3c45f6204b08baba999f4ffc4ae707bf684e8b",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.1|^2.0",
+                "php": ">=8.0"
+            },
+            "require-dev": {
+                "composer/composer": "*"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "CaptainHook\\HookInstaller\\ComposerPlugin"
+            },
+            "autoload": {
+                "psr-4": {
+                    "CaptainHook\\HookInstaller\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Feldmann",
+                    "email": "sf@sebastian-feldmann.info"
+                }
+            ],
+            "description": "Composer Plugin that makes everyone activate the CaptainHook git hooks locally",
+            "support": {
+                "issues": "https://github.com/captainhook-git/hook-installer/issues",
+                "source": "https://github.com/captainhook-git/hook-installer/tree/1.0.4"
+            },
+            "time": "2025-04-08T07:12:26+00:00"
+        },
+        {
             "name": "fakerphp/faker",
             "version": "v1.24.1",
             "source": {
@@ -12101,17 +11637,54 @@
             "time": "2025-03-19T14:43:43+00:00"
         },
         {
-            "name": "larastan/larastan",
-            "version": "v3.6.0",
+            "name": "joetannenbaum/chewie",
+            "version": "0.1.11",
             "source": {
                 "type": "git",
-                "url": "https://github.com/larastan/larastan.git",
-                "reference": "6431d010dd383a9279eb8874a76ddb571738564a"
+                "url": "https://github.com/joetannenbaum/chewie.git",
+                "reference": "7040f1c157e6756f45f49f4a821303cae3cfe424"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/larastan/larastan/zipball/6431d010dd383a9279eb8874a76ddb571738564a",
-                "reference": "6431d010dd383a9279eb8874a76ddb571738564a",
+                "url": "https://api.github.com/repos/joetannenbaum/chewie/zipball/7040f1c157e6756f45f49f4a821303cae3cfe424",
+                "reference": "7040f1c157e6756f45f49f4a821303cae3cfe424",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/prompts": "0.x"
+            },
+            "require-dev": {
+                "pestphp/pest": "^2.33",
+                "tightenco/duster": "^2.7"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "Chewie\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "support": {
+                "issues": "https://github.com/joetannenbaum/chewie/issues",
+                "source": "https://github.com/joetannenbaum/chewie/tree/0.1.11"
+            },
+            "time": "2024-12-07T01:53:54+00:00"
+        },
+        {
+            "name": "larastan/larastan",
+            "version": "v3.6.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/larastan/larastan.git",
+                "reference": "3c223047e374befd1b64959784685d6ecccf66aa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/larastan/larastan/zipball/3c223047e374befd1b64959784685d6ecccf66aa",
+                "reference": "3c223047e374befd1b64959784685d6ecccf66aa",
                 "shasum": ""
             },
             "require": {
@@ -12179,7 +11752,7 @@
             ],
             "support": {
                 "issues": "https://github.com/larastan/larastan/issues",
-                "source": "https://github.com/larastan/larastan/tree/v3.6.0"
+                "source": "https://github.com/larastan/larastan/tree/v3.6.1"
             },
             "funding": [
                 {
@@ -12187,7 +11760,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-07-11T06:52:52+00:00"
+            "time": "2025-08-25T07:24:56+00:00"
         },
         {
             "name": "laravel/boost",
@@ -12603,16 +12176,16 @@
         },
         {
             "name": "laravel/roster",
-            "version": "v0.2.3",
+            "version": "v0.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/roster.git",
-                "reference": "caeed7609b02c00c3f1efec52812d8d87c5d4096"
+                "reference": "d5b04fafd28bbab1f4cedd48f83c7abbddca4d76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/roster/zipball/caeed7609b02c00c3f1efec52812d8d87c5d4096",
-                "reference": "caeed7609b02c00c3f1efec52812d8d87c5d4096",
+                "url": "https://api.github.com/repos/laravel/roster/zipball/d5b04fafd28bbab1f4cedd48f83c7abbddca4d76",
+                "reference": "d5b04fafd28bbab1f4cedd48f83c7abbddca4d76",
                 "shasum": ""
             },
             "require": {
@@ -12660,7 +12233,73 @@
                 "issues": "https://github.com/laravel/roster/issues",
                 "source": "https://github.com/laravel/roster"
             },
-            "time": "2025-08-13T15:00:25+00:00"
+            "time": "2025-08-27T09:45:13+00:00"
+        },
+        {
+            "name": "laravel/tinker",
+            "version": "v2.10.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/tinker.git",
+                "reference": "22177cc71807d38f2810c6204d8f7183d88a57d3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/tinker/zipball/22177cc71807d38f2810c6204d8f7183d88a57d3",
+                "reference": "22177cc71807d38f2810c6204d8f7183d88a57d3",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
+                "illuminate/contracts": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
+                "illuminate/support": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
+                "php": "^7.2.5|^8.0",
+                "psy/psysh": "^0.11.1|^0.12.0",
+                "symfony/var-dumper": "^4.3.4|^5.0|^6.0|^7.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "~1.3.3|^1.4.2",
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^8.5.8|^9.3.3|^10.0"
+            },
+            "suggest": {
+                "illuminate/database": "The Illuminate Database package (^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0)."
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Tinker\\TinkerServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Tinker\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "Powerful REPL for the Laravel framework.",
+            "keywords": [
+                "REPL",
+                "Tinker",
+                "laravel",
+                "psysh"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/tinker/issues",
+                "source": "https://github.com/laravel/tinker/tree/v2.10.1"
+            },
+            "time": "2025-01-27T14:24:01+00:00"
         },
         {
             "name": "mockery/mockery",
@@ -12981,16 +12620,16 @@
         },
         {
             "name": "pestphp/pest",
-            "version": "v4.0.2",
+            "version": "v4.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pestphp/pest.git",
-                "reference": "7f11ace329581ca168f99d9d7f70556c191d2be8"
+                "reference": "e54e4a0178889209a928f7bee63286149d4eb707"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pestphp/pest/zipball/7f11ace329581ca168f99d9d7f70556c191d2be8",
-                "reference": "7f11ace329581ca168f99d9d7f70556c191d2be8",
+                "url": "https://api.github.com/repos/pestphp/pest/zipball/e54e4a0178889209a928f7bee63286149d4eb707",
+                "reference": "e54e4a0178889209a928f7bee63286149d4eb707",
                 "shasum": ""
             },
             "require": {
@@ -13002,12 +12641,12 @@
                 "pestphp/pest-plugin-mutate": "^4.0.1",
                 "pestphp/pest-plugin-profanity": "^4.0.1",
                 "php": "^8.3.0",
-                "phpunit/phpunit": "^12.3.5",
+                "phpunit/phpunit": "^12.3.6",
                 "symfony/process": "^7.3.0"
             },
             "conflict": {
                 "filp/whoops": "<2.18.3",
-                "phpunit/phpunit": ">12.3.5",
+                "phpunit/phpunit": ">12.3.6",
                 "sebastian/exporter": "<7.0.0",
                 "webmozart/assert": "<1.11.0"
             },
@@ -13081,7 +12720,7 @@
             ],
             "support": {
                 "issues": "https://github.com/pestphp/pest/issues",
-                "source": "https://github.com/pestphp/pest/tree/v4.0.2"
+                "source": "https://github.com/pestphp/pest/tree/v4.0.3"
             },
             "funding": [
                 {
@@ -13093,7 +12732,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-08-22T10:34:24+00:00"
+            "time": "2025-08-24T14:17:23+00:00"
         },
         {
             "name": "pestphp/pest-plugin",
@@ -13574,6 +13213,220 @@
                 }
             ],
             "time": "2025-08-21T09:44:31+00:00"
+        },
+        {
+            "name": "phar-io/composer-distributor",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phar-io/composer-distributor.git",
+                "reference": "dd7d936290b2a42b0c64bfe08090b5c597c280c9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phar-io/composer-distributor/zipball/dd7d936290b2a42b0c64bfe08090b5c597c280c9",
+                "reference": "dd7d936290b2a42b0c64bfe08090b5c597c280c9",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.1 || ^2.0",
+                "ext-dom": "*",
+                "ext-libxml": "*",
+                "phar-io/filesystem": "^2.0",
+                "phar-io/gnupg": "^1.0",
+                "php": "^7.3 || ^8.0"
+            },
+            "require-dev": {
+                "composer/composer": "^2.0",
+                "phpunit/phpunit": "^9.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PharIo\\ComposerDistributor\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andreas Heigl",
+                    "email": "andreas@heigl.org",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Arne Blankerts",
+                    "email": "arne@blankerts.de",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Sebastian Feldmann",
+                    "email": "sf@sebastian-feldmann.info",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Base Code for a composer plugin that installs PHAR-files",
+            "homepage": "https://phar.io",
+            "keywords": [
+                "bin",
+                "binary",
+                "composer",
+                "distribute",
+                "phar",
+                "phive"
+            ],
+            "support": {
+                "issues": "https://github.com/phar-io/composer-distributor/issues",
+                "source": "https://github.com/phar-io/composer-distributor/tree/1.0.2"
+            },
+            "funding": [
+                {
+                    "url": "https://phar.io",
+                    "type": "other"
+                }
+            ],
+            "time": "2023-05-31T17:05:49+00:00"
+        },
+        {
+            "name": "phar-io/executor",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phar-io/executor.git",
+                "reference": "5bfb7400224a0c1cf83343660af85c7f5a073473"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phar-io/executor/zipball/5bfb7400224a0c1cf83343660af85c7f5a073473",
+                "reference": "5bfb7400224a0c1cf83343660af85c7f5a073473",
+                "shasum": ""
+            },
+            "require": {
+                "phar-io/filesystem": "^2.0",
+                "php": "^7.2||^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Arne Blankerts",
+                    "email": "arne@blankerts.de",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Sebastian Heuer",
+                    "email": "sebastian@phpeople.de",
+                    "role": "Developer"
+                }
+            ],
+            "support": {
+                "issues": "https://github.com/phar-io/executor/issues",
+                "source": "https://github.com/phar-io/executor/tree/1.0.1"
+            },
+            "time": "2020-11-30T10:53:57+00:00"
+        },
+        {
+            "name": "phar-io/filesystem",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phar-io/filesystem.git",
+                "reference": "222e3ea432262a05706b7066697c21257664d9d1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phar-io/filesystem/zipball/222e3ea432262a05706b7066697c21257664d9d1",
+                "reference": "222e3ea432262a05706b7066697c21257664d9d1",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || ^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Arne Blankerts",
+                    "email": "arne@blankerts.de",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Sebastian Heuer",
+                    "email": "sebastian@phpeople.de",
+                    "role": "Developer"
+                }
+            ],
+            "support": {
+                "issues": "https://github.com/phar-io/filesystem/issues",
+                "source": "https://github.com/phar-io/filesystem/tree/2.0.1"
+            },
+            "time": "2020-11-30T10:16:22+00:00"
+        },
+        {
+            "name": "phar-io/gnupg",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phar-io/gnupg.git",
+                "reference": "ed8ab1740ac4e9db99500e7252911f2821357093"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phar-io/gnupg/zipball/ed8ab1740ac4e9db99500e7252911f2821357093",
+                "reference": "ed8ab1740ac4e9db99500e7252911f2821357093",
+                "shasum": ""
+            },
+            "require": {
+                "phar-io/executor": "^1.0",
+                "phar-io/filesystem": "^2.0",
+                "php": "^7.2||^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Arne Blankerts",
+                    "email": "arne@blankerts.de",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Sebastian Heuer",
+                    "email": "sebastian@phpeople.de",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Thin GnuPG wrapper class around the gnupg binary, mimicking the pecl/gnupg api",
+            "support": {
+                "issues": "https://github.com/phar-io/gnupg/issues",
+                "source": "https://github.com/phar-io/gnupg/tree/1.0.3"
+            },
+            "time": "2024-08-22T20:45:57+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -14084,16 +13937,16 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "12.3.2",
+            "version": "12.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "086553c5b2e0e1e20293d782d788ab768202b621"
+                "reference": "733025d94635a001f67db71a2ed1bab4e7e4a9dc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/086553c5b2e0e1e20293d782d788ab768202b621",
-                "reference": "086553c5b2e0e1e20293d782d788ab768202b621",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/733025d94635a001f67db71a2ed1bab4e7e4a9dc",
+                "reference": "733025d94635a001f67db71a2ed1bab4e7e4a9dc",
                 "shasum": ""
             },
             "require": {
@@ -14149,7 +14002,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
                 "security": "https://github.com/sebastianbergmann/php-code-coverage/security/policy",
-                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/12.3.2"
+                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/12.3.3"
             },
             "funding": [
                 {
@@ -14169,7 +14022,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-07-29T06:19:24+00:00"
+            "time": "2025-08-27T14:43:48+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -14418,16 +14271,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "12.3.5",
+            "version": "12.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "f10ba5f12a256026ad3c7ee4894ffe47f60d7dc7"
+                "reference": "a2cab3224f687150ac2f3cc13d99b64ba1e1d088"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/f10ba5f12a256026ad3c7ee4894ffe47f60d7dc7",
-                "reference": "f10ba5f12a256026ad3c7ee4894ffe47f60d7dc7",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a2cab3224f687150ac2f3cc13d99b64ba1e1d088",
+                "reference": "a2cab3224f687150ac2f3cc13d99b64ba1e1d088",
                 "shasum": ""
             },
             "require": {
@@ -14447,7 +14300,7 @@
                 "phpunit/php-text-template": "^5.0.0",
                 "phpunit/php-timer": "^8.0.0",
                 "sebastian/cli-parser": "^4.0.0",
-                "sebastian/comparator": "^7.1.2",
+                "sebastian/comparator": "^7.1.3",
                 "sebastian/diff": "^7.0.0",
                 "sebastian/environment": "^8.0.3",
                 "sebastian/exporter": "^7.0.0",
@@ -14495,7 +14348,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.3.5"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.3.6"
             },
             "funding": [
                 {
@@ -14519,7 +14372,85 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-08-16T05:20:09+00:00"
+            "time": "2025-08-20T14:43:23+00:00"
+        },
+        {
+            "name": "psy/psysh",
+            "version": "v0.12.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bobthecow/psysh.git",
+                "reference": "6e80abe6f2257121f1eb9a4c55bf29d921025b22"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/6e80abe6f2257121f1eb9a4c55bf29d921025b22",
+                "reference": "6e80abe6f2257121f1eb9a4c55bf29d921025b22",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-tokenizer": "*",
+                "nikic/php-parser": "^5.0 || ^4.0",
+                "php": "^8.0 || ^7.4",
+                "symfony/console": "^7.0 || ^6.0 || ^5.0 || ^4.0 || ^3.4",
+                "symfony/var-dumper": "^7.0 || ^6.0 || ^5.0 || ^4.0 || ^3.4"
+            },
+            "conflict": {
+                "symfony/console": "4.4.37 || 5.3.14 || 5.3.15 || 5.4.3 || 5.4.4 || 6.0.3 || 6.0.4"
+            },
+            "require-dev": {
+                "bamarni/composer-bin-plugin": "^1.2"
+            },
+            "suggest": {
+                "ext-pcntl": "Enabling the PCNTL extension makes PsySH a lot happier :)",
+                "ext-pdo-sqlite": "The doc command requires SQLite to work.",
+                "ext-posix": "If you have PCNTL, you'll want the POSIX extension as well."
+            },
+            "bin": [
+                "bin/psysh"
+            ],
+            "type": "library",
+            "extra": {
+                "bamarni-bin": {
+                    "bin-links": false,
+                    "forward-command": false
+                },
+                "branch-alias": {
+                    "dev-main": "0.12.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/functions.php"
+                ],
+                "psr-4": {
+                    "Psy\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Justin Hileman",
+                    "email": "justin@justinhileman.info"
+                }
+            ],
+            "description": "An interactive shell for modern PHP.",
+            "homepage": "https://psysh.org",
+            "keywords": [
+                "REPL",
+                "console",
+                "interactive",
+                "shell"
+            ],
+            "support": {
+                "issues": "https://github.com/bobthecow/psysh/issues",
+                "source": "https://github.com/bobthecow/psysh/tree/v0.12.10"
+            },
+            "time": "2025-08-04T12:39:37+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -15381,6 +15312,76 @@
                 }
             ],
             "time": "2025-02-07T05:00:38+00:00"
+        },
+        {
+            "name": "soloterm/solo",
+            "version": "v0.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/soloterm/solo.git",
+                "reference": "80778094596b1489d3fbf22e3db990c2d752d8fe"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/soloterm/solo/zipball/80778094596b1489d3fbf22e3db990c2d752d8fe",
+                "reference": "80778094596b1489d3fbf22e3db990c2d752d8fe",
+                "shasum": ""
+            },
+            "require": {
+                "ext-pcntl": "*",
+                "ext-posix": "*",
+                "illuminate/console": "^10|^11|^12",
+                "illuminate/process": "^10|^11|^12",
+                "illuminate/support": "^10|^11|^12",
+                "joetannenbaum/chewie": "^0.1",
+                "laravel/prompts": "^0.1.21|^0.2|^0.3",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "illuminate/database": "^10|^11|^12",
+                "laravel/serializable-closure": "^1.3",
+                "orchestra/testbench": "^8.29|^9.5|^10",
+                "phpunit/phpunit": "^10.5|^11"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "SoloTerm\\Solo\\Providers\\SoloServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "SoloTerm\\Solo\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Aaron Francis",
+                    "email": "aarondfrancis@gmail.com"
+                }
+            ],
+            "description": "A Laravel package to run multiple commands at once, to aid in local development.",
+            "support": {
+                "issues": "https://github.com/soloterm/solo/issues",
+                "source": "https://github.com/soloterm/solo/tree/v0.4.0"
+            },
+            "funding": [
+                {
+                    "url": "https://aaronfrancis.com/backstage",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/aarondfrancis",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-02-19T19:10:50+00:00"
         },
         {
             "name": "spatie/laravel-ray",
