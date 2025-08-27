@@ -14,38 +14,40 @@ Beacon is an open-source feature management platform built specifically for Lara
 - User Segmentation (A/B Testing)
 - Manage multiple Applications and Environments
 
-## To-Do
+## Installation
 
-- [ ] Policies
-    - [x] CRUD
-    - [ ] Active/Inactive per Application per Enviroment
-    - [ ] Limited Availability 
-      - [ ] Date Range
-      - [ ] Context & Scope
-    - [ ] Gradual Rollout (sticky)
-      - [ ] Percentage
-      - [ ] Context & Scope
-- [ ] API
-  - [x] Prototype
-- [ ] Feature Flags
-  - [ ] Lifetime Configuration
-  - [ ] Editing UI
-  - [ ] Table UI
-    - [ ] Filter by Tag
-    - [ ] Filter by Type
-    - [ ] Filter by Environment
-    - [ ] Filter by Application
-    - [ ] Filter by Status
-  - [ ] Lifecycle Tracking
-- [ ] TOTP Two-Factor Authentication
-- [ ] Teams
-  - [ ] Invitations
-  - [ ] Roles/Permissions
-- [ ] Settings
-- [ ] Dashboard
-- [ ] Audit Log
-- [ ] Notifications
-- [ ] Refactor
-  - [ ] Value Objects
-  - [ ] Services Pattern
-  - [ ] Repository Pattern
+1. **Clone the Repository**
+
+```bash
+git clone git@github.com:beacon-hq/app.git
+cd beacon
+```
+
+2. **Install Dependencies**
+
+```bash
+composer install
+npm install
+```
+
+3. **Set Up Environment**
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+4. **Configure Database**
+
+Update your `.env` file with your database credentials.
+
+5. **Run Migrations and Seeders**
+
+```bash
+php artisan migrate --seed
+```
+
+6. **Serve the Application**
+
+```bash
+php artisan serve
+```
