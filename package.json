@@ -29,7 +29,7 @@
         "lodash-types": "^4.17.1",
         "lucide-vue-next": "^0.525.0",
         "markdown-it-figure-caption": "^0.1.0",
-        "mermaid": "^11.9.0",
+        "mermaid": "^11.10.1",
         "motion": "^12.9.4",
         "postcss": "^8.4.31",
         "react": "^18.2.0",
