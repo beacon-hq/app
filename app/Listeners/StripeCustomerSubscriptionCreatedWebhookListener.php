@@ -20,7 +20,6 @@ class StripeCustomerSubscriptionCreatedWebhookListener
             $this->subscriptionBillingService->setFraudThreshold(
                 subscriptionId: $event->payload['data']['object']['id'],
                 productId: $event->payload['data']['object']['items']['data'][0]['price']['product'] ?? null,
-                isTrial: $event->payload['data']['object']['status'] === 'trialing'
             );
         }
     }
