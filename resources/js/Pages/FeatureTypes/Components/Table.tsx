@@ -1,7 +1,7 @@
 import { FeatureType, FeatureTypeCollection } from '@/Application';
-import { IconColor } from '@/Components/IconColor';
-import { DataTable } from '@/Components/ui/data-table';
-import { DataTableColumnHeader } from '@/Components/ui/data-table-column-header';
+import { IconColor } from '@/components/IconColor';
+import { DataTable } from '@/components/ui/data-table';
+import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
 import { localDateTime } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';

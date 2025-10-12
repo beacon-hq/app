@@ -1,5 +1,5 @@
-import BeaconIcon from '@/Components/BeaconIcon';
-import { AnimatedBeam } from '@/Components/magicui/animated-beam';
+import BeaconIcon from '@/components/BeaconIcon';
+import { AnimatedBeam } from '@/components/ui/animated-beam';
 import { cn } from '@/lib/utils';
 import { AppWindow, Code2, ShieldUser } from 'lucide-react';
 import { useReducedMotion } from 'motion/react';
@@ -57,15 +57,15 @@ export function CentralizedControlAnimation({ className }: { className?: string 
                 <div className="flex flex-col justify-center gap-10">
                     <p className="text-primary text-sm font-bold">Application</p>
                     <Circle ref={userApp} className="size-16">
-                        <AppWindow />
+                        <AppWindow className="stroke-primary dark:stroke-secondary" />
                     </Circle>
 
                     <Circle ref={adminApp} className="size-16">
-                        <ShieldUser />
+                        <ShieldUser className="stroke-primary dark:stroke-secondary" />
                     </Circle>
 
                     <Circle ref={apiApp} className="size-16">
-                        <Code2 />
+                        <Code2 className="stroke-primary dark:stroke-secondary" />
                     </Circle>
                 </div>
                 <div className="flex flex-col justify-center gap-2">

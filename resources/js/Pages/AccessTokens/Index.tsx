@@ -1,11 +1,11 @@
 import { AccessTokenCollection } from '@/Application';
-import InputError from '@/Components/InputError';
-import { Button } from '@/Components/ui/button';
-import { Card, CardContent } from '@/Components/ui/card';
-import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from '@/Components/ui/dialog';
-import { Input } from '@/Components/ui/input';
-import { Label } from '@/Components/ui/label';
-import { Toaster } from '@/Components/ui/sonner';
+import InputError from '@/components/InputError';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Toaster } from '@/components/ui/sonner';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import Table from '@/Pages/AccessTokens/Components/Table';
 import { PageProps } from '@/types';

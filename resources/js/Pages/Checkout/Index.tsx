@@ -1,7 +1,7 @@
 import { ProductCollection } from '@/Application';
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import Footer from '@/Components/Footer';
-import NavMenu from '@/Components/NavMenu';
+import ApplicationLogo from '@/components/ApplicationLogo';
+import Footer from '@/components/Footer';
+import NavMenu from '@/components/NavMenu';
 import Pricing from '@/Pages/Home/Components/Pricing';
 import useScrollToLocation from '@/hooks/use-scroll-to-location';
 import { PageProps } from '@/types';

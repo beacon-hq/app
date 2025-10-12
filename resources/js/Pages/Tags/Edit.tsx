@@ -1,5 +1,5 @@
 import { Tag } from '@/Application';
-import { Card, CardContent, CardTitle } from '@/Components/ui/card';
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Form } from '@/Pages/Tags/Components/Form';
 import { Head, router, useForm } from '@inertiajs/react';

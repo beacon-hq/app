@@ -1,6 +1,7 @@
 import { ProductCollection, Subscription } from '@/Application';
-import ProductCard from '@/Components/ProductCard';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/Components/ui/accordion';
+import ProductCard from '@/components/ProductCard';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
 import { router } from '@inertiajs/react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import React, { useRef } from 'react';
@@ -174,6 +175,13 @@ const faqs = [
     },
     {
         question: 'Can I self-host Beacon?',
-        answer: 'Yes, absolutely, Beacon is open source.',
+        answer: (
+            <>
+                Yes, absolutely, Beacon is{' '}
+                <Button type="button" className="p-0" variant="link">
+                    <a href="https://github.com/beacon-hq/app">open source.</a>
+                </Button>
+            </>
+        ),
     },
 ];

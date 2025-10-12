@@ -1,7 +1,7 @@
 import { OrganizationCollection } from '@/Application';
-import { Button } from '@/Components/ui/button';
-import { Card, CardDescription, CardHeader } from '@/Components/ui/card';
-import { Sheet, SheetContent, SheetTitle } from '@/Components/ui/sheet';
+import { Button } from '@/components/ui/button';
+import { Card, CardDescription, CardHeader } from '@/components/ui/card';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import Form from '@/Pages/Organizations/Components/Form';
 import { Head, Link } from '@inertiajs/react';

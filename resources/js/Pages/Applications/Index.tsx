@@ -1,9 +1,9 @@
 import { Application, ApplicationCollection } from '@/Application';
-import { IconColor } from '@/Components/IconColor';
-import { Badge } from '@/Components/ui/badge';
-import { Button } from '@/Components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/Components/ui/card';
-import { Sheet, SheetContent, SheetTitle } from '@/Components/ui/sheet';
+import { IconColor } from '@/components/IconColor';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Form } from '@/Pages/Applications/Components/Form';
 import { localDateTime } from '@/lib/utils';

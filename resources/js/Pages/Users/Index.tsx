@@ -3,7 +3,7 @@ import InvitesTable from './Components/InvitesTable';
 import ManageUser from './Components/ManageUser';
 import Table from './Components/Table';
 import { InviteCollection, Team, User, UserCollection } from '@/Application';
-import { TableOptions } from '@/Components/ui/data-table';
+import { TableOptions } from '@/components/ui/data-table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { cn } from '@/lib/utils';
 import { Head, router } from '@inertiajs/react';

@@ -1,8 +1,8 @@
 import OnboardingDialog from './Components/Onboarding/OnboardingDialog';
-import { IconColor } from '@/Components/IconColor';
-import { Button } from '@/Components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/Components/ui/card';
-import { CardGroup, CardGroupContent } from '@/Components/ui/card-group';
+import { IconColor } from '@/components/IconColor';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardGroup, CardGroupContent } from '@/components/ui/card-group';
 import {
     ChartConfig,
     ChartContainer,
@@ -10,9 +10,9 @@ import {
     ChartLegendContent,
     ChartTooltip,
     ChartTooltipContent,
-} from '@/Components/ui/chart';
-import { DataTable } from '@/Components/ui/data-table';
-import { DataTableColumnHeader } from '@/Components/ui/data-table-column-header';
+} from '@/components/ui/chart';
+import { DataTable } from '@/components/ui/data-table';
+import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { cn } from '@/lib/utils';
 import { Head } from '@inertiajs/react';

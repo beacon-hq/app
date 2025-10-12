@@ -7,10 +7,10 @@ import {
     RolloutStrategy,
     VariantStrategy,
 } from '@/Application';
-import HttpRequestBuilder from '@/Components/HttpRequestBuilder';
-import { IconColor } from '@/Components/IconColor';
-import MultiValueInput from '@/Components/MultiValueInput';
-import { PolicyDefinitionForm } from '@/Components/PolicyDefinitionForm';
+import HttpRequestBuilder from '@/components/HttpRequestBuilder';
+import { IconColor } from '@/components/IconColor';
+import MultiValueInput from '@/components/MultiValueInput';
+import { PolicyDefinitionForm } from '@/components/PolicyDefinitionForm';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -21,17 +21,17 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from '@/Components/ui/alert-dialog';
-import { Button } from '@/Components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/Components/ui/card';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/Components/ui/command';
-import { Input } from '@/Components/ui/input';
-import { Label } from '@/Components/ui/label';
-import { Popover, PopoverContent, PopoverTrigger } from '@/Components/ui/popover';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select';
-import { Slider } from '@/Components/ui/slider';
-import { Switch } from '@/Components/ui/switch';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs';
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useFeatureFlagStore, Variant } from '@/stores/featureFlagStore';
 import { useTheme } from '@/theme-provider';
 import Editor from '@monaco-editor/react';

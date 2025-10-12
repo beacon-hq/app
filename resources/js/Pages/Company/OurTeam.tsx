@@ -1,10 +1,10 @@
-import { AuroraText } from '@/Components/magicui/aurora-text';
-import { Marquee } from '@/Components/magicui/marquee';
-import { ShineBorder } from '@/Components/magicui/shine-border';
-import { Avatar, AvatarImage } from '@/Components/ui/avatar';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card';
-import { CardGroup, CardGroupHeader, CardGroupTitle } from '@/Components/ui/card-group';
 import GuestLayout from '@/Layouts/GuestLayout';
+import { AuroraText } from '@/components/ui/aurora-text';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardGroup, CardGroupHeader, CardGroupTitle } from '@/components/ui/card-group';
+import { Marquee } from '@/components/ui/marquee';
+import { ShineBorder } from '@/components/ui/shine-border';
 import { Head } from '@inertiajs/react';
 
 export default function OurTeam() {

@@ -1,6 +1,6 @@
 import { Role, Team, User, UserCollection, UserStatus } from '@/Application';
-import { IconColor } from '@/Components/IconColor';
-import UserAvatar from '@/Components/UserAvatar';
+import { IconColor } from '@/components/IconColor';
+import UserAvatar from '@/components/UserAvatar';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -11,10 +11,10 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from '@/Components/ui/alert-dialog';
-import { Badge } from '@/Components/ui/badge';
-import { DataTable, TableOptions } from '@/Components/ui/data-table';
-import { DataTableColumnHeader } from '@/Components/ui/data-table-column-header';
+} from '@/components/ui/alert-dialog';
+import { Badge } from '@/components/ui/badge';
+import { DataTable, TableOptions } from '@/components/ui/data-table';
+import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
 import { cn } from '@/lib/utils';
 import { Auth } from '@/types';
 import { router, usePage } from '@inertiajs/react';

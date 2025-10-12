@@ -6,10 +6,10 @@ import {
     FeatureTypeCollection,
     TagCollection,
 } from '@/Application';
-import { Button } from '@/Components/ui/button';
-import { Card, CardContent } from '@/Components/ui/card';
-import { TableOptions } from '@/Components/ui/data-table';
-import { Sheet, SheetContent, SheetTitle } from '@/Components/ui/sheet';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { TableOptions } from '@/components/ui/data-table';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Form } from '@/Pages/FeatureFlags/Components/Form';
 import Table from '@/Pages/FeatureFlags/Components/Table';

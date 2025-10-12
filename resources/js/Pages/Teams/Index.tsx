@@ -1,11 +1,11 @@
 import { Team, TeamCollection, User } from '@/Application';
-import { IconColor } from '@/Components/IconColor';
-import UserAvatar from '@/Components/UserAvatar';
-import { Button } from '@/Components/ui/button';
-import { Card, CardContent } from '@/Components/ui/card';
-import { Separator } from '@/Components/ui/separator';
-import { Sheet, SheetContent, SheetTitle } from '@/Components/ui/sheet';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/Components/ui/tooltip';
+import { IconColor } from '@/components/IconColor';
+import UserAvatar from '@/components/UserAvatar';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Form } from '@/Pages/Teams/Components/Form';
 import { Head, Link, useForm } from '@inertiajs/react';

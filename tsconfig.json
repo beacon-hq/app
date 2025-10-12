@@ -11,9 +11,10 @@
         "forceConsistentCasingInFileNames": true,
         "skipLibCheck": true,
         "noEmit": true,
+        "baseUrl": ".",
         "paths": {
             "@/*": ["./resources/js/*"],
-            "@/components": ["./resources/js/Components/*"],
+            "@/components": ["./resources/js/components/*"],
             "ziggy-js": ["./vendor/tightenco/ziggy"]
         }
     },

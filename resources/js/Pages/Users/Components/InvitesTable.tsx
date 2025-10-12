@@ -1,5 +1,5 @@
 import { Invite, TeamCollection } from '@/Application';
-import { IconColor } from '@/Components/IconColor';
+import { IconColor } from '@/components/IconColor';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -10,9 +10,9 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from '@/Components/ui/alert-dialog';
-import { Avatar, AvatarFallback, AvatarImage } from '@/Components/ui/avatar';
-import { DataTable, TableOptions } from '@/Components/ui/data-table';
+} from '@/components/ui/alert-dialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { DataTable, TableOptions } from '@/components/ui/data-table';
 import AddUser from '@/Pages/Users/Components/AddUser';
 import { router } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';

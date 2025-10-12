@@ -1,7 +1,7 @@
 import DeleteUserForm from './Partials/DeleteUserForm';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
-import { Card, CardContent } from '@/Components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import ManageTwoFactorForm from '@/Pages/Profile/Partials/ManageTwoFactorForm';
 import { PageProps } from '@/types';

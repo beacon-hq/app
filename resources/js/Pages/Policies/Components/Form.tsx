@@ -1,10 +1,10 @@
 import { Policy, PolicyCollection, PolicyDefinitionCollection, PolicyDefinitionType } from '@/Application';
-import InputError from '@/Components/InputError';
-import { PolicyDefinitionForm } from '@/Components/PolicyDefinitionForm';
-import { Button } from '@/Components/ui/button';
-import { Input } from '@/Components/ui/input';
-import { Label } from '@/Components/ui/label';
-import { Textarea } from '@/Components/ui/textarea';
+import InputError from '@/components/InputError';
+import { PolicyDefinitionForm } from '@/components/PolicyDefinitionForm';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { usePolicyStore } from '@/stores/policyStore';
 import { FormErrors } from '@/types/global';
 import { PlusCircle } from 'lucide-react';

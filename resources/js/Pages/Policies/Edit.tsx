@@ -1,5 +1,5 @@
 import { Policy, PolicyCollection } from '@/Application';
-import { Card, CardContent, CardTitle } from '@/Components/ui/card';
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Form } from '@/Pages/Policies/Components/Form';
 import { usePolicyStore } from '@/stores/policyStore';

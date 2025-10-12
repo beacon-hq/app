@@ -105,8 +105,8 @@ svg#get-started.animate #laravel {
         --sidebar-accent-foreground: var(--sidebar-active);
         --sidebar-border: hsl(220 13% 91%);
         --sidebar-ring: hsl(217.2 91.2% 59.8%);
-        --sidebar-tooltip-bg: hsl(328.6 85.5% 70.2%);
-        --sidebar-active: hsl(217.2 91.2% 59.8%);
+        --sidebar-tooltip-bg: #44b0ff;
+        --sidebar-active: #00b9fa;
 
         --info: var(--color-blue-600);
         --success: var(--color-green-600);
@@ -147,7 +147,7 @@ svg#get-started.animate #laravel {
         --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
         --sidebar-border: hsl(240 3.7% 15.9%);
         --sidebar-ring: hsl(217.2 91.2% 59.8%);
-        --sidebar-tooltip-bg: hsl(328.6 85.5% 70.2%);
+        --sidebar-tooltip-bg: #44b0ff;
         --sidebar-tooltip-color: var(--sidebar-accent);
         --sidebar-active: hsl(217.2 91.2% 59.8%);
 

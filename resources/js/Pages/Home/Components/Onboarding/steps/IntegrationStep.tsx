@@ -1,7 +1,7 @@
-import HttpRequest from '@/Components/HttpRequest';
-import { AccordionContent, AccordionItem } from '@/Components/ui/accordion';
-import { Badge } from '@/Components/ui/badge';
-import { Button } from '@/Components/ui/button';
+import HttpRequest from '@/components/HttpRequest';
+import { AccordionContent, AccordionItem } from '@/components/ui/accordion';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { HeartPulse } from 'lucide-react';
 
 interface IntegrationStepProps {

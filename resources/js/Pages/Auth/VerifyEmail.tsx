@@ -1,6 +1,6 @@
-import PrimaryButton from '@/Components/PrimaryButton';
-import { Button } from '@/Components/ui/button';
-import { Card, CardContent, CardHeader } from '@/Components/ui/card';
+import PrimaryButton from '@/components/PrimaryButton';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';

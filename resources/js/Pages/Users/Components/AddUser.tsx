@@ -1,5 +1,5 @@
 import { Role, Team } from '@/Application';
-import { Button } from '@/Components/ui/button';
+import { Button } from '@/components/ui/button';
 import {
     Dialog,
     DialogClose,
@@ -8,10 +8,10 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from '@/Components/ui/dialog';
-import { Input } from '@/Components/ui/input';
-import { Label } from '@/Components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select';
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useForm } from '@inertiajs/react';
 import { PlusCircle } from 'lucide-react';
 import React, { useState } from 'react';

@@ -1,7 +1,7 @@
 import { Tag, TagCollection } from '@/Application';
-import { Button } from '@/Components/ui/button';
-import { Card, CardContent } from '@/Components/ui/card';
-import { Sheet, SheetContent, SheetTitle } from '@/Components/ui/sheet';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { Form } from '@/Pages/Tags/Components/Form';
 import Table from '@/Pages/Tags/Components/Table';

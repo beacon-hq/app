@@ -1,11 +1,11 @@
 import { Team, UserCollection } from '@/Application';
-import { ColorPicker } from '@/Components/ColorPicker';
-import IconPicker from '@/Components/IconPicker';
-import InputError from '@/Components/InputError';
-import { Button } from '@/Components/ui/button';
-import { TableOptions } from '@/Components/ui/data-table';
-import { Input } from '@/Components/ui/input';
-import { Label } from '@/Components/ui/label';
+import { ColorPicker } from '@/components/ColorPicker';
+import IconPicker from '@/components/IconPicker';
+import InputError from '@/components/InputError';
+import { Button } from '@/components/ui/button';
+import { TableOptions } from '@/components/ui/data-table';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import AddMembers from '@/Pages/Teams/Components/AddMembers';
 import Table from '@/Pages/Teams/Components/Table';

@@ -1,7 +1,7 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import EarlyAccessNotice from '@/Components/EarlyAccessNotice';
-import Footer from '@/Components/Footer';
-import NavMenu from '@/Components/NavMenu';
+import ApplicationLogo from '@/components/ApplicationLogo';
+import EarlyAccessNotice from '@/components/EarlyAccessNotice';
+import Footer from '@/components/Footer';
+import NavMenu from '@/components/NavMenu';
 import { cn } from '@/lib/utils';
 import { Link, usePage } from '@inertiajs/react';
 import React, { PropsWithChildren } from 'react';

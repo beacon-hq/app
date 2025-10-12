@@ -1,5 +1,5 @@
 import { Product } from '@/Application';
-import { Alert, AlertDescription, AlertTitle } from '@/Components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { CircleCheck } from 'lucide-react';
 
 const PlanAlert = ({ plan }: { plan: Product | null }) => {

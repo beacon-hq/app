@@ -1,9 +1,9 @@
 import { Invite, Product } from '@/Application';
-import InputError from '@/Components/InputError';
-import PrimaryButton from '@/Components/PrimaryButton';
-import { Card, CardContent } from '@/Components/ui/card';
-import { Input } from '@/Components/ui/input';
-import { Label } from '@/Components/ui/label';
+import InputError from '@/components/InputError';
+import PrimaryButton from '@/components/PrimaryButton';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import GuestLayout from '@/Layouts/GuestLayout';
 import InviteAlert from '@/Pages/Auth/Components/InviteAlert';
 import PlanAlert from '@/Pages/Auth/Components/PlanAlert';

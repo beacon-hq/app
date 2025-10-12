@@ -1,8 +1,8 @@
 import { ActivityLogCollection, Color } from '@/Application';
-import { Avatar, AvatarFallback, AvatarImage } from '@/Components/ui/avatar';
-import { ObjectDiff } from '@/Components/ui/object-diff';
-import { TimelineLayout } from '@/Components/ui/timeline-layout';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/Components/ui/tooltip';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ObjectDiff } from '@/components/ui/object-diff';
+import { TimelineLayout } from '@/components/ui/timeline-layout';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { localDate } from '@/lib/utils';
 import { TimelineElement } from '@/types/timeline';
 import React from 'react';

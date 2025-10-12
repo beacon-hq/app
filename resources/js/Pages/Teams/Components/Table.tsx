@@ -1,5 +1,5 @@
 import { Role, User, UserCollection, UserStatus } from '@/Application';
-import UserAvatar from '@/Components/UserAvatar';
+import UserAvatar from '@/components/UserAvatar';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -10,10 +10,10 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from '@/Components/ui/alert-dialog';
-import { Badge } from '@/Components/ui/badge';
-import { DataTable, TableOptions } from '@/Components/ui/data-table';
-import { DataTableColumnHeader } from '@/Components/ui/data-table-column-header';
+} from '@/components/ui/alert-dialog';
+import { Badge } from '@/components/ui/badge';
+import { DataTable, TableOptions } from '@/components/ui/data-table';
+import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
 import { cn } from '@/lib/utils';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { Trash2 } from 'lucide-react';

@@ -1,6 +1,6 @@
 import { Team, User, UserCollection } from '@/Application';
-import { Button } from '@/Components/ui/button';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/Components/ui/command';
+import { Button } from '@/components/ui/button';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import {
     Dialog,
     DialogClose,
@@ -9,9 +9,9 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from '@/Components/ui/dialog';
-import { Label } from '@/Components/ui/label';
-import { Popover, PopoverContent, PopoverTrigger } from '@/Components/ui/popover';
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { useForm } from '@inertiajs/react';
 import { Check, ChevronsUpDown, MinusCircle, PlusCircle } from 'lucide-react';

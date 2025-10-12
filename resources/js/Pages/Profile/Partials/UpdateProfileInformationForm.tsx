@@ -1,9 +1,9 @@
-import InputError from '@/Components/InputError';
-import { Avatar, AvatarFallback, AvatarImage } from '@/Components/ui/avatar';
-import { Button } from '@/Components/ui/button';
-import { Input } from '@/Components/ui/input';
-import { Label } from '@/Components/ui/label';
-import { Tabs, TabsList, TabsTrigger } from '@/Components/ui/tabs';
+import InputError from '@/components/InputError';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 import { Theme, useTheme } from '@/theme-provider';
 import { Auth } from '@/types';

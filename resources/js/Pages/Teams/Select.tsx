@@ -1,6 +1,6 @@
-import { IconColor } from '@/Components/IconColor';
-import { Card, CardContent } from '@/Components/ui/card';
-import { Separator } from '@/Components/ui/separator';
+import { IconColor } from '@/components/IconColor';
+import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import Guest from '@/Layouts/GuestLayout';
 import { chooseTeam } from '@/lib/utils';
 import { PageProps } from '@/types';

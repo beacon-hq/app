@@ -6,12 +6,12 @@ import {
     FeatureTypeCollection,
     TagCollection,
 } from '@/Application';
-import { IconColor } from '@/Components/IconColor';
-import ItemList from '@/Components/ItemList';
-import { Badge } from '@/Components/ui/badge';
-import { DataTable, TableOptions } from '@/Components/ui/data-table';
-import { DataTableColumnHeader } from '@/Components/ui/data-table-column-header';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/Components/ui/tooltip';
+import { IconColor } from '@/components/IconColor';
+import ItemList from '@/components/ItemList';
+import { Badge } from '@/components/ui/badge';
+import { DataTable, TableOptions } from '@/components/ui/data-table';
+import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn, localDateTime } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';

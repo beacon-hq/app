@@ -1,11 +1,11 @@
 import { Organization } from '@/Application';
-import { ColorPicker } from '@/Components/ColorPicker';
-import IconPicker from '@/Components/IconPicker';
-import InputError from '@/Components/InputError';
-import { Button } from '@/Components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
-import { Input } from '@/Components/ui/input';
-import { Label } from '@/Components/ui/label';
+import { ColorPicker } from '@/components/ColorPicker';
+import IconPicker from '@/components/IconPicker';
+import InputError from '@/components/InputError';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useForm } from '@inertiajs/react';
 import React from 'react';
 

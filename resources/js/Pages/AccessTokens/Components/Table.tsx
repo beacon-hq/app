@@ -1,6 +1,6 @@
 import { AccessToken, AccessTokenCollection } from '@/Application';
-import CopyToClipboard from '@/Components/CopyToClipboard';
-import { Alert, AlertDescription } from '@/Components/ui/alert';
+import CopyToClipboard from '@/components/CopyToClipboard';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -11,9 +11,9 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from '@/Components/ui/alert-dialog';
-import { DataTable } from '@/Components/ui/data-table';
-import { DataTableColumnHeader } from '@/Components/ui/data-table-column-header';
+} from '@/components/ui/alert-dialog';
+import { DataTable } from '@/components/ui/data-table';
+import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
 import { localDateTime } from '@/lib/utils';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { AlertCircle, Trash } from 'lucide-react';

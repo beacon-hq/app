@@ -1,7 +1,7 @@
-import CopyToClipboard from '@/Components/CopyToClipboard';
-import { AccordionContent, AccordionItem } from '@/Components/ui/accordion';
-import { Badge } from '@/Components/ui/badge';
-import { Button } from '@/Components/ui/button';
+import CopyToClipboard from '@/components/CopyToClipboard';
+import { AccordionContent, AccordionItem } from '@/components/ui/accordion';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import docco from 'react-syntax-highlighter/dist/esm/styles/hljs/docco';
 

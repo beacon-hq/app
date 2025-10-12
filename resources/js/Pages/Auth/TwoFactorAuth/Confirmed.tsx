@@ -1,6 +1,6 @@
-import CopyToClipboard from '@/Components/CopyToClipboard';
-import { Button } from '@/Components/ui/button';
-import { Card, CardContent } from '@/Components/ui/card';
+import CopyToClipboard from '@/components/CopyToClipboard';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import Guest from '@/Layouts/GuestLayout';
 import { Head, Link } from '@inertiajs/react';
 import React from 'react';

@@ -1,9 +1,9 @@
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/Components/ui/accordion';
-import { Alert, AlertDescription } from '@/Components/ui/alert';
-import { Button } from '@/Components/ui/button';
-import { Card, CardContent, CardHeader } from '@/Components/ui/card';
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/Components/ui/input-otp';
-import { Label } from '@/Components/ui/label';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import { Label } from '@/components/ui/label';
 import Guest from '@/Layouts/GuestLayout';
 import { PageProps } from '@/types';
 import { Head, useForm } from '@inertiajs/react';

@@ -1,5 +1,5 @@
 import { Invite } from '@/Application';
-import { Alert, AlertDescription, AlertTitle } from '@/Components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, PartyPopper } from 'lucide-react';
 
 const InviteAlert = ({ invite, variant }: { invite: Invite | false | null; variant: 'login' | 'register' }) => {
