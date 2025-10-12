@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\FeatureFlags\GetFeatureFlags;
+use App\Actions\FeatureFlags\GetFeatureFlagStatus;
 use App\Events\FeatureFlagMissedEvent;
-use App\Http\Controllers\Controller;
-use App\Services\FeatureFlagService;
-use App\Services\FeatureFlagStatusService;
 use App\Values\Collections\FeatureFlagCollection;
 use App\Values\FeatureFlag;
 use App\Values\FeatureFlagContext;
@@ -15,11 +14,11 @@ use App\Values\FeatureFlagResponse;
 use Bag\Attributes\WithoutValidation;
 use Illuminate\Http\Request;
 
-class FeatureFlagController extends Controller
+class FeatureFlagController
 {
-    public function index(Request $request, FeatureFlagService $featureFlagService): FeatureFlagCollection
+    public function index(Request $request): FeatureFlagCollection
     {
-        return $featureFlagService->all(filters: [
+        return GetFeatureFlags::run(filters: [
             'application' => $request->json('app_name'),
             'environment' => $request->json('environment'),
         ]);
@@ -28,13 +27,12 @@ class FeatureFlagController extends Controller
     public function show(
         #[WithoutValidation]
         FeatureFlag $featureFlag,
-        FeatureFlagStatusService $featureFlagStatusService,
         Request $request
     ): FeatureFlagResponse {
         try {
             $context = FeatureFlagContext::from(... $request->json()->all());
 
-            return $featureFlagStatusService->getStatus(FeatureFlag::withoutValidation(name: $featureFlag->id), $context);
+            return GetFeatureFlagStatus::run(FeatureFlag::withoutValidation(name: $featureFlag->id), $context);
         } catch (\Throwable $e) {
             $response = FeatureFlagResponse::from(
                 featureFlag: $featureFlag->has('name') ? $featureFlag->name : $featureFlag->id,

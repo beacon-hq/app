@@ -2,21 +2,20 @@
 
 declare(strict_types=1);
 
+use App\Actions\Users\CreateUser;
 use App\Enums\Role;
+use App\Models\Organization;
 use App\Models\Team;
 use App\Models\User;
-use App\Services\UserService;
 use Bag\Internal\Cache;
 use Carbon\CarbonInterval;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Sleep;
 use Pest\Arch\Support\Composer;
 use function Pest\Laravel\freezeTime;
 use Pest\TestSuite;
-use Tests\DuskTestCase;
 use Tests\TestCase;
 
 /*
@@ -45,13 +44,12 @@ pest()->extend(TestCase::class)
 
         Cache::reset();
     })
-    ->in('Unit', 'Feature');
+    ->in('Unit', 'Feature', 'Browser');
 
-pest()->extend(DuskTestCase::class)
-    ->in('Browser')
-    ->beforeAll(function () {
-        Artisan::call('migrate:fresh');
-    });
+pest()
+    ->browser()
+    ->timeout(20 * 1000)
+    ->userAgent('Pest/' . Pest\version());
 
 /*
 |--------------------------------------------------------------------------
@@ -119,7 +117,7 @@ function vendorPackages(): array
 
 function createBrowserUser(): User
 {
-    $user = app(UserService::class)->create(
+    $user = CreateUser::run(
         \App\Values\User::from(...User::factory(['first_name' => 'Beacon Demo'])->make()->toArray(), password: 'Password123!'),
     )->id;
 
@@ -136,11 +134,25 @@ function createBrowserUser(): User
     return $userModel;
 }
 
+/**
+ * @return array{0: Team, 1: User, 2: Organization}
+ */
 function createOwner(): array
 {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    $user = User::factory()->create();
+
+    $organization = Organization::factory()
+        ->for($user, 'owner')
+        ->create(['name' => 'Beacon Demo']);
+    $team = Team::factory()
+        ->for($organization)
+        ->create(['name' => 'Beacon Demo\'s Team']);
+
+    $user->teams()->attach($team);
+    $user->organizations()->attach($organization);
     $user->assignRole(Role::OWNER);
 
-    return [$team, $user];
+    $user->save();
+
+    return [$team, $user, $organization];
 }

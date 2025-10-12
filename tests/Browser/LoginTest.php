@@ -2,34 +2,33 @@
 
 declare(strict_types=1);
 
-use Laravel\Dusk\Browser;
-
-afterEach(fn () => $this->browse(function (Browser $browser) {
-    $browser->logout();
-}));
+use Illuminate\Support\Facades\Config;
 
 it('can login', function () {
-    $user = createBrowserUser();
+    [, $user, ] = createOwner();
 
-    $this->browse(function (Browser $browser) use ($user) {
-        $browser->resize(500, 850);
+    $user->password = 'Password123!';
+    $user->two_factor_secret = 'testing';
+    $user->two_factor_confirmed_at = now();
+    $user->save();
 
-        $browser
-            ->visitRoute('login')
-            ->addCookie('hide-menu-bar', 1)
-            ->addCookie('fortify-testing', 0)
-            ->refresh()
-            ->waitForText('Forgot your password?')
-            ->click('@switch-login-remember')
-            ->pause(500)
-            ->screenshotElement('@main', 'login-form')
-            ->type('email', $user->email)
-            ->type('password', 'Password123!')
-            ->click('@button-login-submit');
+    Config::set('beacon.billing.enabled', false);
 
-        $browser
-            ->waitForText('Verification')
-            ->pause(500)
-            ->screenshotElement('@main', 'login-verification');
-    });
+    $page = visit('/')
+        ->resize(500, 850);
+
+    $page->script('document.cookie = \'hide-menu-bar=1; path=/\'');
+    $page->script('document.cookie = \'fortify-testing=0; path=/\'');
+
+    $page->navigate(route('login'));
+
+    $page->assertVisible('[data-test="button-login-submit"]')
+        ->screenshot(filename: 'login-form')
+        ->fill('email', $user->email)
+        ->fill('password', 'Password123!')
+        ->click('[data-test="button-login-submit"]');
+
+    $page->assertSee('Verification')
+        ->wait(1)
+        ->screenshot(filename: 'login-verification');
 });

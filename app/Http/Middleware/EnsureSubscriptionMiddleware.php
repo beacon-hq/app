@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App;
+use App\Actions\Subscriptions\HasActiveSubscription;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Context;
 use Session;
 
 class EnsureSubscriptionMiddleware
 {
-    public function __construct(protected App\Services\SubscriptionBillingService $subscriptionBillingService)
+    public function __construct(protected HasActiveSubscription $hasActiveSubscriptionAction)
     {
     }
 
@@ -30,7 +31,7 @@ class EnsureSubscriptionMiddleware
                 Session::put('checkout.plan', $request->string('plan'));
             }
 
-            if ($this->subscriptionBillingService->hasActiveSubscription(App::context()->organization)) {
+            if (Context::has('organization') && $this->hasActiveSubscriptionAction->handle(Context::get('organization'))) {
                 return $next($request);
             } else {
                 if (Session::has('checkout.plan')) {

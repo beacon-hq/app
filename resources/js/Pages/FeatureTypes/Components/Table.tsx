@@ -75,7 +75,7 @@ export default function Table({ featureTypes }: { featureTypes: FeatureTypeColle
                     <div className="flex space-x-2">
                         <Link
                             href={route('feature-types.edit', { feature_type: row.original.id as string })}
-                            data-dusk="button-feature-type-edit"
+                            data-test="button-feature-type-edit"
                         >
                             <Pencil className="h-4 w-4" />
                         </Link>

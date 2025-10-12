@@ -66,7 +66,7 @@ export default function Edit({ organization }: { organization: Organization }) {
             <div className="py-12">
                 <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
                     <Card
-                        data-dusk="card-organizations-edit"
+                        data-test="card-organizations-edit"
                         className="flex flex-row gap-36 bg-background dark:bg-background"
                     >
                         <CardHeader>
@@ -76,7 +76,7 @@ export default function Edit({ organization }: { organization: Organization }) {
                             <Form organization={organization} />
                         </CardContent>
                     </Card>
-                    <Card data-dusk="card-organizations-delete">
+                    <Card data-test="card-organizations-delete">
                         <CardHeader>
                             <CardTitle className="text-xl">Delete Organization</CardTitle>
                             <CardDescription className="text-sm text-gray-600 dark:text-gray-400">
@@ -87,11 +87,11 @@ export default function Edit({ organization }: { organization: Organization }) {
                         <CardContent className="pt-8">
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <Button variant="destructive" data-dusk="button-organizations-delete">
+                                    <Button variant="destructive" data-test="button-organizations-delete">
                                         Delete Organization
                                     </Button>
                                 </AlertDialogTrigger>
-                                <AlertDialogContent data-dusk="alert-organization-delete">
+                                <AlertDialogContent data-test="alert-organization-delete">
                                     <AlertDialogHeader>
                                         <AlertDialogTitle>
                                             Are you sure you want to delete this organization?
@@ -118,7 +118,7 @@ export default function Edit({ organization }: { organization: Organization }) {
                                         autoFocus
                                         placeholder="Password"
                                         aria-required
-                                        data-dusk="input-organization-delete-password"
+                                        data-test="input-organization-delete-password"
                                     />
                                     <InputError message={deleteErrors?.password} />
 

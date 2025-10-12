@@ -14,25 +14,25 @@ export default function Edit({ mustVerifyEmail, status }: PageProps<{ mustVerify
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                    <Card data-dusk="section-profile-information">
+                    <Card data-test="section-profile-information">
                         <CardContent>
                             <UpdateProfileInformationForm mustVerifyEmail={mustVerifyEmail} status={status} />
                         </CardContent>
                     </Card>
 
-                    <Card data-dusk="section-update-password">
+                    <Card data-test="section-update-password">
                         <CardContent>
                             <UpdatePasswordForm />
                         </CardContent>
                     </Card>
 
-                    <Card data-dusk="section-two-factor">
+                    <Card data-test="section-two-factor">
                         <CardContent>
                             <ManageTwoFactorForm />
                         </CardContent>
                     </Card>
 
-                    <Card data-dusk="section-delete-user">
+                    <Card data-test="section-delete-user">
                         <CardContent>
                             <DeleteUserForm />
                         </CardContent>

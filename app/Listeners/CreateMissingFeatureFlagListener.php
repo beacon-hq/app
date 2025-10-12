@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace App\Listeners;
 
+use App\Actions\Applications\CreateApplication;
+use App\Actions\Applications\FindApplicationByName;
+use App\Actions\Environments\CreateEnvironment;
+use App\Actions\Environments\FindEnvironmentByName;
+use App\Actions\FeatureFlags\CreateFeatureFlag;
+use App\Actions\FeatureFlags\FindFeatureFlagByName;
+use App\Actions\FeatureFlags\UpdateFeatureFlag;
+use App\Actions\FeatureTypes\GetDefaultFeatureType;
 use App\Events\FeatureFlagEvaluatedEvent;
 use App\Events\FeatureFlagMissedEvent;
-use App\Services\ApplicationService;
-use App\Services\EnvironmentService;
-use App\Services\FeatureFlagService;
-use App\Services\FeatureFlagStatusService;
-use App\Services\FeatureTypeService;
 use App\Values\Application;
 use App\Values\Collections\FeatureFlagStatusCollection;
 use App\Values\Environment;
@@ -19,23 +22,11 @@ use App\Values\FeatureFlagStatus;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\App;
 
 class CreateMissingFeatureFlagListener implements ShouldQueue
 {
-    public function __construct(
-        protected ApplicationService $applicationService,
-        protected EnvironmentService $environmentService,
-        protected FeatureFlagService $featureFlagService,
-        protected FeatureFlagStatusService $featureFlagStatusService,
-        protected FeatureTypeService $featureTypeService,
-    ) {
-    }
-
     public function handle(FeatureFlagMissedEvent $event): void
     {
-        App::context(organization: $event->appContext->organization, team: $event->appContext->team);
-
         $flag = $event->featureFlag;
 
         $colors = [
@@ -53,32 +44,40 @@ class CreateMissingFeatureFlagListener implements ShouldQueue
             'fuchsia',
         ];
 
-        if (($application = $this->applicationService->findByName($event->context->appName)) === null) {
-            $application = $this->applicationService->create(Application::from(name: $event->context->appName, displayName: $event->context->appName, color: Arr::random($colors)));
+        $application = FindApplicationByName::run($event->context->appName);
+        if ($application === null) {
+            $application = CreateApplication::run(Application::from(name: $event->context->appName, displayName: $event->context->appName, color: Arr::random($colors)));
         }
 
-        if (($environment = $this->environmentService->findByName($event->context->environment)) === null) {
-            $environment = $this->environmentService->create(Environment::from(name: $event->context->environment, color: Arr::random($colors)));
+        if (($environment = FindEnvironmentByName::run($event->context->environment)) === null) {
+            $environment = CreateEnvironment::run(Environment::from(name: $event->context->environment, color: Arr::random($colors)));
         }
 
         try {
-            $flag = $this->featureFlagService->findByName($flag->name);
+            $flag = FindFeatureFlagByName::run($flag->name);
         } catch (ModelNotFoundException) {
             $featureType = null;
 
             try {
-                $featureType = $this->featureTypeService->getDefault();
+                $featureType = GetDefaultFeatureType::run();
             } catch (ModelNotFoundException) {
             }
-            $flag = $this->featureFlagService->create(FeatureFlag::from(name: $flag->name, featureType: $featureType));
+            $flag = CreateFeatureFlag::run(FeatureFlag::from(name: $flag->name, featureType: $featureType));
         }
 
-        $flag = $flag->with(statuses: FeatureFlagStatusCollection::make([
-            ... $flag->statuses->all(),
-            FeatureFlagStatus::from(application: $application, environment: $environment, status: false)
-        ]));
+        // Check if a status already exists for this application and environment
+        $existingStatus = $flag->statuses->first(function ($status) use ($application, $environment) {
+            return $status->application->id === $application->id && $status->environment->id === $environment->id;
+        });
 
-        $this->featureFlagService->update($flag);
+        if (!$existingStatus) {
+            $flag = $flag->with(statuses: FeatureFlagStatusCollection::make([
+                ... $flag->statuses->all(),
+                FeatureFlagStatus::from(application: $application, environment: $environment, status: false)
+            ]));
+        }
+
+        UpdateFeatureFlag::run($flag);
 
         FeatureFlagEvaluatedEvent::dispatch($flag, $event->context, $event->response);
     }

@@ -39,14 +39,14 @@ const TeamSelect = ({ teams }: { teams: TeamCollection }) => {
 
     if (teams.length > 1) {
         return (
-            <div data-dusk="team-select">
+            <div data-test="team-select">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button
                             type="button"
                             variant="secondary"
                             className="flex flex-row items-center gap-0.5"
-                            data-dusk="select-team"
+                            data-test="select-team"
                         >
                             {uniqueOrganizationCount > 1 && (
                                 <>
@@ -68,7 +68,7 @@ const TeamSelect = ({ teams }: { teams: TeamCollection }) => {
                                 <DropdownMenuItem
                                     key={team.id}
                                     onSelect={() => chooseTeam(team)}
-                                    data-dusk={`select-option-team-${idx}`}
+                                    data-test={`select-option-team-${idx}`}
                                 >
                                     {uniqueOrganizationCount > 1 && (
                                         <>

@@ -43,7 +43,7 @@ export default function Login({
     return (
         <GuestLayout>
             <Head title="Log in" />
-            <Card className="mt-8 p-4 pt-8 w-2/3 md:1/2 lg:w-1/3 xl:w-1/3" data-dusk="card-login">
+            <Card className="mt-8 p-4 pt-8 w-2/3 md:1/2 lg:w-1/3 xl:w-1/3" data-test="card-login">
                 <CardContent>
                     <InviteAlert invite={invite} variant="login" />
 
@@ -89,7 +89,7 @@ export default function Login({
                                     name="remember"
                                     checked={data.remember}
                                     onCheckedChange={(checked) => setData('remember', checked)}
-                                    data-dusk="switch-login-remember"
+                                    data-test="switch-login-remember"
                                 />
                                 <span className="ms-2 text-sm text-gray-600 dark:text-gray-400">Remember me</span>
                             </Label>
@@ -105,7 +105,7 @@ export default function Login({
                                 </Link>
                             )}
 
-                            <PrimaryButton className="ms-4" disabled={processing} data-dusk="button-login-submit">
+                            <PrimaryButton className="ms-4" disabled={processing} data-test="button-login-submit">
                                 Log in
                             </PrimaryButton>
                         </div>

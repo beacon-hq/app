@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Actions\Fortify;
 
 use App;
+use App\Actions\Users\CreateUser;
 use App\Enums\UserStatus;
 use App\Models\User;
-use App\Services\UserService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -18,10 +18,6 @@ use Session;
 class CreateNewUser implements CreatesNewUsers
 {
     use PasswordValidationRules;
-
-    public function __construct(protected UserService $userService)
-    {
-    }
 
     /**
      * Validate and create a newly registered user.
@@ -52,7 +48,7 @@ class CreateNewUser implements CreatesNewUsers
 
         try {
             return DB::transaction(function () use ($input) {
-                return User::find($this->userService->create(
+                return User::find(CreateUser::run(
                     App\Values\User::from(
                         firstName: $input['first_name'],
                         lastName: $input['last_name'],

@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
 use Auth;
 use function decrypt;
 use Inertia\Inertia;
 use Inertia\Response;
 use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
 
-class TwoFactorSetupController extends Controller
+class TwoFactorSetupController
 {
     public function index(): Response
     {

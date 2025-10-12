@@ -78,7 +78,7 @@ export default function Index({ settings }: PageProps & { settings: { tokens: Ac
                 { name: 'Access Tokens' },
             ]}
             headerAction={
-                <Button onClick={() => setShowTokenDialog(true)} data-dusk="button-access-token-create">
+                <Button onClick={() => setShowTokenDialog(true)} data-test="button-access-token-create">
                     <PlusCircle className="mr-2 inline-block h-6 w-6" />
                     New Access Token
                 </Button>
@@ -97,7 +97,7 @@ export default function Index({ settings }: PageProps & { settings: { tokens: Ac
                 </div>
             </div>
             <Dialog open={showTokenDialog} onOpenChange={handleCancel}>
-                <DialogContent data-dusk="dialog-access-token-create">
+                <DialogContent data-test="dialog-access-token-create">
                     <DialogHeader>
                         <DialogTitle className="mb-4">New Access Token</DialogTitle>
                     </DialogHeader>
@@ -126,7 +126,7 @@ export default function Index({ settings }: PageProps & { settings: { tokens: Ac
                                 type="submit"
                                 className="mt-4"
                                 disabled={processing}
-                                data-dusk="button-access-token-create-submit"
+                                data-test="button-access-token-create-submit"
                             >
                                 {processing ? 'Creating...' : 'Create Access Token'}
                             </Button>

@@ -60,7 +60,7 @@ readonly class Invite extends Bag
             'role' => $invite->role,
             'team' => Team::from($invite->team),
             'organization' => Organization::from($invite->organization),
-            'user' => User::from($invite->user),
+            'user' => User::from($invite->user()->withoutGlobalScopes()->first()),
             'expires_at' => $invite->expires_at,
         ];
     }

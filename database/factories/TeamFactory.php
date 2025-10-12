@@ -19,7 +19,7 @@ class TeamFactory extends Factory
             'name' => $this->faker->name(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
-            'organization_id' => Organization::factory()->create()->id,
+            'organization_id' => Organization::factory(),
         ];
     }
 }

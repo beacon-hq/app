@@ -27,4 +27,9 @@ class FeatureTypeFactory extends Factory
             'updated_at' => Carbon::now(),
         ];
     }
+
+    public function temporary()
+    {
+        return $this->state(['temporary' => true]);
+    }
 }

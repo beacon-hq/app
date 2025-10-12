@@ -5,14 +5,15 @@ declare(strict_types=1);
 use App\Models\FeatureFlag;
 use App\Models\FeatureType;
 use App\Models\Tag;
-use App\Models\Team;
-use App\Models\User;
 use App\Values\Collections\TagCollection;
 use Inertia\Testing\AssertableInertia as Assert;
+use Tests\Unit\Actions\AppContext\SetAppContext;
 
 it('lists feature flags', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user, $organization] = createOwner();
+
+    SetAppContext::run($organization, $team);
+
     $featureType = FeatureType::factory()->for($team)->create();
     $tags = Tag::factory(3)->for($team)->create();
     FeatureFlag::factory(5)->for($team)->for($featureType)->hasAttached($tags)->create();

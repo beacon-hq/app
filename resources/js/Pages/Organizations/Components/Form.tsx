@@ -56,7 +56,7 @@ const Form = ({ organization, onCancel }: { organization?: Organization; onCance
                     type="text"
                     value={data.name as string}
                     onChange={(e) => setData('name', e.target.value)}
-                    data-dusk="input-organization-name"
+                    data-test="input-organization-name"
                 />
                 <InputError message={errors?.name} />
             </div>
@@ -74,7 +74,7 @@ const Form = ({ organization, onCancel }: { organization?: Organization; onCance
                                 type="text"
                                 value={data.team.name ?? ''}
                                 onChange={(e) => setData('team', { ...data.team, name: e.target.value })}
-                                data-dusk="input-team-name"
+                                data-test="input-team-name"
                             />
                             {/*
                             // @ts-ignore */}
@@ -109,7 +109,7 @@ const Form = ({ organization, onCancel }: { organization?: Organization; onCance
                         Cancel
                     </Button>
                 )}
-                <Button type="submit" className="w-24" disabled={processing} data-dusk="button-organization-submit">
+                <Button type="submit" className="w-24" disabled={processing} data-test="button-organization-submit">
                     {organization?.id ? 'Update' : 'Create'}
                 </Button>
             </div>

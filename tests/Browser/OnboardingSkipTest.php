@@ -2,27 +2,21 @@
 
 declare(strict_types=1);
 
-use Laravel\Dusk\Browser;
-
-afterEach(fn () => $this->browse(function (Browser $browser) {
-    $browser->logout();
-}));
+use Tests\Unit\Actions\AppContext\SetAppContext;
 
 it('skips onboarding', function () {
-    $user = createBrowserUser();
+    [$team, $user, $organization] = createOwner();
 
-    $this->browse(function (Browser $browser) use ($user) {
-        $browser->resize(3024 / 2, 1964 / 2);
+    $this->actingAs($user);
 
-        $browser
-            ->loginAs($user)
-            ->visitRoute('dashboard')
-            ->waitForText('Get Started');
+    SetAppContext::run($organization, $team);
 
-        $browser
-            ->click('@skip-onboarding')
-            ->pause(500)
-            ->refresh()
-            ->assertDontSee('Get Started');
-    });
+
+    $page = visit(route('dashboard'));
+
+    $page
+        ->assertSee('Get Started')
+        ->click('[data-test="skip-onboarding"]')
+        ->refresh()
+        ->assertDontSee('Get Started');
 });

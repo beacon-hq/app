@@ -26,7 +26,7 @@ it('creates a policy', function () {
             'name' => 'Test Policy',
             'description' => 'test description'
         ])
-        ->assertRedirectToRoute('policies.edit', ['policy' => Policy::latest()->first()->id]);
+        ->assertRedirectToRoute('policies.edit', ['policy' => Policy::where('name', 'Test Policy')->first()->id]);
 
     $this->assertDatabaseHas('policies', [
         'name' => 'Test Policy',

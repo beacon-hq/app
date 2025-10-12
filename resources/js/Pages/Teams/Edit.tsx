@@ -84,9 +84,9 @@ export default function Edit({
                                                 value={data.name as string}
                                                 onChange={(e) => {
                                                     // @ts-ignore
-                                                    setData('name', e.target.value)
+                                                    setData('name', e.target.value);
                                                 }}
-                                                data-dusk="input-teams-name"
+                                                data-test="input-teams-name"
                                             />
                                             <InputError message={errors.name} />
                                         </div>
@@ -95,7 +95,7 @@ export default function Edit({
                                             <ColorPicker
                                                 onColorChange={(color: string | null) => {
                                                     // @ts-ignore
-                                                    setData('color', color)
+                                                    setData('color', color);
                                                 }}
                                                 color={data.color as string}
                                             />
@@ -107,7 +107,7 @@ export default function Edit({
                                                 icon={data.icon as string}
                                                 onIconSelect={(icon) => {
                                                     // @ts-ignore
-                                                    setData('icon', icon)
+                                                    setData('icon', icon);
                                                 }}
                                                 errors={errors}
                                             />
@@ -126,7 +126,7 @@ export default function Edit({
                                                 type="submit"
                                                 className="w-24"
                                                 disabled={processing}
-                                                data-dusk="button-teams-submit"
+                                                data-test="button-teams-submit"
                                             >
                                                 Update
                                             </Button>

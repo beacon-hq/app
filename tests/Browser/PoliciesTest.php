@@ -2,229 +2,188 @@
 
 declare(strict_types=1);
 
-use Laravel\Dusk\Browser;
-
-afterEach(fn () => $this->browse(function (Browser $browser) {
-    $browser->logout();
-}));
+use App\Models\Policy;
+use Bag\Collection;
+use Tests\Unit\Actions\AppContext\SetAppContext;
 
 it('can create new policy', function () {
-    $user = createBrowserUser();
+    [$team, $user, $organization] = createOwner();
 
-    $this->browse(function (Browser $browser) use ($user) {
-        $browser->resize(3024 / 2, 700);
+    $this->actingAs($user);
 
-        $browser
-            ->loginAs($user)
-            ->visitRoute('policies.index')
-            ->waitForText('Policies')
-            ->screenshotElement('@main', 'policies-initial');
+    SetAppContext::run($organization, $team);
 
-        $browser
-            ->click('@button-new-policy')
-            ->waitForText('New Policy')
-            ->screenshotElement('@main', 'policies-form-create');
+    $page = visit(route('policies.index'))->resize(1512, 700);
 
-        $browser
-            ->type('@input-policy-name', 'Demo Policy')
-            ->type('@input-policy-description', 'This is a demo policy.')
-            ->screenshot('policies-form-create-fill')
-            ->click('@button-policy-submit')
-            ->waitForText('Demo Policy', 10);
+    $page
+        ->assertSee('Policies')
+        ->screenshotElement('[data-test="main"]');
 
-        $browser
-            ->visitRoute('policies.index')
-            ->waitForText('Policies');
+    $page
+        ->click('[data-test="button-new-policy"]')
+        ->assertSee('New Policy')
+        ->screenshotElement('[data-test="main"]');
 
-        $browser
-            ->click('@button-new-policy')
-            ->waitForText('New Policy');
+    $page
+        ->type('[data-test="input-policy-name"]', 'Demo Policy')
+        ->type('[data-test="input-policy-description"]', 'This is a demo policy.')
+        ->screenshot(filename: 'policies-form-create-fill')
+        ->click('[data-test="button-policy-submit"]')
+        ->assertSee('Demo Policy');
 
-        $browser
-            ->type('@input-policy-name', 'Demo Policy Two')
-            ->type('@input-policy-description', 'This is a demo policy.')
-            ->click('@button-policy-submit')
-            ->waitForText('Demo Policy', 10);
-    });
+    $page
+        ->navigate(route('policies.index'))
+        ->assertSee('Policies');
+
+    $page
+        ->click('[data-test="button-new-policy"]')
+        ->assertSee('New Policy');
+
+    $page
+        ->type('[data-test="input-policy-name"]', 'Demo Policy Two')
+        ->type('[data-test="input-policy-description"]', 'This is a demo policy.')
+        ->click('[data-test="button-policy-submit"]')
+        ->assertSee('Demo Policy');
 });
 
 it('can view policies list', function () {
-    $user = createBrowserUser();
+    [$team, $user, $organization] = createOwner();
 
-    $this->browse(function (Browser $browser) use ($user) {
-        $browser->resize(3024 / 2, 700);
+    $this->actingAs($user);
 
-        $browser
-            ->loginAs($user)
-            ->visitRoute('policies.index')
-            ->waitForText('Policies')
-            ->screenshotElement('@main', 'policies-list');
-    });
+    SetAppContext::run($organization, $team);
+
+    $page = visit(route('policies.index'))->resize(1512, 700);
+
+    $page
+        ->assertSee('Policies')
+        ->screenshotElement('[data-test="main"]');
 });
 
 it('can edit policies', function () {
-    $user = createBrowserUser();
+    [$team, $user, $organization] = createOwner();
 
-    $this->browse(function (Browser $browser) use ($user) {
-        $browser->resize(3024 / 2, 900);
+    $this->actingAs($user);
 
-        $browser
-            ->loginAs($user)
-            ->visitRoute('policies.index')
-            ->waitForText('Policies');
+    SetAppContext::run($organization, $team);
 
-        $browser
-            ->click('@button-policies-edit')
-            ->waitForText('Edit Policy')
-            ->pause(500)
-            ->screenshotElement('@main', 'policies-edit');
+    Policy::factory()->for($team)->create(['name' => 'Demo Policy']);
 
-        $browser
-            ->type('@input-policy-description', 'This is an updated demo policy.')
-            ->screenshot('policies-form-edit-fill')
-            ->click('@button-policy-submit');
-    });
+    visit(route('policies.index'))
+        ->resize(1512, 900)
+        ->click('[data-test="button-policies-edit"]')
+        ->assertSee('Edit Policy')
+        ->wait(1)
+        ->screenshotElement('[data-test="main"]')
+        ->resize(1512, 900)
+        ->type('[data-test="input-policy-description"]', 'This is an updated demo policy.')
+        ->screenshot(filename: 'policies-form-edit-fill')
+        ->click('[data-test="button-policy-submit"]');
 });
 
-
-
 it('can edit policy conditions', function () {
-    $user = createBrowserUser();
+    [$team, $user, $organization] = createOwner();
 
-    $this->browse(callback: function (Browser $browser) use ($user) {
-        $browser->resize(3024 / 2, 900);
+    $this->actingAs($user);
 
-        $browser
-            ->loginAs($user)
-            ->visitRoute('policies.index')
-            ->waitForText('Policies');
+    SetAppContext::run($organization, $team);
 
-        $browser
-            ->click('@button-policies-edit')
-            ->waitForText('Edit Policy')
-            ->pause(500);
+    Policy::factory()->for($team)->create(['name' => 'Demo Policy', 'definition' => Collection::empty()]);
 
-        $browser
-            ->click('@button-policies-add-conditions')
-            ->screenshotElement('@policies-form-definition', 'policies-form-initial-condition');
+    Policy::factory()->for($team)->create(['name' => 'Demo Policy 2']);
 
-
-        $browser
-            ->click('@select-policies-definition-type-0')
-            ->click('@select-option-policies-definition-type-0-expression')
-            ->type('@input-policies-definition-subject-0', 'user.id')
-            ->click('@select-policies-definition-operator-0')
-            ->click('@select-option-policies-definition-operator-0-equals')
-            ->pause(300)
-            ->type('@input-policy-value-0', '123')
-            ->click('@main')
-            ->screenshotElement('@policies-form-definition', 'policies-form-expression');
-
-        $browser
-            ->click('@select-policies-definition-type-0')
-            ->pause(300)
-            ->click('@select-option-policies-definition-type-0-policy')
-            ->pause(300)
-            ->click('@select-policies-definition-policy-0')
-            ->pause(300)
-            ->click('@select-option-policies-definition-policy-0-0')
-            ->click('@main')
-            ->screenshotElement('@policies-form-definition', 'policies-form-policy');
-
-        $browser
-            ->click('@select-policies-definition-type-0')
-            ->pause(300)
-            ->click('@select-option-policies-definition-type-0-datetime')
-            ->pause(300)
-            ->click('@select-policies-definition-datetime-0')
-            ->pause(300)
-            ->click('@select-option-policies-definition-datetime-0-after')
-            ->click('@datepicker-policies-definition-datetime-0')
-            ->pause(1000)
-            ->click('.rdp-tbody tr:nth-child(5) td:nth-child(5) button')
-            ->type('@timepicker-policies-definition-datetime-0-hour', '03')
-            ->type('@timepicker-policies-definition-datetime-0-minute', '30')
-            ->type('@timepicker-policies-definition-datetime-0-second', '47')
-            ->click('@select-policies-definition-timezone-0')
-            ->pause(300)
-            ->click('@select-policies-definition-timezone-0-option-5')
-            ->click('@main')
-            ->screenshotElement('@policies-form-definition', 'policies-form-datetime');
-
-        $browser
-            ->click('@select-policies-definition-type-0')
-            ->click('@select-option-policies-definition-type-0-expression')
-            ->type('@input-policies-definition-subject-0', 'user.id')
-            ->click('@select-policies-definition-operator-0')
-            ->click('@select-option-policies-definition-operator-0-equals')
-            ->pause(300)
-            ->type('@input-policy-value-0', '123')
-            ->click('@main')
-            ->screenshotElement('@policies-form-definition', 'policies-form-expression');
-
-        $browser
-            ->click('@button-policies-add')
-            ->pause(500);
-
-        $browser
-            ->click('@select-policies-definition-type-1')
-            ->click('@select-option-policies-definition-type-1-operator')
-            ->click('@select-policies-definition-operator-1')
-            ->click('@select-option-policies-definition-operator-1-AND')
-            ->click('@main');
-
-        $browser
-            ->click('@button-policies-add')
-            ->pause(500);
-
-        $browser->screenshotElement('@policies-form-definition', 'policies-form-operator');
-
-        $browser
-            ->click('@select-policies-definition-type-2')
-            ->pause(300)
-            ->click('@select-option-policies-definition-type-2-datetime')
-            ->pause(300)
-            ->click('@select-policies-definition-datetime-2')
-            ->pause(300)
-            ->click('@select-option-policies-definition-datetime-2-after')
-            ->click('@datepicker-policies-definition-datetime-2')
-            ->pause(1000)
-            ->click('.rdp-tbody tr:nth-child(5) td:nth-child(5) button')
-            ->type('@timepicker-policies-definition-datetime-2-hour', '03')
-            ->type('@timepicker-policies-definition-datetime-2-minute', '30')
-            ->type('@timepicker-policies-definition-datetime-2-second', '47')
-            ->click('@select-policies-definition-timezone-2')
-            ->pause(300)
-            ->click('@select-policies-definition-timezone-2-option-5')
-            ->click('@main')
-            ->screenshotElement('@policies-form-definition', 'policies-form-multiple');
-
-        $browser
-            ->click('@button-policies-add')
-            ->pause(500);
-
-        $browser
-            ->click('@select-policies-definition-type-3')
-            ->click('@select-option-policies-definition-type-3-operator')
-            ->click('@select-policies-definition-operator-3')
-            ->click('@select-option-policies-definition-operator-3-AND');
-
-        $browser
-            ->click('@button-policies-add')
-            ->pause(500);
-
-        $browser
-            ->click('@select-policies-definition-type-4')
-            ->pause(300)
-            ->click('@select-option-policies-definition-type-4-policy')
-            ->pause(300)
-            ->click('@select-policies-definition-policy-4')
-            ->pause(300)
-            ->click('@select-option-policies-definition-policy-4-0');
-
-        $browser
-            ->click('@main')
-            ->screenshotElement('@policies-form-definition', 'policies-form-complex');
-
-    });
+    visit(route('policies.index'))
+        ->resize(1512, 900)
+        ->click(':nth-match([data-test="button-policies-edit"], 1)')
+        ->assertSee('Edit Policy')
+        ->click('[data-test="button-policies-add-conditions"]')
+        ->screenshotElement('[data-test="policies-form-definition"]')
+        ->click('[data-test="select-policies-definition-type-0"]')
+        ->click('[data-test="select-option-policies-definition-type-0-expression"]')
+        ->type('[data-test="input-policies-definition-subject-0"]', 'user.id')
+        ->click('[data-test="select-policies-definition-operator-0"]')
+        ->click('[data-test="select-option-policies-definition-operator-0-equals"]')
+        ->wait(1)
+        ->type('[data-test="input-policy-value-0"]', '123')
+        ->click('[data-test="main"]')
+        ->screenshotElement('[data-test="policies-form-definition"]')
+        ->click('[data-test="select-policies-definition-type-0"]')
+        ->wait(1)
+        ->click('[data-test="select-option-policies-definition-type-0-policy"]')
+        ->wait(1)
+        ->click('[data-test="select-policies-definition-policy-0"]')
+        ->wait(1)
+        ->click('[data-test="select-option-policies-definition-policy-0-0"]')
+        ->click('[data-test="main"]')
+        ->screenshotElement('[data-test="policies-form-definition"]')
+        ->click('[data-test="select-policies-definition-type-0"]')
+        ->wait(1)
+        ->click('[data-test="select-option-policies-definition-type-0-datetime"]')
+        ->wait(1)
+        ->click('[data-test="select-policies-definition-datetime-0"]')
+        ->wait(1)
+        ->click('[data-test="select-option-policies-definition-datetime-0-after"]')
+        ->click('[data-test="datepicker-policies-definition-datetime-0"]')
+        ->wait(1)
+        ->click('.rdp-tbody tr:nth-child(5) td:nth-child(5) button')
+        ->type('[data-test="timepicker-policies-definition-datetime-0-hour"]', '03')
+        ->type('[data-test="timepicker-policies-definition-datetime-0-minute"]', '30')
+        ->type('[data-test="timepicker-policies-definition-datetime-0-second"]', '47')
+        ->click('[data-test="select-policies-definition-timezone-0"]')
+        ->wait(1)
+        ->click('[data-test="select-policies-definition-timezone-0-option-5"]')
+        ->click('[data-test="main"]')
+        ->screenshotElement('[data-test="policies-form-definition"]')
+        ->click('[data-test="select-policies-definition-type-0"]')
+        ->click('[data-test="select-option-policies-definition-type-0-expression"]')
+        ->type('[data-test="input-policies-definition-subject-0"]', 'user.id')
+        ->click('[data-test="select-policies-definition-operator-0"]')
+        ->click('[data-test="select-option-policies-definition-operator-0-equals"]')
+        ->wait(1)
+        ->type('[data-test="input-policy-value-0"]', '123')
+        ->click('[data-test="main"]')
+        ->screenshotElement('[data-test="policies-form-definition"]')
+        ->click('[data-test="button-policies-add"]')
+        ->wait(1)
+        ->click('[data-test="select-policies-definition-type-1"]')
+        ->click('[data-test="select-option-policies-definition-type-1-operator"]')
+        ->click('[data-test="select-policies-definition-operator-1"]')
+        ->click('[data-test="select-option-policies-definition-operator-1-AND"]')
+        ->click('[data-test="main"]')
+        ->click('[data-test="button-policies-add"]')
+        ->wait(1)
+        ->screenshotElement('[data-test="policies-form-definition"]')
+        ->click('[data-test="select-policies-definition-type-2"]')
+        ->wait(1)
+        ->click('[data-test="select-option-policies-definition-type-2-datetime"]')
+        ->wait(1)
+        ->click('[data-test="select-policies-definition-datetime-2"]')
+        ->wait(1)
+        ->click('[data-test="select-option-policies-definition-datetime-2-after"]')
+        ->click('[data-test="datepicker-policies-definition-datetime-2"]')
+        ->wait(1)
+        ->click('.rdp-tbody tr:nth-child(5) td:nth-child(5) button')
+        ->type('[data-test="timepicker-policies-definition-datetime-2-hour"]', '03')
+        ->append('[data-test="timepicker-policies-definition-datetime-2-minute"]', '30')
+        ->append('[data-test="timepicker-policies-definition-datetime-2-second"]', '47')
+        ->click('[data-test="select-policies-definition-timezone-2"]')
+        ->wait(1)
+        ->click('[data-test="select-policies-definition-timezone-2-option-5"]')
+        ->click('[data-test="main"]')
+        ->screenshotElement('[data-test="policies-form-definition"]')
+        ->click('[data-test="button-policies-add"]')
+        ->wait(1)->click('[data-test="select-policies-definition-type-3"]')
+        ->click('[data-test="select-option-policies-definition-type-3-operator"]')
+        ->click('[data-test="select-policies-definition-operator-3"]')
+        ->click('[data-test="select-option-policies-definition-operator-3-AND"]')
+        ->click('[data-test="button-policies-add"]')
+        ->wait(1)->click('[data-test="select-policies-definition-type-4"]')
+        ->wait(1)
+        ->click('[data-test="select-option-policies-definition-type-4-policy"]')
+        ->wait(1)
+        ->click('[data-test="select-policies-definition-policy-4"]')
+        ->wait(1)
+        ->click('[data-test="select-option-policies-definition-policy-4-0"]')
+        ->click('[data-test="main"]')
+        ->screenshotElement('[data-test="policies-form-definition"]');
 });

@@ -228,18 +228,18 @@ function UtcOffsetSelector({
     value,
     onChange,
     disabled,
-    'data-dusk': dataDusk,
+    'data-test': dataDusk,
 }: {
     value: string;
     onChange: (offset: string) => void;
     disabled?: boolean;
-    'data-dusk'?: string;
+    'data-test'?: string;
 }) {
     const userOffset = getUserTimezoneOffset();
 
     return (
         <Select value={value} onValueChange={onChange} disabled={disabled}>
-            <SelectTrigger data-dusk={dataDusk}>
+            <SelectTrigger data-test={dataDusk}>
                 <SelectValue placeholder="Choose a timezone…" />
             </SelectTrigger>
             <SelectContent className="max-h-60 overflow-y-auto">
@@ -247,7 +247,7 @@ function UtcOffsetSelector({
                     <SelectItem
                         key={offset}
                         value={offset}
-                        data-dusk={dataDusk ? `${dataDusk}-option-${index}` : undefined}
+                        data-test={dataDusk ? `${dataDusk}-option-${index}` : undefined}
                     >
                         <div
                             className={cn('flex items-center', {
@@ -268,7 +268,7 @@ function DateTimePicker(props: {
     definition: PolicyDefinition;
     onSelect: (date: Date | undefined) => void;
     onClear: () => void;
-    'data-dusk'?: string;
+    'data-test'?: string;
 }) {
     const [open, setOpen] = useState(false);
 
@@ -279,7 +279,7 @@ function DateTimePicker(props: {
                     variant="outline"
                     id="date"
                     className="w-48 justify-between font-normal"
-                    data-dusk={props['data-dusk']}
+                    data-test={props['data-test']}
                 >
                     {props.definition.subject &&
                     (props.definition.subject.includes('T') || !props.definition.subject.includes(':'))
@@ -297,13 +297,13 @@ function DateTimePicker(props: {
                         setOpen(false);
                         props.onSelect(value);
                     }}
-                    data-dusk={props['data-dusk'] ? `${props['data-dusk']}-calendar` : undefined}
+                    data-test={props['data-test'] ? `${props['data-test']}-calendar` : undefined}
                 />
                 <Button
                     variant="secondary"
                     className="w-full"
                     onClick={props.onClear}
-                    data-dusk={props['data-dusk'] ? `${props['data-dusk']}-clear` : undefined}
+                    data-test={props['data-test'] ? `${props['data-test']}-clear` : undefined}
                 >
                     Clear
                 </Button>
@@ -374,7 +374,7 @@ export function PolicyDefinitionForm({
     };
 
     return (
-        <div className="border p-2 flex flex-col gap-4" data-dusk="policies-form-definition">
+        <div className="border p-2 flex flex-col gap-4" data-test="policies-form-definition">
             <HoverCard>
                 <HoverCardTrigger asChild>
                     <CircleHelp className="ml-auto" />
@@ -433,7 +433,7 @@ export function PolicyDefinitionForm({
                                     >
                                         <SelectTrigger
                                             id={`type_${id}`}
-                                            data-dusk={`select-policies-definition-type-${id}`}
+                                            data-test={`select-policies-definition-type-${id}`}
                                         >
                                             <SelectValue placeholder="Select a type…" />
                                         </SelectTrigger>
@@ -441,25 +441,25 @@ export function PolicyDefinitionForm({
                                             <SelectGroup>
                                                 <SelectItem
                                                     value={PolicyDefinitionType.EXPRESSION}
-                                                    data-dusk={`select-option-policies-definition-type-${id}-expression`}
+                                                    data-test={`select-option-policies-definition-type-${id}-expression`}
                                                 >
                                                     Expression
                                                 </SelectItem>
                                                 <SelectItem
                                                     value={PolicyDefinitionType.POLICY}
-                                                    data-dusk={`select-option-policies-definition-type-${id}-policy`}
+                                                    data-test={`select-option-policies-definition-type-${id}-policy`}
                                                 >
                                                     Policy
                                                 </SelectItem>
                                                 <SelectItem
                                                     value={PolicyDefinitionType.DATETIME}
-                                                    data-dusk={`select-option-policies-definition-type-${id}-datetime`}
+                                                    data-test={`select-option-policies-definition-type-${id}-datetime`}
                                                 >
                                                     Date/Time
                                                 </SelectItem>
                                                 <SelectItem
                                                     value={PolicyDefinitionType.OPERATOR}
-                                                    data-dusk={`select-option-policies-definition-type-${id}-operator`}
+                                                    data-test={`select-option-policies-definition-type-${id}-operator`}
                                                 >
                                                     Operator
                                                 </SelectItem>
@@ -496,7 +496,7 @@ export function PolicyDefinitionForm({
                                                             updatedDefinitions as PolicyDefinitionCollection,
                                                         );
                                                     }}
-                                                    data-dusk={`input-policies-definition-subject-${id}`}
+                                                    data-test={`input-policies-definition-subject-${id}`}
                                                 />
                                             </div>
                                             <div className="flex-1">
@@ -522,7 +522,7 @@ export function PolicyDefinitionForm({
                                                 >
                                                     <SelectTrigger
                                                         id={`operator_${id}`}
-                                                        data-dusk={`select-policies-definition-operator-${id}`}
+                                                        data-test={`select-policies-definition-operator-${id}`}
                                                     >
                                                         <SelectValue placeholder="Select an operator…" />
                                                     </SelectTrigger>
@@ -534,7 +534,7 @@ export function PolicyDefinitionForm({
                                                                         <SelectItem
                                                                             key={operator}
                                                                             value={operator}
-                                                                            data-dusk={`select-option-policies-definition-operator-${id}-${operator}`}
+                                                                            data-test={`select-option-policies-definition-operator-${id}-${operator}`}
                                                                         >
                                                                             {operator}
                                                                         </SelectItem>
@@ -567,7 +567,7 @@ export function PolicyDefinitionForm({
                                                     return updatePolicyDefinitions(updatedDefinitions);
                                                 }}
                                             >
-                                                <SelectTrigger data-dusk={`select-policies-definition-policy-${id}`}>
+                                                <SelectTrigger data-test={`select-policies-definition-policy-${id}`}>
                                                     <SelectValue placeholder="Select a policy…" />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -589,7 +589,7 @@ export function PolicyDefinitionForm({
                                                                         key={`${id}-${p.id}`}
                                                                         value={p.id as string}
                                                                         disabled={disabled}
-                                                                        data-dusk={`select-option-policies-definition-policy-${id}-${idx}`}
+                                                                        data-test={`select-option-policies-definition-policy-${id}-${idx}`}
                                                                     >
                                                                         <div className="w-full flex flex-row items-center justify-between">
                                                                             {disabled ? (
@@ -639,7 +639,7 @@ export function PolicyDefinitionForm({
                                                 >
                                                     <SelectTrigger
                                                         id={`operator_${id}`}
-                                                        data-dusk={`select-policies-definition-datetime-${id}`}
+                                                        data-test={`select-policies-definition-datetime-${id}`}
                                                     >
                                                         <SelectValue placeholder="Select an operator…" />
                                                     </SelectTrigger>
@@ -654,7 +654,7 @@ export function PolicyDefinitionForm({
                                                                         <SelectItem
                                                                             key={operator}
                                                                             value={operator}
-                                                                            data-dusk={`select-option-policies-definition-datetime-${id}-${operator === PolicyDefinitionMatchOperator.LESS_THAN_EQUAL ? 'before' : 'after'}`}
+                                                                            data-test={`select-option-policies-definition-datetime-${id}-${operator === PolicyDefinitionMatchOperator.LESS_THAN_EQUAL ? 'before' : 'after'}`}
                                                                         >
                                                                             {operator ===
                                                                             PolicyDefinitionMatchOperator.LESS_THAN_EQUAL
@@ -713,7 +713,7 @@ export function PolicyDefinitionForm({
                                                         );
                                                         updatePolicyDefinitions(updatedDefinitions);
                                                     }}
-                                                    data-dusk={`datepicker-policies-definition-datetime-${id}`}
+                                                    data-test={`datepicker-policies-definition-datetime-${id}`}
                                                 />
                                                 <div className="flex flex-row gap-2 ml-4">
                                                     <TimePicker
@@ -748,7 +748,7 @@ export function PolicyDefinitionForm({
                                                         }}
                                                         hourCycle={24}
                                                         granularity="second"
-                                                        data-dusk={`timepicker-policies-definition-datetime-${id}`}
+                                                        data-test={`timepicker-policies-definition-datetime-${id}`}
                                                     />
                                                     <div className="flex items-center">
                                                         <UtcOffsetSelector
@@ -782,7 +782,7 @@ export function PolicyDefinitionForm({
                                                                 );
                                                                 updatePolicyDefinitions(updatedDefinitions);
                                                             }}
-                                                            data-dusk={`select-policies-definition-timezone-${id}`}
+                                                            data-test={`select-policies-definition-timezone-${id}`}
                                                         />
                                                         <Tooltip>
                                                             <TooltipTrigger>
@@ -807,7 +807,7 @@ export function PolicyDefinitionForm({
                                                                         );
                                                                         updatePolicyDefinitions(updatedDefinitions);
                                                                     }}
-                                                                    data-dusk={`button-policies-definition-clear-time-${id}`}
+                                                                    data-test={`button-policies-definition-clear-time-${id}`}
                                                                 />
                                                             </TooltipTrigger>
                                                             <TooltipContent>
@@ -841,7 +841,7 @@ export function PolicyDefinitionForm({
                                                     );
                                                 }}
                                             >
-                                                <SelectTrigger data-dusk={`select-policies-definition-operator-${id}`}>
+                                                <SelectTrigger data-test={`select-policies-definition-operator-${id}`}>
                                                     <SelectValue placeholder="Select an operator…" />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -851,7 +851,7 @@ export function PolicyDefinitionForm({
                                                                 <SelectItem
                                                                     key={operator}
                                                                     value={operator}
-                                                                    data-dusk={`select-option-policies-definition-operator-${id}-${operator}`}
+                                                                    data-test={`select-option-policies-definition-operator-${id}-${operator}`}
                                                                 >
                                                                     {operator}
                                                                 </SelectItem>
@@ -888,7 +888,7 @@ export function PolicyDefinitionForm({
                                                     : !singleValueOperators.includes(definition.operator)
                                             }
                                             disabled={!definition.operator}
-                                            data-dusk={`input-policies-definition-value-${id}`}
+                                            data-test={`input-policies-definition-value-${id}`}
                                         />
                                     </div>
                                 )}
@@ -899,7 +899,7 @@ export function PolicyDefinitionForm({
                                                 'text-primary/20 cursor-not-allowed': getDefinitions().length === 1,
                                                 'cursor-move': getDefinitions().length > 1,
                                             })}
-                                            data-dusk={`button-policies-definition-drag-${id}`}
+                                            data-test={`button-policies-definition-drag-${id}`}
                                         />
                                     </SortableKnob>
                                     <Trash
@@ -919,7 +919,7 @@ export function PolicyDefinitionForm({
                                                 updatedDefinitions as PolicyDefinitionCollection,
                                             );
                                         }}
-                                        data-dusk={`button-policies-definition-delete-${id}`}
+                                        data-test={`button-policies-definition-delete-${id}`}
                                     />
                                 </div>
                             </div>
@@ -933,7 +933,7 @@ export function PolicyDefinitionForm({
                     type="button"
                     onClick={addNewPolicyDefinition}
                     variant="outline"
-                    data-dusk="button-policies-add"
+                    data-test="button-policies-add"
                 >
                     <PlusCircle /> Add
                 </Button>
@@ -942,7 +942,7 @@ export function PolicyDefinitionForm({
     );
 }
 
-const SortableThumb = forwardRef<HTMLDivElement, { className?: string; 'data-dusk'?: string }>((props, ref) => {
+const SortableThumb = forwardRef<HTMLDivElement, { className?: string; 'data-test'?: string }>((props, ref) => {
     return (
         <div ref={ref} {...props} className={cn(props.className ?? 'cursor-move')}>
             <GripVertical />

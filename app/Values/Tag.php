@@ -53,14 +53,19 @@ readonly class Tag extends Bag
     #[Transforms(TagModel::class)]
     public static function fromModel(TagModel $tag): array
     {
-        return [
+        $data = [
             'id' => $tag->id,
             'name' => $tag->name,
-            'description' => $tag->description,
             'color' => $tag->color,
             'created_at' => $tag->created_at,
             'updated_at' => $tag->updated_at,
         ];
+
+        if ($tag->description !== null) {
+            $data['description'] = $tag->description;
+        }
+
+        return $data;
     }
 
     public static function rules(): array

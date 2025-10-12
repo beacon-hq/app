@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Actions\AppContext\GetAppContext;
 use App\Models\Traits\BelongsToOrganization;
 use App\Models\Traits\BelongsToTeam;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\App;
 use Spatie\Activitylog\Models\Activity as SpatieActivity;
 
 class Activity extends SpatieActivity
@@ -30,8 +30,9 @@ class Activity extends SpatieActivity
         parent::boot();
 
         static::creating(function (self $activity) {
-            $activity->organization_id = App::context()->organization->id;
-            $activity->team_id = App::context()->team->id;
+            $appContext = GetAppContext::run();
+            $activity->organization_id = $appContext['organization']->id;
+            $activity->team_id = $appContext['team']->id;
         });
     }
 }

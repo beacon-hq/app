@@ -45,14 +45,14 @@ const AddMembers = ({ team, users }: { team: Team; users: UserCollection }) => {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button type="submit" data-dusk="button-add-members">
+                <Button type="submit" data-test="button-add-members">
                     <PlusCircle /> Add Members
                 </Button>
             </DialogTrigger>
             <DialogContent
                 className="max-w-fit"
                 aria-description="Add members to the team"
-                data-dusk="dialog-add-members"
+                data-test="dialog-add-members"
             >
                 <DialogHeader>
                     <DialogTitle>Add Members to {team.name}</DialogTitle>
@@ -90,7 +90,7 @@ const AddMembers = ({ team, users }: { team: Team; users: UserCollection }) => {
                                 role="combobox"
                                 aria-expanded={userDropdownOpen}
                                 className="w-[300px] justify-between truncate"
-                                data-dusk="select-teams-team-member"
+                                data-test="select-teams-team-member"
                             >
                                 {currentUser
                                     ? `${users.find((user) => user.email === currentUser.email)?.name} (${currentUser.email})`
@@ -117,7 +117,7 @@ const AddMembers = ({ team, users }: { team: Team; users: UserCollection }) => {
                                                             setCurrentUser(users.find((u) => u.email === currentValue));
                                                             setUserDropdownOpen(false);
                                                         }}
-                                                        data-dusk={`select-option-teams-team-member-${idx}`}
+                                                        data-test={`select-option-teams-team-member-${idx}`}
                                                     >
                                                         {user.name} ({user.email})
                                                         {currentUser?.email === user.email && (
@@ -149,7 +149,7 @@ const AddMembers = ({ team, users }: { team: Team; users: UserCollection }) => {
 
                             setCurrentUser(undefined);
                         }}
-                        data-dusk="button-teams-add-team-member"
+                        data-test="button-teams-add-team-member"
                     />
                 </div>
                 <DialogFooter>
@@ -162,7 +162,7 @@ const AddMembers = ({ team, users }: { team: Team; users: UserCollection }) => {
                         type="button"
                         onClick={handleSubmit}
                         disabled={data.users.length === 0 && !currentUser}
-                        data-dusk="button-teams-add-members-submit"
+                        data-test="button-teams-add-members-submit"
                     >
                         Add
                     </Button>

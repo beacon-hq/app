@@ -4,56 +4,67 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Services\MetricsService;
-use App\Services\ProductService;
-use App\Services\SubscriptionBillingService;
+use App\Actions\AppContext\GetAppContext;
+use App\Actions\Metrics\GetPlanMetrics;
+use App\Actions\Subscriptions\CancelSubscription;
+use App\Actions\Subscriptions\DownloadInvoice;
+use App\Actions\Subscriptions\GetInvoices;
+use App\Actions\Subscriptions\GetPeriodEndDate;
+use App\Actions\Subscriptions\GetSubscription;
+use App\Actions\Subscriptions\GetSubscriptionStatus;
+use App\Actions\Subscriptions\GetTrialEndDate;
+use App\Actions\Subscriptions\PredictNextBill;
+use App\Actions\Subscriptions\ResumeSubscription;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\App;
 use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-class BillingController extends Controller
+class BillingController
 {
-    public function __construct(protected SubscriptionBillingService $subscriptionBillingService)
-    {
-    }
+    public function index(
+        GetProducts $getProductsAction,
+        GetPlanMetrics $getPlanMetricsAction,
+        GetSubscription $getSubscriptionAction,
+        GetTrialEndDate $getTrialEndDateAction,
+        GetPeriodEndDate $getPeriodEndDateAction,
+        GetSubscriptionStatus $getSubscriptionStatusAction,
+        PredictNextBill $predictNextBillAction,
+        GetInvoices $getInvoicesAction
+    ): Response {
+        $organization = GetAppContext::organization();
 
-    public function index(ProductService $productService, MetricsService $metricsService): Response
-    {
-        $organization = App::context()->organization;
+        $planMetrics = $getPlanMetricsAction->handle();
 
-        $planMetrics = $metricsService->getPlanMetrics();
-
-        $subscription = $this->subscriptionBillingService->getSubscription($organization);
+        $subscription = $getSubscriptionAction->handle($organization);
 
         return Inertia::render('Billing/Index', [
-            'products' => $productService->all(),
+            'products' => $getProductsAction->handle(),
             'subscription' => $subscription,
-            'trialEnd' => $this->subscriptionBillingService->getTrialEndDate($organization),
-            'periodEnd' => $this->subscriptionBillingService->getPeriodEndDate($organization),
-            'subscriptionStatus' => $this->subscriptionBillingService->getSubscriptionStatus($organization),
+            'trialEnd' => $getTrialEndDateAction->handle($organization),
+            'periodEnd' => $getPeriodEndDateAction->handle($organization),
+            'subscriptionStatus' => $getSubscriptionStatusAction->handle($organization),
             'usage' => $planMetrics,
-            'predictedBill' => $this->subscriptionBillingService->predictNextBill($planMetrics, $subscription->plan),
-            'invoices' => $this->subscriptionBillingService->getInvoices($organization),
+            'predictedBill' => $predictNextBillAction->handle($planMetrics, $subscription->plan),
+            'invoices' => $getInvoicesAction->handle($organization),
         ]);
     }
 
-    public function show(string $billing): SymfonyResponse
+    public function show(string $billing, DownloadInvoice $downloadInvoiceAction): SymfonyResponse
     {
-        return $this->subscriptionBillingService->downloadInvoice(App::context()->organization, $billing);
+        return $downloadInvoiceAction->handle(GetAppContext::organization(), $billing);
     }
 
-    public function update(string $billing)
+    public function update(string $billing, ResumeSubscription $resumeSubscriptionAction)
     {
-        $this->subscriptionBillingService->resumeSubscription(App::context()->organization, $billing);
+        $resumeSubscriptionAction->handle(GetAppContext::organization(), $billing);
 
         return redirect()->route('billing.index')->withAlert('success', 'Your subscription has been resumed successfully.');
     }
 
-    public function destroy(): RedirectResponse
+    public function destroy(CancelSubscription $cancelSubscriptionAction): RedirectResponse
     {
-        $this->subscriptionBillingService->cancelSubscription(App::context()->organization);
+        $cancelSubscriptionAction->handle(GetAppContext::organization());
 
         return redirect()->route('billing.index')->withAlert('success', 'Your subscription has been cancelled successfully.');
     }

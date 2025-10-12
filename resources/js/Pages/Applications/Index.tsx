@@ -45,7 +45,7 @@ export default function Index({ applications }: PageProps & { applications: Appl
             header="Applications"
             icon="AppWindowMac"
             headerAction={
-                <Button onClick={() => setShowSheet(true)} data-dusk="button-new-application">
+                <Button onClick={() => setShowSheet(true)} data-test="button-new-application">
                     <PlusCircle className="mr-2 inline-block h-6 w-6" />
                     New Application
                 </Button>
@@ -54,7 +54,7 @@ export default function Index({ applications }: PageProps & { applications: Appl
             <Head title="Applications" />
             <div className="grid grid-cols-3 gap-6 mt-6">
                 {applications.map((application: Application) => (
-                    <Card className="w-full relative" key={application.id} data-dusk="card-application">
+                    <Card className="w-full relative" key={application.id} data-test="card-application">
                         <CardHeader className="flex flex-row justify-between items-center">
                             <CardTitle>
                                 <h2 className="text-xl truncate">

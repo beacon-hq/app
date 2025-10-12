@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Services\FeatureTypeService;
+use App\Actions\FeatureTypes\CreateFeatureType;
+use App\Actions\FeatureTypes\FindFeatureType;
+use App\Actions\FeatureTypes\ListFeatureTypes;
+use App\Actions\FeatureTypes\SetDefaultFeatureType;
+use App\Actions\FeatureTypes\UpdateFeatureType;
 use App\Values\FeatureType;
 use Bag\Attributes\WithoutValidation;
 use Illuminate\Http\RedirectResponse;
@@ -12,22 +16,24 @@ use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class FeatureTypeController extends Controller
+class FeatureTypeController
 {
-    public function index(FeatureTypeService $featureTypeService): Response
+    public function index(): Response
     {
         return Inertia::render('FeatureTypes/Index', [
-            'featureTypes' => $featureTypeService->all(),
+            'featureTypes' => ListFeatureTypes::run(),
         ]);
     }
 
-    public function store(
-        FeatureType $featureType,
-        FeatureTypeService $featureTypeService
-    ): RedirectResponse {
+    public function store(FeatureType $featureType): RedirectResponse
+    {
         Gate::authorize('create', $featureType);
 
-        $featureTypeService->create($featureType);
+        $newFeatureType = CreateFeatureType::run($featureType);
+
+        if ($featureType->isDefault) {
+            SetDefaultFeatureType::run($newFeatureType->id);
+        }
 
         return redirect()->route('feature-types.index')->with(
             'alert',
@@ -40,21 +46,24 @@ class FeatureTypeController extends Controller
 
     public function edit(
         #[WithoutValidation]
-        FeatureType $featureType,
-        FeatureTypeService $featureTypeService
+        FeatureType $featureType
     ): Response {
         Gate::authorize('update', $featureType);
 
         return Inertia::render('FeatureTypes/Edit', [
-            'featureType' => $featureTypeService->find($featureType->id),
+            'featureType' => FindFeatureType::run($featureType->id),
         ]);
     }
 
-    public function update(FeatureType $featureType, FeatureTypeService $featureTypeService): RedirectResponse
+    public function update(FeatureType $featureType): RedirectResponse
     {
         Gate::authorize('update', $featureType);
 
-        $featureTypeService->update($featureType);
+        UpdateFeatureType::run($featureType);
+
+        if ($featureType->isDefault) {
+            SetDefaultFeatureType::run($featureType->id);
+        }
 
         return redirect()->route('feature-types.index')->with(
             'alert',
@@ -67,12 +76,11 @@ class FeatureTypeController extends Controller
 
     public function setDefault(
         #[WithoutValidation]
-        FeatureType $featureType,
-        FeatureTypeService $featureTypeService
+        FeatureType $featureType
     ): RedirectResponse {
         Gate::authorize('update', $featureType);
 
-        $featureTypeService->setAsDefault($featureType->id);
+        SetDefaultFeatureType::run($featureType->id);
 
         return redirect()->route('feature-types.index')->with(
             'alert',

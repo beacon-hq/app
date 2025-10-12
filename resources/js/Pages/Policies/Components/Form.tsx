@@ -38,7 +38,7 @@ export function Form({
                         value={policy?.name ?? ''}
                         autoComplete="off"
                         onChange={(e) => updatePolicy({ ...policy, name: e.target.value } as Policy)}
-                        data-dusk="input-policy-name"
+                        data-test="input-policy-name"
                     />
                 </div>
                 <InputError message={errors?.name} />
@@ -50,7 +50,7 @@ export function Form({
                     value={policy?.description ?? ''}
                     rows={8}
                     onChange={(e) => updatePolicy({ ...policy, description: e.target.value } as Policy)}
-                    data-dusk="input-policy-description"
+                    data-test="input-policy-description"
                 />
                 <InputError message={errors?.description} />
             </div>
@@ -79,7 +79,7 @@ export function Form({
                             ] as PolicyDefinitionCollection,
                         } as Policy);
                     }}
-                    data-dusk="button-policies-add-conditions"
+                    data-test="button-policies-add-conditions"
                 >
                     <PlusCircle className="inline-block mr-2" /> Add Conditions
                 </Button>
@@ -93,7 +93,7 @@ export function Form({
                     className="w-24"
                     disabled={processing}
                     onClick={submit}
-                    data-dusk="button-policy-submit"
+                    data-test="button-policy-submit"
                 >
                     {policy?.id ? 'Update' : 'Create'}
                 </Button>

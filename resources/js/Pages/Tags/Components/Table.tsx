@@ -47,7 +47,7 @@ export default function Table({ tags }: { tags: TagCollection }) {
                     <div className="flex">
                         <Link
                             href={route('tags.edit', { tag: row.original.id as string })}
-                            data-dusk="button-tags-edit"
+                            data-test="button-tags-edit"
                         >
                             <Pencil className="h-6 w-6" />
                         </Link>

@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 use App\Enums\Color;
 use App\Models\Application;
-use App\Models\Team;
-use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
+use Tests\Unit\Actions\AppContext\SetAppContext;
 
 it('lists applications', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user, $organization] = createOwner();
+
+    SetAppContext::run($organization, $team);
+
     Application::factory(5)->for($team)->create();
 
     $this->actingAs($user)->get(route('applications.index'))

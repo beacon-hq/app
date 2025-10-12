@@ -15,7 +15,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Storage;
 
-class ProfileController extends Controller
+class ProfileController
 {
     /**
      * Display the user's profile form.

@@ -54,6 +54,7 @@
         "array_indentation": true,
         "array_syntax": {
             "syntax": "short"
-        }
+        },
+        "method_chaining_indentation": true
     }
 }

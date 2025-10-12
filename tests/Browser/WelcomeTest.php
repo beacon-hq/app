@@ -2,16 +2,12 @@
 
 declare(strict_types=1);
 
-use Laravel\Dusk\Browser;
+use Illuminate\Support\Facades\Config;
 
-afterEach(fn () => $this->browse(function (Browser $browser) {
-    $browser->logout();
-}));
+it('shows welcome screen', function () {
+    Config::set('beacon.billing.enabled', false);
 
-test('shows welcome screen', function () {
-    $this->browse(function (Browser $browser) {
-        $browser->visit('/')
-                ->assertSee('Beacon')
-                ->assertDontSee('$');
-    });
+    visit('/')
+        ->assertSee('Feature Flag Management For Laravel')
+        ->assertDontSee('$');
 });

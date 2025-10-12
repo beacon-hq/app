@@ -16,7 +16,7 @@ export default function Guest({ className, children }: PropsWithChildren & { cla
                     'flex grow flex-col items-center pt-6 sm:justify-center sm:pt-0 text-primary dark:text-secondary bg-background dark:bg-secondary',
                     className,
                 )}
-                data-dusk="main"
+                data-test="main"
             >
                 <div>
                     <Link href="/">

@@ -41,13 +41,13 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
         ])->validateWithBag('updateProfileInformation');
 
         $input['avatar_url'] = null;
-        if ($this->request->hasFile('avatar')) {
-            $avatar = Storage::disk('public')->putFile('avatars', $this->request->file('avatar'));
+        if (isset($input['avatar']) || $this->request->hasFile('avatar')) {
+            $avatar = Storage::disk('public')->putFile('avatars', $input['avatar'] ?? $this->request->file('avatar'));
             $input['avatar_url'] = $avatar;
             unset($input['avatar']);
         }
 
-        if (!$this->request->has('theme')) {
+        if (!isset($input['theme']) && !$this->request->has('theme')) {
             $input['theme'] = $user->theme;
         }
 
@@ -85,6 +85,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'last_name' => $input['last_name'],
             'email' => $input['email'],
             'avatar_url' => $input['avatar_url'],
+            'theme' => $input['theme'],
             'email_verified_at' => null,
         ])->save();
 

@@ -5,25 +5,19 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Actions\Fortify\RejectInactive;
-use App\Events\OrganizationChangedEvent;
-use App\Events\TeamChangedEvent;
+use App\Actions\Sanctum\GetAccessTokenClass;
 use App\Http\Middleware\RequestTimingMiddleware;
-use App\Models\AccessToken;
 use App\Models\Organization;
-use App\Models\Team;
-use App\Values\AppContext;
-use App\Values\Organization as OrganizationValue;
-use App\Values\Team as TeamValue;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Cashier\Cashier;
-use Laravel\Dusk\Dusk;
 use Laravel\Fortify\Actions\AttemptToAuthenticate;
 use Laravel\Fortify\Actions\CanonicalizeUsername;
 use Laravel\Fortify\Actions\EnsureLoginIsNotThrottled;
@@ -48,7 +42,6 @@ class AppServiceProvider extends ServiceProvider
         $this->appSetup();
 
         app()->singleton(RequestTimingMiddleware::class);
-        app()->singleton(AppContext::class, fn () => AppContext::from(AppContext::empty()));
 
         EnsureFeaturesAreActive::whenInactive(
             function () {
@@ -82,15 +75,11 @@ class AppServiceProvider extends ServiceProvider
 
         Date::use(CarbonImmutable::class);
 
-        Sanctum::usePersonalAccessTokenModel(AccessToken::class);
+        Sanctum::usePersonalAccessTokenModel(GetAccessTokenClass::run());
 
         Gate::guessPolicyNamesUsing(function (string $class) {
             return '\\App\\Policies\\' . class_basename($class) . 'Policy';
         });
-
-        if (app()->environment('local')) {
-            Dusk::selectorHtmlAttribute('data-dusk');
-        }
 
         Fortify::authenticateThrough(function () {
             return array_filter([
@@ -114,40 +103,8 @@ class AppServiceProvider extends ServiceProvider
             ]);
         });
 
-        App::macro('context', function (Organization|OrganizationValue|null $organization = null, Team|TeamValue|null $team = null): AppContext {
-            $newContext = $context = resolve(AppContext::class);
-
-            if ($organization !== null) {
-                if ($organization instanceof Organization) {
-                    $organization = OrganizationValue::from($organization);
-                }
-
-                if (!$context->has('organization') || $context->organization->id !== $organization->id) {
-                    $newContext = $newContext->with(organization: $organization);
-                }
-            }
-
-            if ($team !== null) {
-                if ($team instanceof Team) {
-                    $team = TeamValue::from($team);
-                }
-
-                if (!$context->has('team') || $context->team->id !== $team->id) {
-                    $newContext = $newContext->with(team: $team);
-                }
-            }
-
-            app()->singleton(AppContext::class, fn () => $newContext);
-
-            if ($newContext->has('organization') && (!$context->has('organization') || $newContext->organization->id !== $context->organization->id)) {
-                OrganizationChangedEvent::dispatch($organization);
-            }
-
-            if ($newContext->has('team') && (!$context->has('team') || $newContext->team->id !== $context->team->id)) {
-                TeamChangedEvent::dispatch($team);
-            }
-
-            return $newContext;
+        Builder::macro('existsOrFail', function () {
+            return $this->existsOr(fn () => throw (new ModelNotFoundException())->setModel($this->model::class));
         });
     }
 }

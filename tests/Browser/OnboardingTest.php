@@ -8,58 +8,43 @@ use App\Listeners\RecordFeatureFlagUsage;
 use App\Values\FeatureFlag;
 use App\Values\FeatureFlagContext;
 use App\Values\FeatureFlagResponse;
-use Illuminate\Support\Facades\App;
-use Laravel\Dusk\Browser;
-
-afterEach(fn () => $this->browse(function (Browser $browser) {
-    $browser->logout();
-}));
+use Tests\Unit\Actions\AppContext\SetAppContext;
 
 it('onboards new teams', function () {
-    $user = createBrowserUser();
+    [$team, $user, $organization] = createOwner();
 
-    App::context(organization: $user->organizations()->first(), team: $user->teams()->first());
+    $this->actingAs($user);
 
-    $this->browse(function (Browser $browser) use ($user) {
-        $browser->resize(3024 / 2, 1964 / 2);
+    SetAppContext::run($organization, $team);
 
-        $browser
-            ->loginAs($user)
-            ->visitRoute('dashboard')
-            ->waitForText('Get Started')
-            ->screenshotElement('@onboarding-dialog', 'onboarding-1');
+    $page = visit(route('dashboard'))
+        ->resize(3024 / 2, 1964 / 2);
 
-        $browser
-            ->click('@next-config')
-            ->waitForTextIn('@done-install', 'Done')
-            ->screenshotElement('@onboarding-dialog', 'onboarding-2');
+    $page
+        ->assertSee('Get Started')
+        ->screenshotElement('[data-test="onboarding-dialog"]', 'onboarding-1')
+        ->click('[data-test="next-config"]')
+        ->assertSeeIn('[data-test="done-install"]', 'Done')
+        ->screenshotElement('[data-test="onboarding-dialog"]', 'onboarding-2')
+        ->click('[data-test="next-integration"]')
+        ->assertSeeIn('[data-test="done-config"]', 'Done')
+        ->assertSee('Waiting')
+        ->screenshotElement('[data-test="onboarding-dialog"]', 'onboarding-3');
 
-        $browser
-            ->click('@next-integration')
-            ->waitForTextIn('@done-config', 'Done')
-            ->waitForText('Waiting')
-            ->screenshotElement('@onboarding-dialog', 'onboarding-3');
+    $event = new FeatureFlagMissedEvent(
+        FeatureFlag::withoutValidation(name: 'test-flag'),
+        FeatureFlagContext::from(scopeType: 'array', appName: 'Beacon Onboarding', environment: 'production'),
+        FeatureFlagResponse::from('test-flag', null, true)
+    );
+    (app(CreateMissingFeatureFlagListener::class))->handle($event);
+    (app(RecordFeatureFlagUsage::class))->handle($event);
 
-        $event = new FeatureFlagMissedEvent(
-            FeatureFlag::withoutValidation(name: 'test-flag'),
-            FeatureFlagContext::from(scopeType: 'array', appName: 'Beacon Onboarding', environment: 'production'),
-            FeatureFlagResponse::from('test-flag', null, true)
-        );
-        (app(CreateMissingFeatureFlagListener::class))->handle($event);
-        (app(RecordFeatureFlagUsage::class))->handle($event);
-
-        $browser
-            ->waitForText('Finish')
-            ->screenshotElement('@onboarding-dialog', 'onboarding-4');
-
-        $browser
-            ->click('@finish-onboarding')
-            ->waitForTextIn('@metric-card-total_flags', '1')
-            ->pause(3000)
-            ->screenshotElement('@main', 'dashboard');
-
-        $browser
-            ->refresh()
-            ->assertDontSee('Get Started');
-    });
+    $page
+        ->assertSee('Finish')
+        ->screenshotElement('[data-test="onboarding-dialog"]', 'onboarding-4')
+        ->click('[data-test="finish-onboarding"]')
+        ->assertSeeIn('[data-test="metric-card-total_flags"]', '1')
+        ->screenshotElement('[data-test="main"]', 'dashboard')
+        ->navigate(route('dashboard'))
+        ->assertDontSee('Get Started');
 });

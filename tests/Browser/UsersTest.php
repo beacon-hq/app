@@ -2,89 +2,99 @@
 
 declare(strict_types=1);
 
+use App\Actions\Invites\CreateInvite;
 use App\Enums\Role;
 use App\Enums\UserStatus;
-use App\Models\Invite;
 use App\Models\User;
-use Illuminate\Support\Facades\App;
+use App\Notifications\RegistrationInvite;
+use App\Values\Organization;
+use App\Values\Team;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
-use Laravel\Dusk\Browser;
-
-afterEach(fn () => $this->browse(function (Browser $browser) {
-    $browser->logout();
-}));
+use Tests\Unit\Actions\AppContext\SetAppContext;
 
 it('can invite a new user', function () {
-    $user = createBrowserUser();
+    Notification::fake();
 
-    $this->browse(function (Browser $browser) use ($user) {
-        $browser->resize(3024 / 2, 650);
+    [$team, $user, $organization] = createOwner();
 
-        $browser
-            ->loginAs($user)
-            ->visitRoute('users.index')
-            ->waitForText('Users')
-            ->pause(300)
-            ->screenshotElement('@main', 'users-initial');
+    $this->actingAs($user);
 
-        $browser
-            ->click('@button-invite-user')
-            ->waitForText('Invite New User')
-            ->pause(300)
-            ->screenshotElement('@dialog-invite-user', 'users-form-invite');
+    SetAppContext::run($organization, $team);
 
-        $browser
-            ->type('@input-invite-email', 'davey@php.net')
-            ->click('@select-invite-role')
-            ->pause(100)
-            ->click('@select-option-invite-role-admin')
-            ->pause(100)
-            ->click('@select-invite-team')
-            ->pause(100)
-            ->click('@select-option-invite-team-0')
-            ->pause(100)
-            ->click('@button-invite-submit');
+    $page = visit(route('users.index'))
+        ->resize(3024 / 2, 650)
+        ->assertSee('Users')
+        ->wait(1)
+        ->screenshotElement('[data-test="main"]', 'users-initial');
 
-        $browser
-            ->waitForText('Pending Invites')
-            ->pause(3000)
-            ->assertSee('davey@php.net')
-            ->screenshotElement('@main', 'users-invite-list');
+    $page
+        ->click(':nth-match([data-test="button-invite-user"], 1)')
+        ->assertSee('Invite New User')
+        ->wait(1)
+        ->screenshotElement('[data-test="dialog-invite-user"]', 'users-form-invite')
+        ->type('[data-test="input-invite-email"]', 'davey@php.net')
+        ->click('[data-test="select-invite-role"]')
+        ->wait(1)
+        ->click('[data-test="select-option-invite-role-admin"]')
+        ->wait(1)
+        ->click('[data-test="select-invite-team"]')
+        ->wait(1)
+        ->click('[data-test="select-option-invite-team-0"]')
+        ->wait(1)
+        ->click('[data-test="button-invite-submit"]')
+        ->wait(1)
+        ->assertSee('Pending Invites')
+        ->wait(3)
+        ->assertSee('davey@php.net')
+        ->screenshotElement('[data-test="main"]', 'users-invite-list');
 
-        $invite = Invite::firstWhere('user_id', $user->id);
+    Notification::assertSentTimes(RegistrationInvite::class, 1);
+});
 
-        $url = URL::temporarySignedRoute(
-            'teams.accept-invite',
-            now()->addMinutes(5),
-            [
-                'id' => $invite->id,
-                'team' => $invite->team->id,
-            ]
-        );
+it('can accept an invite', function () {
+    Config::set('beacon.billing.enabled', false);
 
-        $browser
-            ->resize(3024 / 2, 1400)
-            ->deleteCookie('beacon_session')
-            ->visit($url)
-            ->waitForText('Register', 30)
-            ->pause(300)
-            ->click('@main')
-            ->screenshotElement('@card-register', 'users-invite-accept')
-            ->assertSee('Invitation Accepted')
-            ->assertSee('Register below to join the "Beacon Demo\'s Team" team.')
-            ->click('@link-already-registered')
-            ->pause(1000)
-            ->assertSee('Need an account?')
-            ->pause(300)
-            ->click('@main')
-            ->screenshotElement('@card-login', 'users-invite-accept-login');
-    });
+    [$team, $user, $organization] = createOwner();
+
+    $invite = CreateInvite::run(
+        $user,
+        Team::from(id: $team->id),
+        Organization::from($organization),
+        'davey@php.net',
+        Role::DEVELOPER,
+    );
+
+    $url = URL::temporarySignedRoute(
+        'teams.accept-invite',
+        now()->addMinutes(5),
+        [
+            'id' => $invite->id,
+            'team' => $team->id,
+        ]
+    );
+
+    $this->actingAsGuest();
+
+    visit($url)
+        ->assertSee('Register')
+        ->click('[data-test="main"]')
+        ->screenshotElement('[data-test="card-register"]', 'users-invite-accept')
+        ->assertSee('Invitation Accepted')
+        ->assertSee('Register below to join the "Beacon Demo\'s Team" team.')
+        ->click('[data-test="link-already-registered"]')
+        ->assertSee('Need an account?')
+        ->click('[data-test="main"]')
+        ->screenshotElement('[data-test="card-login"]', 'users-invite-accept-login');
 });
 
 it('can edit a user', function () {
-    $user = createBrowserUser();
+    [$team, $user, $organization] = createOwner();
 
-    App::context(organization: $user->organizations->first());
+    $this->actingAs($user);
+
+    SetAppContext::run($organization, $team);
 
     $user2 = User::createQuietly([
         'first_name' => 'Demo',
@@ -105,20 +115,13 @@ it('can edit a user', function () {
     $user2->teams()->sync($user->teams()->first());
     $user2->assignRole(Role::DEVELOPER());
 
-    \DB::commit();
+    $this->actingAs($user);
 
-    $this->browse(function (Browser $browser) use ($user) {
-        $browser->resize(3024 / 2, 700);
-
-        $browser
-            ->loginAs($user)
-            ->visitRoute('users.index')
-            ->waitForText('Users');
-
-        $browser
-            ->click('@button-user-edit')
-            ->waitForText('Manage User')
-            ->pause(300)
-            ->screenshotElement('@dialog-user-manage', 'users-form-edit');
-    });
+    visit(route('users.index'))
+        ->resize(3024 / 2, 700)
+        ->assertSee('Users')
+        ->click(':nth-match([data-test="button-user-edit"], 1)')
+        ->assertSee('Manage User')
+        ->wait(1)
+        ->screenshotElement('[data-test="dialog-user-manage"]', 'users-form-edit');
 });

@@ -48,7 +48,7 @@ export default function Index({ teams }: { teams: TeamCollection }) {
                 { name: 'Teams', icon: 'Users' },
             ]}
             headerAction={
-                <Button onClick={() => setShowSheet(true)} data-dusk="button-teams-create">
+                <Button onClick={() => setShowSheet(true)} data-test="button-teams-create">
                     <PlusCircle className="mr-2 inline-block h-6 w-6" />
                     New Team
                 </Button>
@@ -58,13 +58,13 @@ export default function Index({ teams }: { teams: TeamCollection }) {
             <div className="mx-auto py-12 md:w-7/12">
                 <div className="mx-auto sm:px-6 lg:px-8">
                     <div className="overflow-hidden p-4">
-                        <Card data-dusk="card-teams">
+                        <Card data-test="card-teams">
                             <CardContent className="px-4 pb-0">
                                 {teams.map((team, index) => (
                                     <div
                                         className="cursor-pointer"
                                         key={team.id}
-                                        data-dusk={`card-teams-team-${index}`}
+                                        data-test={`card-teams-team-${index}`}
                                     >
                                         <div className="relative flex flex-col gap-4 items-start h-fit p-4">
                                             <div className="w-full flex flex-row gap-4 items-center">

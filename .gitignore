@@ -27,6 +27,7 @@ yarn-error.log
 /.zed
 *.bak
 /tests/output
+/tests/Browser/Screenshots
 bootstrap/ssr
 
 **/caddy

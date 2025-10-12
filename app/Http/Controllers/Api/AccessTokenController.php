@@ -4,38 +4,36 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Services\AccessTokenService;
+use App\Actions\AccessTokens\CreateAccessToken;
+use App\Actions\AccessTokens\DeleteAccessToken;
+use App\Actions\AccessTokens\ListAccessTokens;
 use App\Values\AccessToken;
-use Bag\Attributes\WithoutValidation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 
-class AccessTokenController extends Controller
+class AccessTokenController
 {
-    public function store(AccessToken $accessToken, AccessTokenService $accessTokenService): JsonResponse
+    public function store(AccessToken $accessToken): JsonResponse
     {
         Gate::authorize('create', $accessToken);
 
-        return response()->json($accessTokenService->create($accessToken));
+        return response()->json(CreateAccessToken::run($accessToken));
     }
 
-    public function show(AccessTokenService $accessTokenService): JsonResponse
+    public function show(): JsonResponse
     {
         Gate::authorize('viewAny', AccessToken::class);
 
-        return response()->json($accessTokenService->all());
+        return response()->json(ListAccessTokens::run());
     }
 
     public function destroy(
-        #[WithoutValidation]
         AccessToken $accessToken,
-        AccessTokenService $accessTokenService
     ): Response {
         Gate::authorize('delete', $accessToken);
 
-        if ($accessTokenService->delete($accessToken)) {
+        if (DeleteAccessToken::run($accessToken)) {
             return response(null, 204);
         }
 

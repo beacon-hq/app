@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Models\Traits;
 
+use App\Actions\AppContext\GetAppContext;
 use App\Models\Organization;
 use App\Models\Scopes\CurrentOrganizationScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Context;
 
 /**
  * @mixin Model
@@ -30,18 +31,18 @@ trait BelongsToOrganization
 
         static::creating(
             function (Model $model) {
-                if (App::context()->has('organization') && !\method_exists($model, 'organizations')) {
+                if (Context::has('organization') && !\method_exists($model, 'organizations')) {
                     /** @phpstan-ignore-next-line property.notFound */
                     if ($model->organization_id === null) {
-                        $model->organization_id = App::context()->organization->id;
+                        $model->organization_id = Context::get('organization')->id;
                     }
                 }
             }
         );
 
         static::created(function (Model $model) {
-            if (App::context()->has('organization') && \method_exists($model, 'organizations')) {
-                $model->teams()->attach(App::context()->organization->id);
+            if (($currentOrganization = GetAppContext::organization()) !== null && \method_exists($model, 'organizations')) {
+                $model->organizations()->attach($currentOrganization->id);
             }
         });
     }

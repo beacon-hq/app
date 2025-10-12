@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Values;
 
-use App;
-use App\Services\SubscriptionBillingService;
+use App\Actions\AppContext\GetAppContext;
+use App\Actions\Subscriptions\GetSubscriptionPlan;
 use App\Values\Factories\SubscriptionFactory;
 use Bag\Attributes\Factory;
 use Bag\Attributes\Hidden;
@@ -42,13 +42,11 @@ readonly class Subscription extends Bag
     #[Transforms(\Laravel\Cashier\Subscription::class)]
     public static function fromModel(\Laravel\Cashier\Subscription $subscription): array
     {
-        $subscriptionBillingService = app(SubscriptionBillingService::class);
-
         return [
             'id' => $subscription->id,
             'stripe_id' => $subscription->stripe_id,
             'status' => $subscription->stripe_status,
-            'plan' => $subscriptionBillingService->getPlan(App::context()->organization),
+            'plan' => GetSubscriptionPlan::run(GetAppContext::organization()),
             'trial_ends_at' => $subscription->trial_ends_at,
             'ends_at' => $subscription->ends_at,
             'created_at' => $subscription->created_at,

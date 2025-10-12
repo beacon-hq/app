@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Values\Factories;
 
 use Bag\Factory;
-use Illuminate\Support\Carbon;
+use Carbon\CarbonImmutable;
 
 class FeatureTypeFactory extends Factory
 {
@@ -18,8 +18,8 @@ class FeatureTypeFactory extends Factory
             'temporary' => $this->faker->boolean(),
             'color' => $this->faker->hexColor(),
             'icon' => $this->faker->word(),
-            'createdAt' => new Carbon(),
-            'updatedAt' => new Carbon(),
+            'createdAt' => new CarbonImmutable(),
+            'updatedAt' => new CarbonImmutable(),
         ];
     }
 }

@@ -61,7 +61,7 @@ export default function Index({ policies }: PageProps & { policies: PolicyCollec
                         setPolicy(newPolicy);
                         setShowSheet(true);
                     }}
-                    data-dusk="button-new-policy"
+                    data-test="button-new-policy"
                 >
                     <PlusCircle className="mr-2 inline-block h-6 w-6" />
                     New Policy
@@ -81,7 +81,7 @@ export default function Index({ policies }: PageProps & { policies: PolicyCollec
                 </div>
             </div>
             <Sheet open={showSheet} onOpenChange={setShowSheet}>
-                <SheetContent onOpenAutoFocus={(event) => event.preventDefault()} data-dusk="sheet-policy-form">
+                <SheetContent onOpenAutoFocus={(event) => event.preventDefault()} data-test="sheet-policy-form">
                     <SheetTitle className="mb-4">New Policy</SheetTitle>
                     <Form submit={submit} errors={errors} processing={processing} onCancel={handleCancel} />
                 </SheetContent>

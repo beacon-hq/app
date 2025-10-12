@@ -36,7 +36,7 @@ export function Form({
                         value={data.name}
                         autoComplete="off"
                         onChange={(e) => setData('name', e.target.value)}
-                        data-dusk="input-teams-name"
+                        data-test="input-teams-name"
                     />
                 </div>
                 <InputError message={errors?.name} />
@@ -54,7 +54,7 @@ export function Form({
                 <Button variant="link" className="mr-2" type="button" onClick={onCancel}>
                     Cancel
                 </Button>
-                <Button type="submit" className="w-24" disabled={processing} data-dusk="button-teams-submit">
+                <Button type="submit" className="w-24" disabled={processing} data-test="button-teams-submit">
                     {data.id ? 'Update' : 'Create'}
                 </Button>
             </div>

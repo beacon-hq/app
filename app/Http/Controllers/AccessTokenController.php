@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Services\AccessTokenService;
+use App\Actions\AccessTokens\ListAccessTokens;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class AccessTokenController extends Controller
+class AccessTokenController
 {
-    public function index(AccessTokenService $accessTokenService): Response
+    public function index(): Response
     {
         return Inertia::render('AccessTokens/Index', [
             'settings' => [
-                'tokens' => $accessTokenService->all(),
+                'tokens' => ListAccessTokens::run(),
             ],
         ]);
     }

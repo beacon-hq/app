@@ -2,22 +2,15 @@
 
 declare(strict_types=1);
 
-use Laravel\Dusk\Browser;
-
-afterEach(fn () => $this->browse(function (Browser $browser) {
-    $browser->logout();
-}));
-
 it('can view settings', function () {
-    $user = createBrowserUser();
+    [, $user, ] = createOwner();
 
-    $this->browse(function (Browser $browser) use ($user) {
-        $browser->resize(3024 / 2, 600);
+    $this->actingAs($user);
 
-        $browser
-            ->loginAs($user)
-            ->visitRoute('settings.index')
-            ->waitForText('Settings')
-            ->screenshotElement('@main', 'settings-initial');
-    });
+    $page = visit(route('settings.index'));
+
+    $page->resize(3024 / 2, 600);
+
+    $page->assertSee('Settings')
+        ->screenshot(filename: 'settings-initial');
 });

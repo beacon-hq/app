@@ -17,7 +17,7 @@ export default function IntegrationStep({
     onFinish,
     onBack,
     accessToken,
-    apiOnboardingStatus
+    apiOnboardingStatus,
 }: IntegrationStepProps) {
     return (
         <AccordionItem value="integration" className="border-0 mt-4">
@@ -43,11 +43,7 @@ export default function IntegrationStep({
                     fullWidth={true}
                 />
                 <div className="flex flex-row justify-between">
-                    <Button
-                        variant="secondary"
-                        onClick={onBack}
-                        type="button"
-                    >
+                    <Button variant="secondary" onClick={onBack} type="button">
                         Back
                     </Button>
                     <Button
@@ -55,7 +51,7 @@ export default function IntegrationStep({
                         disabled={apiOnboardingStatus !== false}
                         className="bg-success hover:bg-success/80"
                         onClick={onFinish}
-                        data-dusk="finish-onboarding"
+                        data-test="finish-onboarding"
                     >
                         {apiOnboardingStatus && <HeartPulse className="animate-pulse" />}
                         {apiOnboardingStatus === false ? 'Finish' : 'Waiting…'}

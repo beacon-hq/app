@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Services\EnvironmentService;
+use App\Actions\Environments\CreateEnvironment;
+use App\Actions\Environments\FindEnvironment;
+use App\Actions\Environments\ListEnvironments;
+use App\Actions\Environments\UpdateEnvironment;
 use App\Values\Environment;
 use Bag\Attributes\WithoutValidation;
 use Illuminate\Http\RedirectResponse;
@@ -12,24 +15,22 @@ use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class EnvironmentController extends Controller
+class EnvironmentController
 {
-    public function index(EnvironmentService $environmentService): Response
+    public function index(): Response
     {
         Gate::authorize('viewAny', Environment::class);
 
         return Inertia::render('Environments/Index', [
-            'environments' => $environmentService->all(),
+            'environments' => ListEnvironments::run(),
         ]);
     }
 
-    public function store(
-        Environment $environment,
-        EnvironmentService $environmentService
-    ): RedirectResponse {
+    public function store(Environment $environment): RedirectResponse
+    {
         Gate::authorize('create', $environment);
 
-        $environmentService->create($environment);
+        CreateEnvironment::run($environment);
 
         return redirect()
             ->route('environments.index')
@@ -41,23 +42,20 @@ class EnvironmentController extends Controller
 
     public function edit(
         #[WithoutValidation]
-        Environment $environment,
-        EnvironmentService $environmentService
+        Environment $environment
     ): Response {
         Gate::authorize('update', $environment);
 
         return Inertia::render('Environments/Edit', [
-            'environment' => $environmentService->find($environment->id),
+            'environment' => FindEnvironment::run($environment->id),
         ]);
     }
 
-    public function update(
-        Environment $environment,
-        EnvironmentService $environmentService
-    ): RedirectResponse {
+    public function update(Environment $environment): RedirectResponse
+    {
         Gate::authorize('update', $environment);
 
-        $environmentService->update($environment);
+        UpdateEnvironment::run($environment);
 
         return redirect()
             ->route('environments.index')

@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Services\TeamService;
+use App\Actions\Teams\CreateTeam;
+use App\Actions\Teams\FindTeam;
+use App\Actions\Teams\GetTeamMembers;
+use App\Actions\Teams\GetTeamNonMembers;
+use App\Actions\Teams\ListTeams;
+use App\Actions\Teams\UpdateTeam;
 use App\Values\Organization;
 use App\Values\Team;
 use App\Values\User;
@@ -16,9 +21,9 @@ use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class TeamController extends Controller
+class TeamController
 {
-    public function __construct(protected TeamService $teamService)
+    public function __construct()
     {
     }
 
@@ -27,7 +32,7 @@ class TeamController extends Controller
         Gate::authorize('viewAny', Team::class);
 
         return Inertia::render('Teams/Index', [
-            'teams' => $this->teamService->all(Auth::user()->id, true),
+            'teams' => ListTeams::run(Auth::user()->id, true),
         ]);
     }
 
@@ -35,7 +40,7 @@ class TeamController extends Controller
     {
         Gate::authorize('create', Team::class);
 
-        $team = $this->teamService->create($team, User::from(Auth::user()));
+        $team = CreateTeam::run($team, User::from(Auth::user()));
 
         return redirect(route('teams.edit', ['team' => $team->id]))
             ->withAlert('success', 'Team Created Successfully.');
@@ -49,9 +54,9 @@ class TeamController extends Controller
         Gate::authorize('update', $team);
 
         return Inertia::render('Teams/Edit', [
-            'team' => $team = $this->teamService->find($team->id, Organization::collect(Auth::user()->organizations)),
-            'users' => $this->teamService->nonMembers($team),
-            'members' => $this->teamService->members(
+            'team' => $team = FindTeam::run($team->id, Organization::collect(Auth::user()->organizations)),
+            'users' => GetTeamNonMembers::run($team),
+            'members' => GetTeamMembers::run(
                 $team,
                 $request->get('orderBy', ['name']),
                 $request->integer('page', null),
@@ -68,7 +73,7 @@ class TeamController extends Controller
     {
         Gate::authorize('update', $team);
 
-        $team = $this->teamService->update($team);
+        $team = UpdateTeam::run($team);
 
         return redirect(route('teams.edit', ['team' => $team->id]))->withAlert('success', 'Team Updated Successfully.');
     }

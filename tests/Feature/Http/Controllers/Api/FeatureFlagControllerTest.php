@@ -18,12 +18,14 @@ use App\Values\PolicyDefinition;
 use Bag\Collection;
 use Illuminate\Support\Facades\Config;
 use function Pest\Laravel\actingAs;
+use Tests\Unit\Actions\AppContext\SetAppContext;
 
 it('fetches a missing feature flag as inactive', function () {
     Config::set('beacon.api.rate_limiting.enabled', false);
 
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user, $organization] = createOwner();
+
+    SetAppContext::run($organization, $team);
 
     actingAs($user)
         ->postJson(route('api.feature-flags.show', ['feature_flag' => 'testing']), [
@@ -43,8 +45,10 @@ it('fetches a missing feature flag as inactive', function () {
 });
 
 it('fetches a feature flag without matching app/env as inactive', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user, $organization] = createOwner();
+
+    SetAppContext::run($organization, $team);
+
     $featureType = FeatureType::factory()->for($team)->create();
     $tags = Tag::factory(3)->for($team)->create();
     $featureFlag = FeatureFlag::factory()->for($team)->for($featureType)->hasAttached($tags)->create();
@@ -64,8 +68,10 @@ it('fetches a feature flag without matching app/env as inactive', function () {
 });
 
 it('fetches a feature flag without matching application as inactive', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user, $organization] = createOwner();
+
+    SetAppContext::run($organization, $team);
+
     $featureType = FeatureType::factory()->for($team)->create();
     $tags = Tag::factory(3)->for($team)->create();
     $application = Application::factory()->for($team)->create();
@@ -91,8 +97,10 @@ it('fetches a feature flag without matching application as inactive', function (
 });
 
 it('fetches a feature flag without matching environemnt as inactive', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user, $organization] = createOwner();
+
+    SetAppContext::run($organization, $team);
+
     $featureType = FeatureType::factory()->for($team)->create();
     $tags = Tag::factory(3)->for($team)->create();
     $application = Application::factory()->for($team)->create();
@@ -118,8 +126,10 @@ it('fetches a feature flag without matching environemnt as inactive', function (
 });
 
 it('fetches an active feature flag with no policy', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user, $organization] = createOwner();
+
+    SetAppContext::run($organization, $team);
+
     $featureType = FeatureType::factory()->for($team)->create();
     $tags = Tag::factory(3)->for($team)->create();
     $application = Application::factory()->for($team)->create();
@@ -148,8 +158,10 @@ it('fetches an active feature flag with no policy', function () {
 });
 
 it('fetches an active feature flag', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user, $organization] = createOwner();
+
+    SetAppContext::run($organization, $team);
+
     $featureType = FeatureType::factory()->for($team)->create();
     $tags = Tag::factory(3)->for($team)->create();
     $application = Application::factory()->for($team)->create();
@@ -182,8 +194,10 @@ it('fetches an active feature flag', function () {
 });
 
 it('fetches an active complex feature flag', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user, $organization] = createOwner();
+
+    SetAppContext::run($organization, $team);
+
     $featureType = FeatureType::factory()->for($team)->create();
     $tags = Tag::factory(3)->for($team)->create();
     $application = Application::factory()->for($team)->create();
@@ -217,8 +231,10 @@ it('fetches an active complex feature flag', function () {
 });
 
 it('fetches a complex feature flag as inactive with missing context value in OR', function () {
-    $team = Team::factory()->create();
-    $user = User::factory()->hasAttached($team)->create();
+    [$team, $user, $organization] = createOwner();
+
+    SetAppContext::run($organization, $team);
+
     $featureType = FeatureType::factory()->for($team)->create();
     $tags = Tag::factory(3)->for($team)->create();
     $application = Application::factory()->for($team)->create();

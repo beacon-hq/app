@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Services\AppContextService;
-use App\Services\OrganizationService;
-use App\Services\TeamService;
+use App\Actions\AppContext\SetOrganizationContext;
+use App\Actions\AppContext\SetTeamContext;
+use App\Actions\Organizations\CreateOrganization;
+use App\Actions\Organizations\DeleteOrganization;
+use App\Actions\Organizations\FindOrganizationById;
+use App\Actions\Organizations\ListOrganizations;
+use App\Actions\Organizations\UpdateOrganization;
+use App\Actions\Teams\CreateTeam;
 use App\Values\Organization;
 use App\Values\Team;
 use App\Values\User;
@@ -19,16 +24,12 @@ use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class OrganizationController extends Controller
+class OrganizationController
 {
-    public function __construct(protected OrganizationService $organizationService, protected TeamService $teamService, protected AppContextService $appContextService)
-    {
-    }
-
     public function index(): Response
     {
         return Inertia::render('Organizations/Index', [
-            'organizations' => $this->organizationService->all(User::from(Auth::user())),
+            'organizations' => ListOrganizations::run(User::from(Auth::user())),
         ]);
     }
 
@@ -45,18 +46,18 @@ class OrganizationController extends Controller
             'team.icon.required' => __('The icon field is required.'),
         ])->validate();
 
-        $organization = $this->organizationService->create(User::from(Auth::user()), $organization);
+        $organization = CreateOrganization::run(User::from(Auth::user()), $organization);
 
-        $this->appContextService->setOrganization($organization);
+        SetOrganizationContext::run($organization);
 
-        $team = $this->teamService->create(Team::from(
+        $team = CreateTeam::run(Team::from(
             name: $request->json('team.name'),
             color: $request->json('team.color'),
             icon: $request->json('team.icon'),
         ), User::from(Auth::user()));
 
         Session::put('team', $team);
-        $this->appContextService->setTeam($team);
+        SetTeamContext::run($team);
 
         return redirect()->back()
             ->withAlert('success', 'Organization Created Successfully.');
@@ -65,7 +66,7 @@ class OrganizationController extends Controller
     public function edit(Organization $organization): Response
     {
         return Inertia::render('Organizations/Edit', [
-            'organization' => $this->organizationService->findById($organization->id),
+            'organization' => FindOrganizationById::run($organization->id),
         ]);
     }
 
@@ -73,7 +74,7 @@ class OrganizationController extends Controller
         #[WithoutValidation]
         Organization $organization
     ): RedirectResponse {
-        $this->organizationService->update($organization);
+        UpdateOrganization::run($organization);
 
         return redirect()->back()
             ->withAlert('success', 'Organization Updated Successfully.');
@@ -92,7 +93,7 @@ class OrganizationController extends Controller
             'current_password.current_password' => __('The provided password does not match your current password.'),
         ])->validate();
 
-        $this->organizationService->delete($organization);
+        DeleteOrganization::run($organization);
 
         return redirect()->to(route('organizations.index'))
             ->withAlert('success', 'Organization Deleted Successfully.');

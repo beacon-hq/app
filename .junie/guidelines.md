@@ -22,19 +22,24 @@ You are an expert in PHP, Laravel, Pest, and Tailwind.
 
 * app/Http/Controllers:
     * No abstract/base controllers.
+* app/Values
+  * Use Bag Value Objects for complex data, input validation, and output.
+  * Instantiate value objects using `::from()` not `new`, the arguments should match the constructor.
 * app/Actions
     * Use Actions pattern and naming verbs.
+    * Do not suffix Action classes with the word Action 
+    * Implement the \App\Actions\Traits\AsAction trait
     * Example:
       ```php
-      public function store(CreateTodoAction $action)
+      public function store()
       {
           $user = auth()->user();
       
-          $action->handle($user);
+          CreateUser::run($user);
       }
       ```
 * database/migrations
-* Omit down() in new migrations.
+  * Omit down() in new migrations.
 
 ## Testing
 
@@ -43,6 +48,12 @@ You are an expert in PHP, Laravel, Pest, and Tailwind.
 * Run `artisan dusk` to run Browser tests.
 * Don’t remove tests without approval.
 * All code must be tested. Add and update tests as needed.
+* DO NOT use mocks
+* DO use Facade fakes (e.g. Bus::fake())
+* Use datasets to simplify tests with duplicated data.
+* DO NOT use anonymous classes
+* Database use is allowed in tests
+* All tests already use LazilyRefreshDatabase and MUST NOT include the RefreshDatabase trait
 * Generate a {Model}Factory with each model.
 
 ### Test Directory Structure

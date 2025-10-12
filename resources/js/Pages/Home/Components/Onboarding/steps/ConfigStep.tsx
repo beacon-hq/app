@@ -25,11 +25,7 @@ export default function ConfigStep({ isComplete, onComplete, onNext, onBack, acc
                 <div className="flex flex-row justify-between w-full">
                     <span className="text-md font-bold">Edit Configuration</span>
                     {isComplete && (
-                        <Badge
-                            variant="default"
-                            className="bg-success hover:bg-success"
-                            data-dusk="done-config"
-                        >
+                        <Badge variant="default" className="bg-success hover:bg-success" data-test="done-config">
                             Done
                         </Badge>
                     )}
@@ -52,23 +48,14 @@ export default function ConfigStep({ isComplete, onComplete, onNext, onBack, acc
                     >
                         {`PENNANT_STORE=beacon\nBEACON_ACCESS_TOKEN="${accessToken}"`}
                     </SyntaxHighlighter>
-                    <CopyToClipboard
-                        text={`PENNANT_STORE=beacon\nBEACON_ACCESS_TOKEN="${accessToken}"`}
-                    />
+                    <CopyToClipboard text={`PENNANT_STORE=beacon\nBEACON_ACCESS_TOKEN="${accessToken}"`} />
                 </div>
                 <div className="flex flex-row justify-between">
-                    <Button
-                        variant="secondary"
-                        onClick={onBack}
-                        type="button"
-                    >
+                    <Button variant="secondary" onClick={onBack} type="button">
                         Back
                     </Button>
                     <div className="flex flex-row justify-end">
-                        <Button
-                            onClick={handleNext}
-                            data-dusk="next-integration"
-                        >
+                        <Button onClick={handleNext} data-test="next-integration">
                             Next
                         </Button>
                     </div>

@@ -74,7 +74,7 @@ export default function Authenticated({
                     </div>
                 )}
 
-                <div data-dusk="main" className="bg-background">
+                <div data-test="main" className="bg-background">
                     <header className="bg-background w-full px-12 pt-4 flex justify-between">
                         {breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} />}
                         {!breadcrumbs && (

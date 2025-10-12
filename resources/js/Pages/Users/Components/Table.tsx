@@ -144,16 +144,16 @@ export default function Table({
                         <UserCog
                             className="h-6 w-6 cursor-pointer"
                             onClick={() => onManage(row.original)}
-                            data-dusk={
+                            data-test={
                                 row.original.id === currentUser.id ? 'button-user-edit-self' : 'button-user-edit'
                             }
                         />
                         {row.original.id !== currentUser.id && (
                             <AlertDialog>
-                                <AlertDialogTrigger data-dusk="button-user-delete">
+                                <AlertDialogTrigger data-test="button-user-delete">
                                     <Trash className="h-6 w-6 cursor-pointer" />
                                 </AlertDialogTrigger>
-                                <AlertDialogContent data-dusk="dialog-user-delete">
+                                <AlertDialogContent data-test="dialog-user-delete">
                                     <AlertDialogHeader>
                                         <AlertDialogTitle>Delete User</AlertDialogTitle>
                                         <AlertDialogDescription>

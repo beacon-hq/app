@@ -61,7 +61,7 @@ export function Form({
                     autoComplete="off"
                     disabled={featureFlag?.id != null && featureFlag?.id !== ''}
                     onChange={(e) => setFeatureFlag({ ...featureFlag, name: e.target.value } as FeatureFlag)}
-                    data-dusk="input-feature-flag-name"
+                    data-test="input-feature-flag-name"
                 />
                 <InputError message={errors?.name} />
             </div>
@@ -78,7 +78,7 @@ export function Form({
                         } as FeatureFlag)
                     }
                 >
-                    <SelectTrigger id="feature_type" data-dusk="select-feature-type">
+                    <SelectTrigger id="feature_type" data-test="select-feature-type">
                         <SelectValue placeholder="Select a flag type" />
                     </SelectTrigger>
                     <SelectContent>
@@ -88,7 +88,7 @@ export function Form({
                                     <SelectItem
                                         key={type.id}
                                         value={type.id as string}
-                                        data-dusk={`select-option-feature-type-${idx}`}
+                                        data-test={`select-option-feature-type-${idx}`}
                                     >
                                         <div className="flex items-center">
                                             {type.icon != null && (
@@ -227,7 +227,7 @@ export function Form({
                             description: e.target.value,
                         } as FeatureFlag)
                     }
-                    data-dusk="input-feature-flag-description"
+                    data-test="input-feature-flag-description"
                 />
                 <InputError message={errors?.description} />
             </div>
@@ -235,7 +235,7 @@ export function Form({
                 <Button variant="link" className="mr-2" type="button" onClick={onCancel}>
                     Cancel
                 </Button>
-                <Button type="submit" className="w-24" disabled={processing} data-dusk="button-feature-flag-submit">
+                <Button type="submit" className="w-24" disabled={processing} data-test="button-feature-flag-submit">
                     {featureFlag?.id ? 'Update' : 'Create'}
                 </Button>
             </div>

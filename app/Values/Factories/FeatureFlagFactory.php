@@ -7,7 +7,7 @@ namespace App\Values\Factories;
 use App\Values\FeatureType;
 use App\Values\Tag;
 use Bag\Factory;
-use Illuminate\Support\Carbon;
+use Carbon\CarbonImmutable;
 
 class FeatureFlagFactory extends Factory
 {
@@ -17,11 +17,11 @@ class FeatureFlagFactory extends Factory
             'id' => $this->faker->uuid(),
             'name' => $this->faker->word(),
             'description' => $this->faker->word(),
-            'lastSeenAt' => $this->faker->word(),
+            'lastSeenAt' => new CarbonImmutable(),
             'featureType' => FeatureType::factory()->make(),
             'tags' => Tag::collect([Tag::factory()->make()]),
-            'createdAt' => new Carbon(),
-            'updatedAt' => new Carbon(),
+            'createdAt' => new CarbonImmutable(),
+            'updatedAt' => new CarbonImmutable(),
         ];
     }
 }

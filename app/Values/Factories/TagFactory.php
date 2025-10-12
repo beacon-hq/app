@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Values\Factories;
 
 use Bag\Factory;
-use Illuminate\Support\Carbon;
+use Carbon\CarbonImmutable;
 
 class TagFactory extends Factory
 {
@@ -16,8 +16,8 @@ class TagFactory extends Factory
             'name' => $this->faker->word(),
             'description' => $this->faker->word(),
             'color' => $this->faker->hexColor(),
-            'createdAt' => new Carbon(),
-            'updatedAt' => new Carbon(),
+            'createdAt' => new CarbonImmutable(),
+            'updatedAt' => new CarbonImmutable(),
         ];
     }
 }

@@ -2,71 +2,79 @@
 
 declare(strict_types=1);
 
+use App\Actions\Teams\CreateTeam;
 use App\Enums\Role;
 use App\Enums\UserStatus;
 use App\Models\User;
-use Laravel\Dusk\Browser;
-use Tests\Browser\Components\ColorPicker;
-use Tests\Browser\Components\IconPicker;
+use App\Values\Organization;
+use App\Values\Team;
+use App\Values\User as UserValue;
+use Tests\Unit\Actions\AppContext\SetAppContext;
 
 it('can view teams page', function () {
-    $user = createBrowserUser();
+    [$team, $user, $organization] = createOwner();
 
-    $this->browse(function (Browser $browser) use ($user) {
-        $browser->resize(3024 / 2, 700);
+    $this->actingAs($user);
 
-        $browser
-            ->loginAs($user)
-            ->visitRoute('teams.index')
-            ->waitForText('Teams')
-            ->screenshotElement('@main', 'teams-initial');
+    SetAppContext::run($organization, $team);
 
-        $browser
-            ->assertSee('Teams')
-            ->screenshotElement('@main', 'teams-list');
-    });
+    $page = visit(route('dashboard'))
+        ->resize(3024 / 2, 700)
+        ->click('[data-test="skip-onboarding"]')
+        ->navigate(route('teams.index'))
+        ->assertSee('Teams')
+        ->screenshotElement('[data-test="main"]', 'teams-initial')
+        ->screenshotElement('[data-test="main"]', 'teams-list');
 });
 
 it('can navigate to team management', function () {
-    $this->browse(function (Browser $browser) {
-        $browser->resize(3024 / 2, 700);
+    [$team, $user, $organization] = createOwner();
 
-        $browser
-            ->visitRoute('teams.index')
-            ->waitForText('Teams')
-            ->screenshot('teams-page');
-    });
+    $this->actingAs($user);
+
+    SetAppContext::run($organization, $team);
+
+    visit(route('dashboard'))
+        ->resize(3024 / 2, 700)
+        ->click('[data-test="skip-onboarding"]')
+        ->navigate(route('teams.index'))
+        ->assertSee('Teams')
+        ->screenshot(filename: 'teams-page');
 });
 
 it('can create a new team', function () {
-    $this->browse(function (Browser $browser) {
-        $browser->resize(3024 / 2, 700);
+    [$team, $user, $organization] = createOwner();
 
-        $browser
-            ->visitRoute('teams.index');
+    $this->actingAs($user);
 
-        $browser->waitForText('Teams')
-            ->click('@button-teams-create')
-            ->screenshotElement('@main', 'teams-form-create')
-            ->waitForText('New Team')
-            ->type('@input-teams-name', 'Demo Team')
-            ->within(new ColorPicker(), function (Browser $browser) {
-                $browser->selectColor('orange');
-            })
-            ->within(new IconPicker(), function (Browser $browser) {
-                $browser->selectIcon('anchor', 0);
-            })
-            ->click('@button-teams-submit')
-            ->pause(1000)
-            ->refresh()
-            ->waitForText('Demo Team')
-            ->screenshotElement('@card-teams', 'teams-after-create');
-    });
+    SetAppContext::run($organization, $team);
+
+    visit(route('dashboard'))
+        ->resize(3024 / 2, 700)
+        ->click('[data-test="skip-onboarding"]')
+        ->navigate(route('teams.index'))
+        ->assertSee('Teams')
+        ->click('[data-test="button-teams-create"]')
+        ->screenshotElement('[data-test="main"]', 'teams-form-create')
+        ->assertSee('New Team')
+        ->type('[data-test="input-teams-name"]', 'Demo Team')
+        ->hover('.bg-orange-400')
+        ->click('.bg-orange-400')
+        ->click('[data-test="icon-picker"]')
+        ->assertSee('Search for an icon')
+        ->type('[data-test="input-icon-picker-search"]', 'anchor')
+        ->click('[data-test="icon-picker-icon-0"]')
+        ->click('[data-test="button-teams-submit"]')
+        ->assertSee('Demo Team')
+        ->screenshotElement('[data-test="card-teams"]', 'teams-after-create');
 });
 
-
 it('can edit a team', function () {
-    $user = User::latest()->first();
+    [$team, $user, $organization] = createOwner();
+
+    $this->actingAs($user);
+
+    SetAppContext::run($organization, $team);
 
     $user2 = User::createQuietly([
         'first_name' => 'Demo',
@@ -83,69 +91,56 @@ it('can edit a team', function () {
         'two_factor_recovery_codes' => 'testing',
     ])->save();
 
-    $user2->organizations()->sync($user->organizations()->first());
-    $user2->teams()->sync($user->teams()->first());
+    $user2->organizations()->sync($organization);
     $user2->assignRole(Role::DEVELOPER());
 
-    $this->browse(function (Browser $browser) {
-        $browser->resize(3024 / 2, 700);
-
-        $browser
-            ->visitRoute('teams.index')
-            ->waitForText('Teams')
-            ->screenshotElement('@main', 'teams-list')
-            ->click('@card-teams-team-1')
-            ->pause(500)
-            ->screenshotElement('@main', 'teams-form-edit')
-            ->type('@input-teams-name', 'Demo Team Updated')
-            ->within(new ColorPicker(), function (Browser $browser) {
-                $browser->selectColor('fuchsia');
-            })
-            ->within(new IconPicker(), function (Browser $browser) {
-                $browser->selectIcon('anvil', 0);
-            })
-            ->click('@button-teams-submit')
-            ->pause(1000)
-            ->refresh()
-            ->waitForText('Demo Team Updated')
-            ->screenshotElement('@main', 'teams-after-edit');
-
-        $browser
-            ->click('@button-add-members')
-            ->pause(300)
-            ->screenshotElement('@dialog-add-members', 'teams-add-members')
-            ->click('@select-teams-team-member')
-            ->pause(300)
-            ->click('@select-option-teams-team-member-0')
-            ->pause(300)
-            ->click('@button-teams-add-team-member')
-            ->pause(300)
-            ->screenshotElement('@dialog-add-members', 'teams-add-members-selected')
-            ->click('@button-teams-add-members-submit')
-            ->pause(1000)
-            ->screenshotElement('@main', 'teams-after-members-added');
-
-        $browser
-            ->click('@button-teams-delete-member-0')
-            ->pause(300)
-            ->screenshotElement('@dialog-teams-delete-member', 'teams-delete-member-confirmation');
-    });
+    visit(route('teams.index'))
+        ->resize(3024 / 2, 700)
+        ->assertSee('Teams')
+        ->screenshotElement('[data-test="main"]', 'teams-list')
+        ->click('[data-test="card-teams-team-0"]')
+        ->screenshotElement('[data-test="main"]', 'teams-form-edit')
+        ->type('[data-test="input-teams-name"]', 'Demo Team Updated')
+        ->hover('.bg-fuchsia-400')
+        ->click('.bg-fuchsia-400')
+        ->click('[data-test="icon-picker"]')
+        ->type('[data-test="input-icon-picker-search"]', 'anvil')
+        ->click('[data-test="icon-picker-icon-0"]')
+        ->click('[data-test="button-teams-submit"]')
+        ->assertSee('Demo Team Updated')
+        ->screenshotElement('[data-test="main"]', 'teams-after-edit')
+        ->click('[data-test="button-add-members"]')
+        ->screenshotElement('[data-test="dialog-add-members"]', 'teams-add-members')
+        ->click('[data-test="select-teams-team-member"]')
+        ->click('[data-test="select-option-teams-team-member-0"]')
+        ->click('[data-test="button-teams-add-team-member"]')
+        ->screenshotElement('[data-test="dialog-add-members"]', 'teams-add-members-selected')
+        ->click('[data-test="button-teams-add-members-submit"]')
+        ->screenshotElement('[data-test="main"]', 'teams-after-members-added')
+        ->click('[data-test="button-teams-delete-member-0"]')
+        ->screenshotElement('[data-test="dialog-teams-delete-member"]', 'teams-delete-member-confirmation');
 });
 
 it('can switch teams', function () {
-    $this->browse(function (Browser $browser) {
-        $browser->resize(3024 / 2, 700);
+    [$team, $user, $organization] = createOwner();
 
-        $browser
-            ->visitRoute('dashboard')
-            ->pause(500)
-            ->click('@skip-onboarding')
-            ->resize(800, 600)
-            ->pause(2000)
-            ->click('@select-team')
-            ->screenshot('teams-select')
-            ->click('@select-option-team-0')
-            ->pause(1000)
-            ->waitForTextIn('@select-team', 'Demo Team');
-    });
+    $this->actingAs($user);
+
+    SetAppContext::run($organization, $team);
+
+    CreateTeam::run(Team::from(
+        organization: Organization::from($organization),
+        name: 'Demo Team',
+        icon: 'anchor',
+        color: 'red',
+    ), UserValue::from($user));
+
+    visit(route('dashboard'))
+        ->resize(3024 / 2, 700)
+        ->click('[data-test="skip-onboarding"]')
+        ->resize(800, 600)
+        ->click('[data-test="select-team"]')
+        ->screenshot(filename: 'teams-select')
+        ->click('[data-test="select-option-team-0"]')
+        ->assertSeeIn('[data-test="select-team"]', 'Demo Team');
 });

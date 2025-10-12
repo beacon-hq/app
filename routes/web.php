@@ -92,6 +92,13 @@ Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
         FeatureFlagController::class,
     )->except(['delete', 'create', 'show']);
 
+    Route::prefix('feature-flags')->group(function () {
+        Route::get('/feature-flags/{feature_flag}/overview', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.overview');
+        Route::get('/feature-flags/{feature_flag}/policy', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.policy');
+        Route::get('/feature-flags/{feature_flag}/activity', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.activity');
+        Route::get('/feature-flags/{feature_flag}/metrics', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.metrics');
+    });
+
     Route::get('feature-flags/{featureFlag}/activity-log', [FeatureFlagController::class, 'activityLog'])
         ->name('feature-flags.activity-log');
 
@@ -154,13 +161,6 @@ Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
 
     Route::delete('invites/{invite}', [InviteController::class, 'destroy'])->name('invites.destroy');
     Route::post('invites/{invite}/resend', [InviteController::class, 'update'])->name('invites.resend');
-
-    Route::prefix('feature-flags')->group(function () {
-        Route::get('/feature-flags/{feature_flag}/overview', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.overview');
-        Route::get('/feature-flags/{feature_flag}/policy', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.policy');
-        Route::get('/feature-flags/{feature_flag}/activity', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.activity');
-        Route::get('/feature-flags/{feature_flag}/metrics', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.metrics');
-    });
 });
 
 require __DIR__.'/auth.php';

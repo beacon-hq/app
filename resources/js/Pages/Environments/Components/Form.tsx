@@ -49,7 +49,7 @@ export function Form({
                     autoComplete="off"
                     disabled={data.id !== undefined && data.id !== ''}
                     onChange={(e) => setData('name', e.target.value)}
-                    data-dusk="input-environment-name"
+                    data-test="input-environment-name"
                 />
                 <InputError message={errors?.name} />
             </div>
@@ -65,7 +65,7 @@ export function Form({
                     value={data.description ?? ''}
                     rows={8}
                     onChange={(e) => setData('description', e.target.value)}
-                    data-dusk="input-environment-description"
+                    data-test="input-environment-description"
                 />
                 <InputError message={errors?.description} />
             </div>
@@ -73,7 +73,7 @@ export function Form({
                 <Button variant="link" className="mr-2" type="button" onClick={onCancel}>
                     Cancel
                 </Button>
-                <Button type="submit" className="w-24" disabled={processing} data-dusk="submit-environment">
+                <Button type="submit" className="w-24" disabled={processing} data-test="submit-environment">
                     {data.id ? 'Update' : 'Create'}
                 </Button>
             </div>

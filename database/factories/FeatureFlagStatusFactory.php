@@ -26,4 +26,14 @@ class FeatureFlagStatusFactory extends Factory
             'feature_flag_id' => FeatureFlag::factory(),
         ];
     }
+
+    public function active(): static
+    {
+        return $this->state(['status' => true]);
+    }
+
+    public function inactive(): static
+    {
+        return $this->state(['status' => false]);
+    }
 }

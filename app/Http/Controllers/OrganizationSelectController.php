@@ -4,29 +4,26 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Services\AppContextService;
-use App\Services\OrganizationService;
-use App\Services\TeamService;
+use App\Actions\AppContext\SetOrganizationContext;
+use App\Actions\AppContext\SetTeamContext;
+use App\Actions\Organizations\FindOrganizationById;
+use App\Actions\Teams\ListTeams;
 use App\Values\Organization;
 use Bag\Attributes\WithoutValidation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 
-class OrganizationSelectController extends Controller
+class OrganizationSelectController
 {
-    public function __construct(protected OrganizationService $organizationService, protected TeamService $teamService, protected AppContextService $appContextService)
-    {
-    }
-
     public function update(
         #[WithoutValidation]
         Organization $organization
     ): RedirectResponse {
-        $this->appContextService->setOrganization($this->organizationService->findById($organization->id));
+        SetOrganizationContext::run(FindOrganizationById::run($organization->id));
 
-        $team = $this->teamService->all()->first();
+        $team = ListTeams::run()->first();
         Session::put('team', $team);
-        $this->appContextService->setTeam($team);
+        SetTeamContext::run($team);
 
         return \redirect()->back()->withAlert('success', 'Organization changed successfully.');
     }

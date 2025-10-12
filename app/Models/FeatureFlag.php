@@ -202,6 +202,7 @@ class FeatureFlag extends Model
             'id' => 'string',
             'last_seen_at' => 'datetime',
             'completed_at' => 'datetime',
+            'status' => 'boolean',
         ];
     }
 }

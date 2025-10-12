@@ -4,27 +4,23 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Services\InviteService;
+use App\Actions\Invites\DeleteInvite;
+use App\Actions\Invites\ResendInvite;
 use App\Values\Invite;
 use App\Values\User;
 use Bag\Attributes\WithoutValidation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 
-class InviteController extends Controller
+class InviteController
 {
-    public function __construct(
-        protected InviteService $inviteService,
-    ) {
-    }
-
     public function destroy(
         #[WithoutValidation]
         Invite $invite
     ): RedirectResponse {
         Gate::authorize('create', User::class);
 
-        $this->inviteService->delete($invite);
+        DeleteInvite::run($invite);
 
         return redirect()->route('users.index')
             ->withAlert('success', 'Invitation deleted successfully.');
@@ -36,7 +32,7 @@ class InviteController extends Controller
     ): RedirectResponse {
         Gate::authorize('create', User::class);
 
-        $this->inviteService->resend($invite);
+        ResendInvite::run($invite);
 
         return redirect()->route('users.index')
             ->withAlert('success', 'Invitation resent successfully.');

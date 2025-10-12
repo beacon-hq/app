@@ -25,7 +25,7 @@ export default function Index({ errors }: { errors: FormErrors }) {
 
     return (
         <Guest>
-            <Head title="Enable Two-Factor Authentication" />
+            <Head title="Verify Two-Factor Authentication" />
             <form onSubmit={handleSubmit}>
                 <div className="py-6">
                     <div className="mx-auto w-full space-y-6 sm:px-6 lg:px-8">

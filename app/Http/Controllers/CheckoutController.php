@@ -4,31 +4,33 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Services\ProductService;
-use App\Services\SubscriptionBillingService;
+use App\Actions\AppContext\GetAppContext;
+use App\Actions\Products\ListProducts;
+use App\Actions\Subscriptions\ChangeSubscription;
+use App\Actions\Subscriptions\CreateSubscription;
+use App\Actions\Subscriptions\HasActiveSubscription;
 use App\Values\Product;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\App;
 use Inertia\Inertia;
 use Laravel\Cashier\Checkout;
 
 class CheckoutController
 {
-    public function index(ProductService $productService, SubscriptionBillingService $subscriptionBillingService)
+    public function index(ListProducts $listProductsAction, HasActiveSubscription $hasActiveSubscriptionAction)
     {
         if (!config('beacon.billing.enabled')) {
             return \redirect('dashboard');
         }
 
-        $organization = App::context()->organization;
+        $organization = GetAppContext::organization();
         $hasActiveSubscription = false;
 
         if ($organization) {
-            $hasActiveSubscription = $subscriptionBillingService->hasActiveSubscription($organization);
+            $hasActiveSubscription = $hasActiveSubscriptionAction->handle($organization);
         }
 
         return Inertia::render('Checkout/Index', [
-            'products' => $productService->all(),
+            'products' => $listProductsAction->handle(),
             'auth' => [
                 'organization' => [
                     'has_active_subscription' => $hasActiveSubscription,
@@ -37,16 +39,14 @@ class CheckoutController
         ]);
     }
 
-    public function show(Product $product, SubscriptionBillingService $subscriptionBillingService): Checkout
+    public function show(Product $product, CreateSubscription $createSubscriptionAction): Checkout
     {
-        return $subscriptionBillingService->createSubscription(App::context()->organization, $product);
+        return $createSubscriptionAction->handle(GetAppContext::organization(), $product);
     }
 
-    public function update(Product $product, SubscriptionBillingService $subscriptionBillingService): RedirectResponse
+    public function update(Product $product, ChangeSubscription $changeSubscriptionAction): RedirectResponse
     {
-        $organization = App::context()->organization;
-
-        if ($subscriptionBillingService->changeSubscription($organization, $product)) {
+        if ($changeSubscriptionAction->handle(GetAppContext::organization(), $product)) {
             return \redirect()->back()->withAlert('success', 'Subscription updated.');
         }
 

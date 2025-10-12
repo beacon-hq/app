@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models\Scopes;
 
-use App;
+use App\Actions\AppContext\GetAppContext;
+use App\Models\Team;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -15,11 +16,10 @@ class CurrentTeamScope implements Scope
 {
     public function apply(Builder $builder, Model $model): void
     {
-        if (!App::context()->has('team')) {
+        if (($currentTeam = GetAppContext::team()) === null) {
             return;
         }
 
-        $currentTeam = App::context()->team;
         if (method_exists($model, 'teams')) {
             $teams = $model->teams();
             $builder
@@ -27,7 +27,7 @@ class CurrentTeamScope implements Scope
                     $teams instanceof MorphTo,
                     function (Builder $builder) use ($teams, $currentTeam) {
                         return $builder
-                            ->where($teams->getMorphType(), App\Models\Team::class)
+                            ->where($teams->getMorphType(), Team::class)
                             ->where($teams->getForeignKeyName(), $currentTeam->id);
                     }
                 )

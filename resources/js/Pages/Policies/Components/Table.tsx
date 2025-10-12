@@ -35,7 +35,7 @@ export default function Table({ policies }: { policies: PolicyCollection }) {
                     <div className="flex">
                         <Link
                             href={route('policies.edit', { policy: row.original.id as string })}
-                            data-dusk="button-policies-edit"
+                            data-test="button-policies-edit"
                         >
                             <Pencil className="h-6 w-6" />
                         </Link>

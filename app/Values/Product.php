@@ -81,8 +81,8 @@ readonly class Product extends Bag
 
                 return $value;
             }),
-            'base_price' => Money::ofMinor($model->basePrice->unit_amount, 'USD'),
-            'metered_price' => Money::ofMinor($model->meteredPrice->unit_amount, 'USD')->multipliedBy($model->metadata['evaluation_tier_size'])->dividedBy(1000)
+            'base_price' => $model->basePrice !== null ? Money::ofMinor($model->basePrice->unit_amount, 'USD') : Money::zero('USD'),
+            'metered_price' => $model->meteredPrice !== null ? Money::ofMinor($model->meteredPrice->unit_amount, 'USD')->multipliedBy($model->metadata['evaluation_tier_size'])->dividedBy(1000) : Money::zero('USD'),
         ];
     }
 

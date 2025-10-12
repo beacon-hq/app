@@ -283,7 +283,7 @@ export default function Edit({
                                 value="overview"
                                 className="rounded-lg grow px-6 cursor-pointer"
                                 onClick={changeTab('feature-flags.edit.overview')}
-                                data-dusk="tab-overview"
+                                data-test="tab-overview"
                             >
                                 Overview
                             </TabsTrigger>
@@ -291,7 +291,7 @@ export default function Edit({
                                 value="edit"
                                 className="rounded-lg grow px-6 cursor-pointer"
                                 onClick={changeTab('feature-flags.edit')}
-                                data-dusk="tab-edit"
+                                data-test="tab-edit"
                             >
                                 Edit
                             </TabsTrigger>
@@ -299,7 +299,7 @@ export default function Edit({
                                 value="policy"
                                 className="rounded-lg grow px-6 cursor-pointer"
                                 onClick={changeTab('feature-flags.edit.policy')}
-                                data-dusk="tab-configuration"
+                                data-test="tab-configuration"
                             >
                                 Configuration
                             </TabsTrigger>
@@ -307,7 +307,7 @@ export default function Edit({
                                 value="metrics"
                                 className="rounded-lg grow px-6 cursor-pointer"
                                 onClick={changeTab('feature-flags.edit.metrics')}
-                                data-dusk="tab-metrics"
+                                data-test="tab-metrics"
                             >
                                 Metrics
                             </TabsTrigger>
@@ -315,7 +315,7 @@ export default function Edit({
                                 value="activity"
                                 className="rounded-lg grow px-6 cursor-pointer"
                                 onClick={changeTab('feature-flags.edit.activity')}
-                                data-dusk="tab-activity"
+                                data-test="tab-activity"
                             >
                                 Activity Log
                             </TabsTrigger>
@@ -418,7 +418,7 @@ export default function Edit({
                                                     onClick={function () {
                                                         changeTab('feature-flags.edit.policy')();
                                                     }}
-                                                    data-dusk="button-add-policy"
+                                                    data-test="button-add-policy"
                                                 >
                                                     <PlusCircle className="inline-block mr-2" />
                                                     Add a Policy
@@ -441,7 +441,7 @@ export default function Edit({
                                                             status: active,
                                                         } as FeatureFlag)
                                                     }
-                                                    data-dusk="switch-feature-flag-enabled"
+                                                    data-test="switch-feature-flag-enabled"
                                                 />
                                                 Enabled
                                             </div>
@@ -475,7 +475,7 @@ export default function Edit({
                                             variant="secondary"
                                             className="w-fit flex flex-row items-center"
                                             onClick={addStatus}
-                                            data-dusk="button-add-application"
+                                            data-test="button-add-application"
                                         >
                                             <PlusCircle className="inline-block" />
                                             Add Application
@@ -485,7 +485,7 @@ export default function Edit({
                                                 type="button"
                                                 onClick={submitFeatureFlag}
                                                 className="w-fit block"
-                                                data-dusk="button-feature-flag-save"
+                                                data-test="button-feature-flag-save"
                                             >
                                                 Save
                                             </Button>

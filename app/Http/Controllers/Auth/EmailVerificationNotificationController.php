@@ -4,21 +4,16 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Services\UserService;
+use App\Actions\Users\SendEmailVerificationNotification;
 use App\Values\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
-class EmailVerificationNotificationController extends Controller
+class EmailVerificationNotificationController
 {
-    public function __construct(protected UserService $userService)
-    {
-    }
-
     public function update(User $user): RedirectResponse
     {
-        $this->userService->sendEmailVerificationNotification($user->id);
+        SendEmailVerificationNotification::run($user->id);
 
         return back()->withAlert('success', 'Verification link sent.');
     }

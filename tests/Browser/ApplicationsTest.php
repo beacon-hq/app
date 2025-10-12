@@ -2,74 +2,63 @@
 
 declare(strict_types=1);
 
-use Laravel\Dusk\Browser;
-use Tests\Browser\Components\ColorPicker;
-
-afterEach(fn () => $this->browse(function (Browser $browser) {
-    $browser->logout();
-}));
+use Tests\Unit\Actions\AppContext\SetAppContext;
 
 it('can create new application', function () {
-    $user = createBrowserUser();
+    [$team, $user, $organization] = createOwner();
 
-    $this->browse(function (Browser $browser) use ($user) {
-        $browser->resize(3024 / 2, 700);
+    SetAppContext::run($organization, $team);
 
-        $browser
-            ->loginAs($user)
-            ->visitRoute('applications.index')
-            ->waitForText('No Applications')
-            ->screenshotElement('@main', 'applications-initial');
+    $this->actingAs($user);
 
-        $browser
-            ->click('@button-new-application')
-            ->waitForText('Application Name')
-            ->screenshot('applications-form-create');
+    $page = visit(route('applications.index'))
+        ->resize(3024 / 2, 700);
 
-        $browser
-            ->type('#name', 'Demo Application')
-            ->type('#description', 'This is a demo application.')
-            ->type('#display_name', 'Demo App')
-            ->within(new ColorPicker(), function (Browser $browser) {
-                $browser->selectColor('lime', '@main', 'applications-form-create-fill');
-            })
-            ->pause(500)
-            ->click('@button-application-submit')
-            ->waitForText('Demo Application')
-            ->screenshotElement('@main', 'applications-after-create')
-            ->screenshotElement('@card-application', 'applications-app-card');
-    });
+    $page
+        ->assertSee('No Applications')
+        ->screenshotElement('[data-test="main"]', 'applications-initial')
+        ->click('[data-test="button-new-application"]')
+        ->assertSee('New Application')
+        ->type('#name', 'Demo Application')
+        ->type('#description', 'This is a demo application.')
+        ->type('#display_name', 'Demo App')
+        ->click('div.bg-lime-400')
+        ->click('[data-test="button-application-submit"]')
+        ->assertSee('Demo App')
+        ->screenshotElement('[data-test="main"]', 'applications-after-create')
+        ->screenshotElement('[data-test="card-application"]', 'applications-app-card');
 });
 
 it('can edit applications', function () {
-    $user = createBrowserUser();
+    [$team, $user, $organization] = createOwner();
 
-    $this->browse(function (Browser $browser) use ($user) {
-        $browser->resize(3024 / 2, 700);
+    SetAppContext::run($organization, $team);
 
-        $browser
-            ->loginAs($user)
-            ->visitRoute('applications.index')
-            ->waitForText('Demo Application');
+    $this->actingAs($user);
 
-        $browser
-            ->click('@card-application')
-            ->resize(3024 / 2, 900)
-            ->waitForText('Edit Application')
-            ->pause(500)
-            ->screenshotElement('@card-application-edit', 'applications-edit');
+    $page = visit(route('applications.index'))
+        ->resize(3024 / 2, 700);
 
-        $browser
-            ->assertDisabled('#name')
-            ->type('#description', 'This is an updated demo application.')
-            ->type('#display_name', 'Updated Demo App')
-            ->within(new ColorPicker(), function (Browser $browser) {
-                $browser->selectColor('purple');
-            })
-            ->pause(500)
-            ->click('@button-application-submit')
-            ->waitForText('Updated Demo App')
-            ->screenshotElement('@main', 'applications-after-edit')
-            ->screenshotElement('@card-application', 'applications-app-card-updated');
-    });
+    $page
+        ->assertSee('No Applications')
+        ->click('[data-test="button-new-application"]')
+        ->assertSee('New Application')
+        ->type('#name', 'Demo Application')
+        ->type('#description', 'This is a demo application.')
+        ->type('#display_name', 'Demo App')
+        ->click('div.bg-lime-400')
+        ->click('[data-test="button-application-submit"]')
+        ->assertSee('Demo App')
+        ->click('[data-test="card-application"] a')
+        ->resize(3024 / 2, 900)
+        ->assertSee('Edit Application')
+        ->screenshotElement('[data-test="card-application-edit"]', 'applications-edit')
+        ->assertDisabled('#name')
+        ->type('#description', 'This is an updated demo application.')
+        ->type('#display_name', 'Updated Demo App')
+        ->click('div.bg-purple-400')
+        ->click('[data-test="button-application-submit"]')
+        ->assertSee('Updated Demo App')
+        ->screenshotElement('[data-test="main"]', 'applications-after-edit')
+        ->screenshotElement('[data-test="card-application"]', 'applications-app-card-updated');
 });

@@ -105,10 +105,10 @@ export default function Table({
                     <div className="flex flex-row gap-2 justify-end">
                         <div className="flex">
                             <AlertDialog>
-                                <AlertDialogTrigger data-dusk={`button-teams-delete-member-${row.index}`}>
+                                <AlertDialogTrigger data-test={`button-teams-delete-member-${row.index}`}>
                                     <Trash2 className="h-6 w-6 cursor-pointer" />
                                 </AlertDialogTrigger>
-                                <AlertDialogContent data-dusk="dialog-teams-delete-member">
+                                <AlertDialogContent data-test="dialog-teams-delete-member">
                                     <AlertDialogHeader>
                                         <AlertDialogTitle>Remove User</AlertDialogTitle>
                                         <AlertDialogDescription>
@@ -120,7 +120,7 @@ export default function Table({
                                         <AlertDialogCancel>Cancel</AlertDialogCancel>
                                         <AlertDialogAction
                                             onClick={() => onDelete({ user_id: row.original.id as number })}
-                                            data-dusk="button-delete-member-submit"
+                                            data-test="button-delete-member-submit"
                                         >
                                             Delete
                                         </AlertDialogAction>

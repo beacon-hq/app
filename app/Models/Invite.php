@@ -7,12 +7,14 @@ namespace App\Models;
 use App\Enums\Role;
 use App\Models\Traits\BelongsToTeam;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Invite extends Model
 {
     use BelongsToTeam;
+    use HasFactory;
     use HasUlids;
 
     protected $fillable = [

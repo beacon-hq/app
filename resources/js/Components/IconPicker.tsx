@@ -41,7 +41,7 @@ const IconPicker = ({
     return (
         <Popover>
             <PopoverTrigger asChild>
-                <div data-dusk="icon-picker">
+                <div data-test="icon-picker">
                     <Label aria-required={required}>Icon</Label>
                     <div className="flex flex-row items-center gap-2 icon-picker">
                         <Icon
@@ -67,7 +67,7 @@ const IconPicker = ({
                         }}
                         placeholder="Search icons"
                         className="mt-4"
-                        data-dusk="input-icon-picker-search"
+                        data-test="input-icon-picker-search"
                     />
                 </div>
                 {filteredIcons.length == 0 && (
@@ -89,7 +89,7 @@ const IconPicker = ({
                                                         'border-black': name == selectedIcon,
                                                     })}
                                                     onClick={() => handleSelectedIcon(name)}
-                                                    data-dusk={`icon-picker-icon-${idx}`}
+                                                    data-test={`icon-picker-icon-${idx}`}
                                                 >
                                                     <Icon />
                                                 </Button>

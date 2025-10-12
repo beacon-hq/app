@@ -24,6 +24,7 @@ class FeatureFlagFactory extends Factory
             'team_id' => null,
             'created_at' => Carbon::now()->subDays($this->faker->numberBetween(1, 365)),
             'updated_at' => Carbon::now()->subDays($this->faker->numberBetween(1, 7)),
+            'completed_at' => null,
             'status' => false,
         ];
     }
@@ -31,5 +32,10 @@ class FeatureFlagFactory extends Factory
     public function active(): static
     {
         return $this->state(['status' => true]);
+    }
+
+    public function inactive(): static
+    {
+        return $this->state(['status' => false]);
     }
 }

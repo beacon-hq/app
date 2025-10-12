@@ -14,11 +14,21 @@
         <testsuite name="Architecture">
             <directory>tests/Architecture</directory>
         </testsuite>
+        <testsuite name="Browser">
+            <directory>tests/Browser</directory>
+        </testsuite>
     </testsuites>
     <source>
         <include>
             <directory>app</directory>
         </include>
+        <exclude>
+            <directory>app/Values</directory>
+            <directory>app/Services</directory>
+            <directory>app/Repositories</directory>
+            <directory>app/Console/Commands</directory>
+            <directory>app/Exceptions</directory>
+        </exclude>
     </source>
     <php>
         <env name="APP_ENV" value="testing"/>

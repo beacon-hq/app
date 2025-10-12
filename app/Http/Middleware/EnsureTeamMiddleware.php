@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App;
+use App\Actions\AppContext\SetTeamContext;
 use App\Models\Team;
 use Auth;
 use Closure;
@@ -35,7 +35,7 @@ class EnsureTeamMiddleware
 
         $team = Session::get('team');
 
-        App::context(team: $team);
+        SetTeamContext::run($team);
 
         return $next($request);
     }

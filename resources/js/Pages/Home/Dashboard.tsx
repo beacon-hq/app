@@ -45,7 +45,7 @@ interface DashboardMetrics {
     totalFlags: DashboardMetricValue;
     changesMetrics: DashboardMetricValue;
     createdMetrics: DashboardMetricValue;
-    archivedMetrics: DashboardMetricValue;
+    completedMetrics: DashboardMetricValue;
     flagStatusData: Array<{
         state: string;
         flags: number;
@@ -134,15 +134,15 @@ const usageColumns: ColumnDef<any, any>[] = [
             const row = props.row as any;
             return (
                 <div className="flex">
-                    <IconColor color={row.original.application.color} className="mr-2 h-4 w-4 rounded-full" />
-                    {row.original.application.name}
+                    <IconColor color={row.original?.application.color} className="mr-2 h-4 w-4 rounded-full" />
+                    {row.original?.application.name}
                     <ArrowRight className="h-4 w-4 pt-2 align-middle" />
                     <IconColor
-                        color={row.original.feature_type.color}
-                        icon={row.original.feature_type.icon}
+                        color={row.original?.feature_type.color}
+                        icon={row.original?.feature_type.icon}
                         className="mr-2 h-4 w-4 rounded-full"
                     />
-                    {row.original.name}
+                    {row.original?.name}
                 </div>
             );
         },
@@ -222,7 +222,7 @@ const defaultMetrics: DashboardMetrics = {
             percentage: 0,
         },
     },
-    archivedMetrics: {
+    completedMetrics: {
         value: 0,
         previous: {
             value: 0,
@@ -298,24 +298,24 @@ function chartKey(value: string): string {
 
 function MetricCard({ title, metric }: { title: string; metric: DashboardMetricValue }) {
     return (
-        <Card className="flex flex-col p-4" data-dusk={`metric-card-${chartKey(title)}`}>
+        <Card className="flex flex-col p-4" data-test={`metric-card-${chartKey(title)}`}>
             <h2 className="mb-4 text-2xl font-bold">{title}</h2>
             <div className="grid grid-cols-2">
                 <p className="text-4xl">{metric.value}</p>
                 <div>
                     <p>
-                        {metric.previous.type === undefined && (
+                        {metric.previous?.type === undefined && (
                             <DotFilledIcon className="mr-4 inline-block h-6 w-6 text-neutral-400" />
                         )}
-                        {metric.previous.type === 'increase' && (
+                        {metric.previous?.type === 'increase' && (
                             <ArrowUpRight className="mr-4 inline-block h-6 w-6 text-green-400" />
                         )}
-                        {metric.previous.type === 'decrease' && (
+                        {metric.previous?.type === 'decrease' && (
                             <ArrowDownLeft className="mr-4 inline-block h-6 w-6 text-red-400" />
                         )}
-                        {metric.previous.type !== undefined && metric.previous.type === 'increase' && '+'}
-                        {metric.previous.type !== undefined && metric.previous.type === 'decrease' && '-'}
-                        {metric.previous.difference}
+                        {metric.previous?.type !== undefined && metric.previous?.type === 'increase' && '+'}
+                        {metric.previous?.type !== undefined && metric.previous?.type === 'decrease' && '-'}
+                        {metric.previous?.difference}
                     </p>
                     <p>this month</p>
                 </div>
@@ -329,21 +329,22 @@ export default function Dashboard({ metrics = defaultMetrics, onboarding = false
 
     let dashboardMetrics = metrics || defaultMetrics;
 
-    dashboardMetrics.flagTypeData.data = dashboardMetrics.flagTypeData.data.map(function (item) {
-        flagTypeChartConfig[item.type] = {
-            label: item.type,
-        };
+    dashboardMetrics.flagTypeData.data =
+        dashboardMetrics.flagTypeData.data?.map(function (item) {
+            flagTypeChartConfig[item.type] = {
+                label: item.type,
+            };
 
-        return {
-            ...item,
-            fill:
-                item.fill.startsWith('#') || item.fill.startsWith('var(--color-')
-                    ? item.fill
-                    : `var(--color-${item.fill}-400)`,
-            percentage: Math.round((item.flags / dashboardMetrics.flagTypeData.total) * 100),
-            label: item.type,
-        };
-    });
+            return {
+                ...item,
+                fill:
+                    item.fill.startsWith('#') || item.fill.startsWith('var(--color-')
+                        ? item.fill
+                        : `var(--color-${item.fill}-400)`,
+                percentage: Math.round((item.flags / dashboardMetrics.flagTypeData.total) * 100),
+                label: item.type,
+            };
+        }) ?? [];
 
     dashboardMetrics.flagStatusData = [...dashboardMetrics.flagStatusData];
     const healthScore = calculateHealthScore(dashboardMetrics.flagStatusData);
@@ -412,7 +413,7 @@ export default function Dashboard({ metrics = defaultMetrics, onboarding = false
             <OnboardingDialog isOpen={onboarding} accessToken={accessToken} />
 
             {!onboarding && (
-                <div className="mt-4" data-dusk="dashboard">
+                <div className="mt-4" data-test="dashboard">
                     <div className="overflow-hidden">
                         <CardGroup>
                             <CardGroupContent>
@@ -420,14 +421,14 @@ export default function Dashboard({ metrics = defaultMetrics, onboarding = false
                                     <MetricCard title="Total Flags" metric={dashboardMetrics.totalFlags} />
                                     <MetricCard title="Changes" metric={dashboardMetrics.changesMetrics} />
                                     <MetricCard title="Created" metric={dashboardMetrics.createdMetrics} />
-                                    <MetricCard title="Complete" metric={dashboardMetrics.archivedMetrics} />
+                                    <MetricCard title="Complete" metric={dashboardMetrics.completedMetrics} />
                                 </div>
                             </CardGroupContent>
                         </CardGroup>
                         <CardGroup className="mt-8">
                             <CardGroupContent>
                                 <div className="grid grid-cols-1 justify-center gap-2 lg:grid-cols-3">
-                                    <Card className="flex h-80 flex-col" data-dusk="metric-card-system-health">
+                                    <Card className="flex h-80 flex-col" data-test="metric-card-system-health">
                                         <CardHeader className="items-center pb-0">
                                             <CardTitle>System Health</CardTitle>
                                             <CardDescription>Last 30 Days</CardDescription>
@@ -490,7 +491,7 @@ export default function Dashboard({ metrics = defaultMetrics, onboarding = false
                                             </ChartContainer>
                                         </CardContent>
                                     </Card>
-                                    <Card className="h-80 lg:col-span-2" data-dusk="metric-card-usage">
+                                    <Card className="h-80 lg:col-span-2" data-test="metric-card-usage">
                                         <CardHeader>
                                             <CardTitle>Usage</CardTitle>
                                             <CardDescription>Last 6 Months</CardDescription>
@@ -590,7 +591,7 @@ export default function Dashboard({ metrics = defaultMetrics, onboarding = false
                                             )}
                                         </CardFooter>
                                     </Card>
-                                    <Card className="flex h-80 flex-col" data-dusk="metric-card-flag-types">
+                                    <Card className="flex h-80 flex-col" data-test="metric-card-flag-types">
                                         <CardHeader className="items-center pb-0">
                                             <CardTitle>Flag Types</CardTitle>
                                         </CardHeader>
@@ -645,7 +646,7 @@ export default function Dashboard({ metrics = defaultMetrics, onboarding = false
                                             )}
                                         </CardContent>
                                     </Card>
-                                    <Card className="h-80 lg:col-span-2" data-dusk="metric-card-average-age">
+                                    <Card className="h-80 lg:col-span-2" data-test="metric-card-average-age">
                                         <CardHeader>
                                             <CardTitle>Average Flag Age</CardTitle>
                                             <CardDescription>Last 6 Months</CardDescription>
@@ -714,7 +715,7 @@ export default function Dashboard({ metrics = defaultMetrics, onboarding = false
                             </CardGroupContent>
                         </CardGroup>
                         <div className="mt-8 grid grid-cols-1 justify-center gap-2 lg:grid-cols-2">
-                            <Card className="flex h-fit flex-col" data-dusk="metric-card-top-usage">
+                            <Card className="flex h-fit flex-col" data-test="metric-card-top-usage">
                                 <CardHeader className="items-center pb-0">
                                     <CardTitle>Top Usage</CardTitle>
                                 </CardHeader>
@@ -732,7 +733,7 @@ export default function Dashboard({ metrics = defaultMetrics, onboarding = false
                                     ></DataTable>
                                 </CardContent>
                             </Card>
-                            <Card className="flex h-fit flex-col" data-dusk="metric-card-oldest">
+                            <Card className="flex h-fit flex-col" data-test="metric-card-oldest">
                                 <CardHeader className="items-center pb-0">
                                     <CardTitle>Oldest Flags</CardTitle>
                                 </CardHeader>

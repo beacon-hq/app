@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Services\MailService;
+use App\Actions\Mail\AddContact;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class IndexController extends Controller
+class IndexController
 {
     public function index()
     {
@@ -18,7 +18,7 @@ class IndexController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, MailService $mailService)
+    public function store(Request $request)
     {
         $request->validate([
             'email' => [
@@ -27,7 +27,7 @@ class IndexController extends Controller
             ]
         ]);
 
-        $mailService->addContact($request->string('email'));
+        AddContact::run($request->string('email'));
 
         return back();
     }

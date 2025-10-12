@@ -346,7 +346,11 @@ const TimePickerInput = React.forwardRef<HTMLInputElement, TimePickerInputProps>
                 )}
                 value={value || calculatedValue}
                 onChange={(e) => {
-                    e.preventDefault();
+                    const raw = e.currentTarget.value ?? '';
+                    const digits = raw.replace(/\D/g, '');
+                    const newValue = digits.length > 2 ? digits.slice(-2) : digits.padStart(2, '0');
+                    const tempDate = date ? new Date(date) : new Date();
+                    onDateChange?.(setDateByType(tempDate, newValue, picker, period));
                     onChange?.(e);
                 }}
                 type={type}
@@ -372,7 +376,7 @@ interface TimePickerProps {
      * Default is 'second'.
      * */
     granularity?: Granularity;
-    'data-dusk'?: string;
+    'data-test'?: string;
 }
 
 interface TimePickerRef {
@@ -382,7 +386,7 @@ interface TimePickerRef {
 }
 
 const TimePicker = React.forwardRef<TimePickerRef, TimePickerProps>(
-    ({ date, onChange, hourCycle = 24, granularity = 'second', 'data-dusk': dataDusk }, ref) => {
+    ({ date, onChange, hourCycle = 24, granularity = 'second', 'data-test': dataTest }, ref) => {
         const minuteRef = React.useRef<HTMLInputElement>(null);
         const hourRef = React.useRef<HTMLInputElement>(null);
         const secondRef = React.useRef<HTMLInputElement>(null);
@@ -412,7 +416,8 @@ const TimePicker = React.forwardRef<TimePickerRef, TimePickerProps>(
                     ref={hourRef}
                     period={period}
                     onRightFocus={() => minuteRef?.current?.focus()}
-                    data-dusk={dataDusk ? `${dataDusk}-hour` : undefined}
+                    data-test={dataTest ? `${dataTest}-hour` : undefined}
+                    type="text"
                 />
                 {(granularity === 'minute' || granularity === 'second') && (
                     <>
@@ -424,7 +429,8 @@ const TimePicker = React.forwardRef<TimePickerRef, TimePickerProps>(
                             ref={minuteRef}
                             onLeftFocus={() => hourRef?.current?.focus()}
                             onRightFocus={() => secondRef?.current?.focus()}
-                            data-dusk={dataDusk ? `${dataDusk}-minute` : undefined}
+                            data-test={dataTest ? `${dataTest}-minute` : undefined}
+                            type="text"
                         />
                     </>
                 )}
@@ -438,7 +444,8 @@ const TimePicker = React.forwardRef<TimePickerRef, TimePickerProps>(
                             ref={secondRef}
                             onLeftFocus={() => minuteRef?.current?.focus()}
                             onRightFocus={() => periodRef?.current?.focus()}
-                            data-dusk={dataDusk ? `${dataDusk}-second` : undefined}
+                            data-test={dataTest ? `${dataTest}-second` : undefined}
+                            type="text"
                         />
                     </>
                 )}

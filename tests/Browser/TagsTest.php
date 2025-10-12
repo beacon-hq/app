@@ -2,92 +2,83 @@
 
 declare(strict_types=1);
 
-use App\Events\TeamCreatedEvent;
-use App\Listeners\InitTeamDataListener;
-use Laravel\Dusk\Browser;
-use Tests\Browser\Components\ColorPicker;
-
-afterEach(fn () => $this->browse(function (Browser $browser) {
-    $browser->logout();
-}));
+use App\Actions\Users\AssignRoleToUser;
+use App\Enums\Role;
+use App\Values\User as UserValue;
+use Tests\Unit\Actions\AppContext\SetAppContext;
 
 it('can create new tag', function () {
-    $user = createBrowserUser();
+    [$team, $user, $organization] = createOwner();
 
-    $init = resolve(InitTeamDataListener::class);
-    $init->handle(new TeamCreatedEvent($user->teams()->first()));
+    $this->actingAs($user);
 
-    \DB::commit();
+    SetAppContext::run($organization, $team);
 
-    $this->browse(function (Browser $browser) use ($user) {
-        $browser->resize(3024 / 2, 600);
+    AssignRoleToUser::run(UserValue::from($user), Role::OWNER);
 
-        $browser
-            ->loginAs($user)
-            ->visitRoute('tags.index')
-            ->waitForText('Tags')
-            ->screenshotElement('@main', 'tags-initial');
+    $page = visit(route('tags.index'))
+        ->resize(3024 / 2, 600);
 
-        $browser
-            ->resize(3024 / 2, 800)
-            ->click('@button-new-tag')
-            ->waitForText('New Tag')
-            ->screenshotElement('@main', 'tags-form-create');
-
-        $browser
-            ->pause(1000)
-            ->refresh()
-            ->pause(500)
-            ->click('@button-new-tag')
-            ->pause(500)
-            ->type('@input-tags-name', 'Demo Tag')
-            ->type('@input-tags-description', 'This is a demo tag.')
-            ->within(new ColorPicker(), function (Browser $browser) {
-                $browser->selectColor('lime');
-            })
-            ->screenshot('tags-form-create-fill')
-            ->click('@button-tag-submit')
-            ->waitForText('Demo Tag')
-            ->screenshotElement('@card-tags', 'tags-after-create');
-    });
+    $page
+        ->assertSee('Tags')
+        ->screenshotElement('[data-test="main"]', 'tags-initial')
+        ->resize(3024 / 2, 800)
+        ->click('[data-test="button-new-tag"]')
+        ->assertSee('New Tag')
+        ->screenshotElement('[data-test="main"]', 'tags-form-create')
+        ->type('[data-test="input-tags-name"]', 'Demo Tag')
+        ->type('[data-test="input-tags-description"]', 'This is a demo tag.')
+        ->click('div.bg-lime-400')
+        ->screenshotElement('[data-test="main"]', 'tags-form-create-fill')
+        ->click('[data-test="button-tag-submit"]')
+        ->assertSee('Demo Tag')
+        ->screenshotElement('[data-test="card-tags"]', 'tags-after-create');
 });
 
 it('can view tags list', function () {
-    $user = createBrowserUser();
+    [$team, $user, $organization] = createOwner();
 
-    $this->browse(function (Browser $browser) use ($user) {
-        $browser->resize(3024 / 2, 700);
+    $this->actingAs($user);
 
-        $browser
-            ->loginAs($user)
-            ->visitRoute('tags.index')
-            ->waitForText('Tags')
-            ->screenshotElement('@main', 'tags-list');
-    });
+    SetAppContext::run($organization, $team);
+
+    AssignRoleToUser::run(UserValue::from($user), Role::OWNER);
+
+    $page = visit(route('tags.index'))
+        ->resize(3024 / 2, 700);
+
+    $page
+        ->assertSee('Tags')
+        ->screenshotElement('[data-test="main"]', 'tags-list');
 });
 
 it('can edit tags', function () {
-    $user = createBrowserUser();
+    [$team, $user, $organization] = createOwner();
 
-    $this->browse(function (Browser $browser) use ($user) {
-        $browser->resize(3024 / 2, 800);
+    $this->actingAs($user);
 
-        $browser
-            ->loginAs($user)
-            ->visitRoute('tags.index')
-            ->waitForText('Tags');
+    SetAppContext::run($organization, $team);
 
-        $browser
-            ->click('@button-tags-edit')
-            ->waitForText('Edit Tag')
-            ->pause(500)
-            ->screenshotElement('@card-tags-edit', 'tags-edit');
+    AssignRoleToUser::run(UserValue::from($user), Role::OWNER);
 
-        $browser
-            ->type('@input-tags-description', 'This is an updated demo tag.')
-            ->screenshot('tags-form-edit-fill')
-            ->click('@button-tag-submit')
-            ->waitForText('Tags')
-            ->screenshotElement('@main', 'tags-after-edit');
-    });
+    $page = visit(route('tags.index'))
+        ->resize(3024 / 2, 800);
+
+    $page
+        ->assertSee('Tags')
+        ->click('[data-test="button-new-tag"]')
+        ->assertSee('New Tag')
+        ->type('[data-test="input-tags-name"]', 'Edit Me Tag')
+        ->type('[data-test="input-tags-description"]', 'This will be edited.')
+        ->click('div.bg-lime-400')
+        ->click('[data-test="button-tag-submit"]')
+        ->assertSee('Edit Me Tag')
+        ->click('tbody tr:first-child a[data-test="button-tags-edit"]')
+        ->assertSee('Edit Tag')
+        ->screenshotElement('[data-test="card-tags-edit"]', 'tags-edit')
+        ->type('[data-test="input-tags-description"]', 'This is an updated demo tag.')
+        ->screenshotElement('[data-test="main"]', 'tags-form-edit-fill')
+        ->click('[data-test="button-tag-submit"]')
+        ->assertSee('Tags')
+        ->screenshotElement('[data-test="main"]', 'tags-after-edit');
 });

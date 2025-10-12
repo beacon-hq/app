@@ -43,7 +43,7 @@ export default function OnboardingDialog({ isOpen, accessToken }: OnboardingDial
 
     return (
         <Dialog defaultOpen open={showOnboarding} onOpenChange={setShowOnboarding}>
-            <DialogContent className="w-full" data-dusk="onboarding-dialog">
+            <DialogContent className="w-full" data-test="onboarding-dialog">
                 <DialogHeader>
                     <DialogTitle>
                         <h2 className="text-primary">Get Started</h2>
@@ -76,7 +76,7 @@ export default function OnboardingDialog({ isOpen, accessToken }: OnboardingDial
                                 variant="link"
                                 onClick={handleSkip}
                                 className="text-xs text-primary/60"
-                                data-dusk="skip-onboarding"
+                                data-test="skip-onboarding"
                             >
                                 Skip
                             </Button>

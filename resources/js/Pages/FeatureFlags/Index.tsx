@@ -93,7 +93,7 @@ export default function Index({
         <Authenticated
             breadcrumbs={[{ name: 'Feature Flags', icon: 'Flag' }]}
             headerAction={
-                <Button onClick={() => setShowSheet(true)} data-dusk="button-new-feature-flag">
+                <Button onClick={() => setShowSheet(true)} data-test="button-new-feature-flag">
                     <PlusCircle className="mr-2 inline-block h-6 w-6" />
                     New Feature Flag
                 </Button>
@@ -103,7 +103,7 @@ export default function Index({
             <div className="w-full">
                 <div className="">
                     <div className="overflow-hidden">
-                        <Card className="mt-8" data-dusk="table-feature-flags">
+                        <Card className="mt-8" data-test="table-feature-flags">
                             <CardContent className="px-12 py-4">
                                 <Table
                                     featureFlags={featureFlags}
@@ -120,7 +120,7 @@ export default function Index({
                 </div>
             </div>
             <Sheet open={showSheet} onOpenChange={setShowSheet}>
-                <SheetContent onOpenAutoFocus={(event) => event.preventDefault()} data-dusk="sheet-feature-flag-form">
+                <SheetContent onOpenAutoFocus={(event) => event.preventDefault()} data-test="sheet-feature-flag-form">
                     <SheetTitle className="mb-4">New Feature Flag</SheetTitle>
                     <Form
                         submit={submit}

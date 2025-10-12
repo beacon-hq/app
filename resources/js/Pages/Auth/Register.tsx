@@ -31,7 +31,7 @@ export default function Register({ invite, plan }: { invite: Invite | false | nu
     return (
         <GuestLayout>
             <Head title="Register" />
-            <Card className="mt-12 p-4 pt-8" data-dusk="card-register">
+            <Card className="mt-12 p-4 pt-8" data-test="card-register">
                 <CardContent>
                     <InviteAlert invite={invite} variant="register" />
                     <PlanAlert plan={plan} />
@@ -51,7 +51,7 @@ export default function Register({ invite, plan }: { invite: Invite | false | nu
                                     autoFocus
                                     onChange={(e) => setData('first_name', e.target.value)}
                                     aria-required
-                                    data-dusk="input-register-first-name"
+                                    data-test="input-register-first-name"
                                 />
 
                                 <InputError message={errors.first_name} className="mt-2" />
@@ -70,7 +70,7 @@ export default function Register({ invite, plan }: { invite: Invite | false | nu
                                     autoComplete="family-name"
                                     onChange={(e) => setData('last_name', e.target.value)}
                                     aria-required
-                                    data-dusk="input-register-last-name"
+                                    data-test="input-register-last-name"
                                 />
 
                                 <InputError message={errors.last_name} className="mt-2" />
@@ -91,7 +91,7 @@ export default function Register({ invite, plan }: { invite: Invite | false | nu
                                 autoComplete="work email"
                                 onChange={(e) => setData('email', e.target.value)}
                                 aria-required
-                                data-dusk="input-register-email"
+                                data-test="input-register-email"
                             />
 
                             <InputError message={errors.email} className="mt-2" />
@@ -111,7 +111,7 @@ export default function Register({ invite, plan }: { invite: Invite | false | nu
                                 autoComplete="new-password"
                                 onChange={(e) => setData('password', e.target.value)}
                                 aria-required
-                                data-dusk="input-register-password"
+                                data-test="input-register-password"
                             />
 
                             <InputError message={errors.password} className="mt-2" />
@@ -131,7 +131,7 @@ export default function Register({ invite, plan }: { invite: Invite | false | nu
                                 autoComplete="new-password"
                                 onChange={(e) => setData('password_confirmation', e.target.value)}
                                 aria-required
-                                data-dusk="input-register-password-confirmation"
+                                data-test="input-register-password-confirmation"
                             />
 
                             <InputError message={errors.password_confirmation} className="mt-2" />
@@ -141,12 +141,12 @@ export default function Register({ invite, plan }: { invite: Invite | false | nu
                             <Link
                                 href={route('login')}
                                 className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-                                data-dusk="link-already-registered"
+                                data-test="link-already-registered"
                             >
                                 Already registered?
                             </Link>
 
-                            <PrimaryButton className="ms-4" disabled={processing} data-dusk="button-register-submit">
+                            <PrimaryButton className="ms-4" disabled={processing} data-test="button-register-submit">
                                 Register
                             </PrimaryButton>
                         </div>

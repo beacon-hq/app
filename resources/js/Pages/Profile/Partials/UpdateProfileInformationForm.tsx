@@ -125,7 +125,7 @@ export default function UpdateProfileInformation({
                             aria-required
                             autoFocus
                             autoComplete="given-name"
-                            data-dusk="input-first-name"
+                            data-test="input-first-name"
                         />
 
                         <InputError message={errors?.first_name} />
@@ -141,7 +141,7 @@ export default function UpdateProfileInformation({
                             onChange={(e) => setData('last_name', e.target.value)}
                             aria-required
                             autoComplete="family-name"
-                            data-dusk="input-last-name"
+                            data-test="input-last-name"
                         />
 
                         <InputError message={errors?.last_name} />
@@ -159,7 +159,7 @@ export default function UpdateProfileInformation({
                         onChange={(e) => setData('email', e.target.value)}
                         aria-required
                         autoComplete="username"
-                        data-dusk="input-email"
+                        data-test="input-email"
                     />
 
                     <InputError message={errors?.email} />
@@ -226,7 +226,7 @@ export default function UpdateProfileInformation({
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <Button disabled={processing} data-dusk="button-save-profile">
+                    <Button disabled={processing} data-test="button-save-profile">
                         Save
                     </Button>
                 </div>

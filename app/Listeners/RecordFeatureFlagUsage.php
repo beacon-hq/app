@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace App\Listeners;
 
+use App\Actions\AppContext\GetAppContext;
+use App\Actions\FeatureFlags\TouchFeatureFlag;
+use App\Actions\Subscriptions\ReportSubscriptionUsage;
 use App\Events\FeatureFlagEvaluatedEvent;
 use App\Events\FeatureFlagMissedEvent;
 use App\Models\Application;
 use App\Models\Environment;
 use App\Models\FeatureFlagUsage;
-use App\Services\FeatureFlagService;
-use App\Services\SubscriptionBillingService;
 use App\Values\FeatureFlag;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 
 class RecordFeatureFlagUsage implements ShouldQueue
@@ -24,7 +24,7 @@ class RecordFeatureFlagUsage implements ShouldQueue
 
     public int $tries = 3;
 
-    public function __construct(protected FeatureFlagService $featureFlagService, protected SubscriptionBillingService $subscriptionBillingService)
+    public function __construct()
     {
     }
 
@@ -35,8 +35,6 @@ class RecordFeatureFlagUsage implements ShouldQueue
 
     public function handle(FeatureFlagEvaluatedEvent|FeatureFlagMissedEvent $event): void
     {
-        App::context(team: $event->appContext->team, organization: $event->appContext->organization);
-
         $application = Application::firstWhere('name', '=', $event->context->appName);
         $environment = Environment::firstWhere('name', '=', $event->context->environment);
 
@@ -56,9 +54,9 @@ class RecordFeatureFlagUsage implements ShouldQueue
         ]);
 
         if ($featureFlag->has('id') && Str::isUlid($featureFlag->id)) {
-            $this->featureFlagService->touch($featureFlag);
+            TouchFeatureFlag::run($featureFlag);
         }
 
-        $this->subscriptionBillingService->reportUsage($usage->id, $event->appContext->organization);
+        ReportSubscriptionUsage::run($usage->id, GetAppContext::organization());
     }
 }

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Services\InviteService;
-use App\Services\TeamService;
-use App\Services\UserService;
+use App\Actions\Invites\FindInviteById;
+use App\Actions\Teams\FindTeam;
+use App\Actions\Users\AddUserToTeam;
+use App\Actions\Users\FindUserByEmail;
+use App\Actions\Users\RemoveUserFromTeam;
 use App\Values\Organization;
 use App\Values\Team;
 use App\Values\User;
@@ -18,14 +20,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Session;
 
-class TeamMemberManageController extends Controller
+class TeamMemberManageController
 {
     public function store(
         #[WithoutValidation]
         Team $team,
         Request $request,
-        UserService $userService,
-        TeamService $teamService,
     ): RedirectResponse {
         Gate::authorize('update', $team);
 
@@ -34,15 +34,15 @@ class TeamMemberManageController extends Controller
             'users.*.email' => 'required_with:emails|email',
         ]);
 
-        $team = $teamService->find($team->id, Organization::collect(Auth::user()->organizations));
+        $team = FindTeam::run($team->id, Organization::collect(Auth::user()->organizations));
 
-        collect($request->json('users'))->each(function (array $user) use ($team, $userService) {
+        collect($request->json('users'))->each(function (array $user) use ($team) {
             // $role = Role::tryFrom($user['role']);
 
             try {
-                $user = $userService->findByEmail($user['email']);
-                $userService->addTeam($user, $team);
-                // $userService->assignRole($user, $role);
+                $user = FindUserByEmail::run($user['email']);
+                AddUserToTeam::run($user, $team);
+                // AssignRoleToUser::run($user, $role);
             } catch (ModelNotFoundException) {
                 // Unknown user, send an invite
                 // $inviteService->create(User::from(Auth::user()), $team, $user['email']);
@@ -52,21 +52,17 @@ class TeamMemberManageController extends Controller
         return \redirect()->route('teams.edit', ['team' => $team->id])->withAlert('success', 'Team members added successfully.');
     }
 
-    public function show(Request $request, InviteService $inviteService, UserService $userService): RedirectResponse
+    public function show(Request $request): RedirectResponse
     {
         try {
-            $invite = $inviteService->findById($request->get('id'));
-        } catch (ModelNotFoundException) {
-            $invite = false;
-        }
-
-        try {
-            $userService->findByEmail($invite->email);
+            $invite = FindInviteById::run($request->get('id'));
 
             Session::put('invite', $invite);
 
-            return redirect()->route('register');
-        } catch (ModelNotFoundException) {
+            FindUserByEmail::run($invite->email);
+
+            return redirect()->route('login');
+        } catch (ModelNotFoundException $e) {
             return redirect()->route('register');
         }
     }
@@ -74,11 +70,10 @@ class TeamMemberManageController extends Controller
     public function destroy(
         #[WithoutValidation]
         Team $team,
-        Request $request,
-        UserService $userService
+        Request $request
     ): RedirectResponse {
         $user = User::withoutValidation(id: $request->integer('user_id') ?: null, email: $request->get('email'));
-        $userService->removeTeam($team, $user);
+        RemoveUserFromTeam::run($team, $user);
 
         return redirect()->back()->withAlert('success', 'Team member removed successfully.');
     }
