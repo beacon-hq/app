@@ -67,6 +67,7 @@ beforeEach(function () {
         ->create([
             'name' => 'flag-a',
             'description' => 'Description for Flag A',
+            'status' => true,
         ]);
 
     $this->flagA->tags()->attach($this->tagA->id);
@@ -85,6 +86,7 @@ beforeEach(function () {
         ->create([
             'name' => 'flag-b',
             'description' => 'Description for Flag B',
+            'status' => true,
         ]);
 
     $this->flagB->tags()->attach($this->tagB->id);
@@ -110,6 +112,7 @@ beforeEach(function () {
         ->create([
             'name' => 'flag-c',
             'description' => 'Description for Flag C',
+            'status' => false,
         ]);
 
     $this->flagC->tags()->attach([$this->tagA->id, $this->tagB->id]);
@@ -179,17 +182,17 @@ it('can filter feature flags by environment', function () {
 });
 
 it('can filter feature flags by status', function () {
-    $result = $this->listFeatureFlagsAction->handle(null, 20, ['status' => true]);
+    $result = $this->listFeatureFlagsAction->handle(null, 20, ['status' => ['enabled']]);
 
-    expect($result)->toHaveCount(3) // All flags have at least one status that is true
+    expect($result)->toHaveCount(2)
         ->and($result->pluck('id'))->toContain($this->flagA->id)
         ->and($result->pluck('id'))->toContain($this->flagB->id)
-        ->and($result->pluck('id'))->toContain($this->flagC->id);
+        ->and($result->pluck('id'))->not->toContain($this->flagC->id);
 
-    $result = $this->listFeatureFlagsAction->handle(null, 20, ['status' => false]);
+    $result = $this->listFeatureFlagsAction->handle(null, 20, ['status' => ['disabled']]);
 
-    expect($result)->toHaveCount(1) // Only flagB has a status that is false
-        ->and($result[0]->id)->toBe($this->flagB->id);
+    expect($result)->toHaveCount(1)
+        ->and($result[0]->id)->toBe($this->flagC->id);
 });
 
 it('can combine multiple filters', function () {

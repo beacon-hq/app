@@ -9,7 +9,11 @@ use App\Models\FeatureFlag as FeatureFlagModel;
 use App\Values\Collections\FeatureFlagCollection;
 use App\Values\FeatureFlag;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
+/**
+ * @method static FeatureFlagCollection run(?int $page = null, int $perPage = 20, array $filters = [], array $sort = [])
+ */
 class ListFeatureFlags
 {
     use AsAction;
@@ -70,7 +74,7 @@ class ListFeatureFlags
         }
 
         if (isset($filters['application'])) {
-            $query->whereExists(function ($subquery) use ($query, $filters) {
+            $query->whereExists(function ($subquery) use ($filters) {
                 $subquery->select('*')
                     ->from('feature_flag_statuses')
                     ->whereRaw('feature_flag_statuses.feature_flag_id = feature_flags.id')
@@ -79,7 +83,7 @@ class ListFeatureFlags
         }
 
         if (isset($filters['environment'])) {
-            $query->whereExists(function ($subquery) use ($query, $filters) {
+            $query->whereExists(function ($subquery) use ($filters) {
                 $subquery->select('*')
                     ->from('feature_flag_statuses')
                     ->whereRaw('feature_flag_statuses.feature_flag_id = feature_flags.id')
@@ -88,12 +92,20 @@ class ListFeatureFlags
         }
 
         if (isset($filters['status'])) {
-            $query->whereExists(function ($subquery) use ($query, $filters) {
-                $subquery->select('*')
-                    ->from('feature_flag_statuses')
-                    ->whereRaw('feature_flag_statuses.feature_flag_id = feature_flags.id')
-                    ->where('feature_flag_statuses.status', $filters['status']);
-            });
+            $statuses = Collection::wrap($filters['status']);
+            $query
+                ->when($statuses->contains('open') && !$statuses->contains('complete'), function (Builder $query) {
+                    $query->whereNull('completed_at');
+                })
+                ->when($statuses->contains('complete') && !$statuses->contains('open'), function (Builder $query) {
+                    $query->whereNotNull('completed_at');
+                })
+                ->when($statuses->contains('enabled') && !$statuses->contains('disabled'), function (Builder $query) {
+                    $query->where('status', true);
+                })
+                ->when($statuses->contains('disabled') && !$statuses->contains('enabled'), function (Builder $query) {
+                    $query->where('status', false);
+                });
         }
 
         return $query;

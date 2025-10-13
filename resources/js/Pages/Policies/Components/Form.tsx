@@ -60,7 +60,7 @@ export function Form({
                 (policy.definition as PolicyDefinitionCollection).length > 0 && (
                     <PolicyDefinitionForm policies={policies} />
                 )}
-            {(policy === undefined || (policy?.definition?.length ?? 0) === 0) && (
+            {(policy === undefined || (policy?.definition?.length ?? 0) === 0) && policy?.id && (
                 <Button
                     variant="outline"
                     className="mx-auto block"

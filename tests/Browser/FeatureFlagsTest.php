@@ -222,3 +222,29 @@ it('can view feature flags list', function () {
         ->assertSee('Feature Flags')
         ->screenshotElement('[data-test="table-feature-flags"]', 'feature-flags-list');
 });
+
+it('adds a value with Shift+Enter', function () {
+    [$team, $user, $organization] = createOwner();
+
+    $this->actingAs($user);
+
+    SetAppContext::run($organization, $team);
+
+    $type = CreateFeatureType::run(FeatureType::factory()->make());
+    CreateFeatureFlag::run(FeatureFlag::factory(['featureType' => $type])->make());
+
+    $page = visit(route('feature-flags.index'))
+        ->resize(1200, 900)
+        ->click('[data-test="button-feature-flag-edit"]')
+        ->click('[data-test="tab-configuration"]')
+        ->click('[data-test="button-add-application"]')
+        ->click(':nth-match([data-test="tab-conditions"], 1)')
+        ->click(':nth-match([data-test="button-add-conditions"], 1)')
+        ->click('[data-test="select-policies-definition-operator-0"]')
+        ->click('[data-test="select-option-policies-definition-operator-0-is one of"]')
+        ->type('[data-test="textarea-multi-input-value"]', 'alpha');
+
+    $page->script('document.querySelector("[data-test=\\"textarea-multi-input-value\\"]").dispatchEvent(new KeyboardEvent("keydown", {key: "Enter", shiftKey: true, bubbles: true}));');
+
+    $page->wait(1)->assertSee('alpha');
+});

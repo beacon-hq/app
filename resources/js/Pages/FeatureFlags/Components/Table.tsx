@@ -125,19 +125,19 @@ export default function Table({
             enableHiding: false,
         }) as ColumnDef<FeatureFlag>,
         columnHelper.accessor('last_seen_at', {
-            id: 'last_seen_at',
+            id: 'Last Seen',
             header: ({ column }) => <DataTableColumnHeader column={column} title="Last Seen" />,
             enableSorting: true,
             cell: ({ cell }) => (cell.getValue() === null ? 'never' : localDateTime(cell.getValue())),
         }) as ColumnDef<FeatureFlag>,
         columnHelper.accessor('created_at', {
-            id: 'created_at',
+            id: 'Created',
             header: ({ column }) => <DataTableColumnHeader column={column} title="Created" />,
             enableSorting: true,
             cell: ({ cell }) => localDateTime(cell.getValue()),
         }) as ColumnDef<FeatureFlag>,
         columnHelper.accessor('updated_at', {
-            id: 'updated_at',
+            id: 'Updated',
             header: ({ column }) => <DataTableColumnHeader column={column} title="Updated" />,
             enableSorting: true,
             cell: ({ cell }) => localDateTime(cell.getValue()),
@@ -153,7 +153,7 @@ export default function Table({
                     <div>
                         <Badge
                             className={cn('w-20 text-center mx-auto mr-2', {
-                                'bg-green-600 hover:bg-green-600': isCompleted,
+                                'bg-neutral-600 hover:bg-neutral-600': isCompleted,
                                 'bg-blue-600 hover:bg-blue-600': !isCompleted,
                             })}
                         >
@@ -213,7 +213,7 @@ export default function Table({
                                         })}
                                         method="patch"
                                         as="button"
-                                        data={{ completed_at: new Date().toISOString() }}
+                                        data={{ ...row.original, completed_at: new Date().toISOString() }}
                                         className="text-green-600 hover:text-green-800 text-center"
                                     >
                                         <Check className="h-5 w-5 inline-block" />
@@ -284,21 +284,31 @@ export default function Table({
                     label: 'Status',
                     values: [
                         {
-                            value: 'active',
-                            label: 'Active',
-                            icon: (<IconColor color="blue" className="aspect-square" />) as unknown,
+                            value: 'open',
+                            label: 'Open',
+                            icon: (<IconColor color="blue-600" className="aspect-square" />) as unknown,
                         },
                         {
-                            value: 'completed',
-                            label: 'Completed',
-                            icon: (<IconColor color="orange" className="aspect-square" />) as unknown,
+                            value: 'complete',
+                            label: 'Complete',
+                            icon: (<IconColor color="neutral-600" className="aspect-square" />) as unknown,
+                        },
+                        {
+                            value: 'enabled',
+                            label: 'Enabled',
+                            icon: (<IconColor color="green-600" className="aspect-square" />) as unknown,
+                        },
+                        {
+                            value: 'disabled',
+                            label: 'Disabled',
+                            icon: (<IconColor color="neutral-500" className="aspect-square" />) as unknown,
                         },
                     ] as { value: string; label: string; icon: React.ComponentType<{ className?: string }> }[],
                 },
             }}
             pageSize={currentTableOptions.perPage}
             page={currentTableOptions.page}
-            columnVisibility={{ updated_at: false, created_at: false }}
+            columnVisibility={{ Updated: false, Created: false }}
             sortBy={
                 tableOptions.sort && Object.keys(tableOptions.sort).length > 0
                     ? Object.entries(tableOptions.sort).map(([id, direction]) => ({

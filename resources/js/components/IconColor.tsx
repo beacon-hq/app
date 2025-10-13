@@ -23,7 +23,8 @@ export function IconColor({
                 <div
                     className={cn(
                         'h-6 w-6 rounded-full border aspect-square',
-                        color?.charAt(0) !== '#' ? `bg-${color}-400` : '',
+                        !color?.startsWith('#') && color?.match(/^.*?\d$/) ? `bg-${color}` : '',
+                        !color?.startsWith('#') && !color?.match(/^.*?\d$/) ? `bg-${color}-400` : '',
                         className,
                     )}
                     style={color?.charAt(0) === '#' ? { backgroundColor: color } : {}}

@@ -255,7 +255,6 @@ const StatusEditor: React.FC<{
                 </CardTitle>
             </CardHeader>
             <CardContent className="w-full">
-                {/* Use a controlled value for Tabs with custom handler to prevent infinite loops */}
                 <Tabs className="w-full" value={activeTab} onValueChange={handleTabChange}>
                     <TabsList className="w-fit mx-auto block mb-6">
                         <TabsTrigger value="conditions" data-test="tab-conditions">

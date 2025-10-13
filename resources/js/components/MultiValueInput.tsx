@@ -5,7 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { Info, PlusCircle } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 const MultiValueInput = ({
     disabled = false,
@@ -25,21 +25,6 @@ const MultiValueInput = ({
     className?: string;
 }) => {
     const [currentValue, setCurrentValue] = useState<string>('');
-    const [currentValues, setCurrentValues] = useState<string[]>(values);
-
-    // Sync local state when the values prop changes from parent
-    useEffect(() => {
-        if (JSON.stringify(values) !== JSON.stringify(currentValues)) {
-            setCurrentValues(values);
-        }
-    }, [values]);
-
-    useEffect(() => {
-        // Only call setValues if the values have actually changed
-        if (JSON.stringify(values) !== JSON.stringify(currentValues)) {
-            setValues(currentValues);
-        }
-    }, [currentValues, setValues, values]);
 
     const handleInput = (e: React.FormEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         e.preventDefault();
@@ -58,27 +43,31 @@ const MultiValueInput = ({
         setCurrentValue(e.target.value);
     };
 
-    const handleKeyUp = (e: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        e.preventDefault();
+    const addValueFromInput = () => {
+        const value = type === 'textarea' ? currentValue : currentValue;
+        if (!values.includes(value) && value !== '') {
+            setValues([...values, value]);
+            setCurrentValue('');
+        }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         if (e.key === 'Enter' && (e.shiftKey || type !== 'textarea')) {
-            let value = type === 'textarea' ? currentValue.substring(0, currentValue.length - 1) : currentValue;
-            if (!currentValues.includes(value) && value !== '') {
-                setCurrentValues([...currentValues, value]);
-                setCurrentValue('');
-            }
+            e.preventDefault();
+            addValueFromInput();
         }
     };
 
     const addValue = () => {
-        let value = currentValue;
-        if (!currentValues.includes(value) && value !== '') {
-            setCurrentValues([...currentValues, value]);
+        const value = currentValue;
+        if (!values.includes(value) && value !== '') {
+            setValues([...values, value]);
             setCurrentValue('');
         }
     };
 
     const removeValue = (valueToRemove: string) => {
-        setCurrentValues(currentValues.filter((v) => v !== valueToRemove));
+        setValues(values.filter((v) => v !== valueToRemove));
     };
 
     return (
@@ -93,7 +82,7 @@ const MultiValueInput = ({
                         onInput={handleInput}
                         value={currentValue}
                         onChange={handleChange}
-                        onKeyUp={handleKeyUp}
+                        onKeyDown={handleKeyDown}
                         disabled={disabled}
                         data-test="textarea-multi-input-value"
                     />
@@ -107,7 +96,7 @@ const MultiValueInput = ({
                         onInput={handleInput}
                         value={currentValue}
                         onChange={handleChange}
-                        onKeyUp={handleKeyUp}
+                        onKeyDown={handleKeyDown}
                         disabled={disabled}
                         data-test="input-multi-input-value"
                     />
@@ -127,7 +116,7 @@ const MultiValueInput = ({
                     </Tooltip>
                 </TooltipProvider>
             </div>
-            {currentValues.map((value) => (
+            {values.map((value) => (
                 <div key={value}>
                     {value.length <= 25 && (
                         <Badge variant="default" className="cursor-pointer" onClick={() => removeValue(value)}>
