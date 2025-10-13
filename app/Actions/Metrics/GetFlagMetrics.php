@@ -10,6 +10,7 @@ use App\Models\FeatureFlagUsage;
 use Beacon\Metrics\Metrics;
 use Beacon\Metrics\Values\Collections\TrendMetricCollection;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class GetFlagMetrics
 {

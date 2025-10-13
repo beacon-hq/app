@@ -24,19 +24,16 @@ class Color implements CastsPropertySet, CastsPropertyGet
             return $property;
         }
 
-        try {
-            return ColorEnum::from($property);
-        } catch (\ValueError) {
-            if (!preg_match('/^#?[0-9a-fA-F]{6}$/', $property)) {
-                throw ValidationException::withMessages([
-                    $propertyName => [
-                        'The color value must be a valid hex color code or color name.'
-                    ]
-                ]);
-            }
-
-            return $property;
+        $result = ColorEnum::tryFrom($property);
+        if ($result === null && !preg_match('/^#?[0-9a-fA-F]{6}$/', $property)) {
+            throw ValidationException::withMessages([
+                $propertyName => [
+                    'The color value must be a valid hex color code or color name.'
+                ]
+            ]);
         }
+
+        return $result ?? $property;
     }
 
     public function get(string $propertyName, Collection $properties): mixed

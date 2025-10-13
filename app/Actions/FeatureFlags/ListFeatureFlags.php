@@ -16,7 +16,8 @@ class ListFeatureFlags
 
     public function handle(?int $page = null, int $perPage = 20, array $filters = [], array $sort = []): FeatureFlagCollection
     {
-        $query = FeatureFlagModel::query();
+        $query = FeatureFlagModel::query()
+            ->with(['featureType', 'tags', 'statuses', 'statuses.application.environments']);
 
         // Apply filters
         if (!empty($filters)) {
