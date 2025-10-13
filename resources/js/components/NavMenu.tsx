@@ -115,6 +115,19 @@ export default function NavMenu({
                         ),
                         description: 'Simple Metrics for Laravel',
                     },
+                    {
+                        title: 'Bag',
+                        url: 'https://bagvalueobjects.com',
+                        icon: (
+                            <img
+                                className="w-12 h-12"
+                                src="https://bagvalueobjects.com/assets/images/bag.png"
+                                alt="Bag Logo"
+                                title="Bag Value Objects"
+                            />
+                        ),
+                        description: 'Immutable value objects for PHP and Laravel',
+                    },
                 ],
             },
             ...(pricingEnabled
