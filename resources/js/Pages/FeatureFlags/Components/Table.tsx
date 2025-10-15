@@ -249,7 +249,7 @@ export default function Table({
                     }) as { value: string; label: string; icon: React.ComponentType<{ className?: string }> }[],
                 },
                 environment: {
-                    label: 'Environments',
+                    label: 'Environment',
                     values: environments.map((environment) => {
                         return {
                             value: environment.name,
@@ -259,7 +259,7 @@ export default function Table({
                     }) as { value: string; label: string; icon: React.ComponentType<{ className?: string }> }[],
                 },
                 tag: {
-                    label: 'Tags',
+                    label: 'Tag',
                     values: tags.map((tag) => {
                         return {
                             value: tag.id,
