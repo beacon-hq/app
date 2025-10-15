@@ -60,7 +60,7 @@ class ListFeatureFlags
     protected function applyFilters(Builder $query, array $filters): Builder
     {
         if (isset($filters['name'])) {
-            $query->where('name', 'LIKE', "%{$filters['name']}%");
+            $query->where('name', 'ILIKE', "%{$filters['name'][0]}%");
         }
 
         if (isset($filters['tag'])) {
