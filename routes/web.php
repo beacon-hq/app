@@ -99,10 +99,6 @@ Route::middleware(['auth', 'verified', 'auth:sanctum'])->group(function () {
         Route::get('/feature-flags/{feature_flag}/metrics', [FeatureFlagController::class, 'edit'])->name('feature-flags.edit.metrics');
     });
 
-    Route::get('feature-flags/{featureFlag}/activity-log', [FeatureFlagController::class, 'activityLog'])
-        ->name('feature-flags.activity-log');
-
-
     Route::resource(
         'feature-types',
         FeatureTypeController::class,

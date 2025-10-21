@@ -93,7 +93,25 @@ export default function Index({
         <Authenticated
             breadcrumbs={[{ name: 'Feature Flags', icon: 'Flag' }]}
             headerAction={
-                <Button onClick={() => setShowSheet(true)} data-test="button-new-feature-flag">
+                <Button
+                    onClick={() => {
+                        setFeatureFlag({
+                            id: undefined,
+                            status: false,
+                            description: '',
+                            feature_type: undefined,
+                            name: '',
+                            tags: [],
+                            statuses: [],
+                            last_seen_at: null,
+                            created_at: null,
+                            updated_at: null,
+                            completed_at: null,
+                        } as FeatureFlag);
+                        setShowSheet(true);
+                    }}
+                    data-test="button-new-feature-flag"
+                >
                     <PlusCircle className="mr-2 inline-block h-6 w-6" />
                     New Feature Flag
                 </Button>

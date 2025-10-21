@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 return [
     'enabled' => env('BEACON_ENABLED', false),
+    'waitlist' => [
+        'enabled' => env('BEACON_WAITLIST_ENABLED', false),
+    ],
     'billing' => [
         'enabled' => env('BEACON_BILLING_ENABLED', false),
         'trial_fraud_limit' => 20,

@@ -59,9 +59,9 @@ class FeatureFlagController
     {
         Gate::authorize('create', $featureFlag);
 
-        CreateFeatureFlag::run($featureFlag);
+        $featureFlag = CreateFeatureFlag::run($featureFlag);
 
-        return redirect()->route('feature-flags.index')->with(
+        return redirect()->route('feature-flags.edit', ['feature_flag' => $featureFlag->id])->with(
             'alert',
             [
                 'message' => 'Feature flag created successfully.',

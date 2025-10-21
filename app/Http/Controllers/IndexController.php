@@ -12,12 +12,15 @@ class IndexController
 {
     public function index()
     {
-        return Inertia::render('Home/Index');
+        if (config('beacon.enabled')) {
+            return Inertia::render('Home/Index');
+        }
+
+        return Inertia::render('Home/LandingPage', [
+            'beaconEnabled' => config('beacon.waitlist.enabled'),
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -30,37 +33,5 @@ class IndexController
         AddContact::run($request->string('email'));
 
         return back();
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }
