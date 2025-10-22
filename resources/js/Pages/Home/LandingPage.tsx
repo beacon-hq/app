@@ -3,11 +3,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { Head, useForm } from '@inertiajs/react';
-import { motion } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
 import useSound from 'use-sound';
+import { useTimeout } from 'usehooks-ts';
 
-export default function LandingPage({ beaconEnabled = true }: { beaconEnabled: boolean }) {
+export default function LandingPage({ waitlistEnabled = true }: { waitlistEnabled: boolean }) {
     const [toggle, setToggle] = React.useState(false);
     const [showSendIcon, setShowSendIcon] = useState(true);
     const [showCheckIcon, setShowCheckIcon] = useState(false);
@@ -44,7 +44,7 @@ export default function LandingPage({ beaconEnabled = true }: { beaconEnabled: b
             onSuccess: () => {
                 startAnimationSequence();
 
-                if (beaconEnabled) {
+                if (waitlistEnabled) {
                     setToggle(true);
                 }
 
@@ -122,7 +122,7 @@ export default function LandingPage({ beaconEnabled = true }: { beaconEnabled: b
     }, [checkDrawProgress, showCheckIcon]);
 
     const toggleAppearence = () => {
-        if (beaconEnabled) {
+        if (waitlistEnabled) {
             setToggle(!toggle);
             play();
         }
@@ -132,20 +132,26 @@ export default function LandingPage({ beaconEnabled = true }: { beaconEnabled: b
 
     const [play] = useSound(click, { volume: 1 });
 
+    useTimeout(() => {
+        if (waitlistEnabled && !toggle) {
+            toggleAppearence();
+        }
+    }, 4000);
+
     return (
         <Landing>
             <Head title="Beacon" />
 
             <section
                 className={cn('bg-black w-full h-screen flex flex-col justify-center overflow-hidden', {
-                    'bg-aurora': toggle && beaconEnabled,
+                    'bg-aurora': toggle && waitlistEnabled,
                 })}
             >
                 <svg
                     className={cn(
-                        'inset-0 m-auto xl:w-1/4 w-3/4 transition-[translate] translate-y-1/8 duration-1000 motion-opacity-in-0 motion-duration-[8s]',
+                        'inset-0 m-auto xl:w-1/4 w-3/4 transition-[translate] translate-y-1/8  duration-1000 motion-opacity-in-0 motion-duration-[8s]',
                         {
-                            '-translate-y-10': toggle,
+                            '-translate-y-2': toggle,
                         },
                     )}
                     viewBox="0 0 510 680"
@@ -223,8 +229,8 @@ export default function LandingPage({ beaconEnabled = true }: { beaconEnabled: b
                                 {
                                     'fill-[#646464]': toggle,
                                     'translate-y-0': toggle,
-                                    'cursor-pointer': beaconEnabled,
-                                    'cursor-not-allowed': !beaconEnabled,
+                                    'cursor-pointer': waitlistEnabled,
+                                    'cursor-not-allowed': !waitlistEnabled,
                                 },
                             )}
                             onClick={toggleAppearence}

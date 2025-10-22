@@ -17,7 +17,7 @@ class IndexController
         }
 
         return Inertia::render('Home/LandingPage', [
-            'beaconEnabled' => config('beacon.waitlist.enabled'),
+            'waitlistEnabled' => config('beacon.waitlist.enabled'),
         ]);
     }
 
