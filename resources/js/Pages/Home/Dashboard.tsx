@@ -1,4 +1,5 @@
 import OnboardingDialog from './Components/Onboarding/OnboardingDialog';
+import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { IconColor } from '@/components/IconColor';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,7 +14,6 @@ import {
 } from '@/components/ui/chart';
 import { DataTable } from '@/components/ui/data-table';
 import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
-import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { cn } from '@/lib/utils';
 import { Head } from '@inertiajs/react';
 import { DotFilledIcon } from '@radix-ui/react-icons';
@@ -433,12 +433,7 @@ export default function Dashboard({ metrics = defaultMetrics, onboarding = false
                                             <CardTitle>System Health</CardTitle>
                                             <CardDescription>Last 30 Days</CardDescription>
                                         </CardHeader>
-                                        <CardContent className="flex-1 pb-0 pt-3">
-                                            {!healthScore && (
-                                                <div className="flex h-full items-center justify-center text-center text-muted-foreground">
-                                                    Not enough data
-                                                </div>
-                                            )}
+                                        <CardContent className="flex-1 pb-0 pt-0">
                                             <ChartContainer
                                                 config={flagStatusChartConfig}
                                                 className="mx-auto aspect-square max-h-[250px]"
@@ -595,7 +590,7 @@ export default function Dashboard({ metrics = defaultMetrics, onboarding = false
                                         <CardHeader className="items-center pb-0">
                                             <CardTitle>Flag Types</CardTitle>
                                         </CardHeader>
-                                        <CardContent className="flex-1 pb-0 pt-2">
+                                        <CardContent className="flex-1 pt-6">
                                             {dashboardMetrics.flagTypeData.total === 0 && (
                                                 <div className="flex h-full items-center justify-center text-center text-muted-foreground">
                                                     Not enough data
