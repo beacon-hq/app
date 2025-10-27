@@ -13,11 +13,13 @@ This guide helps you diagnose and resolve common issues when using Beacon with y
 #### Invalid API Token
 
 **Symptoms:**
+
 - 401 Unauthorized responses
 - "Invalid API token" error messages
-- Feature flags always returning inactive
+- Feature flags always return inactive
 
 **Solutions:**
+
 1. Verify your API token in the `.env` file:
    ```dotenv
    BEACON_ACCESS_TOKEN=your_actual_token_here
@@ -35,6 +37,7 @@ This guide helps you diagnose and resolve common issues when using Beacon with y
 #### API Connection Issues
 
 **Symptoms:**
+
 - Timeout errors
 - Connection refused errors
 - Intermittent feature flag failures
@@ -42,12 +45,12 @@ This guide helps you diagnose and resolve common issues when using Beacon with y
 **Solutions:**
 1. Check your API URL configuration:
    ```dotenv
-   BEACON_API_URL=https://beacon-hq.dev
+   BEACON_API_URL=https://api.beacon-hq.dev
    ```
 
 2. Verify network connectivity:
    ```bash
-   curl -I https://beacon-hq.dev/up
+   curl -I https://api.beacon-hq.dev/up
    ```
 
 4. Check firewall and proxy settings
@@ -57,10 +60,12 @@ This guide helps you diagnose and resolve common issues when using Beacon with y
 #### Application or Environment Not Found
 
 **Symptoms:**
+
 - Feature flags not working in specific environments
 - Inconsistent behavior across environments
 
 **Solutions:**
+
 1. Verify application name matches exactly:
    ```dotenv
    APP_NAME=my-exact-app-name
@@ -78,11 +83,13 @@ This guide helps you diagnose and resolve common issues when using Beacon with y
 #### Cache Issues
 
 **Symptoms:**
+
 - Stale feature flag values
 - Changes not reflecting immediately
 - Inconsistent behavior
 
 **Solutions:**
+
 1. Clear application cache:
    ```bash
    php artisan cache:clear
@@ -108,27 +115,16 @@ This guide helps you diagnose and resolve common issues when using Beacon with y
 #### Feature Flag Always Return Inactive
 
 **Symptoms:**
+
 - Feature flags never activate
 
 **Solutions:**
+
 1. Check if the feature flag exists in Beacon dashboard
-
 2. Verify the feature flag is enabled for your environment
-
 3. Check policy configuration and targeting rules
-
 4. Test with a simple "always on" policy first
-
-5. Verify context data is being sent correctly:
-   ```php
-   // Add debug logging
-   Log::info('Feature flag context', [
-       'flag' => 'my-flag',
-       'context' => Feature::for($user)->context('my-flag'),
-   ]);
-   ```
-   
-6. Use Beacon's <kbd><Code2 /> Code</kbd> feature to create an API request to test with.
+5. Use Beacon's <kbd><Code2 /> Code</kbd> feature to create an API request to test with.
 
 #### Inconsistent Feature Flag Behavior
 
@@ -180,8 +176,11 @@ This guide helps you diagnose and resolve common issues when using Beacon with y
 ### Before Contacting Support
 
 1. Check the [Beacon Status Page](https://status.beacon-hq.dev) for service issues
+
 2. Review your configuration against this documentation
+
 3. Test with a minimal reproduction case
+
 4. Gather relevant logs and error messages
 
 ### Information to Include
@@ -195,66 +194,23 @@ When contacting support, include:
 - Steps to reproduce the issue
 - Expected vs actual behavior
 
-### Community Resources
-
-- [GitHub Issues](https://github.com/beacon-hq/pennant-driver/issues)
-- [Discord Community](https://discord.gg/beacon-hq)
-- [Documentation](https://docs.beacon-hq.dev)
-
 ## Monitoring and Alerting
-
-### Set Up Monitoring
-
-Monitor key metrics to catch issues early:
-
-```php
-// Monitor API response times
-Log::info('Beacon API call', [
-    'duration' => $duration,
-    'flag' => $flagName,
-    'result' => $result,
-]);
-
-// Monitor cache hit rates
-Log::info('Beacon cache', [
-    'hit' => $cacheHit,
-    'flag' => $flagName,
-]);
-```
 
 ### Health Checks
 
-Implement health checks for Beacon connectivity:
+To implement [health checks](https://laravel.com/docs/12.x/deployment#the-health-route) for Beacon connectivity, first add a feature flag called `health-check` with
+an active status on all application environments, then verify it is active via `Feature::active()`:
 
 ```php
-// app/Http/Controllers/HealthController.php
-public function beacon()
-{
-    try {
-        $start = microtime(true);
-        Feature::define('health-check');
-        Feature::active('health-check');
-        $duration = microtime(true) - $start;
-        
-        return response()->json([
-            'status' => 'healthy',
-            'response_time' => $duration,
-        ]);
-    } catch (Exception $e) {
-        return response()->json([
-            'status' => 'unhealthy',
-            'error' => $e->getMessage(),
-        ], 503);
+use Illuminate\Foundation\Events\DiagnosingHealth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
+use Laravel\Pennant\Feature;
+
+Event::listen(DiagnosingHealth::class, function () {
+    Feature::define('health-check');
+    if (!Feature::active('health-check')) {
+        throw new \Exception('Feature flag check failed!');
     }
-}
+});
 ```
-
-### Alerting
-
-Set up alerts for:
-- High error rates
-- Slow response times
-- Rate limiting issues
-- Cache miss rates
-
-This helps you identify and resolve issues before they impact users.
