@@ -314,7 +314,21 @@ const StatusEditor: React.FC<{
                                     }}
                                     data-test="slider-rollout-percentage"
                                 />
-                                <p className="w-10">{currentRollout.percentage}%</p>
+                                <Input
+                                    type="number"
+                                    min={0}
+                                    max={100}
+                                    className="w-20"
+                                    value={currentRollout.percentage}
+                                    data-test="input-rollout-percentage"
+                                    onChange={(value) => {
+                                        if (status?.id) {
+                                            updateStatusRollout(status.id, {
+                                                percentage: parseInt(value.target.value),
+                                            });
+                                        }
+                                    }}
+                                />
                             </div>
                             <p className="text-xs">
                                 Rollout percentage determines how many users will see this status. For example, if you
