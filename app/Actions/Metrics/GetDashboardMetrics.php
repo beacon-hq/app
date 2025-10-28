@@ -58,6 +58,7 @@ class GetDashboardMetrics
         $query = FeatureFlag::query()
             ->whereNull('completed_at')
             ->where('status', true)
+            ->whereHas('usages')
             ->whereHas('statuses', function (Builder $query) {
                 $query->where('status', true);
             })

@@ -21,6 +21,7 @@ use App\Values\FeatureFlagStatus;
 use Bag\Attributes\WithoutValidation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -88,7 +89,7 @@ class FeatureFlagController
             'applications' => ListApplications::run(),
             'environments' => ListEnvironments::run(),
             'log' => GetFeatureFlagActivityLog::run($featureFlag->id),
-            'metrics' => GetFlagMetrics::run($featureFlag->id, $applicationId, $environmentId),
+            'metrics' => Cache::flexible('metrics:' . $featureFlag->id . ':' . $applicationId . ':' . $environmentId, [60, 180], GetFlagMetrics::run($featureFlag->id, $applicationId, $environmentId)),
         ]);
     }
 
