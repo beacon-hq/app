@@ -11,6 +11,9 @@ use App\Models\FeatureFlagStatus;
 use App\Values\ActivityLog;
 use App\Values\Collections\ActivityLogCollection;
 
+/**
+ * @method static ActivityLogCollection run(string $featureFlagId)
+ */
 class GetFeatureFlagActivityLog
 {
     use AsAction;
@@ -32,8 +35,9 @@ class GetFeatureFlagActivityLog
 
         $mergedActivities = $featureFlagActivities
             ->merge($featureFlagStatusActivities)
+            ->sortByDesc('created_at')
             ->values();
 
-        return ActivityLog::collect($mergedActivities)->sortByDesc('createdAt');
+        return ActivityLog::collect($mergedActivities);
     }
 }
