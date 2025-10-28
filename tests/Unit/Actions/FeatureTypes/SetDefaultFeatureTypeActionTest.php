@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Actions\FeatureTypes\SetDefaultFeatureType;
 use App\Models\FeatureType;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 beforeEach(function () {
     DB::beginTransaction();

@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 use App\Actions\AccessTokens\FindAccessTokenById;
+use App\Actions\AppContext\SetAppContext;
 use App\Models\AccessToken;
 use App\Values\AccessToken as AccessTokenValue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 beforeEach(function () {
     [$this->team, , $organization] = createOwner();

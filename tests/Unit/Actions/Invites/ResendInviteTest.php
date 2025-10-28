@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Actions\AppContext\SetOrganizationContext;
 use App\Actions\Invites\ResendInvite;
 use App\Enums\Role;
@@ -14,7 +15,6 @@ use App\Values\Invite;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 beforeEach(function () {
     DB::beginTransaction();

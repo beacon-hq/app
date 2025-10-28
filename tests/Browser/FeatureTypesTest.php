@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Tests\Unit\Actions\AppContext\SetAppContext;
+use App\Actions\AppContext\SetAppContext;
 
 it('can create new feature type', function () {
     [$team, $user, $organization] = createOwner();

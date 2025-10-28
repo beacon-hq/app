@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Models\FeatureFlag;
 use App\Models\FeatureType;
 use App\Models\Tag;
 use App\Values\Collections\TagCollection;
 use Inertia\Testing\AssertableInertia as Assert;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 it('lists feature flags', function () {
     [$team, $user, $organization] = createOwner();

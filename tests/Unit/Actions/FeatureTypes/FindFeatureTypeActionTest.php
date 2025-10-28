@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Actions\FeatureTypes\FindFeatureType;
 use App\Actions\FeatureTypes\GetDefaultFeatureType;
 use App\Models\FeatureType;
 use App\Values\FeatureType as FeatureTypeValue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use function Pest\Laravel\mock;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 beforeEach(function () {
     [$this->team, , $organization] = createOwner();

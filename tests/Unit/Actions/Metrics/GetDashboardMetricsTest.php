@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Actions\Metrics\GetDashboardMetrics;
 use App\Events\TeamCreatedEvent;
 use App\Models\Activity;
@@ -17,7 +18,6 @@ use Beacon\Metrics\Enums\PreviousType;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 beforeEach(function () {
     \Event::fake([TeamCreatedEvent::class]);

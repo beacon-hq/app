@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Actions\FeatureFlags\UpdateFeatureFlag;
 use App\Enums\PolicyDefinitionMatchOperator;
 use App\Enums\PolicyDefinitionType;
@@ -21,7 +22,6 @@ use App\Values\FeatureType as FeatureTypeValue;
 use App\Values\PolicyDefinition;
 use App\Values\Tag as TagValue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 beforeEach(function () {
     [$this->team, , $organization] = createOwner();

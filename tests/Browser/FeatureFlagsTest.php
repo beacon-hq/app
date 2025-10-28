@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Actions\FeatureFlags\CreateFeatureFlag;
 use App\Actions\FeatureTypes\CreateFeatureType;
 use App\Values\FeatureFlag;
 use App\Values\FeatureType;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 it('can create new feature flag', function () {
     [$team, $user, $organization] = createOwner();

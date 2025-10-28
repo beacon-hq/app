@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Actions\Applications\CreateApplication;
 use App\Models\Application as ApplicationModel;
 use App\Values\Application;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 beforeEach(function () {
     [$this->team, $user, $organization] = createOwner();

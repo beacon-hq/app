@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use Illuminate\Support\Facades\Config;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 it('can create new organization', function () {
     [$team, $user, $organization] = createOwner();

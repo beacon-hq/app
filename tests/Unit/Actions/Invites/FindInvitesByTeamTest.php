@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Actions\AppContext\SetOrganizationContext;
 use App\Actions\AppContext\SetTeamContext;
 use App\Actions\Invites\FindInvitesByTeam;
@@ -13,7 +14,6 @@ use App\Models\User;
 use App\Values\Collections\InviteCollection;
 use App\Values\Team as TeamValue;
 use Illuminate\Support\Facades\DB;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 beforeEach(function () {
     DB::beginTransaction();

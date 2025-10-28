@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Actions\FeatureFlags\CreateFeatureFlag;
 use App\Actions\FeatureFlags\GetFeatureFlagActivityLog;
 use App\Actions\FeatureFlags\UpdateFeatureFlag;
@@ -14,7 +15,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use function Pest\Laravel\travel;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 it('retrieves activity logs for a feature flag', function () {
     Config::set('activitylog.enabled', true);

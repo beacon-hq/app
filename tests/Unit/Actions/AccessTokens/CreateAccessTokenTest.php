@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use App\Actions\AccessTokens\CreateAccessToken;
+use App\Actions\AppContext\SetAppContext;
 use App\Values\AccessToken;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 beforeEach(function () {
     [$this->team,, $organization] = createOwner();

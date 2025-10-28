@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Actions\Environments\UpdateEnvironment;
 use App\Models\Environment as EnvironmentModel;
 use App\Values\Environment;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 beforeEach(function () {
     [$this->team, , $organization] = createOwner();

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Actions\FeatureFlags\CheckFeatureFlagExists;
 use App\Models\Application;
 use App\Models\Environment;
@@ -10,7 +11,6 @@ use App\Models\FeatureFlagStatus;
 use App\Models\FeatureType;
 use App\Values\FeatureFlag as FeatureFlagValue;
 use App\Values\FeatureFlagContext;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 beforeEach(function () {
     [$this->team, , $organization] = createOwner();

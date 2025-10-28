@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Actions\Teams\CreateTeam;
 use App\Enums\Role;
 use App\Enums\UserStatus;
@@ -9,7 +10,6 @@ use App\Models\User;
 use App\Values\Organization;
 use App\Values\Team;
 use App\Values\User as UserValue;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 it('can view teams page', function () {
     [$team, $user, $organization] = createOwner();

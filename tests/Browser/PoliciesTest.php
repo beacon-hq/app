@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Models\Policy;
 use Bag\Collection;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 it('can create new policy', function () {
     [$team, $user, $organization] = createOwner();

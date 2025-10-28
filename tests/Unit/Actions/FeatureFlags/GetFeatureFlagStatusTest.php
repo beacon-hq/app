@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Actions\AppContext\SetTeamContext;
 use App\Actions\FeatureFlags\GetFeatureFlagStatus;
 use App\Enums\Boolean;
@@ -22,7 +23,6 @@ use App\Values\FeatureFlagResponse;
 use App\Values\PolicyDefinition;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Lottery;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 beforeEach(function () {
     [$this->team, , $organization] = createOwner();

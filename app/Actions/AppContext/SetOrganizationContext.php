@@ -10,6 +10,9 @@ use App\Models\Organization;
 use App\Values\Organization as OrganizationValue;
 use Illuminate\Support\Facades\Context;
 
+/**
+ * @method static OrganizationValue run(Organization|OrganizationValue|null $organization)
+ */
 class SetOrganizationContext
 {
     use AsAction;

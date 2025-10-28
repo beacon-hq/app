@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Events\FeatureFlagMissedEvent;
 use App\Listeners\CreateMissingFeatureFlagListener;
 use App\Listeners\RecordFeatureFlagUsage;
 use App\Values\FeatureFlag;
 use App\Values\FeatureFlagContext;
 use App\Values\FeatureFlagResponse;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 it('onboards new teams', function () {
     [$team, $user, $organization] = createOwner();

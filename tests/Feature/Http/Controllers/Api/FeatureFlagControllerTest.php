@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Enums\Boolean;
 use App\Enums\PolicyDefinitionMatchOperator;
 use App\Enums\PolicyDefinitionType;
@@ -18,7 +19,6 @@ use App\Values\PolicyDefinition;
 use Bag\Collection;
 use Illuminate\Support\Facades\Config;
 use function Pest\Laravel\actingAs;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 it('fetches a missing feature flag as inactive', function () {
     Config::set('beacon.api.rate_limiting.enabled', false);

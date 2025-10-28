@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Actions\AppContext\SetOrganizationContext;
 use App\Actions\AppContext\SetTeamContext;
 use App\Actions\Invites\CreateInvite;
@@ -16,7 +17,6 @@ use App\Values\Team as TeamValue;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 beforeEach(function () {
     DB::beginTransaction();

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Enums\Color;
 use App\Models\Application;
 use Inertia\Testing\AssertableInertia as Assert;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 it('lists applications', function () {
     [$team, $user, $organization] = createOwner();

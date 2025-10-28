@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Actions\FeatureTypes\FindFeatureTypeByName;
 use App\Models\FeatureType;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 beforeEach(function () {
     [$this->team, , $organization] = createOwner();

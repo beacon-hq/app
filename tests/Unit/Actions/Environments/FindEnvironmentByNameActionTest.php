@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Actions\Environments\FindEnvironmentByName;
 use App\Models\Environment as EnvironmentModel;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 beforeEach(function () {
     [$this->team, , $organization] = createOwner();

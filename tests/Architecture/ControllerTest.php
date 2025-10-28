@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 // beforeEach()->skip();
 
+use App\Actions\AppContext\SetAppContext;
 use App\Http\Controllers\ProfileController;
 use Bag\Attributes\WithoutValidation;
 use Bag\Values\Optional;
@@ -12,7 +13,6 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Session;
 use Laravel\Cashier\Checkout;
 use Symfony\Component\HttpFoundation\Response;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 arch()->expect('App\Http\Controllers')
     ->toOnlyUse([

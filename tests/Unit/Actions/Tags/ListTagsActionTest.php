@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Actions\Tags\ListTags;
 use App\Models\Tag;
 use Illuminate\Support\Facades\DB;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 beforeEach(function () {
     DB::beginTransaction();

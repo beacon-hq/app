@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Actions\Tags\CreateTag;
 use App\Models\Tag;
 use App\Values\Tag as TagValue;
 use Illuminate\Support\Facades\DB;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 beforeEach(function () {
     DB::beginTransaction();

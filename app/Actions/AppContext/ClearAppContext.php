@@ -2,10 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Actions\AppContext;
+namespace App\Actions\AppContext;
 
-use App\Actions\AppContext\SetOrganizationContext;
-use App\Actions\AppContext\SetTeamContext;
 use App\Actions\Traits\AsAction;
 
 class ClearAppContext

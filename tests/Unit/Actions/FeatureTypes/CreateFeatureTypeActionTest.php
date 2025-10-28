@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Actions\FeatureTypes\CreateFeatureType;
 use App\Models\FeatureType;
 use App\Values\FeatureType as FeatureTypeValue;
 use Illuminate\Support\Facades\DB;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 beforeEach(function () {
     DB::beginTransaction();

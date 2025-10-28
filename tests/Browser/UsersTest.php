@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Actions\Invites\CreateInvite;
 use App\Enums\Role;
 use App\Enums\UserStatus;
@@ -12,7 +13,6 @@ use App\Values\Team;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 it('can invite a new user', function () {
     Notification::fake();

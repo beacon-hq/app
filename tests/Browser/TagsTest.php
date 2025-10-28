@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Actions\Users\AssignRoleToUser;
 use App\Enums\Role;
 use App\Values\User as UserValue;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 it('can create new tag', function () {
     [$team, $user, $organization] = createOwner();

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\ClearAppContext;
 use App\Actions\AppContext\GetAppContext;
 use App\Actions\AppContext\SetOrganizationContext;
 use App\Actions\AppContext\SetTeamContext;
@@ -10,7 +11,6 @@ use App\Models\Team as TeamModel;
 use App\Values\Organization;
 use App\Values\Team;
 use Bag\Values\Optional;
-use Tests\Unit\Actions\AppContext\ClearAppContext;
 
 beforeEach(function () {
     // Create an organization and team using factories

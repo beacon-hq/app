@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
+use App\Actions\AppContext\SetAppContext;
 use App\Actions\Applications\UpdateApplication;
 use App\Models\Application as ApplicationModel;
 use App\Values\Application;
 use Bag\Values\Optional;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Tests\Unit\Actions\AppContext\SetAppContext;
 
 beforeEach(function () {
     [$this->team, , $organization] = createOwner();
