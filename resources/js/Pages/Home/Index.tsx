@@ -1,8 +1,7 @@
 import { ProductCollection } from '@/Application';
+import HomeLayout from '@/Layouts/HomeLayout';
 import { CentralizedControlAnimation } from '@/Pages/Home/Components/CentralizedControlAnimation';
 import Pricing from '@/Pages/Home/Components/Pricing';
-import Footer from '@/components/Footer';
-import NavMenu from '@/components/NavMenu';
 import { ThreeDMarquee } from '@/components/ui/3d-marquee';
 import { AuroraText } from '@/components/ui/aurora-text';
 import { Button } from '@/components/ui/button';
@@ -70,9 +69,8 @@ export default function Index() {
     }, [deploySwitchState]);
 
     return (
-        <>
+        <HomeLayout>
             <Head title="Welcome" />
-            <NavMenu />
 
             <header className="flex flex-col items-center mb-8">
                 <div className="flex flex-row w-3/4 mx-auto items-center pt-20">
@@ -471,8 +469,6 @@ export default function Index() {
                     <Pricing products={products as ProductCollection} />
                 </section>
             )}
-
-            <Footer />
-        </>
+        </HomeLayout>
     );
 }
