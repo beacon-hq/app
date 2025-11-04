@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Features\BeaconEnabled;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
@@ -19,7 +18,7 @@ use Laravel\Pennant\Middleware\EnsureFeaturesAreActive;
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
-        ->middleware(['guest', EnsureFeaturesAreActive::using(BeaconEnabled::class)])
+        ->middleware(['guest', EnsureFeaturesAreActive::using('beacon-enabled')])
         ->name('register');
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])

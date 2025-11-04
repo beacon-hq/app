@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\Config;
+use Laravel\Pennant\Feature;
 
 it('can login', function () {
     [, $user, ] = createOwner();
@@ -12,7 +12,7 @@ it('can login', function () {
     $user->two_factor_confirmed_at = now();
     $user->save();
 
-    Config::set('beacon.billing.enabled', false);
+    Feature::define('billing-enabled', fn () => false);
 
     $page = visit('/')
         ->resize(500, 850);

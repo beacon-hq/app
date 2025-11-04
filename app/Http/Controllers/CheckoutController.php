@@ -13,12 +13,13 @@ use App\Values\Product;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Laravel\Cashier\Checkout;
+use Laravel\Pennant\Feature;
 
 class CheckoutController
 {
     public function index(ListProducts $listProductsAction, HasActiveSubscription $hasActiveSubscriptionAction)
     {
-        if (!config('beacon.billing.enabled')) {
+        if (!Feature::active('billing-enabled')) {
             return \redirect('dashboard');
         }
 

@@ -9,6 +9,7 @@ use App\Models\Organization;
 use App\Values\Organization as OrganizationValue;
 use Illuminate\Support\Facades\Log;
 use Laravel\Cashier\Cashier;
+use Laravel\Pennant\Feature;
 use Stripe\StripeClient;
 
 class ReportSubscriptionUsage
@@ -19,7 +20,7 @@ class ReportSubscriptionUsage
     {
         try {
             // Skip if billing is not enabled
-            if (!config('beacon.billing.enabled', false)) {
+            if (!Feature::active('billing-enabled')) {
                 return false;
             }
 

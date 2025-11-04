@@ -7,6 +7,7 @@ use App\Models\StripeProduct;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Laravel\Pennant\Feature;
 
 return new class () extends Migration {
     public function up(): void
@@ -39,7 +40,7 @@ return new class () extends Migration {
             $table->timestamps();
         });
 
-        if (config('beacon.billing.enabled', false)) {
+        if (Feature::active('billing-enabled')) {
             \Artisan::call('stripe:sync');
         }
     }

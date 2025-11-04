@@ -2,12 +2,20 @@
 
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\Config;
+use Laravel\Pennant\Feature;
 
 it('shows welcome screen', function () {
-    Config::set('beacon.billing.enabled', false);
+    Feature::define('billing-enabled', fn () => false);
 
     visit('/')
         ->assertSee('Feature Flag Management For Laravel')
-        ->assertDontSee('$');
+        ->assertDontSee('Pricing');
+});
+
+it('shows billing welcome screen', function () {
+    Feature::define('billing-enabled', fn () => true);
+
+    visit('/')
+        ->assertSee('Feature Flag Management For Laravel')
+        ->assertSee('Pricing');
 });

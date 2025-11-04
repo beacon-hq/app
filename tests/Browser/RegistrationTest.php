@@ -3,11 +3,10 @@
 declare(strict_types=1);
 
 use App\Models\User;
-use Illuminate\Support\Facades\Config;
+use Laravel\Pennant\Feature;
 
 it('can register a new user', function () {
-    Config::set('beacon.billing.enabled', false);
-
+    Feature::define('billing-enabled', fn () => false);
     $page = visit('/');
 
     $page->resize(600, 1000);

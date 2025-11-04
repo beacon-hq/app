@@ -13,6 +13,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
+use Laravel\Pennant\Feature;
 
 class DashboardController
 {
@@ -37,7 +38,7 @@ class DashboardController
         }
 
         $plan = null;
-        if (config('beacon.billing.enabled', false)) {
+        if (Feature::active('billing-enabled')) {
             $plan = GetSubscriptionPlan::run(GetAppContext::organization());
         }
 

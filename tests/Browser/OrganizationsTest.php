@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Actions\AppContext\SetAppContext;
-use Illuminate\Support\Facades\Config;
+use Laravel\Pennant\Feature;
 
 it('can create new organization', function () {
     [$team, $user, $organization] = createOwner();
@@ -148,7 +148,7 @@ it('is prompted to choose an organization and team on login', function () {
 
     SetAppContext::run($organization, $team);
 
-    Config::set('beacon.billing.enabled', false);
+    Feature::define('billing-enabled', fn () => false);
 
     visit(route('organizations.index'))
         ->resize(3024 / 2, 700)
@@ -187,7 +187,7 @@ it('can switch organization and team', function () {
 
     SetAppContext::run($organization, $team);
 
-    Config::set('beacon.billing.enabled', false);
+    Feature::define('billing-enabled', fn () => false);
 
     visit(route('organizations.index'))
         ->resize(3024 / 2, 600)

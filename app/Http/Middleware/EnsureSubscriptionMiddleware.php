@@ -8,6 +8,7 @@ use App\Actions\Subscriptions\HasActiveSubscription;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Context;
+use Laravel\Pennant\Feature;
 use Session;
 
 class EnsureSubscriptionMiddleware
@@ -18,7 +19,7 @@ class EnsureSubscriptionMiddleware
 
     public function handle(Request $request, Closure $next)
     {
-        if (!config('beacon.billing.enabled')) {
+        if (!Feature::active('billing-enabled')) {
             return $next($request);
         }
 

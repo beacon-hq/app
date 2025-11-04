@@ -10,9 +10,9 @@ use App\Models\User;
 use App\Notifications\RegistrationInvite;
 use App\Values\Organization;
 use App\Values\Team;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
+use Laravel\Pennant\Feature;
 
 it('can invite a new user', function () {
     Notification::fake();
@@ -54,7 +54,7 @@ it('can invite a new user', function () {
 });
 
 it('can accept an invite', function () {
-    Config::set('beacon.billing.enabled', false);
+    Feature::define('billing-enabled', fn () => false);
 
     [$team, $user, $organization] = createOwner();
 

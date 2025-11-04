@@ -7,7 +7,6 @@ namespace App\Http\Middleware;
 use App\Actions\Organizations\ListOrganizations;
 use App\Actions\Products\ListProducts;
 use App\Actions\Teams\ListTeams;
-use App\Features\BillingEnabled;
 use App\Values\User;
 use Auth;
 use Illuminate\Http\Request;
@@ -45,11 +44,11 @@ class HandleInertiaRequests extends Middleware
                 'location' => $request->url(),
             ],
             'features' => [
-                'pricing.enabled' => Feature::active(BillingEnabled::class),
+                'pricing.enabled' => Feature::active('billing-enabled'),
             ],
             'docsUrl' => config('beacon.docs.url'),
             'products' => Cache::flexible('products', [3000, 6000], fn () => $this->getProductsAction->handle()),
-            'status' => config('beacon.status.enabled') ? [
+            'status' => Feature::active('status-enabled') ? [
                 ... Cache::get('beacon.status', [
                     'data' => [
                         'status' => 'operational',

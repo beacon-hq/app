@@ -17,11 +17,12 @@ use App\Models\Team;
 use App\Models\User;
 use App\Values\PolicyDefinition;
 use Bag\Collection;
-use Illuminate\Support\Facades\Config;
+use Laravel\Pennant\Feature;
 use function Pest\Laravel\actingAs;
 
 it('fetches a missing feature flag as inactive', function () {
-    Config::set('beacon.api.rate_limiting.enabled', false);
+    Feature::define('api-rate-limiting-enabled', fn () => false);
+    Feature::define('billing-enabled', fn () => false);
 
     [$team, $user, $organization] = createOwner();
 
@@ -34,6 +35,7 @@ it('fetches a missing feature flag as inactive', function () {
             'appName' => 'testing',
             'environment' => 'testing'
         ])
+        ->dump()
         ->assertJsonFragment([
             'active' => false
         ])

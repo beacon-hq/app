@@ -12,6 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use Laravel\Pennant\Feature;
 
 class RecordRequestTimingMetricJob implements ShouldQueue
 {
@@ -29,7 +30,7 @@ class RecordRequestTimingMetricJob implements ShouldQueue
 
     public function handle(): void
     {
-        if (!config('beacon.status.enabled')) {
+        if (!Feature::active('status-enabled')) {
             return;
         }
 

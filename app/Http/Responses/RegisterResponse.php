@@ -6,6 +6,7 @@ namespace App\Http\Responses;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Session;
+use Laravel\Pennant\Feature;
 
 class RegisterResponse extends \Laravel\Fortify\Http\Responses\RegisterResponse
 {
@@ -14,7 +15,7 @@ class RegisterResponse extends \Laravel\Fortify\Http\Responses\RegisterResponse
      */
     public function toResponse($request)
     {
-        if (!config('beacon.billing.enabled')) {
+        if (!Feature::active('billing-enabled')) {
             return parent::toResponse($request);
         }
 

@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Context;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Pennant\Feature;
 
 class ApiRateLimitServiceProvider extends ServiceProvider
 {
@@ -30,7 +31,7 @@ class ApiRateLimitServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Skip rate limiting if it's disabled
-        if (!config('beacon.billing.enabled') || !config('beacon.api.rate_limiting.enabled', false)) {
+        if (!Feature::active('billing-enabled') || !Feature::active('api-rate-limiting-enabled')) {
             RateLimiter::for('api', function (Request $request) {
                 return Limit::none();
             });

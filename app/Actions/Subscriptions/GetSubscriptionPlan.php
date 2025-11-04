@@ -9,6 +9,7 @@ use App\Models\Organization;
 use App\Models\StripeProduct;
 use App\Values\Organization as OrganizationValue;
 use App\Values\Product;
+use Laravel\Pennant\Feature;
 
 class GetSubscriptionPlan
 {
@@ -16,7 +17,7 @@ class GetSubscriptionPlan
 
     public function handle(OrganizationValue $organization): ?Product
     {
-        if (!config('beacon.billing.enabled', false)) {
+        if (!Feature::active('billing-enabled')) {
             return null;
         }
 

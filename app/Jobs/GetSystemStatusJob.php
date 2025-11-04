@@ -12,6 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Laravel\Pennant\Feature;
 
 class GetSystemStatusJob implements ShouldQueue
 {
@@ -21,7 +22,7 @@ class GetSystemStatusJob implements ShouldQueue
 
     public function handle(): void
     {
-        if (!config('beacon.status.enabled')) {
+        if (!Feature::active('status-enabled')) {
             return;
         }
 

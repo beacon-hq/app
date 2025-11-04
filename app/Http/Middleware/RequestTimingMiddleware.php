@@ -8,6 +8,7 @@ use App\Jobs\RecordRequestTimingMetricJob;
 use Carbon\CarbonImmutable;
 use Closure;
 use Illuminate\Http\Request;
+use Laravel\Pennant\Feature;
 
 class RequestTimingMiddleware
 {
@@ -21,7 +22,7 @@ class RequestTimingMiddleware
     public function terminate(Request $request)
     {
         $shouldSample = (random_int(0, PHP_INT_MAX) / PHP_INT_MAX) <= config('beacon.metrics.request.reporting.sample_rate', 1.0);
-        if (config('beacon.metrics.request.enabled') && config('beacon.metrics.request.reporting.enabled') && $shouldSample) {
+        if (Feature::active('request-metrics-enabled') && Feature::active('request-metrics-reporting') && $shouldSample) {
             $requestDuration = CarbonImmutable::createFromFormat('U.u', (string) $request->server->get('REQUEST_TIME_FLOAT'))->diffInMilliseconds(now());
 
             RecordRequestTimingMetricJob::dispatch($request, $requestDuration);
