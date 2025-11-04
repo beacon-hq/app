@@ -8,6 +8,7 @@ use App\Actions\Applications\ListApplications;
 use App\Actions\Environments\ListEnvironments;
 use App\Actions\FeatureFlags\CountFeatureFlags;
 use App\Actions\FeatureFlags\CreateFeatureFlag;
+use App\Actions\FeatureFlags\DeleteFeatureFlag;
 use App\Actions\FeatureFlags\FindFeatureFlag;
 use App\Actions\FeatureFlags\GetFeatureFlagActivityLog;
 use App\Actions\FeatureFlags\ListFeatureFlags;
@@ -116,5 +117,17 @@ class FeatureFlagController
         UpdateFeatureFlag::run($featureFlag);
 
         return redirect()->back()->withAlert('success', 'Feature flag updated successfully.');
+    }
+
+    public function destroy(
+        #[WithoutValidation]
+        FeatureFlag $featureFlag
+    ): RedirectResponse {
+        Gate::authorize('delete', $featureFlag);
+
+        DeleteFeatureFlag::run($featureFlag);
+
+        return redirect()->route('feature-flags.index')
+            ->withAlert('success', 'Feature flag deleted.');
     }
 }

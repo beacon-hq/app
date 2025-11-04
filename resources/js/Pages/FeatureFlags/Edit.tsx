@@ -9,11 +9,26 @@ import {
     PolicyDefinitionCollection,
     TagCollection,
 } from '@/Application';
+import Authenticated from '@/Layouts/AuthenticatedLayout';
+import ActivityLog from '@/Pages/FeatureFlags/Components/ActivityLog';
+import { Form } from '@/Pages/FeatureFlags/Components/Form';
+import StatusEditor from '@/Pages/FeatureFlags/Components/StatusEditor';
 import DefinitionList, { Definition, DefinitionDescription, DefinitionTerm } from '@/components/DefinitionList';
 import HttpRequestBuilder from '@/components/HttpRequestBuilder';
 import { IconColor } from '@/components/IconColor';
 import Tag from '@/components/Tag';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,10 +43,6 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import Authenticated from '@/Layouts/AuthenticatedLayout';
-import ActivityLog from '@/Pages/FeatureFlags/Components/ActivityLog';
-import { Form } from '@/Pages/FeatureFlags/Components/Form';
-import StatusEditor from '@/Pages/FeatureFlags/Components/StatusEditor';
 import { cn, localDateTime } from '@/lib/utils';
 import { useFeatureFlagStore } from '@/stores/featureFlagStore';
 import { Head, router, useForm } from '@inertiajs/react';
@@ -428,7 +439,7 @@ export default function Edit({
                                     )}
                                 </TabsContent>
                                 <TabsContent value="edit">
-                                    <Card>
+                                    <Card className="mb-6">
                                         <CardHeader className="flex flex-row justify-between items-center">
                                             <CardTitle>Edit Feature Flag</CardTitle>
                                             <div className="flex flex-row gap-2 items-center">
@@ -455,6 +466,66 @@ export default function Edit({
                                                 onCancel={handleCancel}
                                                 featureTypes={featureTypes}
                                             />
+                                        </CardContent>
+                                    </Card>
+                                    <Card>
+                                        <CardHeader>
+                                            <CardTitle>Delete Feature Flag</CardTitle>
+                                        </CardHeader>
+                                        <CardContent className="flex flex-col gap-4">
+                                            <Alert variant="warning" className="mt-4">
+                                                <TriangleAlert />
+                                                <AlertTitle className="prose text-orange-500">
+                                                    Destructive Action
+                                                </AlertTitle>
+                                                <AlertDescription>
+                                                    <p>
+                                                        Deleting this feature flag will permanently remove all
+                                                        associated metrics and configuration.
+                                                    </p>
+                                                </AlertDescription>
+                                            </Alert>
+                                            <p className="text-sm">
+                                                If the flag is still referenced by your application code, it will be
+                                                recreated automatically but will default to inactive.
+                                            </p>
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <div className="flex flex-col items-end">
+                                                        <Button
+                                                            variant="destructive"
+                                                            data-test="button-delete-feature-flag"
+                                                        >
+                                                            Delete
+                                                        </Button>
+                                                    </div>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>Delete this feature flag?</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            Deleting this feature flag will permanently remove all
+                                                            associated metrics and configuration.{' '}
+                                                            <strong>This action cannot be undone.</strong>
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                        <AlertDialogAction
+                                                            onClick={() =>
+                                                                featureFlag?.id &&
+                                                                router.delete(
+                                                                    route('feature-flags.destroy', {
+                                                                        feature_flag: featureFlag.id,
+                                                                    }),
+                                                                )
+                                                            }
+                                                        >
+                                                            Delete
+                                                        </AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
                                         </CardContent>
                                     </Card>
                                 </TabsContent>

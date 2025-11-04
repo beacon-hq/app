@@ -693,7 +693,10 @@ const StatusEditor: React.FC<{
                                                 }}
                                                 disabled={currentVariants.length === 0}
                                             >
-                                                <SelectTrigger className="w-1/2 h-9 py-0">
+                                                <SelectTrigger
+                                                    className="w-1/2 h-9 py-0"
+                                                    data-test="select-variant-strategy"
+                                                >
                                                     <SelectValue asChild>
                                                         {(status?.variant_strategy ?? VariantStrategy.RANDOM) ===
                                                         VariantStrategy.CONTEXT ? (
@@ -716,13 +719,19 @@ const StatusEditor: React.FC<{
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectGroup>
-                                                        <SelectItem value={VariantStrategy.RANDOM}>
+                                                        <SelectItem
+                                                            value={VariantStrategy.RANDOM}
+                                                            data-test="select-option-variant-strategy-random"
+                                                        >
                                                             <p className="font-bold">Random</p>
                                                             <p className="text-sm text-primary/80">
                                                                 Random variant selection on each evaluation.
                                                             </p>
                                                         </SelectItem>
-                                                        <SelectItem value={VariantStrategy.CONTEXT}>
+                                                        <SelectItem
+                                                            value={VariantStrategy.CONTEXT}
+                                                            data-test="select-option-variant-strategy-sticky"
+                                                        >
                                                             <p className="font-bold">Sticky</p>
                                                             <p className="text-sm text-primary/80">
                                                                 Use context values to ensure users consistently get the
