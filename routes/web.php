@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Events\FeatureFlagEvaluatedEvent;
 use App\Http\Controllers\AccessTokenController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\BillingController;
@@ -24,33 +23,7 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TeamMemberManageController;
 use App\Http\Controllers\TosController;
 use App\Http\Controllers\UserController;
-use App\Models\Application;
-use App\Models\Environment;
-use App\Values\FeatureFlag;
-use App\Values\FeatureFlagContext;
-use App\Values\FeatureFlagResponse;
-use Bag\Values\Optional;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Lottery;
-
-Route::get('/test', function () {
-    $flag = FeatureFlag::from(\App\Models\FeatureFlag::inRandomOrder()->first());
-    $c = FeatureFlagContext::from(
-        scopeType: null,
-        scope: [],
-        appName: Application::inRandomOrder()->first()->name,
-        environment: Environment::inRandomOrder()->first()->name,
-        sessionId: Optional::empty(),
-        ip: Optional::empty(),
-        userAgent: Optional::empty(),
-        referrer: Optional::empty(),
-        url: Optional::empty(),
-        method: Optional::empty()
-    );
-    $r = FeatureFlagResponse::from($flag->name, null, Lottery::odds(8, 10)->choose());
-
-    FeatureFlagEvaluatedEvent::dispatch($flag, $c, $r);
-})->name('test');
 
 Route::get('/', [IndexController::class, 'index'])->name('welcome');
 Route::post('/subscribe', [IndexController::class, 'store'])->name('subscribe');
