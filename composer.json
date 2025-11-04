@@ -8,10 +8,11 @@
     "require": {
         "php": "^8.3",
         "archtechx/enums": "^1.1",
-        "beacon-hq/metrics": "dev-main",
+        "beacon-hq/bag": "^2.6",
+        "beacon-hq/metrics": "^1.0",
+        "beacon-hq/pennant-driver": "*",
         "creativeorange/gravatar": "^1.0",
         "dompdf/dompdf": "^3.1",
-        "dshafik/bag": "^2.6",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/cashier": "^15.6",
         "laravel/fortify": "^1.25",
