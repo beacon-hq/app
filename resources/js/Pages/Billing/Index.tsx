@@ -1,4 +1,5 @@
 import { ProductCollection, Subscription } from '@/Application';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import ProductCard from '@/components/ProductCard';
 import {
     AlertDialog,
@@ -16,7 +17,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { cn } from '@/lib/utils';
 import { PageProps } from '@/types';
 import { Head, router } from '@inertiajs/react';
@@ -350,7 +350,7 @@ export default function Index({
                     </div>
                     <p className="mt-6 text-center text-primary">
                         Need more than 2 million evaluations?{' '}
-                        <a href="mailto:sales@beacon-hq.dev" className="underline">
+                        <a href="mailto:sales@beaconhq.io" className="underline">
                             Contact us
                         </a>{' '}
                         for a custom Enterprise plan.

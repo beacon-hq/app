@@ -24,7 +24,7 @@ BEACON_APP_NAME=my-laravel-app
 BEACON_ENVIRONMENT=production
 
 # API configuration
-BEACON_API_URL=https://beacon-hq.dev
+BEACON_API_URL=https://api.beaconhq.io
 BEACON_API_PATH_PREFIX=/api
 
 # Caching
@@ -54,7 +54,7 @@ return [
         'beacon' => [
             'driver' => 'beacon',
             'api_key' => env('BEACON_ACCESS_TOKEN'),
-            'url' => env('BEACON_API_URL', 'https://beacon-hq.dev'),
+            'url' => env('BEACON_API_URL', 'https://api.beaconhq.io'),
             'path_prefix' => env('BEACON_API_PATH_PREFIX', '/api'),
             'app_name' => env('BEACON_APP_NAME', env('APP_NAME')),
             'environment' => env('BEACON_ENVIRONMENT', env('APP_ENV')),
@@ -70,7 +70,7 @@ return [
 
 #### `url`
 - **Type**: String
-- **Default**: `https://beacon-hq.dev`
+- **Default**: `https://api.beaconhq.io`
 - **Description**: The base URL for the Beacon API
 
 #### `path_prefix`

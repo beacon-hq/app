@@ -51,14 +51,14 @@ export default withMermaid({
             provider: 'local',
         },
 
-        logo: 'https://beacon-hq.dev/images/icon.svg',
+        logo: 'https://beaconhq.io/images/icon.svg',
 
         outline: {
             level: [2, 3],
             label: 'On this page',
         },
 
-        nav: [{ text: 'Beacon Dashboard', link: 'https://beacon-hq.dev/dashboard' }],
+        nav: [{ text: 'Beacon Dashboard', link: 'https://beaconhq.io/dashboard' }],
 
         sidebar: [
             {

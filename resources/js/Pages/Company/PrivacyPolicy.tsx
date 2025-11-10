@@ -153,8 +153,8 @@ const PrivacyPolicy = () => {
                     <li>
                         <p>
                             <strong>Website</strong> refers to Beacon HQ, accessible from{' '}
-                            <a href="https://beacon-hq.dev" rel="external nofollow noopener" target="_blank">
-                                https://beacon-hq.dev
+                            <a href="https://beaconhq.io" rel="external nofollow noopener" target="_blank">
+                                https://beaconhq.io
                             </a>
                         </p>
                     </li>
@@ -1016,7 +1016,7 @@ const PrivacyPolicy = () => {
                     California resident, You can contact Us:
                 </p>
                 <ul>
-                    <li>By email: privacy@beacon-hq.dev</li>
+                    <li>By email: privacy@beaconhq.io</li>
                 </ul>
                 <p>
                     Only You, or a person registered with the California Secretary of State that You authorize to act on
@@ -1157,7 +1157,7 @@ const PrivacyPolicy = () => {
                 <h2>Contact Us</h2>
                 <p>If you have any questions about this Privacy Policy, You can contact us:</p>
                 <ul>
-                    <li>By email: privacy@beacon-hq.dev</li>
+                    <li>By email: privacy@beaconhq.io</li>
                 </ul>
             </section>
         </GuestLayout>

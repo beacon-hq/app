@@ -24,7 +24,7 @@ it('can register a new user', function () {
         ->screenshot(filename: 'register-form')
         ->fill('[data-test="input-register-first-name"]', 'Beacon')
         ->fill('[data-test="input-register-last-name"]', 'Demo')
-        ->fill('[data-test="input-register-email"]', 'support-' . time() . '@beacon-hq.dev')
+        ->fill('[data-test="input-register-email"]', 'support-' . time() . '@beaconhq.io')
         ->fill('[data-test="input-register-password"]', 'Password123!')
         ->fill('[data-test="input-register-password-confirmation"]', 'Password123!')
         ->click('[data-test="button-register-submit"]');

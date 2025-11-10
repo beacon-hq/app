@@ -91,11 +91,11 @@ export default function NavMenu({
                 items: [
                     {
                         title: 'Beam',
-                        url: 'https://beam.beacon-hq.dev',
+                        url: 'https://beam.beaconhq.io',
                         icon: (
                             <img
                                 className="w-12 h-12"
-                                src="https://beam.beacon-hq.dev/images/icon.svg"
+                                src="https://beam.beaconhq.io/images/icon.svg"
                                 alt="Beam Logo"
                                 title="Beam — Feature Flags for the Frontend powered by Laravel Pennant"
                             />
@@ -104,11 +104,11 @@ export default function NavMenu({
                     },
                     {
                         title: 'Metrics',
-                        url: 'https://metrics.beacon-hq.dev',
+                        url: 'https://metrics.beaconhq.io',
                         icon: (
                             <img
                                 className="w-12 h-12"
-                                src="https://metrics.beacon-hq.dev/assets/images/icon.svg"
+                                src="https://metrics.beaconhq.io/assets/images/icon.svg"
                                 alt="Beacon Metrics Logo"
                                 title="Simple Metrics for Laravel"
                             />

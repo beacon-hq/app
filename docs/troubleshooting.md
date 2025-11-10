@@ -45,12 +45,12 @@ This guide helps you diagnose and resolve common issues when using Beacon with y
 **Solutions:**
 1. Check your API URL configuration:
    ```dotenv
-   BEACON_API_URL=https://api.beacon-hq.dev
+   BEACON_API_URL=https://api.beaconhq.io
    ```
 
 2. Verify network connectivity:
    ```bash
-   curl -I https://api.beacon-hq.dev/up
+   curl -I https://api.beaconhq.io/up
    ```
 
 4. Check firewall and proxy settings
@@ -175,7 +175,7 @@ This guide helps you diagnose and resolve common issues when using Beacon with y
 
 ### Before Contacting Support
 
-1. Check the [Beacon Status Page](https://status.beacon-hq.dev) for service issues
+1. Check the [Beacon Status Page](https://status.beaconhq.io) for service issues
 
 2. Review your configuration against this documentation
 

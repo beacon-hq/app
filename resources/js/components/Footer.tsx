@@ -64,7 +64,7 @@ const Footer = ({ expanded = true }: { expanded?: boolean }) => {
                                     </li>
                                     {pricingEnabled && (
                                         <li>
-                                            <a href="mailto:support@beacon-hq.dev">Support</a>
+                                            <a href="mailto:support@beaconhq.io">Support</a>
                                         </li>
                                     )}
                                 </ul>
@@ -78,7 +78,7 @@ const Footer = ({ expanded = true }: { expanded?: boolean }) => {
                                                 <Link href={route('company.our-team')}>Our Team</Link>
                                             </li>
                                             <li>
-                                                <a href="mailto:hello@beacon-hq.dev">Contact</a>
+                                                <a href="mailto:hello@beaconhq.io">Contact</a>
                                             </li>
                                         </ul>
                                     </>

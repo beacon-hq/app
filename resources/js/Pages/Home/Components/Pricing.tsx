@@ -65,7 +65,7 @@ export default function Pricing({
 
                         <p className="mt-6 text-center text-primary">
                             Need more than 2 million evaluations?{' '}
-                            <a href="mailto:sales@beacon-hq.dev" className="underline">
+                            <a href="mailto:sales@beaconhq.io" className="underline">
                                 Contact us
                             </a>{' '}
                             for a custom Enterprise plan.
