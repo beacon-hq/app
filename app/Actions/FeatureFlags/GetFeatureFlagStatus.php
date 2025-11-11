@@ -104,6 +104,7 @@ class GetFeatureFlagStatus
 
         // Find all operator positions
         $operatorPositions = [];
+        /** @var PolicyDefinition $policyDefinition */
         foreach ($policyContainer->definition as $index => $policyDefinition) {
             if ($policyDefinition->type === PolicyDefinitionType::OPERATOR) {
                 $operatorPositions[] = $index;
@@ -177,7 +178,7 @@ class GetFeatureFlagStatus
         return $result ?? false;
     }
 
-    protected function evaluateExpression($policyDefinition, FeatureFlagContext $context): bool
+    protected function evaluateExpression(PolicyDefinition $policyDefinition, FeatureFlagContext $context): bool
     {
         $contextValue = data_get($context, $policyDefinition->subject) ?? data_get($context->scope, $policyDefinition->subject);
 
@@ -330,12 +331,12 @@ class GetFeatureFlagStatus
         };
     }
 
-    protected function evaluateDateRange($policyDefinition): bool
+    protected function evaluateDateRange(PolicyDefinition $policyDefinition): bool
     {
         $now = now();
         $comparisonDate = Carbon::parse($policyDefinition->subject, 'UTC');
 
-        if ($policyDefinition->operator === 'less_than_equal') {
+        if ($policyDefinition->operator === PolicyDefinitionMatchOperator::LESS_THAN_EQUAL) {
             return $now->isBefore($comparisonDate) || $now->equalTo($comparisonDate);
         }
 

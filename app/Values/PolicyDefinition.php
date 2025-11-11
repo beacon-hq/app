@@ -13,7 +13,7 @@ use Bag\Attributes\Factory;
 use Bag\Attributes\MapName;
 use Bag\Attributes\StripExtraParameters;
 use Bag\Bag;
-use Bag\Collection as Collection1;
+use Bag\Collection as BagCollection;
 use Bag\Mappers\SnakeCase;
 use Bag\Traits\HasFactory;
 use Bag\Validation\Rules\OptionalOr;
@@ -41,7 +41,7 @@ readonly class PolicyDefinition extends Bag
         public string $subject,
         public ?PolicyDefinitionMatchOperator $operator = null,
         #[LiteralTypeScriptType('string[]')]
-        public ?Collection1 $values = null,
+        public ?BagCollection $values = null,
     ) {
     }
 
