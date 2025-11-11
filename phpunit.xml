@@ -43,6 +43,5 @@
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="BEACON_BILLING_ENABLED" value="false"/>
-        <env name="PENNANT_STORE" value="array"/>
     </php>
 </phpunit>

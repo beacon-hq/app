@@ -7,18 +7,17 @@ namespace App\Http\Controllers;
 use App\Actions\Mail\AddContact;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Laravel\Pennant\Feature;
 
 class IndexController
 {
     public function index()
     {
-        if (Feature::active('beacon-enabled')) {
+        if (config('beacon.enabled')) {
             return Inertia::render('Home/Index');
         }
 
         return Inertia::render('Home/LandingPage', [
-            'waitlistEnabled' => Feature::active('waitlist-enabled'),
+            'waitlistEnabled' => config('beacon.waitlist.enabled'),
         ]);
     }
 
