@@ -10,7 +10,7 @@
         "archtechx/enums": "^1.1",
         "beacon-hq/bag": "^2.6",
         "beacon-hq/metrics": "^1.0",
-        "beacon-hq/pennant-driver": "*",
+        "beacon-hq/pennant-driver": "dev-main",
         "creativeorange/gravatar": "^1.0",
         "dompdf/dompdf": "^3.1",
         "inertiajs/inertia-laravel": "^2.0",
