@@ -79,21 +79,11 @@ class ListFeatureFlags
         }
 
         if (isset($filters['application'])) {
-            $query->whereExists(function ($subquery) use ($filters) {
-                $subquery->select('*')
-                    ->from('feature_flag_statuses')
-                    ->whereRaw('feature_flag_statuses.feature_flag_id = feature_flags.id')
-                    ->where('feature_flag_statuses.application_id', $filters['application']);
-            });
+            $query->whereApplication($filters['application']);
         }
 
         if (isset($filters['environment'])) {
-            $query->whereExists(function ($subquery) use ($filters) {
-                $subquery->select('*')
-                    ->from('feature_flag_statuses')
-                    ->whereRaw('feature_flag_statuses.feature_flag_id = feature_flags.id')
-                    ->where('feature_flag_statuses.environment_id', $filters['environment']);
-            });
+            $query->whereEnvironment($filters['environment']);
         }
 
         if (isset($filters['status'])) {

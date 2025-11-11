@@ -131,7 +131,7 @@ class FeatureFlag extends Model
         $query->whereHas(
             'environments',
             fn (Builder $query) =>
-            $query->where('name', Arr::wrap($environment))
+            $query->whereIn('name', Arr::wrap($environment))
         );
     }
 
