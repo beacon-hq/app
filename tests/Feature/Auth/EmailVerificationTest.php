@@ -10,9 +10,12 @@ use Illuminate\Support\Facades\URL;
 test('email verification screen can be rendered', function () {
     $user = User::factory()->unverified()->create();
 
-    $response = $this->actingAs($user)->get(route('verification.notice'));
+    $response = $this
+        ->actingAs($user)
+        ->get(route('verification.notice'));
 
-    $response->assertStatus(200);
+    $response
+        ->assertStatus(200);
 });
 
 test('email can be verified', function () {

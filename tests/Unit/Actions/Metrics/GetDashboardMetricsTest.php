@@ -69,6 +69,7 @@ beforeEach(function () {
             'name' => 'active-flag-1',
             'description' => 'Active flag 1',
             'created_at' => now()->subDays(10),
+            'last_seen_at' => now()->subDays(7),
         ]);
 
     $this->activeFlag1->tags()->attach($this->tagA->id);
@@ -196,7 +197,6 @@ it('returns all required metrics in the expected structure', function () {
 
     $metrics = $this->getDashboardMetricsAction->handle();
 
-    // Check overall structure
     expect($metrics)->toBeArray()
         ->toHaveKeys([
             'totalFlags',
@@ -217,7 +217,6 @@ it('returns the correct total number of flags', function () {
 
     $metrics = $this->getDashboardMetricsAction->handle();
 
-    // We created 5 feature flags in total
     expect($metrics['totalFlags'])->toBe([
         'value' => 5,
         'previous' => [
@@ -284,6 +283,20 @@ it('returns correct archived metrics', function () {
 it('returns correct flag lifecycle metrics', function () {
     Cache::forget('dashboard-metrics');
 
+    FeatureFlagUsage::factory()
+        ->for($this->application)
+        ->for($this->environment)
+        ->for($this->team)
+        ->state(['active' => true])
+        ->state(['feature_flag_id' => $this->activeFlag1->id, 'feature_flag_name' => $this->activeFlag1->name])
+        ->state([
+            'evaluated_at' => now()->subDays(3),
+        ])
+        ->create([
+            'application_name' => $this->application->name,
+            'environment_name' => $this->environment->name,
+        ]);
+
     $metrics = $this->getDashboardMetricsAction->handle();
 
     expect($metrics['flagStatusData'])
@@ -291,12 +304,12 @@ it('returns correct flag lifecycle metrics', function () {
         ->toBe([
             [
                 'state' => 'unused',
-                'flags' => 3,
+                'flags' => 2,
                 'fill' => 'var(--color-unused)',
             ],
             [
                 'state' => 'active',
-                'flags' => 3,
+                'flags' => 1,
                 'fill' => 'var(--color-active)',
             ],
             [

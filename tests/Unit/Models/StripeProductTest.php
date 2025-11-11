@@ -5,7 +5,7 @@ declare(strict_types=1);
 use App\Models\StripeProduct;
 
 it('casts metadata to array on a new model when set as array', function (): void {
-    $product = new StripeProduct([
+    $product = StripeProduct::make([
         'stripe_id' => 'prod_test',
         'name' => 'Test',
         'description' => 'D',

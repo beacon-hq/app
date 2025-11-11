@@ -14,7 +14,9 @@ use App\Models\FeatureFlagStatus;
 use App\Models\FeatureType;
 use App\Models\Tag;
 use App\Values\Application as ApplicationValue;
+use App\Values\Collections\FeatureFlagStatusCollection;
 use App\Values\Collections\PolicyDefinitionCollection;
+use App\Values\Collections\TagCollection;
 use App\Values\Environment as EnvironmentValue;
 use App\Values\FeatureFlag as FeatureFlagValue;
 use App\Values\FeatureFlagStatus as FeatureFlagStatusValue;
@@ -22,13 +24,13 @@ use App\Values\FeatureType as FeatureTypeValue;
 use App\Values\PolicyDefinition;
 use App\Values\Tag as TagValue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 
 beforeEach(function () {
     [$this->team, , $organization] = createOwner();
 
     SetAppContext::run($organization, $this->team);
 
-    // Create feature types
     $this->featureTypeA = FeatureType::factory()->for($this->team)->create([
         'name' => 'Type A',
     ]);
@@ -75,7 +77,6 @@ beforeEach(function () {
         'color' => '#0000ff',
     ]);
 
-    // Create a feature flag for testing
     $this->featureFlag = FeatureFlag::factory()
         ->for($this->team)
         ->for($this->featureTypeA, 'featureType')
@@ -105,6 +106,181 @@ beforeEach(function () {
     ]);
 
     $this->updateFeatureFlagAction = UpdateFeatureFlag::make();
+    $this->initialFeatureType = FeatureType::factory()->for($this->team)->create([
+        'name' => 'Initial Type',
+        'description' => 'Initial feature type',
+        'color' => '#ff0000',
+        'icon' => 'Flag',
+    ]);
+
+    $this->newFeatureType = FeatureType::factory()->for($this->team)->create([
+        'name' => 'Updated Type',
+        'description' => 'Updated feature type',
+        'color' => '#00ff00',
+        'icon' => 'Rocket',
+    ]);
+
+    $this->initialApplication = Application::factory()->for($this->team)->create([
+        'name' => 'initial-app',
+        'display_name' => 'Initial App',
+    ]);
+
+    $this->initialEnvironment = Environment::factory()->for($this->team)->create([
+        'name' => 'initial-env',
+        'description' => 'Initial Environment',
+    ]);
+
+    $this->newApplication = Application::factory()->for($this->team)->create([
+        'name' => 'new-app',
+        'display_name' => 'New App',
+    ]);
+
+    $this->newEnvironment = Environment::factory()->for($this->team)->create([
+        'name' => 'new-env',
+        'description' => 'New Environment',
+    ]);
+
+    $this->initialTags = collect();
+    for ($i = 0; $i < 2; $i++) {
+        $this->initialTags->push(Tag::factory()->for($this->team)->create([
+            'name' => "initial-tag-{$i}",
+        ]));
+    }
+
+    $this->newTags = collect();
+    for ($i = 0; $i < 3; $i++) {
+        $this->newTags->push(Tag::factory()->for($this->team)->create([
+            'name' => "new-tag-{$i}",
+        ]));
+    }
+
+    $this->initialFeatureFlag = FeatureFlag::factory()
+        ->for($this->team)
+        ->for($this->initialFeatureType)
+        ->create([
+            'name' => 'initial-flag',
+            'description' => 'Initial feature flag description',
+        ]);
+
+    $this->initialFeatureFlag->tags()->attach($this->initialTags->pluck('id'));
+
+    $this->initialStatus = FeatureFlagStatus::factory()->create([
+        'feature_flag_id' => $this->initialFeatureFlag->id,
+        'application_id' => $this->initialApplication->id,
+        'environment_id' => $this->initialEnvironment->id,
+        'status' => false,
+    ]);
+
+    $this->updateFeatureFlagAction = UpdateFeatureFlag::make();
+});
+
+it('can update a feature flag with all relationships', function () {
+    DB::beginTransaction();
+
+    try {
+        $newTags = TagCollection::make($this->newTags->map(fn ($tag) => TagValue::from(
+            id: $tag->id,
+            name: $tag->name,
+            color: $tag->color
+        )));
+
+        $newApplication = ApplicationValue::from(
+            id: $this->newApplication->id,
+            name: $this->newApplication->name,
+            displayName: $this->newApplication->display_name,
+            description: $this->newApplication->description,
+            environments: null,
+            color: $this->newApplication->color
+        );
+
+        $newEnvironment = EnvironmentValue::from(
+            id: $this->newEnvironment->id,
+            name: $this->newEnvironment->name,
+            description: $this->newEnvironment->description,
+            color: $this->newEnvironment->color
+        );
+
+        $newFeatureType = FeatureTypeValue::from(
+            id: $this->newFeatureType->id,
+            name: $this->newFeatureType->name,
+            description: $this->newFeatureType->description,
+            icon: $this->newFeatureType->icon,
+            color: $this->newFeatureType->color,
+            temporary: $this->newFeatureType->temporary,
+            isDefault: false
+        );
+
+        $newFeatureFlagStatus = FeatureFlagStatusValue::from(
+            id: '',
+            application: $newApplication,
+            environment: $newEnvironment,
+            featureFlag: null,
+            status: true,
+            definition: null
+        );
+
+        $updatedFeatureFlag = FeatureFlagValue::from(
+            id: $this->initialFeatureFlag->id,
+            name: 'updated-flag',
+            description: 'Updated feature flag description',
+            lastSeenAt: null,
+            featureType: $newFeatureType,
+            tags: $newTags,
+            applications: null,
+            statuses: FeatureFlagStatusCollection::make([$newFeatureFlagStatus]),
+        );
+
+        $result = $this->updateFeatureFlagAction->handle($updatedFeatureFlag);
+
+        $this->initialFeatureFlag->refresh();
+
+        expect($this->initialFeatureFlag->name)
+            ->toBe('initial-flag')
+            ->and($this->initialFeatureFlag->description)
+            ->toBe('Updated feature flag description')
+            ->and($this->initialFeatureFlag->feature_type_id)
+            ->toBe($this->newFeatureType->id)
+            ->and($result->name)
+            ->toBe('initial-flag')
+            ->and($result->description)
+            ->toBe('Updated feature flag description')
+            ->and($result->featureType->id)
+            ->toBe($this->newFeatureType->id)
+            ->and($this->initialFeatureFlag->tags)
+            ->toHaveCount(3)
+            ->and($this->initialFeatureFlag->tags->pluck('id'))
+            ->not
+            ->toContain($this->initialTags->first()->id)
+            ->and($this->initialFeatureFlag->tags->pluck('id'))
+            ->toContain($this->newTags->first()->id)
+            ->and($result->tags)
+            ->toHaveCount(3)
+            ->and($this->initialFeatureFlag->statuses)
+            ->toHaveCount(1)
+            ->and($this->initialFeatureFlag->statuses->first()->application_id)
+            ->toBe($this->newApplication->id)
+            ->and($this->initialFeatureFlag->statuses->first()->environment_id)
+            ->toBe($this->newEnvironment->id)
+            ->and($this->initialFeatureFlag->statuses->first()->status)
+            ->toBeTrue()
+            ->and($result->statuses)
+            ->toHaveCount(1)
+            ->and($result->statuses->first()->application->id)
+            ->toBe($this->newApplication->id)
+            ->and($result->statuses->first()->environment->id)
+            ->toBe($this->newEnvironment->id)
+            ->and($result->statuses->first()->status)
+            ->toBeTrue();
+
+        $oldStatus = FeatureFlagStatus::where('application_id', $this->initialApplication->id)
+            ->where('environment_id', $this->initialEnvironment->id)
+            ->where('feature_flag_id', $this->initialFeatureFlag->id)
+            ->first();
+
+        expect($oldStatus)->toBeNull();
+    } finally {
+        DB::rollBack();
+    }
 });
 
 it('throws an exception when feature flag does not exist', function () {
@@ -116,7 +292,6 @@ it('throws an exception when feature flag does not exist', function () {
 })->throws(ModelNotFoundException::class);
 
 it('updates basic feature flag properties', function () {
-    // Create a feature flag value with updated properties
     $featureFlagValue = FeatureFlagValue::from($this->featureFlag)->with(description: 'Updated description', status: false);
 
     $updatedFlag = $this->updateFeatureFlagAction->handle($featureFlagValue);
@@ -127,14 +302,12 @@ it('updates basic feature flag properties', function () {
         ->and($updatedFlag->description)->toBe('Updated description')
         ->and($updatedFlag->status)->toBeFalse();
 
-    // Verify in database
     $this->featureFlag->refresh();
     expect($this->featureFlag->description)->toBe('Updated description')
         ->and($this->featureFlag->status)->toBeFalse();
 });
 
 it('updates feature type', function () {
-    // Create a feature flag value with updated feature type
     $featureFlagValue = FeatureFlagValue::from([
         'id' => $this->featureFlag->id,
         'featureType' => FeatureTypeValue::withoutValidation([
@@ -148,13 +321,11 @@ it('updates feature type', function () {
     expect($updatedFlag)->toBeInstanceOf(FeatureFlagValue::class)
         ->and($updatedFlag->featureType->id)->toBe($this->featureTypeB->id);
 
-    // Verify in database
     $this->featureFlag->refresh();
     expect($this->featureFlag->feature_type_id)->toBe($this->featureTypeB->id);
 });
 
 it('updates tags', function () {
-    // Create a feature flag value with updated tags
     $featureFlagValue = FeatureFlagValue::withoutValidation([
         'id' => $this->featureFlag->id,
         'tags' => collect([
@@ -172,7 +343,6 @@ it('updates tags', function () {
         ->and($updatedFlag->tags->pluck('id'))->toContain($this->tagC->id)
         ->and($updatedFlag->tags->pluck('id'))->not->toContain($this->tagA->id);
 
-    // Verify in database
     $this->featureFlag->refresh();
     $tagIds = $this->featureFlag->tags->pluck('id')->toArray();
     expect($tagIds)->toContain($this->tagB->id)
@@ -181,7 +351,6 @@ it('updates tags', function () {
 });
 
 it('updates feature flag statuses', function () {
-    // Create a new feature flag status value
     $newStatus = FeatureFlagStatusValue::from([
         'application' => ApplicationValue::withoutValidation([
             'id' => $this->applicationB->id,
@@ -204,7 +373,6 @@ it('updates feature flag statuses', function () {
         'rolloutStrategy' => 'random',
     ]);
 
-    // Create a feature flag value with updated statuses
     $featureFlagValue = FeatureFlagValue::from([
         'id' => $this->featureFlag->id,
         'statuses' => collect([$newStatus]),
@@ -221,7 +389,6 @@ it('updates feature flag statuses', function () {
         ->and($updatedFlag->statuses[0]->rolloutPercentage)->toBe(50)
         ->and($updatedFlag->statuses[0]->rolloutStrategy)->toBe(RolloutStrategy::RANDOM);
 
-    // Verify in database
     $this->featureFlag->refresh();
     $this->featureFlag->load('statuses');
     expect($this->featureFlag->statuses)->toHaveCount(1);
@@ -233,13 +400,11 @@ it('updates feature flag statuses', function () {
         ->and($status->rollout_percentage)->toBe(50)
         ->and($status->rollout_strategy)->toBe(RolloutStrategy::RANDOM);
 
-    // The old status should be deleted
     $oldStatus = FeatureFlagStatus::find($this->featureFlagStatus->id);
     expect($oldStatus)->toBeNull();
 });
 
 it('updates an existing feature flag status', function () {
-    // Create a feature flag status value that updates the existing status
     $updatedStatus = FeatureFlagStatusValue::from([
         'id' => $this->featureFlagStatus->id,
         'application' => ApplicationValue::withoutValidation([
@@ -264,7 +429,6 @@ it('updates an existing feature flag status', function () {
         'rolloutContext' => ['user_id'],
     ]);
 
-    // Create a feature flag value with updated statuses
     $featureFlagValue = FeatureFlagValue::from([
         'id' => $this->featureFlag->id,
         'statuses' => collect([$updatedStatus]),
@@ -283,7 +447,6 @@ it('updates an existing feature flag status', function () {
         ->and($updatedFlag->statuses[0]->rolloutStrategy)->toBe(RolloutStrategy::CONTEXT)
         ->and($updatedFlag->statuses[0]->rolloutContext->toArray())->toBe(['user_id']);
 
-    // Verify in database
     $this->featureFlagStatus->refresh();
     expect($this->featureFlagStatus->status)->toBeFalse()
         ->and($this->featureFlagStatus->rollout_percentage)->toBe(75)
@@ -292,7 +455,6 @@ it('updates an existing feature flag status', function () {
 });
 
 it('removes all statuses when statuses is empty', function () {
-    // Create a feature flag value with empty statuses
     $featureFlagValue = FeatureFlagValue::from([
         'id' => $this->featureFlag->id,
         'statuses' => collect(),
@@ -304,12 +466,10 @@ it('removes all statuses when statuses is empty', function () {
     expect($updatedFlag)->toBeInstanceOf(FeatureFlagValue::class)
         ->and($updatedFlag->statuses)->toHaveCount(0);
 
-    // Verify in database
     $this->featureFlag->refresh();
     $this->featureFlag->load('statuses');
     expect($this->featureFlag->statuses)->toHaveCount(0);
 
-    // The old status should be deleted
     $oldStatus = FeatureFlagStatus::find($this->featureFlagStatus->id);
     expect($oldStatus)->toBeNull();
 });

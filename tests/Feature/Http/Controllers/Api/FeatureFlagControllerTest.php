@@ -35,7 +35,6 @@ it('fetches a missing feature flag as inactive', function () {
             'appName' => 'testing',
             'environment' => 'testing'
         ])
-        ->dump()
         ->assertJsonFragment([
             'active' => false
         ])

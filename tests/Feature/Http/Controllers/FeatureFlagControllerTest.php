@@ -41,7 +41,7 @@ it('creates a feature flag', function () {
             'feature_type' => collect($featureType->toArray())->except('team_id')->toArray(),
             'tags' => $tags->map(fn ($tag) => collect($tag)->except('team_id')->toArray())->toArray(),
         ])
-        ->assertRedirectToRoute('feature-flags.index');
+        ->assertRedirectToRoute('feature-flags.edit', [FeatureFlag::latest()->first()->id]);
 
     $this->assertDatabaseHas('feature_flags', [
         'name' => 'Test Feature Flag',

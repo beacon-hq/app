@@ -9,11 +9,13 @@ use App\Actions\FeatureFlags\UpdateFeatureFlag;
 use App\Models\Application;
 use App\Models\Environment;
 use App\Models\FeatureType;
+use App\Values\Collections\ActivityLogCollection;
 use App\Values\FeatureFlag;
 use App\Values\FeatureType as FeatureTypeValue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
+use function Pest\Laravel\mock;
 use function Pest\Laravel\travel;
 
 it('retrieves activity logs for a feature flag', function () {
@@ -75,3 +77,31 @@ it('includes both feature flag and feature flag status activities', function () 
 it('throws a model not found exception for non-existent feature flag', function () {
     GetFeatureFlagActivityLog::run('bad-flag');
 })->throws(ModelNotFoundException::class);
+
+it('integrates properly with the Eloquent models', function () {
+    $featureFlagId = 'test-flag-id';
+    $mockCollection = new ActivityLogCollection();
+
+    $action = mock(GetFeatureFlagActivityLog::class)->makePartial();
+
+    $action->shouldReceive('handle')
+        ->once()
+        ->with($featureFlagId)
+        ->andReturn($mockCollection);
+
+    $result = $action->handle($featureFlagId);
+
+    expect($result)->toBe($mockCollection)
+        ->and($result)->toBeInstanceOf(ActivityLogCollection::class);
+});
+
+it('handles errors from model queries', function () {
+    $action = mock(GetFeatureFlagActivityLog::class)->makePartial();
+
+    $action->shouldReceive('handle')
+        ->once()
+        ->andThrow(new ModelNotFoundException());
+
+    expect(fn () => $action->handle('any-id'))
+        ->toThrow(ModelNotFoundException::class);
+});

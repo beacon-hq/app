@@ -21,6 +21,7 @@ use App\Values\FeatureFlag as FeatureFlagValue;
 use App\Values\FeatureFlagContext;
 use App\Values\FeatureFlagResponse;
 use App\Values\PolicyDefinition;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Lottery;
 
@@ -59,6 +60,9 @@ beforeEach(function () {
     );
 
     $this->getFeatureFlagStatusAction = GetFeatureFlagStatus::make();
+
+    Event::fake();
+    Bus::fake();
 });
 
 it('returns false for a non-existent feature flag', function () {

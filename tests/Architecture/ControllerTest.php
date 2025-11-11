@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Session;
 use Laravel\Cashier\Checkout;
+use Laravel\Pennant\Feature;
 use Symfony\Component\HttpFoundation\Response;
 
 arch()->expect('App\Http\Controllers')
@@ -28,6 +29,7 @@ arch()->expect('App\Http\Controllers')
         Optional::class,
         RedirectResponse::class,
         SetAppContext::class,
+        Feature::class,
     ])
     ->ignoringGlobalFunctions()
     ->ignoring([

@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\Actions\FeatureFlags\GetFeatureFlags;
 use App\Actions\FeatureFlags\GetFeatureFlagStatus;
+use App\Actions\FeatureFlags\ListFeatureFlags;
 use App\Events\FeatureFlagMissedEvent;
-use App\Values\Collections\FeatureFlagCollection;
 use App\Values\FeatureFlag;
 use App\Values\FeatureFlagContext;
 use App\Values\FeatureFlagResponse;
 use Bag\Attributes\WithoutValidation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class FeatureFlagController
 {
-    public function index(Request $request): FeatureFlagCollection
+    public function index(Request $request): Collection
     {
-        return GetFeatureFlags::run(filters: [
+        return ListFeatureFlags::run(filters: [
             'application' => $request->json('app_name'),
             'environment' => $request->json('environment'),
-        ]);
+        ], sort: ['name' => 'desc'])->toBase()->pluck('name');
     }
 
     public function show(
@@ -43,7 +43,7 @@ class FeatureFlagController
             if (!$featureFlag->has('name')) {
                 $featureFlag = FeatureFlag::withoutValidation([
                     ...$featureFlag->toArray(),
-                    'name' => $featureFlag->id
+                    'name' => $featureFlag->id,
                 ]);
             }
 

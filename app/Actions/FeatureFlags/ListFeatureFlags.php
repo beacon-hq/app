@@ -9,6 +9,7 @@ use App\Models\FeatureFlag as FeatureFlagModel;
 use App\Values\Collections\FeatureFlagCollection;
 use App\Values\FeatureFlag;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 /**
@@ -60,7 +61,11 @@ class ListFeatureFlags
     protected function applyFilters(Builder $query, array $filters): Builder
     {
         if (isset($filters['name'])) {
-            $query->where('name', 'ILIKE', "%{$filters['name'][0]}%");
+            $query->where(function (Builder $query) use ($filters) {
+                foreach (Arr::wrap($filters['name']) as $name) {
+                    $query->orWhereLike('name', '%' . $name . '%');
+                }
+            });
         }
 
         if (isset($filters['tag'])) {

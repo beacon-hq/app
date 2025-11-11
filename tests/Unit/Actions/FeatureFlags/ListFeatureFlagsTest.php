@@ -3,15 +3,13 @@
 declare(strict_types=1);
 
 use App\Actions\AppContext\SetAppContext;
-use App\Actions\FeatureFlags\GetFeatureFlags;
+use App\Actions\FeatureFlags\ListFeatureFlags;
 use App\Models\Application;
 use App\Models\Environment;
 use App\Models\FeatureFlag;
 use App\Models\FeatureFlagStatus;
 use App\Models\FeatureType;
 use App\Models\Tag;
-use App\Values\Collections\FeatureFlagCollection;
-use App\Values\FeatureFlag as FeatureFlagValue;
 
 beforeEach(function () {
     [$this->team, , $organization] = createOwner();
@@ -62,7 +60,7 @@ beforeEach(function () {
 
     // Create feature flags with different characteristics for testing filters and sorting
 
-    // Flag A: Type A, Tagged with A, enabled in App A + Env A
+    // Flag 1: Type A, Tagged with A, Enabled in App A + Env A
     $this->flagA = FeatureFlag::factory()
         ->for($this->team)
         ->for($this->featureTypeA, 'featureType')
@@ -81,7 +79,7 @@ beforeEach(function () {
         'status' => true,
     ]);
 
-    // Flag B: Type B, Tagged with B, disabled in App A + Env A, enabled in App B + Env B
+    // Flag 2: Type B, Tagged with B, Disabled in App A + Env A, Enabled in App B + Env B
     $this->flagB = FeatureFlag::factory()
         ->for($this->team)
         ->for($this->featureTypeB, 'featureType')
@@ -107,7 +105,7 @@ beforeEach(function () {
         'status' => true,
     ]);
 
-    // Flag C: Type A, Tagged with A and B, enabled in App B + Env A
+    // Flag 3: Type A, Tagged with A and B, Enabled in App B + Env A
     $this->flagC = FeatureFlag::factory()
         ->for($this->team)
         ->for($this->featureTypeA, 'featureType')
@@ -126,15 +124,13 @@ beforeEach(function () {
         'status' => true,
     ]);
 
-    $this->getFeatureFlagsAction = GetFeatureFlags::make();
+    $this->listFeatureFlagsAction = ListFeatureFlags::make();
 });
 
 it('returns all feature flags sorted by name by default', function () {
-    $result = $this->getFeatureFlagsAction->handle();
+    $result = $this->listFeatureFlagsAction->handle();
 
-    expect($result)->toBeInstanceOf(FeatureFlagCollection::class)
-        ->and($result)->toHaveCount(3)
-        ->and($result[0])->toBeInstanceOf(FeatureFlagValue::class)
+    expect($result)->toHaveCount(3)
         ->and($result[0]->id)->toBe($this->flagA->id)
         ->and($result[1]->id)->toBe($this->flagB->id)
         ->and($result[2]->id)->toBe($this->flagC->id)
@@ -144,15 +140,16 @@ it('returns all feature flags sorted by name by default', function () {
 });
 
 it('can filter feature flags by name', function () {
-    $result = $this->getFeatureFlagsAction->handle(null, 20, ['name' => 'flag-a']);
+    $result = $this->listFeatureFlagsAction->handle(null, 20, ['name' => 'flag-a']);
 
-    expect($result)->toHaveCount(1)
+    expect($result)
+        ->toHaveCount(1)
         ->and($result[0]->id)->toBe($this->flagA->id)
         ->and($result[0]->name)->toBe('flag-a');
 });
 
 it('can filter feature flags by tag', function () {
-    $result = $this->getFeatureFlagsAction->handle(null, 20, ['tag' => $this->tagB->id]);
+    $result = $this->listFeatureFlagsAction->handle(null, 20, ['tag' => $this->tagB->id]);
 
     expect($result)->toHaveCount(2)
         ->and($result->pluck('id'))->toContain($this->flagB->id)
@@ -161,7 +158,7 @@ it('can filter feature flags by tag', function () {
 });
 
 it('can filter feature flags by feature type', function () {
-    $result = $this->getFeatureFlagsAction->handle(null, 20, ['featureType' => $this->featureTypeA->id]);
+    $result = $this->listFeatureFlagsAction->handle(null, 20, ['feature_type' => $this->featureTypeA->id]);
 
     expect($result)->toHaveCount(2)
         ->and($result->pluck('id'))->toContain($this->flagA->id)
@@ -170,7 +167,7 @@ it('can filter feature flags by feature type', function () {
 });
 
 it('can filter feature flags by application', function () {
-    $result = $this->getFeatureFlagsAction->handle(null, 20, ['application' => $this->applicationB->name]);
+    $result = $this->listFeatureFlagsAction->handle(null, 20, ['application' => $this->applicationB->id]);
 
     expect($result)->toHaveCount(2)
         ->and($result->pluck('id'))->toContain($this->flagB->id)
@@ -179,29 +176,29 @@ it('can filter feature flags by application', function () {
 });
 
 it('can filter feature flags by environment', function () {
-    $result = $this->getFeatureFlagsAction->handle(null, 20, ['environment' => $this->environmentB->name]);
+    $result = $this->listFeatureFlagsAction->handle(null, 20, ['environment' => $this->environmentB->id]);
 
     expect($result)->toHaveCount(1)
         ->and($result[0]->id)->toBe($this->flagB->id);
 });
 
 it('can filter feature flags by status', function () {
-    $result = $this->getFeatureFlagsAction->handle(null, 20, ['status' => 'active']);
+    $result = $this->listFeatureFlagsAction->handle(null, 20, ['status' => ['enabled']]);
 
     expect($result)->toHaveCount(2)
         ->and($result->pluck('id'))->toContain($this->flagA->id)
         ->and($result->pluck('id'))->toContain($this->flagB->id)
         ->and($result->pluck('id'))->not->toContain($this->flagC->id);
 
-    $result = $this->getFeatureFlagsAction->handle(null, 20, ['status' => 'inactive']);
+    $result = $this->listFeatureFlagsAction->handle(null, 20, ['status' => ['disabled']]);
 
     expect($result)->toHaveCount(1)
         ->and($result[0]->id)->toBe($this->flagC->id);
 });
 
 it('can combine multiple filters', function () {
-    $result = $this->getFeatureFlagsAction->handle(null, 20, [
-        'featureType' => $this->featureTypeA->id,
+    $result = $this->listFeatureFlagsAction->handle(null, 20, [
+        'feature_type' => $this->featureTypeA->id,
         'tag' => $this->tagA->id,
     ]);
 
@@ -210,9 +207,9 @@ it('can combine multiple filters', function () {
         ->and($result->pluck('id'))->toContain($this->flagC->id)
         ->and($result->pluck('id'))->not->toContain($this->flagB->id);
 
-    $result = $this->getFeatureFlagsAction->handle(null, 20, [
-        'featureType' => $this->featureTypeA->id,
-        'application' => $this->applicationB->name,
+    $result = $this->listFeatureFlagsAction->handle(null, 20, [
+        'feature_type' => $this->featureTypeA->id,
+        'application' => $this->applicationB->id,
     ]);
 
     expect($result)->toHaveCount(1)
@@ -221,7 +218,7 @@ it('can combine multiple filters', function () {
 
 it('can sort feature flags in ascending order', function () {
     // Sort by name ascending (default)
-    $result = $this->getFeatureFlagsAction->handle(null, 20, [], ['name' => 'asc']);
+    $result = $this->listFeatureFlagsAction->handle(null, 20, [], ['name' => 'asc']);
 
     expect($result)->toHaveCount(3)
         ->and($result[0]->name)->toBe('flag-a')
@@ -231,7 +228,7 @@ it('can sort feature flags in ascending order', function () {
 
 it('can sort feature flags in descending order', function () {
     // Sort by name descending
-    $result = $this->getFeatureFlagsAction->handle(null, 20, [], ['name' => 'desc']);
+    $result = $this->listFeatureFlagsAction->handle(null, 20, [], ['name' => 'desc']);
 
     expect($result)->toHaveCount(3)
         ->and($result[0]->name)->toBe('flag-c')
@@ -241,14 +238,14 @@ it('can sort feature flags in descending order', function () {
 
 it('can paginate feature flags', function () {
     // First page (2 per page)
-    $result = $this->getFeatureFlagsAction->handle(1, 2);
+    $result = $this->listFeatureFlagsAction->handle(1, 2);
 
     expect($result)->toHaveCount(2)
         ->and($result[0]->name)->toBe('flag-a')
         ->and($result[1]->name)->toBe('flag-b');
 
     // Second page (2 per page)
-    $result = $this->getFeatureFlagsAction->handle(2, 2);
+    $result = $this->listFeatureFlagsAction->handle(2, 2);
 
     expect($result)->toHaveCount(1)
         ->and($result[0]->name)->toBe('flag-c');

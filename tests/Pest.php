@@ -13,6 +13,7 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Sleep;
+use Laravel\Pennant\Feature;
 use Pest\Arch\Support\Composer;
 use function Pest\Laravel\freezeTime;
 use Pest\TestSuite;
@@ -43,6 +44,9 @@ pest()->extend(TestCase::class)
         Http::preventStrayRequests();
 
         Cache::reset();
+
+        Feature::define('request-metrics-enabled', fn () => false);
+        Feature::define('billing-enabled', fn () => false);
     })
     ->in('Unit', 'Feature', 'Browser');
 
