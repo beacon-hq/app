@@ -23,7 +23,14 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TeamMemberManageController;
 use App\Http\Controllers\TosController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use Laravel\Pennant\Feature;
+
+Route::get('/test', function () {
+    $active = Feature::active('mailing-list-enabled');
+    Log::info('mailing-list-enabled', ['active' => $active]);
+});
 
 Route::get('/', [IndexController::class, 'index'])->name('welcome');
 Route::post('/subscribe', [IndexController::class, 'store'])->name('subscribe');
