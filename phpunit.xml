@@ -42,6 +42,8 @@
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
+        <env name="BEACON_ENABLED" value="true"/>
         <env name="BEACON_BILLING_ENABLED" value="false"/>
+        <env name="BEACON_REQUEST_METRICS_ENABLED" value="false"/>
     </php>
 </phpunit>

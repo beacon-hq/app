@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\Subscriptions;
 
 use App\Actions\Traits\AsAction;
+use App\Features\BillingEnabled;
 use App\Models\Organization;
 use App\Values\Organization as OrganizationValue;
 use Illuminate\Support\Facades\Log;
@@ -20,7 +21,7 @@ class ReportSubscriptionUsage
     {
         try {
             // Skip if billing is not enabled
-            if (!Feature::active('billing-enabled')) {
+            if (!Feature::driver('array')->active(BillingEnabled::class)) {
                 return false;
             }
 

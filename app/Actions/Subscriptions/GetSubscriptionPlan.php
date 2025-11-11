@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\Subscriptions;
 
 use App\Actions\Traits\AsAction;
+use App\Features\BillingEnabled;
 use App\Models\Organization;
 use App\Models\StripeProduct;
 use App\Values\Organization as OrganizationValue;
@@ -17,7 +18,7 @@ class GetSubscriptionPlan
 
     public function handle(OrganizationValue $organization): ?Product
     {
-        if (!Feature::active('billing-enabled')) {
+        if (!Feature::driver('array')->active(BillingEnabled::class)) {
             return null;
         }
 

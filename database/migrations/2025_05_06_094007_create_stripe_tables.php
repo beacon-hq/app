@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Features\BillingEnabled;
 use App\Models\StripePrice;
 use App\Models\StripeProduct;
 use Illuminate\Database\Migrations\Migration;
@@ -40,7 +41,7 @@ return new class () extends Migration {
             $table->timestamps();
         });
 
-        if (Feature::active('billing-enabled')) {
+        if (Feature::driver('array')->active(BillingEnabled::class)) {
             \Artisan::call('stripe:sync');
         }
     }

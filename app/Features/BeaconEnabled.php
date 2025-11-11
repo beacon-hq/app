@@ -6,11 +6,8 @@ namespace App\Features;
 
 class BeaconEnabled
 {
-    /**
-     * Resolve the feature's initial value.
-     */
-    public function resolve(mixed $scope): mixed
+    public function resolve(): mixed
     {
-        return config('beacon.enabled', false);
+        return config('beacon.enabled', false) === true;
     }
 }

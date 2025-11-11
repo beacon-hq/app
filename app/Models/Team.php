@@ -92,6 +92,11 @@ class Team extends Model
         return $this->belongsTo(Organization::class);
     }
 
+    public function getAuthIdentifier()
+    {
+        return $this->getKey();
+    }
+
     protected function owner(): Attribute
     {
         return Attribute::make(get: function () {

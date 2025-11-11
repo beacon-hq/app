@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Features\RequestMetrics;
 use App\Jobs\RecordRequestTimingMetricJob;
 use Carbon\CarbonImmutable;
 use Closure;
@@ -21,8 +22,8 @@ class RequestTimingMiddleware
 
     public function terminate(Request $request)
     {
-        $shouldSample = (random_int(0, PHP_INT_MAX) / PHP_INT_MAX) <= config('beacon.metrics.request.reporting.sample_rate', 1.0);
-        if (Feature::active('request-metrics-enabled') && Feature::active('request-metrics-reporting') && $shouldSample) {
+        $shouldSample = (random_int(0, PHP_INT_MAX) / PHP_INT_MAX) <= config('beacon.metrics.request.sample_rate', 1.0);
+        if (Feature::driver('array')->active(RequestMetrics::class) && $shouldSample) {
             $requestDuration = CarbonImmutable::createFromFormat('U.u', (string) $request->server->get('REQUEST_TIME_FLOAT'))->diffInMilliseconds(now());
 
             RecordRequestTimingMetricJob::dispatch($request, $requestDuration);

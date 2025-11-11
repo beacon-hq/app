@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
+use App\Features\StatusEnabled;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -22,7 +23,7 @@ class GetSystemStatusJob implements ShouldQueue
 
     public function handle(): void
     {
-        if (!Feature::active('status-enabled')) {
+        if (!Feature::driver('array')->active(StatusEnabled::class)) {
             return;
         }
 

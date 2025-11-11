@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 return [
     'enabled' => env('BEACON_ENABLED', false),
-    'waitlist' => [
-        'enabled' => env('BEACON_WAITLIST_ENABLED', false),
-    ],
     'billing' => [
         'enabled' => env('BEACON_BILLING_ENABLED', false),
         'trial_fraud_limit' => 20,
@@ -27,15 +24,9 @@ return [
         'enabled' => env('BEACON_STATUS_ENABLED', false),
     ],
     'metrics' => [
-        'dashboard' => [
-            'enabled' => true,
-        ],
         'request' => [
-            'enabled' => env('BEACON_REQUEST_METRICS', true),
-            'reporting' => [
-                'enabled' => env('BEACON_REQUEST_METRICS_REPORTING', true),
-                'sample_rate' => env('BEACON_REQUEST_METRICS_SAMPLE_RATE', 1.0),
-            ],
+            'enabled' => env('BEACON_REQUEST_METRICS_ENABLED', false),
+            'sample_rate' => env('BEACON_REQUEST_METRICS_SAMPLE_RATE', 1.0),
         ],
     ],
 ];

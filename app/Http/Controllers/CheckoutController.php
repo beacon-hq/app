@@ -9,6 +9,7 @@ use App\Actions\Products\ListProducts;
 use App\Actions\Subscriptions\ChangeSubscription;
 use App\Actions\Subscriptions\CreateSubscription;
 use App\Actions\Subscriptions\HasActiveSubscription;
+use App\Features\BillingEnabled;
 use App\Values\Product;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -19,7 +20,7 @@ class CheckoutController
 {
     public function index(ListProducts $listProductsAction, HasActiveSubscription $hasActiveSubscriptionAction)
     {
-        if (!Feature::active('billing-enabled')) {
+        if (!Feature::driver('array')->active(BillingEnabled::class)) {
             return \redirect('dashboard');
         }
 

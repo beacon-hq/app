@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Actions\AppContext\GetAppContext;
+use App\Features\ApiRateLimiting;
+use App\Features\BillingEnabled;
 use App\Models\Organization;
 use App\Models\StripeProduct;
 use App\Values\Organization as OrganizationValue;
@@ -31,7 +33,7 @@ class ApiRateLimitServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Skip rate limiting if it's disabled
-        if (!Feature::active('billing-enabled') || !Feature::active('api-rate-limiting-enabled')) {
+        if (!Feature::driver('array')->active(BillingEnabled::class) || !Feature::driver('array')->active(ApiRateLimiting::class)) {
             RateLimiter::for('api', function (Request $request) {
                 return Limit::none();
             });

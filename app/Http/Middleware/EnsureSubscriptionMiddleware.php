@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App\Actions\Subscriptions\HasActiveSubscription;
+use App\Features\BillingEnabled;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Context;
@@ -19,7 +20,7 @@ class EnsureSubscriptionMiddleware
 
     public function handle(Request $request, Closure $next)
     {
-        if (!Feature::active('billing-enabled')) {
+        if (!Feature::driver('array')->active(BillingEnabled::class)) {
             return $next($request);
         }
 

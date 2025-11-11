@@ -8,6 +8,7 @@ use App\Actions\AppContext\GetAppContext;
 use App\Actions\Metrics\GetDashboardMetrics;
 use App\Actions\Onboarding\GetOnboardingStatus;
 use App\Actions\Subscriptions\GetSubscriptionPlan;
+use App\Features\BillingEnabled;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -38,7 +39,7 @@ class DashboardController
         }
 
         $plan = null;
-        if (Feature::active('billing-enabled')) {
+        if (Feature::driver('array')->active(BillingEnabled::class)) {
             $plan = GetSubscriptionPlan::run(GetAppContext::organization());
         }
 
