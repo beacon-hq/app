@@ -167,7 +167,7 @@ it('can filter feature flags by feature type', function () {
 });
 
 it('can filter feature flags by application', function () {
-    $result = $this->listFeatureFlagsAction->handle(null, 20, ['application' => $this->applicationB->id]);
+    $result = $this->listFeatureFlagsAction->handle(null, 20, ['application' => $this->applicationB->name]);
 
     expect($result)->toHaveCount(2)
         ->and($result->pluck('id'))->toContain($this->flagB->id)
@@ -176,7 +176,7 @@ it('can filter feature flags by application', function () {
 });
 
 it('can filter feature flags by environment', function () {
-    $result = $this->listFeatureFlagsAction->handle(null, 20, ['environment' => $this->environmentB->id]);
+    $result = $this->listFeatureFlagsAction->handle(null, 20, ['environment' => $this->environmentB->name]);
 
     expect($result)->toHaveCount(1)
         ->and($result[0]->id)->toBe($this->flagB->id);
@@ -209,7 +209,7 @@ it('can combine multiple filters', function () {
 
     $result = $this->listFeatureFlagsAction->handle(null, 20, [
         'feature_type' => $this->featureTypeA->id,
-        'application' => $this->applicationB->id,
+        'application' => $this->applicationB->name,
     ]);
 
     expect($result)->toHaveCount(1)
