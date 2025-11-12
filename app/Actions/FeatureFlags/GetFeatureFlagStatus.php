@@ -19,8 +19,9 @@ use App\Values\FeatureFlag as FeatureFlagValue;
 use App\Values\FeatureFlagContext;
 use App\Values\FeatureFlagResponse;
 use App\Values\PolicyDefinition;
-use Carbon\Carbon;
+use Carbon\CarbonTimeZone;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Lottery;
 use Illuminate\Support\Str;
@@ -334,7 +335,17 @@ class GetFeatureFlagStatus
     protected function evaluateDateRange(PolicyDefinition $policyDefinition): bool
     {
         $now = now();
-        $comparisonDate = Carbon::parse($policyDefinition->subject, 'UTC');
+        if (str_contains($policyDefinition->subject, 'T') || !str_contains($policyDefinition->subject, ':')) {
+            $comparisonDate = Carbon::parse($policyDefinition->subject);
+            if (!str_contains($policyDefinition->subject, ':')) {
+                $comparisonDate = $comparisonDate->endOfDay();
+            }
+        } else {
+            // We need to parse and then set the date to today in the specified timezone:
+            $time = Carbon::createFromFormat('H:i:sP', $policyDefinition->subject);
+            $timezone = $time->timezoneName;
+            $comparisonDate = Carbon::now(CarbonTimeZone::create($timezone))->setTimeFrom($time);
+        }
 
         if ($policyDefinition->operator === PolicyDefinitionMatchOperator::LESS_THAN_EQUAL) {
             return $now->isBefore($comparisonDate) || $now->equalTo($comparisonDate);

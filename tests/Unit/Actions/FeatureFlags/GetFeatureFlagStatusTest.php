@@ -21,6 +21,7 @@ use App\Values\FeatureFlag as FeatureFlagValue;
 use App\Values\FeatureFlagContext;
 use App\Values\FeatureFlagResponse;
 use App\Values\PolicyDefinition;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Lottery;
@@ -438,4 +439,182 @@ it('converts variant values based on their type', function () {
     $response = $this->getFeatureFlagStatusAction->handle($featureFlag, $this->context);
     expect($response->value)->toBe(['key' => 'value'])
         ->and($response->value)->toBeArray();
+});
+
+it('evaluates datetime policy before variant', function () {
+    FeatureFlagStatus::factory()->create([
+        'feature_flag_id' => $this->featureFlag->id,
+        'application_id' => $this->application->id,
+        'environment_id' => $this->environment->id,
+        'status' => true,
+        'definition' => PolicyDefinitionCollection::make([
+            PolicyDefinition::from(
+                type: PolicyDefinitionType::DATETIME,
+                subject: '2025-11-12T09:00:00-08:00',
+                operator: PolicyDefinitionMatchOperator::LESS_THAN_EQUAL,
+            ),
+        ]),
+    ]);
+
+    $featureFlag = FeatureFlagValue::from($this->featureFlag);
+
+    Carbon::setTestNow(Carbon::parse('2025-11-11 18:12:00', '-08:00'));
+    $response = $this->getFeatureFlagStatusAction->handle($featureFlag, $this->context);
+
+    expect($response)->toBeInstanceOf(FeatureFlagResponse::class)
+        ->and($response->active)->toBeTrue();
+
+    Carbon::setTestNow(Carbon::parse('2025-11-12 18:12:00', '-08:00'));
+    $response = $this->getFeatureFlagStatusAction->handle($featureFlag, $this->context);
+
+    expect($response)->toBeInstanceOf(FeatureFlagResponse::class)
+        ->and($response->active)->toBeFalse();
+
+    Carbon::setTestNow();
+});
+
+it('evaluates datetime policy after variant', function () {
+    FeatureFlagStatus::factory()->create([
+        'feature_flag_id' => $this->featureFlag->id,
+        'application_id' => $this->application->id,
+        'environment_id' => $this->environment->id,
+        'status' => true,
+        'definition' => PolicyDefinitionCollection::make([
+            PolicyDefinition::from(
+                type: PolicyDefinitionType::DATETIME,
+                subject: '2025-11-12T09:00:00-08:00',
+                operator: PolicyDefinitionMatchOperator::GREATER_THAN_EQUAL,
+            ),
+        ]),
+    ]);
+
+    $featureFlag = FeatureFlagValue::from($this->featureFlag);
+
+    Carbon::setTestNow(Carbon::parse('2025-11-12 18:12:00', '-08:00'));
+    $response = $this->getFeatureFlagStatusAction->handle($featureFlag, $this->context);
+
+    expect($response)->toBeInstanceOf(FeatureFlagResponse::class)
+        ->and($response->active)->toBeTrue();
+
+    Carbon::setTestNow(Carbon::parse('2025-11-11 18:12:00', '-08:00'));
+    $response = $this->getFeatureFlagStatusAction->handle($featureFlag, $this->context);
+
+    expect($response)->toBeInstanceOf(FeatureFlagResponse::class)
+        ->and($response->active)->toBeFalse();
+
+    Carbon::setTestNow();
+});
+
+it('evaluates date policy before variant', function () {
+    Carbon::setTestNow(Carbon::parse('2025-11-11 17:16:00', 'UTC'));
+
+    FeatureFlagStatus::factory()->create([
+        'feature_flag_id' => $this->featureFlag->id,
+        'application_id' => $this->application->id,
+        'environment_id' => $this->environment->id,
+        'status' => true,
+        'definition' => PolicyDefinitionCollection::make([
+            PolicyDefinition::from(
+                type: PolicyDefinitionType::DATETIME,
+                subject: '2025-11-12',
+                operator: PolicyDefinitionMatchOperator::LESS_THAN_EQUAL,
+            ),
+        ]),
+    ]);
+
+    $featureFlag = FeatureFlagValue::from($this->featureFlag);
+    $response = $this->getFeatureFlagStatusAction->handle($featureFlag, $this->context);
+
+    expect($response)->toBeInstanceOf(FeatureFlagResponse::class)
+        ->and($response->active)->toBeTrue();
+
+    Carbon::setTestNow();
+});
+
+it('evaluates date policy after variant', function () {
+    Carbon::setTestNow(Carbon::parse('2025-11-11 17:16:00', 'UTC'));
+
+    FeatureFlagStatus::factory()->create([
+        'feature_flag_id' => $this->featureFlag->id,
+        'application_id' => $this->application->id,
+        'environment_id' => $this->environment->id,
+        'status' => true,
+        'definition' => PolicyDefinitionCollection::make([
+            PolicyDefinition::from(
+                type: PolicyDefinitionType::DATETIME,
+                subject: '2025-11-10',
+                operator: PolicyDefinitionMatchOperator::GREATER_THAN_EQUAL,
+            ),
+        ]),
+    ]);
+
+    $featureFlag = FeatureFlagValue::from($this->featureFlag);
+    $response = $this->getFeatureFlagStatusAction->handle($featureFlag, $this->context);
+
+    expect($response)->toBeInstanceOf(FeatureFlagResponse::class)
+        ->and($response->active)->toBeTrue();
+
+    Carbon::setTestNow();
+});
+
+it('evaluates time policy before variant', function () {
+    FeatureFlagStatus::factory()->create([
+        'feature_flag_id' => $this->featureFlag->id,
+        'application_id' => $this->application->id,
+        'environment_id' => $this->environment->id,
+        'status' => true,
+        'definition' => PolicyDefinitionCollection::make([
+            PolicyDefinition::from(
+                type: PolicyDefinitionType::DATETIME,
+                subject: '22:30:00-05:00',
+                operator: PolicyDefinitionMatchOperator::LESS_THAN_EQUAL,
+            ),
+        ]),
+    ]);
+
+    $featureFlag = FeatureFlagValue::from($this->featureFlag);
+
+    Carbon::setTestNow(Carbon::parse('2025-11-12 01:16:00', 'UTC'));
+    $response = $this->getFeatureFlagStatusAction->handle($featureFlag, $this->context);
+    expect($response)->toBeInstanceOf(FeatureFlagResponse::class)
+        ->and($response->active)->toBeTrue();
+
+    Carbon::setTestNow(Carbon::parse('2025-11-12 04:16:00', 'UTC'));
+    $response = $this->getFeatureFlagStatusAction->handle($featureFlag, $this->context);
+    expect($response)->toBeInstanceOf(FeatureFlagResponse::class)
+        ->and($response->active)->toBeFalse();
+
+    Carbon::setTestNow();
+});
+
+it('evaluates time policy after variant', function () {
+    FeatureFlagStatus::factory()->create([
+        'feature_flag_id' => $this->featureFlag->id,
+        'application_id' => $this->application->id,
+        'environment_id' => $this->environment->id,
+        'status' => true,
+        'definition' => PolicyDefinitionCollection::make([
+            PolicyDefinition::from(
+                type: PolicyDefinitionType::DATETIME,
+                subject: '22:30:00-05:00',
+                operator: PolicyDefinitionMatchOperator::GREATER_THAN_EQUAL,
+            ),
+        ]),
+    ]);
+
+    $featureFlag = FeatureFlagValue::from($this->featureFlag);
+
+    Carbon::setTestNow(Carbon::parse('2025-11-12 04:16:00', 'UTC'));
+    $response = $this->getFeatureFlagStatusAction->handle($featureFlag, $this->context);
+
+    expect($response)->toBeInstanceOf(FeatureFlagResponse::class)
+        ->and($response->active)->toBeTrue();
+
+    Carbon::setTestNow(Carbon::parse('2025-11-12 01:16:00', 'UTC'));
+    $response = $this->getFeatureFlagStatusAction->handle($featureFlag, $this->context);
+
+    expect($response)->toBeInstanceOf(FeatureFlagResponse::class)
+        ->and($response->active)->toBeFalse();
+
+    Carbon::setTestNow();
 });
