@@ -172,7 +172,7 @@ export default function LandingPage({ waitlistEnabled = true }: { waitlistEnable
                 >
                     <h1
                         className={cn(
-                            'text-center font-bold opacity-0 text-primary text-8xl mb-4 transition-[opacity] duration-500',
+                            'text-center font-bold opacity-0 text-white text-8xl mb-4 transition-[opacity] duration-500',
                             {
                                 'opacity-100': toggle,
                             },
@@ -306,7 +306,7 @@ export default function LandingPage({ waitlistEnabled = true }: { waitlistEnable
                         },
                     )}
                 >
-                    <h1 className="text-xl text-center w-full font-normal text-secondary bg-clip-text inline-block px-4">
+                    <h1 className="text-xl text-center w-full font-normal text-black bg-clip-text inline-block px-4">
                         Supercharge your deployments with Beacon.
                         <AuroraText colors={['#00e281', '#00e7a4', '#00f1ed', '#00b9fa', '#009aff']} speed={4}>
                             Feature flag management for Laravel.
@@ -390,7 +390,7 @@ export default function LandingPage({ waitlistEnabled = true }: { waitlistEnable
                                 </Button>
                             </div>
                         </form>
-                        <p className="text-xs text-secondary/60 text-center mt-2">
+                        <p className="text-xs text-neutral-400 text-center mt-2">
                             We will only use your email to send you emails related to the Beacon launch.
                         </p>
                     </div>
