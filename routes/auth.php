@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Features\BeaconEnabled;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
@@ -14,10 +15,11 @@ use App\Http\Controllers\Auth\TwoFactorSetupController;
 use App\Http\Controllers\OrganizationSelectController;
 use App\Http\Controllers\TeamSelectController;
 use Illuminate\Support\Facades\Route;
+use Laravel\Pennant\Middleware\EnsureFeaturesAreActive;
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
-        ->middleware(['guest'])
+        ->middleware(['guest', EnsureFeaturesAreActive::using(BeaconEnabled::class)])
         ->name('register');
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
