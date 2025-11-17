@@ -44,9 +44,7 @@ const HttpRequest = ({
 }: HttpRequestProps) => {
     const [curlCommand, setCurlCommand] = useState<string>('');
     const [httpieCommand, setHttpieCommand] = useState<string>('');
-    const [pennantCommand] = useState<string>(
-        `Feature::define('test-flag');\n\nif (Feature::active('${featureFlagName}')) {\n    // Your code here\n}`,
-    );
+    const [pennantCommand] = useState<string>(`if (Feature::active('${featureFlagName}')) {\n    // Your code here\n}`);
     const [copied, setCopied] = useState<boolean>(false);
 
     const [internalSelectedTab, setInternalSelectedTab] = useState<string>('curl');
@@ -151,7 +149,7 @@ const HttpRequest = ({
                                 <Textarea
                                     value={curlCommand}
                                     readOnly
-                                    className="font-mono text-sm h-24 pr-14"
+                                    className="font-mono text-sm h-19 pr-14"
                                     cols={70}
                                 />
                                 <Button
@@ -174,7 +172,7 @@ const HttpRequest = ({
                                 <Textarea
                                     value={httpieCommand}
                                     readOnly
-                                    className="font-mono text-sm h-24 pr-14"
+                                    className="font-mono text-sm h-19 pr-14"
                                     cols={70}
                                 />
                                 <Button
@@ -197,7 +195,7 @@ const HttpRequest = ({
                                 <Textarea
                                     value={pennantCommand}
                                     readOnly
-                                    className="font-mono text-sm h-24 text-primary"
+                                    className="font-mono text-sm h-19 text-primary"
                                     cols={70}
                                 />
                                 <Button

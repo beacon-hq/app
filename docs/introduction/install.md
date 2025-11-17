@@ -29,4 +29,4 @@ Create your access token in the [API Token Settings](../app/settings/access-toke
 
 ## Video Guide
 
-<lite-youtube class="mt-4" videoid="lNuCNkJ9-xE" />
+<lite-youtube class="mt-4" videoid="WUG6bEX22vM" />

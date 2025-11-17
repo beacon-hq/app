@@ -2,8 +2,11 @@ import CopyToClipboard from '@/components/CopyToClipboard';
 import { AccordionContent, AccordionItem } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useTheme } from '@/theme-provider';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import docco from 'react-syntax-highlighter/dist/esm/styles/hljs/docco';
+import github from 'react-syntax-highlighter/dist/esm/styles/hljs/github-gist';
+import monokai from 'react-syntax-highlighter/dist/esm/styles/hljs/monokai-sublime';
 
 interface ConfigStepProps {
     isComplete: boolean;
@@ -14,6 +17,8 @@ interface ConfigStepProps {
 }
 
 export default function ConfigStep({ isComplete, onComplete, onNext, onBack, accessToken }: ConfigStepProps) {
+    const { currentTheme } = useTheme();
+
     const handleNext = () => {
         onComplete();
         onNext();

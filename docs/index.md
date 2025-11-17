@@ -11,7 +11,7 @@ Beacon is a comprehensive feature flag management platform built specifically fo
 
 If you're new to Beacon, we recommend starting with our 90-second install video:
 
-<lite-youtube class="mt-4" videoid="lNuCNkJ9-xE" />
+<lite-youtube class="mt-4" videoid="WUG6bEX22vM" />
 
 If you prefer reading, you can follow the same steps in the [Get Started](./introduction/get-started) guide.
 
