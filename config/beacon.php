@@ -24,6 +24,10 @@ return [
         'enabled' => env('BEACON_STATUS_ENABLED', false),
     ],
     'metrics' => [
+        'analytics' => [
+            'enabled' => env('BEACON_ANALYTICS_ENABLED', true),
+            'src' => env('BEACON_ANALYTICS_SRC', '/metrics/analytics'),
+        ],
         'request' => [
             'enabled' => env('BEACON_REQUEST_METRICS_ENABLED', false),
             'sample_rate' => env('BEACON_REQUEST_METRICS_SAMPLE_RATE', 1.0),

@@ -12,10 +12,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 class InitTeamDataListener implements ShouldQueue
 {
-    public function __construct()
-    {
-    }
-
     public function handle(TeamCreatedEvent $event): void
     {
         SetTeamContext::run($event->team);

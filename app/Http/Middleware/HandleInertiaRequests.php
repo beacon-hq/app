@@ -7,6 +7,7 @@ namespace App\Http\Middleware;
 use App\Actions\Organizations\ListOrganizations;
 use App\Actions\Products\ListProducts;
 use App\Actions\Teams\ListTeams;
+use App\Features\AnalyticsEnabled;
 use App\Features\BillingEnabled;
 use App\Features\StatusEnabled;
 use App\Values\User;
@@ -41,6 +42,8 @@ class HandleInertiaRequests extends Middleware
             ],
             'features' => [
                 'pricing.enabled' => Feature::driver('array')->active(BillingEnabled::class),
+                'analytics.enabled' => Feature::driver('array')->active(AnalyticsEnabled::class),
+                'analytics.src' => config('beacon.metrics.analytics.src', null),
             ],
             'docsUrl' => config('beacon.docs.url'),
             'products' => Cache::flexible('products', [3000, 6000], fn () => ListProducts::run()),

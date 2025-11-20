@@ -14,6 +14,7 @@ import { Label } from '@/components/ui/label';
 import { SidebarTrigger, SidebarWrapper, useSidebar } from '@/components/ui/sidebar';
 import { Toaster } from '@/components/ui/sonner';
 import { useAlertHandler } from '@/hooks/use-alert-handler';
+import useAnalytics from '@/hooks/use-analytics';
 import { Gate } from '@/lib/permissions';
 import { usePage } from '@inertiajs/react';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
@@ -30,27 +31,14 @@ export default function Authenticated({
     icon?: string;
     headerAction?: React.ReactNode;
 }>) {
-    useEffect(() => {
-        // @ts-ignore
-        let _mtm = (globalThis._mtm = globalThis?._mtm ?? []);
-
-        _mtm.push({ 'mtm.startTime': Date.now(), event: 'mtm.Start' });
-        (function () {
-            let d = document,
-                g = d.createElement('script'),
-                s = d.getElementsByTagName('script')[0];
-            g.async = true;
-            g.src = 'https://analytics.beaconhq.io/js/container_4h5LNw9x.js';
-            s.parentNode?.insertBefore(g, s);
-        })();
-    });
-
+    const features = usePage().props.features;
     const auth = usePage().props.auth;
     // const notifications = usePage().props.notifications;
     const teams = usePage().props.teams;
     const organizations = usePage().props.organizations;
 
     useAlertHandler();
+    useAnalytics(features['analytics.enabled'], features['analytics.src']);
 
     const { open } = useSidebar();
 

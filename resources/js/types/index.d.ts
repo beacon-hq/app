@@ -17,6 +17,8 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
         ziggy: Config & { location: string };
         features: {
             'pricing.enabled': boolean;
+            'analytics.enabled': boolean;
+            'analytics.src': string;
         };
         alert?: {
             message: string;
