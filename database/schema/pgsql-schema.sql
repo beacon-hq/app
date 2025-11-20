@@ -216,7 +216,7 @@ CREATE TABLE beacon.applications (
     display_name character varying(255) NOT NULL,
     description text,
     color character varying(255) DEFAULT '#e3e3e3'::character varying NOT NULL,
-    last_seen_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    last_seen_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
     created_at timestamp(0) without time zone,
     updated_at timestamp(0) without time zone
 );
@@ -1263,11 +1263,11 @@ ALTER TABLE ONLY beacon.feature_types
 
 
 --
--- Name: invites invites_email_organization_id_unique; Type: CONSTRAINT; Schema: beacon; Owner: -
+-- Name: invites invites_email_team_id_organization_id_unique; Type: CONSTRAINT; Schema: beacon; Owner: -
 --
 
 ALTER TABLE ONLY beacon.invites
-    ADD CONSTRAINT invites_email_organization_id_unique UNIQUE (email, organization_id);
+    ADD CONSTRAINT invites_email_team_id_organization_id_unique UNIQUE (email, team_id, organization_id);
 
 
 --
@@ -1359,11 +1359,11 @@ ALTER TABLE ONLY beacon.access_tokens
 
 
 --
--- Name: policies policies_name_unique; Type: CONSTRAINT; Schema: beacon; Owner: -
+-- Name: policies policies_name_team_id_unique; Type: CONSTRAINT; Schema: beacon; Owner: -
 --
 
 ALTER TABLE ONLY beacon.policies
-    ADD CONSTRAINT policies_name_unique UNIQUE (name);
+    ADD CONSTRAINT policies_name_team_id_unique UNIQUE (name, team_id);
 
 
 --
@@ -2131,6 +2131,9 @@ COPY beacon.migrations (id, migration, batch) FROM stdin;
 58	2025_07_05_081503_change_feature_flag_unique_for_feature_flags_table	1
 59	2025_07_11_052027_make_unique_by_team	1
 60	2025_07_12_020511_add_onboarded_at_to_organizations_table	1
+61	2025_07_25_064426_fix_unique_name_index_on_policies_table	2
+62	2025_09_21_002405_last_seen_at_nullable_in_applications	2
+63	2025_09_23_080510_unique_email_team_organization_index_on_invites	2
 \.
 
 
@@ -2138,7 +2141,7 @@ COPY beacon.migrations (id, migration, batch) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: beacon; Owner: -
 --
 
-SELECT pg_catalog.setval('beacon.migrations_id_seq', 60, true);
+SELECT pg_catalog.setval('beacon.migrations_id_seq', 63, true);
 
 
 --
