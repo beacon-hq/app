@@ -12,20 +12,14 @@ class GetSubscriptionStatus
 {
     use AsAction;
 
-    public function __construct(
-        protected HasActiveSubscription $hasActiveSubscription,
-        protected IsTrialSubscription $isTrialSubscription
-    ) {
-    }
-
     public function handle(Organization $organization): array
     {
         $subscription = OrganizationModel::find($organization->id)->subscription('plan');
 
         return [
-            'active' => $this->hasActiveSubscription->handle($organization),
+            'active' => HasActiveSubscription::run($organization),
             'grace_period' => $subscription->onGracePeriod(),
-            'trialing' => $this->isTrialSubscription->handle($organization),
+            'trialing' => IsTrialSubscription::run($organization),
             'ends_at' => $subscription->ends_at,
         ];
     }

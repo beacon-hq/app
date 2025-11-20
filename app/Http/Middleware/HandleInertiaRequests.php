@@ -27,12 +27,6 @@ class HandleInertiaRequests extends Middleware
      */
     protected $rootView = 'app';
 
-    public function __construct(
-        protected ListProducts $getProductsAction,
-        protected ListOrganizations $listOrganizations
-    ) {
-    }
-
     /**
      * Define the props that are shared by default.
      *
@@ -49,7 +43,7 @@ class HandleInertiaRequests extends Middleware
                 'pricing.enabled' => Feature::driver('array')->active(BillingEnabled::class),
             ],
             'docsUrl' => config('beacon.docs.url'),
-            'products' => Cache::flexible('products', [3000, 6000], fn () => $this->getProductsAction->handle()),
+            'products' => Cache::flexible('products', [3000, 6000], fn () => ListProducts::run()),
             'status' => Feature::driver('array')->active(StatusEnabled::class) ? [
                 ... Cache::get('beacon.status', [
                     'data' => [
@@ -74,7 +68,7 @@ class HandleInertiaRequests extends Middleware
                     'currentTeam' => Context::has('team') ? Context::get('team') : null,
                 ],
                 'teams' => fn () => ListTeams::run(auth()->user()->id, limitToOrganization: false),
-                'organizations' => fn () => $this->listOrganizations->handle(User::from(Auth::user())),
+                'organizations' => fn () => ListOrganizations::run(User::from(Auth::user())),
                 'theme' => fn () => $request->user()?->theme ?? 'system',
                 'ssr' => [
                     'enabled' => true,

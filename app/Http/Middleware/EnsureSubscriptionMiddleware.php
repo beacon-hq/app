@@ -14,10 +14,6 @@ use Session;
 
 class EnsureSubscriptionMiddleware
 {
-    public function __construct(protected HasActiveSubscription $hasActiveSubscriptionAction)
-    {
-    }
-
     public function handle(Request $request, Closure $next)
     {
         if (!Feature::driver('array')->active(BillingEnabled::class)) {
@@ -33,7 +29,7 @@ class EnsureSubscriptionMiddleware
                 Session::put('checkout.plan', $request->string('plan'));
             }
 
-            if (Context::has('organization') && $this->hasActiveSubscriptionAction->handle(Context::get('organization'))) {
+            if (Context::has('organization') && HasActiveSubscription::run(Context::get('organization'))) {
                 return $next($request);
             } else {
                 if (Session::has('checkout.plan')) {

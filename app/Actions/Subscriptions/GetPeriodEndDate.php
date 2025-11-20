@@ -13,13 +13,9 @@ class GetPeriodEndDate
 {
     use AsAction;
 
-    public function __construct(protected IsTrialSubscription $isTrialSubscription)
-    {
-    }
-
     public function handle(Organization $organization): CarbonImmutable
     {
-        $isTrialSubscription = $this->isTrialSubscription->handle($organization);
+        $isTrialSubscription = IsTrialSubscription::run($organization);
         $organizationModel = OrganizationModel::find($organization->id);
         $subscription = $organizationModel->subscription('plan')->asStripeSubscription();
 

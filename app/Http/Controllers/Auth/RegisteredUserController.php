@@ -16,14 +16,14 @@ class RegisteredUserController
     /**
      * Display the registration view.
      */
-    public function create(Request $request, FindProduct $findProductAction): Response
+    public function create(Request $request): Response
     {
         /** @var Invite $invite */
         $invite = Session::get('invite');
 
         return Inertia::render('Auth/Register', [
             'invite' => !$invite || $invite->expires_at->isAfter(now()) ? $invite : false,
-            'plan' => $request->has('plan') ? $findProductAction->handle($request->get('plan')) : null,
+            'plan' => $request->has('plan') ? FindProduct::run($request->get('plan')) : null,
         ]);
     }
 }

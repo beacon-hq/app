@@ -18,7 +18,7 @@ use Laravel\Pennant\Feature;
 
 class CheckoutController
 {
-    public function index(ListProducts $listProductsAction, HasActiveSubscription $hasActiveSubscriptionAction)
+    public function index()
     {
         if (!Feature::driver('array')->active(BillingEnabled::class)) {
             return \redirect('dashboard');
@@ -28,11 +28,11 @@ class CheckoutController
         $hasActiveSubscription = false;
 
         if ($organization) {
-            $hasActiveSubscription = $hasActiveSubscriptionAction->handle($organization);
+            $hasActiveSubscription = HasActiveSubscription::run($organization);
         }
 
         return Inertia::render('Checkout/Index', [
-            'products' => $listProductsAction->handle(),
+            'products' => ListProducts::run(),
             'auth' => [
                 'organization' => [
                     'has_active_subscription' => $hasActiveSubscription,
@@ -41,14 +41,14 @@ class CheckoutController
         ]);
     }
 
-    public function show(Product $product, CreateSubscription $createSubscriptionAction): Checkout
+    public function show(Product $product): Checkout
     {
-        return $createSubscriptionAction->handle(GetAppContext::organization(), $product);
+        return CreateSubscription::run(GetAppContext::organization(), $product);
     }
 
-    public function update(Product $product, ChangeSubscription $changeSubscriptionAction): RedirectResponse
+    public function update(Product $product): RedirectResponse
     {
-        if ($changeSubscriptionAction->handle(GetAppContext::organization(), $product)) {
+        if (ChangeSubscription::run(GetAppContext::organization(), $product)) {
             return \redirect()->back()->withAlert('success', 'Subscription updated.');
         }
 

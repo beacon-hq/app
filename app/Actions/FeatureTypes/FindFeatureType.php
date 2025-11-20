@@ -12,15 +12,10 @@ class FindFeatureType
 {
     use AsAction;
 
-    public function __construct(
-        protected GetDefaultFeatureType $getDefaultFeatureTypeAction
-    ) {
-    }
-
     public function handle(?string $id): FeatureType
     {
         if ($id === null) {
-            return $this->getDefaultFeatureTypeAction->handle();
+            return GetDefaultFeatureType::run();
         }
 
         $featureType = FeatureTypeModel::findOrFail($id);
