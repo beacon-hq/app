@@ -94,10 +94,14 @@ const Footer = ({ expanded = true }: { expanded?: boolean }) => {
                                         <Link href={docsUrl + '/index.html'}>Documentation</Link>
                                     </li>
                                     <li>
-                                        <SiGithub className="h-4 w-4 inline-block mr-1" /> Github
+                                        <a href="https://github.com/beacon-hq">
+                                            <SiGithub className="h-4 w-4 inline-block mr-1" /> Github
+                                        </a>
                                     </li>
                                     <li>
-                                        <SiYoutube className="h-4 w-4 inline-block mr-1" /> YouTube
+                                        <a href="https://youtube.com/@beacon-hq">
+                                            <SiYoutube className="h-4 w-4 inline-block mr-1" /> YouTube
+                                        </a>
                                     </li>
                                 </ul>
                             </div>

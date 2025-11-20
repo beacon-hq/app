@@ -3,6 +3,7 @@ import HomeLayout from '@/Layouts/HomeLayout';
 import { CentralizedControlAnimation } from '@/Pages/Home/Components/CentralizedControlAnimation';
 import Pricing from '@/Pages/Home/Components/Pricing';
 import { ThreeDMarquee } from '@/components/ui/3d-marquee';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { AuroraText } from '@/components/ui/aurora-text';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -23,6 +24,44 @@ const uniqueImages = [
 ];
 
 const images = [...uniqueImages, ...uniqueImages, ...uniqueImages, ...uniqueImages, ...uniqueImages, ...uniqueImages];
+
+const faqs = [
+    {
+        question: 'What happens after my three-month free trial?',
+        answer: 'You can continue using Beacon for just $5/month. We’ll remind you before your trial ends so you can cancel with a single click.',
+    },
+    {
+        question: 'What counts as a feature flag evaluation?',
+        answer: 'An evaluation happens every time your app requests the value of a feature flag from Beacon. Cached calls do not count.',
+    },
+    {
+        question: 'What happens if I go over my feature flag evaluation limit?',
+        answer: 'You’ll be billed for every 10,000 or 100,000 evaluations (based on your plan). We’ll notify you when you’re close.',
+    },
+    {
+        question: 'Can I have unlimited users and environments?',
+        answer: 'Yes. All plans include unlimited users, apps, flags, and environments.',
+    },
+    {
+        question: 'Is there a free trial?',
+        answer: 'Yes — the Solo plan gives you three months free, upgrade or downgrade your plan at any time.',
+    },
+    {
+        question: 'When can I cancel my subscription?',
+        answer: 'You can cancel your subscription at any time. Your plan will expire at the end of the current billing period.',
+    },
+    {
+        question: 'Can I self-host Beacon?',
+        answer: (
+            <>
+                Yes, absolutely, Beacon is{' '}
+                <Button type="button" className="p-0" variant="link">
+                    <a href="https://github.com/beacon-hq/app">open source.</a>
+                </Button>
+            </>
+        ),
+    },
+];
 
 export default function Index() {
     useScrollToLocation();
@@ -73,7 +112,7 @@ export default function Index() {
             <Head title="Welcome" />
 
             <header className="flex flex-col items-center mb-8">
-                <div className="flex flex-row w-3/4 mx-auto items-center pt-20">
+                <div className="flex flex-col md:flex-row w-3/4 mx-auto items-center pt-20">
                     <div className="flex flex-col items-center gap-4">
                         <h1 className="text-4xl text-center w-full font-normal text-primary bg-clip-text inline-block px-4">
                             Supercharge your deployments with Beacon.
@@ -81,11 +120,13 @@ export default function Index() {
                                 Feature flag management for Laravel.
                             </AuroraText>
                         </h1>
-                        <h2 className="text-xl text-primary">No deploys, no waiting, just real time control.</h2>
+                        <h2 className="text-xl text-primary text-center">
+                            No deploys, no waiting, just real time control.
+                        </h2>
                     </div>
-                    <div className="mx-auto text-center w-full md:w-1/2">
+                    <div className="mx-auto w-60 block md:w-1/2">
                         <svg
-                            viewBox="0 0 750 754"
+                            viewBox="-120 0 751 754"
                             xmlns="http://www.w3.org/2000/svg"
                             xmlSpace="preserve"
                             style={{
@@ -95,6 +136,7 @@ export default function Index() {
                                 strokeLinejoin: 'round',
                                 strokeMiterlimit: '1.5',
                             }}
+                            className="mx-auto"
                         >
                             <defs>
                                 <linearGradient id="gradient-fill" y2="1">
@@ -172,7 +214,7 @@ export default function Index() {
                     </Link>
                 </div>
             </header>
-            <div>
+            <div className="overflow-hidden w-full">
                 <ThreeDMarquee images={images} />
             </div>
             <section className="dark:bg-neutral-900 w-full">
@@ -465,9 +507,28 @@ export default function Index() {
             </section>
 
             {pricingEnabled && (
-                <section id="pricing" className="scroll-mt-8" ref={pricingRef}>
-                    <Pricing products={products as ProductCollection} />
-                </section>
+                <>
+                    <section id="pricing" className="scroll-mt-8" ref={pricingRef}>
+                        <Pricing products={products as ProductCollection} />
+                    </section>
+                    <section className="pt-20 pb-10 md:px-10 dark:bg-background w-full" id="faq">
+                        <div className="max-w-full mx-auto px-6">
+                            <h2 className="text-3xl font-bold text-primary text-center mb-12">
+                                Frequently Asked Questions
+                            </h2>
+                            <Accordion type="single" collapsible className="max-w-full">
+                                {faqs.map((faq, index) => (
+                                    <AccordionItem key={index} value={`item-${index}`}>
+                                        <AccordionTrigger className="text-lg font-semibold text-primary">
+                                            {faq.question}
+                                        </AccordionTrigger>
+                                        <AccordionContent className="text-primary">{faq.answer}</AccordionContent>
+                                    </AccordionItem>
+                                ))}
+                            </Accordion>
+                        </div>
+                    </section>
+                </>
             )}
         </HomeLayout>
     );

@@ -5,7 +5,7 @@ const PrivacyPolicy = () => {
     return (
         <GuestLayout>
             <Head title="Terms of Service" />
-            <section className="prose dark:prose-invert">
+            <section className="prose dark:prose-invert px-10">
                 <h1>Privacy Policy</h1>
                 <p>Last updated: August 11, 2025</p>
                 <p>

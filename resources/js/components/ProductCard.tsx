@@ -23,7 +23,7 @@ function ProductCard(props: { product: Product; activeSubscription?: Subscriptio
                 'hover:[background:linear-gradient(45deg,#fff,theme(colors.white)_50%,#fff)_padding-box,conic-gradient(from_var(--border-angle),#07e38f,#00e7aa,#13daf4,#07baf9,_theme(colors.sky.700/.48))_border-box] rounded-2xl border-4 border-transparent motion-safe:animate-border',
                 'hover:motion-safe:scale-110',
                 'transition-all duration-500',
-                'relative',
+                'relative max-w-full',
             )}
         >
             <CardContent className="rounded-xl shadow-lg bg-secondary">

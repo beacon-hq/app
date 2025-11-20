@@ -11,7 +11,7 @@ export default function OurTeam() {
     return (
         <GuestLayout>
             <Head title="Meet the Team" />
-            <section className="w-1/4">
+            <section className="w-full xl:w-1/4 px-10">
                 <div className="prose dark:prose-invert">
                     <h1 className="text-center">Meet the Team</h1>
                     <p>
@@ -42,7 +42,7 @@ export default function OurTeam() {
                     </CardContent>
                 </Card>
             </section>
-            <section className="px-20 py-8 text-center">
+            <section className="px-20 py-8 text-center w-full overflow-hidden">
                 <h2 className="text-3xl font-bold">
                     <AuroraText colors={['#00e281', '#00e7a4', '#00f1ed', '#00b9fa', '#009aff']} speed={4}>
                         Our Experience

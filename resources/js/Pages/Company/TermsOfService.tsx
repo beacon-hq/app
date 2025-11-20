@@ -6,7 +6,7 @@ export default function TermsOfService() {
         <GuestLayout>
             <Head title="Terms of Service" />
 
-            <section className="prose dark:prose-invert">
+            <section className="prose dark:prose-invert px-10">
                 <h1>Terms and Conditions</h1>
                 <p>Last updated: August 11, 2025</p>
                 <p>Please read these terms and conditions carefully before using Our Service.</p>

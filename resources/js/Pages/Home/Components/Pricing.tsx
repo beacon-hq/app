@@ -115,25 +115,6 @@ export default function Pricing({
                         </div>
                     </div>
                 </section>
-
-                {/* FAQ Section */}
-                <section className="pt-20 pb-10" id="faq">
-                    <div className="w-3xl max-w-full mx-auto px-6">
-                        <h2 className="text-3xl font-bold text-primary text-center mb-12">
-                            Frequently Asked Questions
-                        </h2>
-                        <Accordion type="single" collapsible>
-                            {faqs.map((faq, index) => (
-                                <AccordionItem key={index} value={`item-${index}`}>
-                                    <AccordionTrigger className="text-lg font-semibold text-primary">
-                                        {faq.question}
-                                    </AccordionTrigger>
-                                    <AccordionContent className="text-primary">{faq.answer}</AccordionContent>
-                                </AccordionItem>
-                            ))}
-                        </Accordion>
-                    </div>
-                </section>
             </div>
         </>
     );
@@ -146,42 +127,4 @@ const features = [
     'Unlimited Team Members',
     'Real-Time Feature Flag Updates',
     'Analytics',
-];
-
-const faqs = [
-    {
-        question: 'What happens after my three-month free trial?',
-        answer: 'You can continue using Beacon for just $5/month. We’ll remind you before your trial ends so you can cancel with a single click.',
-    },
-    {
-        question: 'What counts as a feature flag evaluation?',
-        answer: 'An evaluation happens every time your app requests the value of a feature flag from Beacon. Cached calls do not count.',
-    },
-    {
-        question: 'What happens if I go over my feature flag evaluation limit?',
-        answer: 'You’ll be billed for every 10,000 or 100,000 evaluations (based on your plan). We’ll notify you when you’re close.',
-    },
-    {
-        question: 'Can I have unlimited users and environments?',
-        answer: 'Yes. All plans include unlimited users, apps, flags, and environments.',
-    },
-    {
-        question: 'Is there a free trial?',
-        answer: 'Yes — the Solo plan gives you three months free, upgrade or downgrade your plan at any time.',
-    },
-    {
-        question: 'When can I cancel my subscription?',
-        answer: 'You can cancel your subscription at any time. Your plan will expire at the end of the current billing period.',
-    },
-    {
-        question: 'Can I self-host Beacon?',
-        answer: (
-            <>
-                Yes, absolutely, Beacon is{' '}
-                <Button type="button" className="p-0" variant="link">
-                    <a href="https://github.com/beacon-hq/app">open source.</a>
-                </Button>
-            </>
-        ),
-    },
 ];
