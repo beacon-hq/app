@@ -109,6 +109,7 @@ export default function Index({
     } satisfies ChartConfig;
 
     if (
+        usage.evaluations.data !== undefined &&
         usage.evaluations.data[usage.evaluations.data.length - 1] &&
         !usage.evaluations.data[usage.evaluations.data.length - 1].projected
     ) {
@@ -268,7 +269,7 @@ export default function Index({
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="text-sm">
-                                {usage.evaluations.data.length > 0 && (
+                                {usage.evaluations?.data?.length > 0 && (
                                     <ChartContainer config={projectedUsageChartConfig} className="h-36 w-full">
                                         <LineChart accessibilityLayer data={usage.evaluations.data}>
                                             <CartesianGrid vertical={false} />
@@ -312,7 +313,7 @@ export default function Index({
                                         </LineChart>
                                     </ChartContainer>
                                 )}
-                                {usage.evaluations.data.length === 0 && (
+                                {(usage.evaluations.data?.length ?? 0) === 0 && (
                                     <div className="h-40 flex flex-row items-center">
                                         <p className="h-full mx-auto w-fit pt-16">No Usage Data Found</p>
                                     </div>
