@@ -18,6 +18,6 @@ class GetSubscription
         $subscription = OrganizationModel::findOrFail($organization->id)
             ->subscription('plan');
 
-        return Subscription::fromModel($subscription);
+        return Subscription::from($subscription);
     }
 }

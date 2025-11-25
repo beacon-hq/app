@@ -20,7 +20,7 @@ class SetOrganizationContext
     public function handle(Organization|OrganizationValue|null $organization): ?OrganizationValue
     {
         if ($organization instanceof Organization) {
-            $organization = OrganizationValue::from(...OrganizationValue::fromModel($organization));
+            $organization = OrganizationValue::from($organization);
         }
 
         $previousOrgId = Context::has('organization') ? Context::get('organization')?->id : null;
